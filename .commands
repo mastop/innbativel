@@ -1,0 +1,22 @@
+To add apache permissions:
+==========================
+chmow www-data:www-data /path -R
+
+
+To recursively give files read privileges:
+==========================================
+
+find /path -type d -exec chmod 755 {} +
+find /path -type f -exec chmod 644 {} +
+
+Or, if there are many objects to process:
+=========================================
+
+chmod 755 $(find /path -type d)
+chmod 644 $(find /path -type f)
+
+Or, to reduce chmod spawning:
+=============================
+
+find /path -type d -print0 | xargs -0 chmod 755
+find /path -type f -print0 | xargs -0 chmod 644

@@ -1,0 +1,71 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 12 (0xc)
+        Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=BR, ST=SP, L=SaoPaulo, O=BRLink, CN=BRLink CA/emailAddress=suporte@brlink.com.br
+        Validity
+            Not Before: May 23 18:55:51 2013 GMT
+            Not After : May 21 18:55:51 2023 GMT
+        Subject: C=BR, ST=SP, L=SaoPaulo, O=BRLink, CN=client05/emailAddress=suporte@brlink.com.br
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+            RSA Public Key: (1024 bit)
+                Modulus (1024 bit):
+                    00:e2:81:68:a5:ae:b8:ab:95:7d:48:f3:d5:77:4b:
+                    05:8b:dc:4b:4d:1e:b5:33:b5:9b:32:8c:bf:2e:ac:
+                    ed:57:da:89:d3:96:ef:79:24:dc:05:68:1d:6c:8b:
+                    48:c8:69:f5:8a:44:81:d6:ce:8c:20:fd:f2:7b:c7:
+                    f8:f6:6c:76:15:63:74:31:35:2b:82:9a:ee:11:55:
+                    25:06:24:59:15:f8:09:61:f1:e5:69:02:d6:01:d0:
+                    48:87:65:87:e3:c4:e0:89:86:18:2e:f2:73:dd:05:
+                    4c:51:6a:8a:03:d7:80:8a:a2:46:56:67:ae:fb:af:
+                    b4:c1:b1:a2:27:f6:82:e6:23
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                Easy-RSA Generated Certificate
+            X509v3 Subject Key Identifier: 
+                76:82:35:D1:3E:FC:09:5B:2B:B7:CD:16:C8:43:1D:5C:D0:96:55:EA
+            X509v3 Authority Key Identifier: 
+                keyid:AD:07:8B:1D:A1:ED:5F:A3:F4:9C:AF:AF:AE:F9:26:51:20:8C:95:2F
+                DirName:/C=BR/ST=SP/L=SaoPaulo/O=BRLink/CN=BRLink CA/emailAddress=suporte@brlink.com.br
+                serial:C5:96:7A:27:A2:D6:44:EA
+
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication
+            X509v3 Key Usage: 
+                Digital Signature
+    Signature Algorithm: sha1WithRSAEncryption
+        3f:52:b8:35:73:6c:8f:92:c3:fb:66:aa:f0:9c:82:a9:7a:ee:
+        7a:ea:87:8d:f9:d0:8f:ab:03:56:40:9f:8f:89:2b:22:ab:d7:
+        9b:d3:b8:b1:55:d1:c9:68:89:d5:62:4a:a0:a9:76:c3:f3:75:
+        f1:49:64:ce:6a:e9:67:b9:f8:57:3a:9e:b6:d0:ea:f2:d8:55:
+        8a:7c:ce:82:1b:85:49:24:71:36:39:b2:f7:f6:37:61:e4:2a:
+        97:67:11:fb:7c:60:39:2c:1d:c5:1a:4c:b9:25:f7:ef:9c:ec:
+        c8:0d:1a:f7:a8:c2:db:ed:ca:9b:e2:85:54:fe:80:d9:5d:09:
+        0d:07
+-----BEGIN CERTIFICATE-----
+MIIDkzCCAvygAwIBAgIBDDANBgkqhkiG9w0BAQUFADB4MQswCQYDVQQGEwJCUjEL
+MAkGA1UECBMCU1AxETAPBgNVBAcTCFNhb1BhdWxvMQ8wDQYDVQQKEwZCUkxpbmsx
+EjAQBgNVBAMTCUJSTGluayBDQTEkMCIGCSqGSIb3DQEJARYVc3Vwb3J0ZUBicmxp
+bmsuY29tLmJyMB4XDTEzMDUyMzE4NTU1MVoXDTIzMDUyMTE4NTU1MVowdzELMAkG
+A1UEBhMCQlIxCzAJBgNVBAgTAlNQMREwDwYDVQQHEwhTYW9QYXVsbzEPMA0GA1UE
+ChMGQlJMaW5rMREwDwYDVQQDEwhjbGllbnQwNTEkMCIGCSqGSIb3DQEJARYVc3Vw
+b3J0ZUBicmxpbmsuY29tLmJyMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDi
+gWilrrirlX1I89V3SwWL3EtNHrUztZsyjL8urO1X2onTlu95JNwFaB1si0jIafWK
+RIHWzowg/fJ7x/j2bHYVY3QxNSuCmu4RVSUGJFkV+Alh8eVpAtYB0EiHZYfjxOCJ
+hhgu8nPdBUxRaooD14CKokZWZ677r7TBsaIn9oLmIwIDAQABo4IBLDCCASgwCQYD
+VR0TBAIwADAtBglghkgBhvhCAQ0EIBYeRWFzeS1SU0EgR2VuZXJhdGVkIENlcnRp
+ZmljYXRlMB0GA1UdDgQWBBR2gjXRPvwJWyu3zRbIQx1c0JZV6jCBqgYDVR0jBIGi
+MIGfgBStB4sdoe1fo/Scr6+u+SZRIIyVL6F8pHoweDELMAkGA1UEBhMCQlIxCzAJ
+BgNVBAgTAlNQMREwDwYDVQQHEwhTYW9QYXVsbzEPMA0GA1UEChMGQlJMaW5rMRIw
+EAYDVQQDEwlCUkxpbmsgQ0ExJDAiBgkqhkiG9w0BCQEWFXN1cG9ydGVAYnJsaW5r
+LmNvbS5icoIJAMWWeiei1kTqMBMGA1UdJQQMMAoGCCsGAQUFBwMCMAsGA1UdDwQE
+AwIHgDANBgkqhkiG9w0BAQUFAAOBgQA/Urg1c2yPksP7ZqrwnIKpeu566oeN+dCP
+qwNWQJ+PiSsiq9eb07ixVdHJaInVYkqgqXbD83XxSWTOaulnufhXOp620Ory2FWK
+fM6CG4VJJHE2ObL39jdh5CqXZxH7fGA5LB3FGky5JffvnOzIDRr3qMLb7cqb4oVU
+/oDZXQkNBw==
+-----END CERTIFICATE-----

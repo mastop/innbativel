@@ -1,0 +1,422 @@
+#
+# Apache/PHP Settings
+#
+
+# ------------------------------------------------------------------------------
+# | File access                                                                |
+# ------------------------------------------------------------------------------
+
+# Block access to directories without a default document.
+# Usually you should leave this uncommented because you shouldn't allow anyone
+# to surf through every directory on your server (which may includes rather
+# private places like the CMS's directories).
+
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+# Block access to backup and source files.
+# These files may be left by some text editors and can pose a great security
+# danger when anyone has access to them.
+
+<FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</FilesMatch>
+
+# ------------------------------------------------------------------------------
+# | UTF-8 encoding                                                             |
+# ------------------------------------------------------------------------------
+
+# Use UTF-8 encoding for anything served as `text/html` or `text/plain`.
+AddDefaultCharset utf-8
+
+# Set the default handler.
+DirectoryIndex index.php index.html index.htm app.php app.html app.htm default.php default.html default.htm
+
+# ------------------------------------------------------------------------------
+# | Personalized Index                                                         |
+# ------------------------------------------------------------------------------
+
+<IfModule autoindex_module>
+
+	HeaderName           /assets/vendors/h5ai/header.html
+	ReadmeName           /assets/vendors/h5ai/footer.html
+
+	IndexIgnore          /assets/vendors/h5ai *.7z *.zip *.rar *.gz *.bz2 *.tar *.tar.bz2 *.tar.gz
+
+	IndexOrderDefault    Ascending Name
+
+	IndexOptions         Type=text/html;assets/vendors/h5ai=0.10.1
+	IndexOptions         Charset=UTF-8
+	IndexOptions         FancyIndexing
+	IndexOptions         HTMLTable
+	IndexOptions         XHTML
+	IndexOptions         SuppressHTMLPreamble
+	IndexOptions         SuppressRules
+	IndexOptions         SuppressDescription
+	IndexOptions         FoldersFirst
+	IndexOptions         IgnoreCase
+	IndexOptions         IconsAreLinks
+	IndexOptions         VersionSort
+	IndexOptions         NameWidth=*
+
+	AddIcon              /assets/vendors/h5ai/icons/16x16/parent.png      ..
+	AddIcon              /assets/vendors/h5ai/icons/16x16/folder.png      ^^DIRECTORY^^
+	AddIcon              /assets/vendors/h5ai/icons/16x16/blank.png       ^^BLANKICON^^
+
+	AddIcon              /assets/vendors/h5ai/icons/16x16/readme.png      README
+	AddIcon              /assets/vendors/h5ai/icons/16x16/copying.png     COPYING  LICENSE
+	AddIcon              /assets/vendors/h5ai/icons/16x16/install.png     INSTALL
+	AddIcon              /assets/vendors/h5ai/icons/16x16/authors.png     AUTHORS
+	AddIcon              /assets/vendors/h5ai/icons/16x16/log.png         LOG  Log  log
+
+	AddIcon              /assets/vendors/h5ai/icons/16x16/css.png         .less
+	AddIcon              /assets/vendors/h5ai/icons/16x16/script.png      .conf  .ini  .sh  .shar  .csh  .ksh  .tcl
+	AddIcon              /assets/vendors/h5ai/icons/16x16/makefile.png    .pom  pom.xml  build.xml
+	AddIcon              /assets/vendors/h5ai/icons/16x16/bin.png         .so  .o
+
+	AddIcon              /assets/vendors/h5ai/icons/16x16/archive.png     .tar. *.bz2gz  .tgz  .tar.bz2
+	AddIcon              /assets/vendors/h5ai/icons/16x16/zip.png         .zip  .Z  .z  .jar  .war  .gz  .bz2
+	AddIcon              /assets/vendors/h5ai/icons/16x16/tar.png         .tar
+	AddIcon              /assets/vendors/h5ai/icons/16x16/pdf.png         .pdf
+	AddIcon              /assets/vendors/h5ai/icons/16x16/deb.png         .deb
+	AddIcon              /assets/vendors/h5ai/icons/16x16/rpm.png         .rpm
+	AddIcon              /assets/vendors/h5ai/icons/16x16/cd.png          .iso  .cue
+
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/png.png         image/png
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/jpg.png         image/jpeg
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/gif.png         image/gif
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/ico.png         image/x-icon
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/bmp.png         image/x-ms-bmp
+
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/html.png        text/html
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/css.png         text/css
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/xml.png         application/xml
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/js.png          application/javascript  application/json
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/php.png         application/x-httpd-php
+
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/py.png          text/x-python
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/rb.png          application/x-ruby
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/java.png        text/x-java
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/cpp.png         text/x-c++src
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/hpp.png         text/x-c++hdr
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/c.png           text/x-csrc
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/h.png           text/x-chdr
+
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/pdf.png         application/pdf
+
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/rtf.png         text/rtf  application/rtf
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/tex.png         text/x-tex
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/makefile.png    text/x-makefile
+
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/bin.png         application/java-vm
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/exe.png         application/x-executable application/x-msdos-program
+
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/text.png        text/*
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/image.png       image/*
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/audio.png       audio/*
+	AddIconByType        /assets/vendors/h5ai/icons/16x16/video.png       video/*
+
+	AddIconByEncoding    /assets/vendors/h5ai/icons/16x16/zip.png         x-compress  x-gzip  x-bzip2
+
+	DefaultIcon          /assets/vendors/h5ai/icons/16x16/unknown.png
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# | Proper MIME types for all files                                            |
+# ------------------------------------------------------------------------------
+
+<IfModule mod_mime.c>
+	# Force UTF-8 for certain file formats.
+    AddCharset utf-8 .atom .css .js .json .rss .vtt .webapp .xml
+
+  # Audio
+    AddType audio/mp4                                   m4a f4a f4b
+    AddType audio/ogg                                   oga ogg
+
+  # JavaScript
+    # Normalize to standard type (it's sniffed in IE anyways):
+    # http://tools.ietf.org/html/rfc4329#section-7.2
+    AddType application/javascript                      js jsonp
+    AddType application/json                            json
+
+  # Video
+    AddType video/mp4                                   mp4 m4v f4v f4p
+    AddType video/ogg                                   ogv
+    AddType video/webm                                  webm
+    AddType video/x-flv                                 flv
+
+  # Web fonts
+    AddType application/font-woff                       woff
+    AddType application/vnd.ms-fontobject               eot
+
+    # Browsers usually ignore the font MIME types and sniff the content,
+    # however, Chrome shows a warning if other MIME types are used for the
+    # following fonts.
+    AddType application/x-font-ttf                      ttc ttf
+    AddType font/opentype                               otf
+
+    # Make SVGZ fonts work on iPad:
+    # https://twitter.com/FontSquirrel/status/14855840545
+    AddType     image/svg+xml                           svg svgz
+    AddEncoding gzip                                    svgz
+
+  # Other
+    AddType application/octet-stream                    safariextz
+    AddType application/x-chrome-extension              crx
+    AddType application/x-opera-extension               oex
+    AddType application/x-shockwave-flash               swf
+    AddType application/x-web-app-manifest+json         webapp
+    AddType application/x-xpinstall                     xpi
+    AddType application/xml                             atom rdf rss xml
+    AddType image/webp                                  webp
+    AddType image/x-icon                                ico
+    AddType text/cache-manifest                         appcache manifest
+    AddType text/vtt                                    vtt
+    AddType text/x-component                            htc
+    AddType text/x-vcard                                vcf
+
+</IfModule>
+
+# ##############################################################################
+# # CROSS-ORIGIN RESOURCE SHARING (CORS)                                       #
+# ##############################################################################
+
+# ------------------------------------------------------------------------------
+# | Cross-domain AJAX requests                                                 |
+# ------------------------------------------------------------------------------
+
+# Enable cross-origin AJAX requests.
+# http://code.google.com/p/html5security/wiki/CrossOriginRequestSecurity
+# http://enable-cors.org/
+
+# <IfModule mod_headers.c>
+#    Header set Access-Control-Allow-Origin "*"
+# </IfModule>
+
+# ------------------------------------------------------------------------------
+# | CORS-enabled images                                                        |
+# ------------------------------------------------------------------------------
+
+# Send the CORS header for images when browsers request it.
+# https://developer.mozilla.org/en/CORS_Enabled_Image
+# http://blog.chromium.org/2011/07/using-cross-domain-images-in-webgl-and.html
+# http://hacks.mozilla.org/2011/11/using-cors-to-load-webgl-textures-from-cross-domain-images/
+
+<IfModule mod_setenvif.c>
+    <IfModule mod_headers.c>
+        <FilesMatch "\.(gif|ico|jpe?g|png|svg|svgz|webp)$">
+            SetEnvIf Origin ":" IS_CORS
+            Header set Access-Control-Allow-Origin "*" env=IS_CORS
+        </FilesMatch>
+    </IfModule>
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# | Web fonts access                                                           |
+# ------------------------------------------------------------------------------
+
+# Allow access from all domains for web fonts
+
+<IfModule mod_headers.c>
+		# Force IE to render pages in the highest available mode in the various
+		# cases when it may not: http://hsivonen.iki.fi/doctype/ie-mode.pdf.
+    #Header set X-UA-Compatible "IE=edge"
+    # `mod_headers` can't match based on the content-type, however, we only
+    # want to send this header for HTML pages and not for the other resources
+    #<FilesMatch "\.(appcache|crx|css|eot|gif|htc|ico|jpe?g|js|m4a|m4v|manifest|mp4|oex|oga|ogg|ogv|otf|pdf|png|safariextz|svg|svgz|ttf|vcf|webapp|webm|webp|woff|xml|xpi)$">
+    #    Header unset X-UA-Compatible
+    #</FilesMatch>
+
+    <FilesMatch "\.(eot|font.css|otf|ttc|ttf|woff)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+		# Prevent Apache from returning a 404 error for a rewrite if a directory
+		# with the same name does not exist.
+	  Options -MultiViews
+	  Options +FollowSymlinks
+	  # Options +SymLinksIfOwnerMatch
+
+		# Block access to hidden files and directories.
+		# This includes directories used by version control systems such as Git and SVN.
+    RewriteCond %{SCRIPT_FILENAME} -d [OR]
+    RewriteCond %{SCRIPT_FILENAME} -f
+    RewriteRule "(^|/)\." - [F]
+
+		# Option 1: rewrite www.example.com → example.com
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+    RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
+
+		# Option 2: rewrite example.com → www.example.com
+
+		# Be aware that the following might not be a good idea if you use "real"
+		# subdomains for certain parts of your website.
+		#RewriteCond %{HTTPS} !=on
+		#RewriteCond %{HTTP_HOST} !^www\..+$ [NC]
+		#RewriteRule ^ http://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+    # Determine the RewriteBase automatically and set it as environment variable.
+    RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+    RewriteRule ^(.*) - [E=BASE:%1]
+
+    # Redirect to URI without front controller to prevent duplicate content
+    # (with and without `/index.php`). Only do this redirect on the initial
+    # rewrite by Apache and not on subsequent cycles.
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    RewriteRule ^index\.php(/(.*)|$) %{ENV:BASE}/$2 [R=301,L]
+
+    # If the requested filename exists, simply serve it.
+    # We only want to let Apache serve files and not directories.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule .? - [L]
+
+    # Rewrite all other queries to the front controller.
+    RewriteRule .? %{ENV:BASE}/index.php [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    <IfModule mod_alias.c>
+        # When mod_rewrite is not available, we instruct a temporary redirect of
+        # the start page to the front controller explicitly so that the website
+        # and the generated links can still be used.
+        RedirectMatch 302 ^/$ /index.php/
+        # RedirectTemp cannot be used instead
+    </IfModule>
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# | Compression                                                                |
+# ------------------------------------------------------------------------------
+
+<IfModule mod_deflate.c>
+
+    # Force compression for mangled headers.
+    # http://developer.yahoo.com/blogs/ydn/posts/2010/12/pushing-beyond-gzipping
+    <IfModule mod_setenvif.c>
+        <IfModule mod_headers.c>
+            SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding
+            RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding
+        </IfModule>
+    </IfModule>
+
+    # Compress all output labeled with one of the following MIME-types
+    # (for Apache versions below 2.3.7, you don't need to enable `mod_filter`
+    #  and can remove the `<IfModule mod_filter.c>` and `</IfModule>` lines
+    #  as `AddOutputFilterByType` is still in the core directives).
+    <IfModule mod_filter.c>
+        AddOutputFilterByType DEFLATE application/atom+xml \
+                                      application/javascript \
+                                      application/json \
+                                      application/rss+xml \
+                                      application/vnd.ms-fontobject \
+                                      application/x-font-ttf \
+                                      application/x-web-app-manifest+json \
+                                      application/xhtml+xml \
+                                      application/xml \
+                                      font/opentype \
+                                      image/svg+xml \
+                                      image/x-icon \
+                                      text/css \
+                                      text/html \
+                                      text/plain \
+                                      text/x-component \
+                                      text/xml
+    </IfModule>
+
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# | ETag removal                                                               |
+# ------------------------------------------------------------------------------
+
+# Since we're sending far-future expires headers (see below), ETags can
+# be removed: http://developer.yahoo.com/performance/rules.html#etags.
+
+# `FileETag None` is not enough for every server.
+<IfModule mod_headers.c>
+    Header unset ETag
+</IfModule>
+
+FileETag None
+
+# ------------------------------------------------------------------------------
+# | Expires headers (for better cache control)                                 |
+# ------------------------------------------------------------------------------
+
+# The following expires headers are set pretty far in the future. If you don't
+# control versioning with filename-based cache busting, consider lowering the
+# cache time for resources like CSS and JS to something like 1 week.
+
+<IfModule mod_expires.c>
+
+    ExpiresActive on
+    ExpiresDefault                                      "access plus 1 month"
+
+  # CSS
+    ExpiresByType text/css                              "access plus 1 year"
+
+  # Data interchange
+    ExpiresByType application/json                      "access plus 5 seconds"
+    ExpiresByType application/xml                       "access plus 5 seconds"
+    ExpiresByType text/xml                              "access plus 5 seconds"
+
+  # Favicon (cannot be renamed!)
+    ExpiresByType image/x-icon                          "access plus 1 week"
+
+  # HTML components (HTCs)
+    ExpiresByType text/x-component                      "access plus 1 month"
+
+  # HTML
+    ExpiresByType text/html                             "access plus 5 seconds"
+
+  # JavaScript
+    ExpiresByType application/javascript                "access plus 1 year"
+
+  # Manifest files
+    ExpiresByType application/x-web-app-manifest+json   "access plus 0 seconds"
+    ExpiresByType text/cache-manifest                   "access plus 0 seconds"
+
+  # Media
+    ExpiresByType audio/ogg                             "access plus 1 month"
+    ExpiresByType image/gif                             "access plus 1 month"
+    ExpiresByType image/jpeg                            "access plus 1 month"
+    ExpiresByType image/png                             "access plus 1 month"
+    ExpiresByType video/mp4                             "access plus 1 month"
+    ExpiresByType video/ogg                             "access plus 1 month"
+    ExpiresByType video/webm                            "access plus 1 month"
+
+  # Web feeds
+    ExpiresByType application/atom+xml                  "access plus 1 hour"
+    ExpiresByType application/rss+xml                   "access plus 1 hour"
+
+  # Web fonts
+    ExpiresByType application/font-woff                 "access plus 1 month"
+    ExpiresByType application/vnd.ms-fontobject         "access plus 1 month"
+    ExpiresByType application/x-font-ttf                "access plus 1 month"
+    ExpiresByType font/opentype                         "access plus 1 month"
+    ExpiresByType image/svg+xml                         "access plus 1 month"
+
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# | Persistent connections                                                     |
+# ------------------------------------------------------------------------------
+
+# Allow multiple requests to be sent over the same TCP connection:
+# http://httpd.apache.org/docs/current/en/mod/core.html#keepalive.
+
+# Enable if you serve a lot of static content but, be aware of the
+# possible disadvantages!
+
+# <IfModule mod_headers.c>
+#   Header set Connection Keep-Alive
+# </IfModule>
