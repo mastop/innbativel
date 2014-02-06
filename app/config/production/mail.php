@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'host' => 'smtp.mailgun.org',
+	'host' => 'smtp.gmail.org',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -55,8 +55,8 @@ return array(
 	*/
 
 	'from' => [
-		'address' => 'felipepodesta@me.com',
-		'name' => 'Felipe Podestá'
+		'address' => 'programacao@innbativel.com.br',
+		'name' => 'Cawe Coy Rodrigues Marega'
 	],
 
 	/*
@@ -83,7 +83,7 @@ return array(
 	|
 	*/
 
-	'username' => 'postmaster@sandbox42.mailgun.org',
+	'username' => 'programacao@innbativel.com.br',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ return array(
 	|
 	*/
 
-	'password' => '5tqsokl00h52',
+	'password' => 'proinnbativel11',
 
 	/*
 	|--------------------------------------------------------------------------

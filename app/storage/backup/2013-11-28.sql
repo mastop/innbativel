@@ -562,8 +562,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
 -- Copiando dados para a tabela innbativel.profiles: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `profiles` DISABLE KEYS */;
 INSERT INTO `profiles` (`id`, `user_id`, `facebook_id`, `name`, `img`, `total_purchasses`, `credit`, `city`, `state`, `country`, `telephone`, `cpf`, `birth`, `street`, `number`, `zip`, `complement`, `neighborhood`, `ip`) VALUES
-	(1, 1, NULL, 'Felipe Podestá', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-	(2, 2, NULL, 'Cawe Coy Rodrigues Marega', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+	(1, 1, NULL, 'Cawe Coy Rodrigues Marega', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 /*!40000 ALTER TABLE `profiles` ENABLE KEYS */;
 
 

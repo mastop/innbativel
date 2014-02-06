@@ -64,15 +64,4 @@ class OfferOption extends Eloquent {
 
         return $inter->format($money);
 	}
-
-	public function getPriceWithDiscountAttribute($value)
-	{
-		$value = (int) $value;
-
-		$money = new Money($value, new Currency('BRL'));
-		$inter = new IntlFormatter('pt_BR');
-
-		return $inter->format($money);
-	}
-
 }

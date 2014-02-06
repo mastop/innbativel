@@ -27,16 +27,16 @@ App::error(function(Exception $exception, $code)
       Config::getEnvironment() == 'staging' ||
       Config::getEnvironment() == 'local')
   {
-      // $data = [
-      //   'exception' => $exception
-      // ];
+      $data = [
+        'exception' => $exception
+      ];
 
-      // Mail::send('emails.error.log', $data, function($message)
-      // {
-      //     $message
-      //       ->to(['felipepodesta@me.com','programacao@innbativel.com.br'])
-      //       ->subject('Erro no Site Innbatível');
-      // });
+      Mail::send('emails.error.log', $data, function($message)
+      {
+          $message
+            ->to(['programacao@innbativel.com.br'])
+            ->subject('Erro no Site Innbatível');
+      });
   }
 
   switch ($code) {

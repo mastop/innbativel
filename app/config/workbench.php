@@ -13,7 +13,7 @@ return array(
 	|
 	*/
 
-	'name' => 'Felipe Podestá',
+	'name' => 'Cawe Coy Rodrigues Marega',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -26,6 +26,6 @@ return array(
 	|
 	*/
 
-	'email' => 'felipepodesta@me.com',
+	'email' => 'programacao@innbativel.com.br',
 
 );

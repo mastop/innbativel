@@ -15,7 +15,7 @@
 1. Clonar repositório git com o seguinte comando:
 
   ```bash
-  git clone https://felipepodesta@bitbucket.org/felipepodesta/innbativel-2014.git
+  git clone https://bitbucket.org/programacao_innbativel/innbativel-2.0.git
   ```
 
 2. Rodar o composer para gerar o autoload correto.
