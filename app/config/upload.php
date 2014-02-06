@@ -55,5 +55,49 @@ return [
 			],
 		],
 	],
+	'ngo' => [
+		'img' => [
+			's3'     => false,
+			'path'   => public_path() . '/assets/uploads/images/ngos/img/',
+			'mimes'  => ['image/jpg', 'image/jpeg', 'image/png'],
+			'style' => [
+				'width' => null,
+				'height' => null,
+			],
+		],
+	],
+	'genre' => [
+		'img' => [
+			's3'     => false,
+			'path'   => public_path() . '/assets/uploads/images/genres/img/',
+			'mimes'  => ['image/jpg', 'image/jpeg', 'image/png'],
+			'style' => [
+				'width' => null,
+				'height' => null,
+			],
+		],
+	],
+	'tellus' => [
+		'img' => [
+			's3'     => false,
+			'path'   => public_path() . '/assets/uploads/images/tellus/img/',
+			'mimes'  => ['image/jpg', 'image/jpeg', 'image/png'],
+			'style' => [
+				'width' => null,
+				'height' => null,
+			],
+		],
+	],
+	'partner' => [
+		'img' => [
+			's3'     => false,
+			'path'   => public_path() . '/assets/uploads/images/partner_testimony/img/',
+			'mimes'  => ['image/jpg', 'image/jpeg', 'image/png'],
+			'style' => [
+				'width' => null,
+				'height' => null,
+			],
+		],
+	],
 
 ];

@@ -37,7 +37,7 @@ class AdminFaqController extends BaseController {
 		 * Sort filter
 		 */
 
-    	$sort = in_array(Input::get('sort'), ['name']) ? Input::get('sort') : 'id';
+    	$sort = in_array(Input::get('sort'), ['question', 'answer', 'group_title']) ? Input::get('sort') : 'id';
 
 		/*
 		 * Order filter
@@ -48,12 +48,16 @@ class AdminFaqController extends BaseController {
 		/*
 		 * Search filters
 		 */
-		if (Input::has('name')) {
-			$faq = $faq->where('name', 'like', '%'. Input::get('name') .'%');
+		if (Input::has('question')) {
+			$faq = $faq->where('question', 'like', '%'. Input::get('question') .'%');
 		}
 
-		if (Input::has('value')) {
-			$faq = $faq->where('value', 'like', '%'. Input::get('value') .'%');
+		if (Input::has('answer')) {
+			$faq = $faq->where('answer', 'like', '%'. Input::get('answer') .'%');
+		}
+
+		if (Input::has('group_title')) {
+			$faq = $faq->where('group_title', 'like', '%'. Input::get('group_title') .'%');
 		}
 
 		/*
@@ -62,8 +66,9 @@ class AdminFaqController extends BaseController {
 		$faq = $faq->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
-			'name' => Input::get('name'),
-			'value' => Input::get('value'),
+			'question' => Input::get('question'),
+			'answer' => Input::get('answer'),
+			'group_title' => Input::get('group_title'),
 		]);
 
 		/*
@@ -83,8 +88,9 @@ class AdminFaqController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-			'name' => 'required|unique:faqs,name',
-			'value' => 'required',
+			'question' => 'required',
+			'answer' => 'required',
+			'group_title' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -124,8 +130,9 @@ class AdminFaqController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-			'name' => 'required|unique:faqs,name,'. $id,
-        	'value' => 'required',
+			'question' => 'required',
+			'answer' => 'required',
+			'group_title' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -159,7 +166,7 @@ class AdminFaqController extends BaseController {
 			return Redirect::route('admin.faq');
 		}
 
-		Session::flash('error', 'Você tem certeza que deleja excluir esta faquração? Esta operação não poderá ser desfeita.');
+		Session::flash('error', 'Você tem certeza que deleja excluir esta FAQ? Esta operação não poderá ser desfeita.');
 
 		$data['faqData'] = $faq->toArray();
 		$data['faqArray'] = null;
@@ -175,7 +182,7 @@ class AdminFaqController extends BaseController {
 	{
 		$this->faq->find($id)->delete();
 
-		Session::flash('success', 'faquração excluída com sucesso.');
+		Session::flash('success', 'FAQ excluída com sucesso.');
 
 		return Redirect::route('admin.faq');
 	}

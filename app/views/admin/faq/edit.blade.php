@@ -3,14 +3,16 @@
     <div class="well widget row-fluid">
 
         {{ Former::horizontal_open()->rules([
-        	'name' => 'required',
-        	'value' => 'required',
+        	'question' => 'required',
+			'answer' => 'required',
+			'group_title' => 'required',
         ]) }}
 
-        {{ Former::populate($config) }}
+        {{ Former::populate($faq) }}
 
-        {{ Former::text('name', 'Nome')->class('span12') }}
-        {{ Former::text('value', 'Valor')->class('span12') }}
+        {{ Former::text('question', 'Pergunta')->class('span12') }}
+        {{ Former::text('answer', 'Resposta')->class('span12') }}
+        {{ Former::text('group_title', 'Grupo')->class('span12') }}
 
         {{ Former::actions()
           ->primary_submit('Enviar')

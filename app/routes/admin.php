@@ -104,6 +104,9 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('offer/in_pre_booking', function(){ return Redirect::route('admin.offer'); });
 	Route::get('offer/in_pre_booking/{id}/{in}', ['as' => 'admin.offer.in_pre_booking', 'uses' => 'AdminOfferController@getInPreBooking']);
 
+	Route::get('offer/newsletter', ['as' => 'admin.offer.newsletter', 'uses' => 'AdminOfferController@getNewsletter']);
+	Route::post('offer/newsletter', ['as' => 'admin.offer.generate_newsletter', 'uses' => 'AdminOfferController@postNewsletter']);
+
 	/*
 	 * Configs
 	 */
@@ -394,5 +397,6 @@ Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 
 	Route::any('ofertas/voucher/exportar', function(){ return Redirect::route('painel.order.offers'); });
 	Route::get('ofertas/voucher/exportar/{offer_option_id?}/{id?}', ['as' => 'painel.order.voucher_export', 'uses' => 'PainelOrderController@getVoucherExport']);
-
 });
+
+

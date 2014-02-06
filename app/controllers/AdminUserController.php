@@ -180,9 +180,15 @@ class AdminUserController extends BaseController {
 
 		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
-		$rules = ['email' => 'required|email|unique:users,email'];
+		$rules = [
+			'email' => 'required|email|unique:users,email',
+        	'profile.cpf' => 'required',
+        	'profile.city' => 'required',
+        	'profile.state' => 'required',
+        	'profile.country' => 'required',
+		];
 
-	  $validation = Validator::make($inputs, $rules);
+	    $validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
@@ -250,10 +256,14 @@ class AdminUserController extends BaseController {
 
 		$rules = [
 			'email' => 'required|email|unique:users,email,'. $id,
-			'password' => 'required|confirmed'
+        	'profile.cpf' => 'required',
+        	'profile.city' => 'required',
+        	'profile.state' => 'required',
+        	'profile.country' => 'required',
+        	'profile.birth' => 'date_format:d/m/Y',
 		];
 
-	  $validation = Validator::make($inputs, $rules);
+	    $validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{

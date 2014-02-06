@@ -18,12 +18,10 @@ class PreBooking extends Eloquent {
   public static $rules = array(
   	'offer_id' => 'required|integer',
   	'user_id' => 'required|integer',
-  	'email' => 'required',
-  	'name' => 'required',
   );
 
   public function user(){
-  	return $this->belongsTo('User');
+  	return $this->belongsTo('User')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
   }
 
   public function offer(){

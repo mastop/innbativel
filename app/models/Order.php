@@ -34,12 +34,8 @@ class Order extends Eloquent {
   	return $this->hasMany('OrderOfferOption', 'order_id');
   }
 
-  public function offers_options(){
-  	return $this->belongsToMany('OfferOption', 'orders_offers_options', 'order_id', 'offer_option_id')->withPivot('qty');
-  }
-
   public function offer(){
-  	return $this->belongsToMany('OfferOption', 'orders_offers_options', 'order_id', 'offer_option_id')->leftJoin('offers', 'offers_options.offer_id', '=', 'offers.id')->select(['offers.id']);
+  	return $this->belongsToMany('OfferOption', 'orders_offers_options', 'order_id', 'offer_option_id')->leftJoin('offers', 'offers_options.offer_id', '=', 'offers.id')->select(['offers.id','offers.title AS offer_title']);
   }
 
 }

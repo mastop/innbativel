@@ -1,9 +1,5 @@
 <?php
 
-use SebastianBergmann\Money\Money;
-use SebastianBergmann\Money\Currency;
-use SebastianBergmann\Money\IntlFormatter;
-
 class Offer extends Eloquent {
 
 	/**
@@ -30,7 +26,6 @@ class Offer extends Eloquent {
 	     'genre_id' => 'required|integer',
 	     'title' => 'required',
 	     'destiny' => 'required',
-	     'installment' => 'required|integer',
 	     'starts_on' => 'required',
 	     'ends_on' => 'required',
 	     'cover_img' => 'required|mimes:jpeg,jpg,png',
@@ -44,8 +39,8 @@ class Offer extends Eloquent {
 		return $this->hasMany('PreBooking');
 	}
 
-	public function coment(){
-		return $this->hasMany('Comment');
+	public function comment(){
+		return $this->hasMany('Comment')->orderBy('display_order', 'asc');
 	}
 
 	public function offer_additional(){
@@ -81,7 +76,7 @@ class Offer extends Eloquent {
 	}
 
 	public function partner(){
-		return $this->belongsTo('User', 'partner_id');
+		return $this->belongsTo('User', 'partner_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
 	}
 
 	private function convertImageString($value)
@@ -113,9 +108,9 @@ class Offer extends Eloquent {
 
 	public function getInstallmentAttribute($value)
 	{
-		if (!empty($value) && 
-		    !is_null($value) && 
-		    !empty($this->offer_option[0]->price_with_discount) && 
+		if (!empty($value) &&
+		    !is_null($value) &&
+		    !empty($this->offer_option[0]->price_with_discount) &&
 		    !is_null($this->offer_option[0]->price_with_discount)
 		){
 			$price = (int) preg_replace('/[^0-9]/', '', $this->offer_option[0]->price_with_discount);

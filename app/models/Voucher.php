@@ -22,9 +22,11 @@ class Voucher extends Eloquent {
   	'email' => 'required|email',
   );
 
-  public function order_offer_option()
-  {
-	return $this->belongsTo('OrderOfferOption','orders_offers_options', 'order_offer_id');
+  public function order(){
+  	return $this->belongsTo('Order')->leftJoin('users', 'users.id', '=', 'orders.user_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
   }
 
+  public function offer_option(){
+  	return $this->belongsTo('OfferOption', 'offer_option_id');
+  }
 }

@@ -13,7 +13,9 @@
  *
  */
 
-class Braspag {
+error_reporting(0);
+
+class Braspag{
 
 	private $Soap;
 

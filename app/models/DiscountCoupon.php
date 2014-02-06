@@ -17,7 +17,9 @@ class DiscountCoupon extends Eloquent {
 
   public static $rules = array(
   	'display_code' => 'required',
-  	'value' => 'required',
+  	'value' => 'required|decimal',
+  	'starts_on' => 'required',
+  	'ends_on' => 'required',
   );
 
   public function offer(){
@@ -25,7 +27,7 @@ class DiscountCoupon extends Eloquent {
   }
 
   public function user(){
-  	return $this->belongsTo('User');
+  	return $this->belongsTo('User')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
   }
 
 }

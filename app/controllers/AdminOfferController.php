@@ -37,7 +37,7 @@ class AdminOfferController extends BaseController {
 		/*
 		 * Obj
 		 */
-		$offer = $this->offer->with(['ngo', 'partner'])->select(['id', 'title', 'destiny', 'starts_on', 'ends_on']);
+		$offer = $this->offer->with(['partner'])->select(['id', 'title', 'destiny', 'starts_on', 'ends_on', 'in_pre_booking']);
 
 		/*
 		 * Paginate
@@ -60,13 +60,33 @@ class AdminOfferController extends BaseController {
 		/*
 		 * Search filters
 		 */
-		// if (Input::has('name')) {
-		// 	$offer = $offer->where('name', 'like', '%'. Input::get('name') .'%');
-		// }
+		if (Input::has('id')) {
+			$offer = $offer->where('id', Input::get('id'));
+		}
 
-		// if (Input::has('description')) {
-		// 	$offer = $offer->where('description', 'like', '%'. Input::get('description') .'%');
-		// }
+		if (Input::has('destiny')) {
+			$offer = $offer->where('destiny', 'like', '%'. Input::get('destiny') .'%');
+		}
+
+		if (Input::has('title')) {
+			$offer = $offer->where('title', 'like', '%'. Input::get('title') .'%');
+		}
+
+		if (Input::has('genre_id')) {
+			$offer = $offer->where('genre_id', Input::get('genre_id'));
+		}
+
+		if (Input::has('in_pre_booking')) {
+			$offer = $offer->where('in_pre_booking', Input::get('in_pre_booking'));
+		}
+
+		if (Input::has('starts_on')) {
+			$offer = $offer->where('starts_on', '>=', Input::get('starts_on'));
+		}
+
+		if (Input::has('ends_on')) {
+			$offer = $offer->where('ends_on', '<=', Input::get('ends_on'));
+		}
 
 		/*
 		 * Finally Obj
@@ -76,8 +96,13 @@ class AdminOfferController extends BaseController {
 			->paginate($pag)->appends([
 				'sort' => $sort,
 				'order' => $order,
-				// 'name' => Input::get('name'),
-				// 'description' => Input::get('description'),
+				'id' => Input::get('id'),
+				'destiny' => Input::get('destiny'),
+				'title' => Input::get('title'),
+				'genre_id' => Input::get('genre_id'),
+				'in_pre_booking' => Input::get('in_pre_booking'),
+				'starts_on' => Input::get('starts_on'),
+				'ends_on' => Input::get('ends_on'),
 		]);
 
 		/*
@@ -246,7 +271,7 @@ class AdminOfferController extends BaseController {
 
 		if (is_null($offer) || !isset($field))
 		{
-			return Redirect::route('admin.offer.edit');
+			return Redirect::route('admin.offer.edit', $id);
 		}
 
 		$toDelete = $offer->{$field};
@@ -266,6 +291,151 @@ class AdminOfferController extends BaseController {
 		Session::flash('success', 'O campo '. $field .' pode ser editado agora.');
 
 		return Redirect::route('admin.offer.edit', $id);
+	}
+
+	/**
+	 * Update Offer.in_pre_booking.
+	 *
+	 * @return Response
+	 */
+
+	public function getInPreBooking($id, $in)
+	{
+		/*
+		 * Permuration
+		 */
+		$offer = $this->offer->find($id);
+
+		if ($offer)
+		{
+			$offer->in_pre_booking = $in;
+			$offer->save();
+		}
+
+		return Redirect::route('admin.offer');
+	}
+
+	public function getSort(){
+		/*
+		 * Obj
+		 */
+		$offerObj = $this->offer;
+
+		/*
+		 * Finally Obj
+		 */
+		$offers = $offerObj->orderBy('display_order', 'asc')
+						   ->where('ends_on', '>=', date("Y-m-d H:i:s"))
+						   ->get();
+
+		/*
+		 * Layout / View
+		 */
+		$this->layout->content = View::make('admin.offer.sort', compact('offers'));
+	}
+
+	public function postSort(){
+		$offers = Input::get('offers');
+
+		foreach ($offers as $display_order => $id) {
+			$o = Offer::find($id);
+			$o->display_order = $display_order;
+			$o->save();
+		}
+
+		return Redirect::route('admin.offer.sort');
+	}
+
+	public function getSortPreBooking(){
+		/*
+		 * Obj
+		 */
+		$offerObj = $this->offer;
+
+		/*
+		 * Finally Obj
+		 */
+		$offers = $offerObj->orderBy('pre_booking_order', 'asc')
+						   ->where('in_pre_booking', 1)
+						   ->get();
+
+		/*
+		 * Layout / View
+		 */
+		$this->layout->content = View::make('admin.offer.sort_pre_booking', compact('offers'));
+	}
+
+	public function postSortPreBooking(){
+		$offers = Input::get('offers');
+
+		foreach ($offers as $pre_booking_order => $id) {
+			$o = Offer::find($id);
+			$o->pre_booking_order = $pre_booking_order;
+			$o->save();
+		}
+
+		return Redirect::route('admin.offer.sort_pre_booking');
+	}
+
+	public function getSortComment($id){
+		/*
+		 * Obj
+		 */
+		$offer = $this->offer->with(['comment'])->where('id', $id)->first();
+
+		/*
+		 * Layout / View
+		 */
+		$this->layout->content = View::make('admin.offer.sort_comment', compact('offer'));
+	}
+
+	public function postSortComment($offer_id){
+		$comments = Input::get('comments');
+
+		foreach ($comments as $display_order => $id) {
+			$c = Comment::find($id);
+			$c->display_order = $display_order;
+			$c->save();
+		}
+
+		return Redirect::route('admin.offer.sort_comment', $offer_id);
+	}
+
+	public function getNewsletter(){
+		$offers = $this->offer/*->where('starts_on', '<=', date('Y-m-d H:i:s'))
+		             		   ->where('ends_on', '>=', date('Y-m-d H:i:s'))*/->get();
+		/*
+		* Layout / View
+		*/
+		$this->layout->content = View::make('admin.offer.newsletter', compact('offers'));
+	}
+
+	public function postNewsletter(){
+		$offers = Input::get('offers');
+		$selected_offers = Input::get('selected_offers');
+
+		$ids = array();
+
+		foreach ($offers as $display_order => $id) {
+			if(isset($selected_offers[$id])){
+				$ids[] = $id;
+			}
+		}
+
+		$offers = DB::select(DB::raw('SELECT o.*, oo.price_original,oo.price_with_discount FROM offers o LEFT JOIN offers_options oo ON o.id = oo.offer_id WHERE oo.id = (SELECT id FROM offers_options WHERE offer_id = o.id ORDER BY price_with_discount LIMIT 1) AND o.id IN ('.implode(',', $ids).') GROUP BY o.id ORDER BY FIELD(o.id, ' . implode(',', $ids) . ') ASC'));
+
+		// $html = Response::view('email.newsletter_'.Input::get('system'), compact('offers'));
+
+		// print('<pre>');
+		// print_r($offers);
+		// print('</pre>'); die();
+
+		/*
+		* Layout / View
+		*/
+
+		return View::make('emails.newsletter_'.Input::get('system'), compact('offers'));
+		// $this->layout->content = View::make('admin.newsletter.html', compact('html'));
 	}
 
 }

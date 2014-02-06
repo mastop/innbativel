@@ -22,7 +22,7 @@ class UserIndication extends Eloquent {
 
   public function user()
   {
-	return $this->belongsTo('User');
+	return $this->belongsTo('User')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
   }
 
 }

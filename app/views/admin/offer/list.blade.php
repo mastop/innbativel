@@ -6,6 +6,9 @@
 			<h6>Lista de Ofertas</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.offer.create') }}" title="Criar Oferta" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
+	            <a href="{{ route('admin.offer.sort') }}" title="Ordenar Ofertas" class="dropdown-toggle navbar-icon"><i class="icon-random"></i></a>
+				<a href="{{ route('admin.offer.sort_pre_booking') }}" title="Ordenar Ofertas em Pré-reservas" class="dropdown-toggle navbar-icon"><i class="icon-random"></i></a>
+				<a href="{{ route('admin.offer.newsletter') }}" title="Gerar Newsletter" class="dropdown-toggle navbar-icon"><i class="icon-envelope"></i></a>
 	        </div>
 		</div>
 	</div>
@@ -14,14 +17,25 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('admin.offer')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::text('name')->label('')->class('input-medium')->placeholder('Nome') }}
-			{{ Former::text('description')->label('')->class('input-medium')->placeholder('Descrição') }}
+			{{ Former::text('id')->class('input-medium')->placeholder('ID')->label('ID') }}
+			{{ Former::text('destiny')->class('input-medium')->placeholder('Destino')->label('Destino') }}
+			{{ Former::text('title')->class('input-medium')->placeholder('Título')->label('Título') }}
+			{{ Former::select('genre_id', 'Gênero')
+	        	->addOption('', null)
+				->fromQuery(DB::table('genres')->get(['name', 'id']), 'name', 'id')
+	        }}
+			{{ Former::select('in_pre_booking', 'Em pré-reservas?')
+	        	->addOption('', null)
+	        	->addOption('Sim', 1)
+	        	->addOption('Não', 0)
+	        }}
+			{{ Former::date('starts_on')->class('input-medium')->placeholder('Data início')->label('Data início') }}
+			{{ Former::date('ends_on')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
 			{{ Former::submit() }}
 			{{ Former::link('Limpar Filtros', route('admin.offer')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
-	        	->label('')
 	        	->addOption('5', '5')
 	        	->addOption('10', '10')
 	        	->addOption('25', '25')
@@ -35,15 +49,33 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('#', 'Título', 'Destino', 'Início', 'Término', 'Ações') }}
+	{{ Table::headers('ID', 'Título', 'Destino', 'Início', 'Fim', 'Em pré-reservas?', 'Ações') }}
 	{{ Table::body($offer)
+		->ignore(['in_pre_booking'])
+		->in_pre_booking(function($body) {
+			return ($body->in_pre_booking == 0)?'Não':'Sim';
+		})
 		->acoes(function($body) {
-			return DropdownButton::normal('Ações',
-				Navigation::links([
-					['Editar', route('admin.offer.edit', $body['id'])],
-					['Excluir', route('admin.offer.delete', $body['id'])],
+			if($body->in_pre_booking == 0){
+				return DropdownButton::normal('Ações',
+					Navigation::links([
+						['Editar', route('admin.offer.edit', $body['id'])],
+						['Excluir', route('admin.offer.delete', $body['id'])],
+						['Aparecer em pré-reservas', route('admin.offer.in_pre_booking', ['id'=>$body['id'], 'in'=>1])],
+						['Ordenar comentários', route('admin.offer.sort_comment', $body['id'])],
 					])
 				)->pull_right()->split();
+			}
+			else{
+				return DropdownButton::normal('Ações',
+					Navigation::links([
+						['Editar', route('admin.offer.edit', $body['id'])],
+						['Excluir', route('admin.offer.delete', $body['id'])],
+						['Não aparecer em pré-reservas', route('admin.offer.in_pre_booking', ['id'=>$body['id'], 'in'=>0])],
+						['Ordenar comentários', route('admin.offer.sort_comment', $body['id'])],
+					])
+				)->pull_right()->split();
+			}
 		})
 	}}
 	{{ Table::close() }}

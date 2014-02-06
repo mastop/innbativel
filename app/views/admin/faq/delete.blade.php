@@ -4,17 +4,17 @@
 
         {{ Former::horizontal_open() }}
 
-        {{ Former::populate($configArray) }}
+        {{ Former::populate($faqArray) }}
 
         <div class="widget">
         	<div class="body">
-        		{{ Typography::horizontal_dl($configArray) }}
+        		{{ Typography::horizontal_dl($faqArray) }}
         	</div>
         </div>
 
         {{ Former::actions()
-          ->danger_submit('Excluir Configuração')
-          ->primary_link('Cancelar', route('admin.user')) }}
+          ->danger_submit('Excluir FAQ')
+          ->primary_link('Cancelar', route('admin.faq')) }}
 
         {{ Former::close() }}
 

@@ -10,7 +10,19 @@ class GenresTableSeeder extends DatabaseSeeder
         'icon_url' => '/assets/uploads/images/genres/img/ico-pacote.png',
       ],
       [
+        'name' => 'Pacote terrestre',
+        'icon_url' => '/assets/uploads/images/genres/img/ico-pacote.png',
+      ],
+      [
         'name' => 'Somente hospedagem',
+        'icon_url' => '/assets/uploads/images/genres/img/ico-pacote.png',
+      ],
+      [
+        'name' => 'Passeio',
+        'icon_url' => '/assets/uploads/images/genres/img/ico-pacote.png',
+      ],
+      [
+        'name' => 'Gastronomia',
         'icon_url' => '/assets/uploads/images/genres/img/ico-pacote.png',
       ],
     ];

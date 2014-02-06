@@ -1,8 +1,11 @@
 <?php
 
-use SebastianBergmann\Money\Currency;
-use SebastianBerBRLgmann\Money\Money;
-use SebastianBergmann\BRLMoney\IntlFormatter;
+// use SebastianBergmann\Money\Currency;
+// use SebastianBerBRLgmann\Money\Money;
+// use SebastianBergmann\BRLMoney\IntlFormatter;
+
+// use Goodby\CSV\Export\Standard\Exporter;
+// use Goodby\CSV\Export\Standard\ExporterConfig;‏
 
 class AdminOrderController extends BaseController {
 
@@ -42,186 +45,1989 @@ class AdminOrderController extends BaseController {
 	 *
 	 * @return Response
 	 */
-	public function getIndex()
+	public function anyIndex()
 	{
-		$data['orderArray'] = Order::with(['user','offer'])
-			->groupBy('orders.id')
-			->orderBy('id', 'asc')
-			->paginate(10);
+		/*
+		 * Obj
+		 */
+		$orderData = $this->order;
+
+		/*
+		 * Paginate
+		 */
+
+    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+
+		/*
+		 * Sort filter
+		 */
+		$sort = in_array(Input::get('sort'), ['user_id']) ? Input::get('sort') : 'id';
+
+		/*
+		 * Order filter
+		 */
+    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
 
 
-		foreach ($data['orderArray'] as &$value) {
-			$braspag_order_id = $value->braspag_order_id;
-			$id = $value->id;
-			$value->braspag_order_id = link_to_route('admin.order.view', $braspag_order_id, ['id'=>$id]);
-
-			// $m = new Money($value->total, new Currency('BRL'));
-			// $f = new IntlFormatter('pt_BR');
-			// $value->total = $f->format($m);
+		/*
+		 * Search filters
+		 */
+		if (Input::has('status') AND Input::get('status') != '') {
+			$orderData = $orderData->where('status', '=', Input::get('status'));
 		}
 
-		$this->layout->content = View::make('admin.order.list', $data);
+		if (Input::has('terms') AND Input::get('terms') != '') {
+			$orderData = $orderData->where('payment_terms', 'like', '%'. Input::get('terms') .'%');
+		}
+
+		if (Input::has('braspag_order_id')) {
+			$orderData = $orderData->where('braspag_order_id', 'like', '%'. Input::get('braspag_order_id') .'%');
+		}
+
+		if (Input::has('date_start')) {
+			$orderData = $orderData->where('created_at', '>=', Input::get('date_start'));
+		}
+
+		if (Input::has('date_end')) {
+			$orderData = $orderData->where('created_at', '<=', Input::get('date_end'));
+		}
+
+		$orderArray = $orderData->with(['user', 'offer'])
+								->whereExists(function($query){
+					                if (Input::has('offer_id')) {
+										$query->select(DB::raw(1))
+						                      ->from('orders_offers_options')
+											  ->join('offers_options', 'offers_options.id', '=', 'orders_offers_options.offer_option_id')
+						                      ->whereRaw('orders_offers_options.order_id = orders.id')
+						                      ->whereRaw('offers_options.offer_id = '.Input::get('offer_id'));
+									}
+
+					            })
+								->whereExists(function($query){
+					                if (Input::has('name')) {
+										$query->select(DB::raw(1))
+						                      ->from('profiles')
+											  ->whereRaw('profiles.user_id = orders.user_id')
+											  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.Input::get('name').'%"');
+									}
+
+					            })
+					            ->whereExists(function($query){
+					                if (Input::has('email')) {
+										$query->select(DB::raw(1))
+						                      ->from('users')
+											  ->whereRaw('users.id = orders.user_id')
+											  ->whereRaw('users.email LIKE "%'.Input::get('email').'%"');
+									}
+
+					            })
+								->orderBy($sort, $order)
+								->paginate($pag)
+								->appends([
+									'sort' => $sort,
+									'order' => $order,
+									'status' => Input::get('status'),
+									'terms' => Input::get('terms'),
+									'date_start' => Input::get('date_start'),
+									'date_end' => Input::get('date_end'),
+									'offer_id' => Input::get('offer_id'),
+									'name' => Input::get('name'),
+									'email' => Input::get('email'),
+								]);
+
+		foreach ($orderArray as $key => &$value) {
+			if(isset($value->offer)){
+				$braspag_order_id = $value->braspag_order_id;
+				$id = $value->id;
+
+				$value->braspag_order_id = link_to_route('admin.order.view', $braspag_order_id, ['id'=>$id]);
+				$value->braspag_order_id_string = $braspag_order_id;
+
+				// $m = new Money($value->total, new Currency('BRL'));
+				// $f = new IntlFormatter('pt_BR');
+				// $value->total = $f->format($m);
+
+				// $orderArray[] = $value;
+			}
+		}
+
+		$this->layout->content = View::make('admin.order.list', compact('sort', 'order', 'pag', 'orderArray'));
+	}
+
+	public function anyListByOffer(){
+		$offersOptions = new OfferOption;
+
+		/*
+		 * Paginate
+		 */
+
+    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '10';
+
+		/*
+		 * Sort filter
+		 */
+		$sort = in_array(Input::get('sort'), ['id']) ? Input::get('sort') : 'offer_id';
+
+		/*
+		 * Order filter
+		 */
+    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+
+    	/*
+		 * Search filter
+		 */
+    	if(Input::has('offer_id')){
+    		$offersOptions = $offersOptions->where('offer_id', Input::get('offer_id'));
+    	}
+
+		$offersOptions = $offersOptions->with(['qty_sold', 'offer', 'used_vouchers'])
+									   ->whereExists(function($query){
+							                if (Input::has('starts_on') || Input::has('ends_on')) {
+												$query->select(DB::raw(1))
+								                      ->from('offers')
+													  ->whereRaw('offers.id = offers_options.offer_id');
+							                	if (Input::has('starts_on')) {
+							                		$query->whereRaw('offers.starts_on >= "'.Input::get('starts_on').'"');
+							                	}
+							                	if (Input::has('ends_on')) {
+							                		$query->whereRaw('offers.ends_on <= "'.Input::get('ends_on').'"');
+							                	}
+											}
+
+							           })
+									   ->orderBy($sort, $order)
+									   ->paginate($pag)
+									   ->appends([
+											'sort' => $sort,
+											'order' => $order,
+											'offer_id' => Input::get('offer_id'),
+											'starts_on' => Input::get('starts_on'),
+											'ends_on' => Input::get('ends_on'),
+									   ]);
+
+		$this->layout->content = View::make('admin.order.offers', compact('sort', 'order', 'pag', 'offersOptions'));
+	}
+
+	public function getListOffersExport($offer_id, $starts_on, $ends_on){
+		$offersOptions = new OfferOption;
+
+		$offer_id = ($offer_id == 'null')?null:$offer_id;
+		$starts_on = ($starts_on == 'null')?null:$starts_on;
+		$ends_on = ($ends_on == 'null')?null:$ends_on;
+
+		/*
+		 * Search filter
+		 */
+    	if(Input::has('offer_id')){
+    		$offersOptions = $offersOptions->where('offer_id', Input::get('offer_id'));
+    	}
+
+		$offersOptions = OfferOption::with(['qty_sold', 'offer'])
+											->whereExists(function($query) use($starts_on, $ends_on){
+								                if (isset($starts_on) || isset($ends_on)) {
+													$query->select(DB::raw(1))
+									                      ->from('offers')
+														  ->whereRaw('offers.id = offers_options.offer_id');
+								                	if (isset($starts_on)) {
+								                		$query->whereRaw('offers.starts_on >= "'.$starts_on.'"');
+								                	}
+								                	if (isset($ends_on)) {
+								                		$query->whereRaw('offers.ends_on <= "'.$ends_on.'"');
+								                	}
+												}
+
+								            })
+											->orderBy('offer_id', 'desc')
+											->get();
+
+		$spreadsheet = array();
+		$spreadsheet[] = array('ID da oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Máximo', 'Confirmados', 'Pendentes', 'Cancelados', 'Total');
+
+		foreach ($offersOptions as $offerOption) {
+			$ss = null;
+			$ss[] = $offerOption->offer_id;
+			$ss[] = $offerOption['offer']->title;
+			$ss[] = $offerOption->title;
+			$ss[] = $offerOption['offer']->starts_on;
+			$ss[] = $offerOption['offer']->ends_on;
+			$ss[] = $offerOption->price_with_discount;
+			$ss[] = $offerOption->max_qty;
+
+			$approved = 0;
+			$pending = 0;
+			$cancelled = 0;
+
+			foreach ($offerOption['qty_sold'] as $qty_sold) {
+				if(in_array($qty_sold->status, array('aprovado', 'pago'))){
+					$approved += $qty_sold['pivot']->qty;
+				}
+				else if(in_array($qty_sold->status, array('iniciado', 'revisao', 'pendente'))){
+					$pending += $qty_sold['pivot']->qty;
+				}
+				else{
+					$cancelled += $qty_sold['pivot']->qty;
+				}
+			}
+
+			$ss[] = $approved;
+			$ss[] = $pending;
+			$ss[] = $cancelled;
+			$ss[] = ($approved + $pending + $cancelled);
+
+			$spreadsheet[] = $ss;
+		}
+
+		// print('<pre>');
+		// print_r($spreadsheet);
+		// print('</pre>');
+
+		$config = new ExporterConfig();
+		$exporter = new Exporter($config);
+
+		$exporter->export('php://output', $spreadsheet);
+	}
+
+	public function getListPaymExport($status, $terms, $name, $email, $braspag_order_id, $offer_id, $date_start, $date_end){
+		$status = ($status == 'null')?null:$status;
+		$terms = ($terms == 'null')?null:$terms;
+		$name = ($name == 'null')?null:$name;
+		$email = ($email == 'null')?null:$email;
+		$braspag_order_id = ($braspag_order_id == 'null')?null:$braspag_order_id;
+		$offer_id = ($offer_id == 'null')?null:$offer_id;
+		$date_start = ($date_start == 'null')?null:$date_start;
+		$date_end = ($date_end == 'null')?null:$date_end;
+
+		/*
+		 * Obj
+		 */
+		$orderData = $this->order;
+
+
+		/*
+		 * Search filters
+		 */
+		if ($status) {
+			$orderData = $orderData->where('status', '=', $status);
+		}
+
+		if ($terms) {
+			$orderData = $orderData->where('payment_terms', 'like', '%'. $terms .'%');
+		}
+
+		if ($braspag_order_id) {
+			$orderData = $orderData->where('braspag_order_id', 'like', '%'. $braspag_order_id .'%');
+		}
+
+		if ($date_start) {
+			$orderData = $orderData->where('created_at', '>=', $date_start);
+		}
+
+		if ($date_end) {
+			$orderData = $orderData->where('created_at', '<=', $date_end);
+		}
+
+		$orderArray = $orderData->with(['user', 'offer'])
+								->whereExists(function($query) use($offer_id){
+					                if ($offer_id) {
+										$query->select(DB::raw(1))
+						                      ->from('orders_offers_options')
+											  ->join('offers_options', 'offers_options.id', '=', 'orders_offers_options.offer_option_id')
+						                      ->whereRaw('orders_offers_options.order_id = orders.id')
+						                      ->whereRaw('offers_options.offer_id = '.$offer_id);
+									}
+
+					            })
+								->whereExists(function($query) use($name){
+					                if ($name) {
+										$query->select(DB::raw(1))
+						                      ->from('profiles')
+											  ->whereRaw('profiles.user_id = orders.user_id')
+											  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.$name.'%"');
+									}
+
+					            })
+					            ->whereExists(function($query) use($email){
+					                if ($email) {
+										$query->select(DB::raw(1))
+						                      ->from('users')
+											  ->whereRaw('users.id = orders.user_id')
+											  ->whereRaw('users.email LIKE "%'.$email.'%"');
+									}
+
+					            })
+								->orderBy('id', 'desc')
+								->get();
+
+		$spreadsheet = array();
+		$spreadsheet[] = array('ID', 'Status', 'Valor', 'Forma de pagamento', 'Data e hora', 'ID das Ofertas', 'Cliente');
+
+		foreach ($orderArray as $order) {
+			$ss = null;
+			$ss[] = $order->id;
+			$ss[] = $order->status;
+			$ss[] = $order->total;
+			$ss[] = $order->payment_terms;
+			$ss[] = $order->created_at;
+
+			$ids = '| ';
+			foreach ($order['offer'] as $offer) {
+				$ids .= $offer->offer_id.' | ';
+			}
+
+			$ss[] = $ids;
+			$ss[] = $order['user']->first_name.' '.$order['user']->last_name.' | '.$order['user']->email;
+
+			$spreadsheet[] = $ss;
+		}
+
+		print('<pre>');
+		print_r($spreadsheet);
+		print('</pre>');
+
+		// $config = new ExporterConfig();
+		// $exporter = new Exporter($config);
+
+		// $exporter->export('php://output', $spreadsheet);
+	}
+
+	public function getOffersExport($offer_option_id, $status){
+		$offer_option_id = $offer_option_id;
+		$ordersObj = $this->order;
+
+		if($status == 'approved'){
+			$ordersObj = $ordersObj->whereIn('status', array('aprovado', 'pago'));
+		}
+		else if($status == 'pending'){
+			$ordersObj = $ordersObj->whereIn('status', array('iniciado', 'revisao', 'pendente'));
+		}
+		else if($status == 'cancelled'){
+			$ordersObj = $ordersObj->whereIn('status', array('rejeitado', 'nao_finalizado', 'abortado', 'estornado', 'cancelado', 'nao_pago'));
+		}
+
+		$ordersData = $ordersObj->with([
+										'user',
+										'discount_coupon',
+										'offer' => function($query) use($offer_option_id){
+												   $query->where('offers_options.id', $offer_option_id);
+											  	},
+										'order_offer_option' => function($query) use($offer_option_id){
+													$query->where('orders_offers_options.offer_option_id', $offer_option_id);
+												},
+									   ])
+								->get();
+
+		$spreadsheet = array();
+		$spreadsheet[] = array('Número do pedido', 'status', 'ID da oferta', 'Oferta', 'Opção', 'Preço', 'Quantidade', 'Total', 'Usuário INN', 'E-mail', 'Forma de pagamento', 'Titular do cartão', 'Telefone', 'Desconto via cupom', 'Desconto via créditos', 'Data de início', 'Data da captura da transação', 'Última atualização');
+
+		foreach ($ordersData as $order) {
+			if(isset($order['order_offer_option']{0})){
+				$ss = null;
+				$ss[] = $order->braspag_order_id;
+				$ss[] = $order->status;
+				$ss[] = $order['offer']{0}->offer_id;
+				$ss[] = $order['offer']{0}->offer_title;
+				$ss[] = $order['offer']{0}->title;
+				$ss[] = $order['offer']{0}->price_with_discount;
+				$ss[] = $order['order_offer_option']{0}->qty;
+				$ss[] = $order->total;
+				$ss[] = $order['user']->first_name.' '.$order['user']->last_name;
+				$ss[] = $order['user']->email;
+				$ss[] = $order->payment_terms;
+				$ss[] = $order->holder_card;
+				$ss[] = $order->telephone;
+				$ss[] = isset($order['discount_coupon'])?$order['discount_coupon']->value:'--';
+				$ss[] = $order->credit_discount;
+				$ss[] = $order->created_at;
+				$ss[] = $order->updated_at;
+				$ss[] = $order->capture_date;
+
+				$spreadsheet[] = $ss;
+			}
+		}
+
+		print('<pre>');
+		print_r($spreadsheet);
+		print('</pre>');
+
+		// $config = new ExporterConfig();
+		// $exporter = new Exporter($config);
+
+		// $exporter->export('php://output', $spreadsheet);
+	}
+
+	public function anyVouchers($offer_option_id = null){
+		$vouchers = new Voucher;
+
+		$offers = Offer::with(['offer_option'])->get();
+
+		// $offersOptions irá preencher o <select> da opção da qual estamos visualizando os vouchers/cupons
+		foreach ($offers as $offer) {
+			foreach ($offer['offer_option'] as $offer_option) {
+				$t = $offer->id.' | '.$offer->destiny.' | '.$offer_option->title;
+				$offersOptions[$offer_option->id] = $t;
+			}
+		}
+
+		/*
+		 * Paginate
+		 */
+
+    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+
+		/*
+		 * Sort filter
+		 */
+		$sort = in_array(Input::get('sort'), ['display_code']) ? Input::get('sort') : 'id';
+
+		/*
+		 * Order filter
+		 */
+    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+
+
+		/*
+		 * Search filters
+		 */
+		if (Input::has('offer_option_id')) {
+			$offer_option_id = Input::get('offer_option_id');
+			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
+		}
+		else if(isset($offer_option_id)){
+			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
+		}
+
+		if(Input::has('id')){
+			$vouchers = $vouchers->where('id', Input::get('id'));
+		}
+
+		$vouchers = $vouchers->with(['order'])
+							 ->whereExists(function($query){
+				 	                $query->select(DB::raw(1))
+				 		                  ->from('orders')
+				 		                  ->whereRaw('orders.status IN ("aprovado", "pago")')
+				 						  ->whereRaw('orders.id = vouchers.order_id');
+		               	   	 })
+							 ->orderBy($sort, $order)
+							 ->paginate($pag)
+							 ->appends([
+								 'sort' => $sort,
+								 'order' => $order,
+								 'offer_option_id' => $offer_option_id,
+								 'id' => Input::get('id'),
+							 ]);
+							 // ->get()->toArray();
+
+							 // print('<pre>');
+							 // print_r($vouchers);
+							 // print('</pre>'); die();
+
+		$this->layout->content = View::make('admin.order.voucher', compact('sort', 'order', 'pag', 'offer_option_id', 'vouchers', 'offersOptions'));
+	}
+
+	public function getVoucherExport($offer_option_id = null, $id = null){
+		$id = ($id == 'null')?null:$id;
+		$offer_option_id = ($offer_option_id == 'null')?null:$offer_option_id;
+
+		$vouchers = new Voucher;
+
+		if(isset($offer_option_id)){
+			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
+		}
+
+		if(isset($id)){
+			$vouchers = $vouchers->where('id', $id);
+		}
+
+		$vouchers = $vouchers->with(['order', 'offer_option'])
+	               	   	     ->whereExists(function($query){
+				 	                $query->select(DB::raw(1))
+				 		                  ->from('orders')
+				 		                  ->whereRaw('orders.status IN ("aprovado", "pago")')
+				 						  ->whereRaw('orders.id = vouchers.order_id');
+		               	   	 })
+		 					 ->orderBy('id', 'asc')
+		 					 ->get();
+
+		$spreadsheet = array();
+		$spreadsheet[] = array('ID da oferta', 'Cupom', 'Agendado?', 'Nome', 'E-mail');
+
+		foreach ($vouchers as $voucher) {
+			$ss = null;
+			$ss[] = $voucher['offer_option']->offer_id;
+			$ss[] = $voucher->id.'-'.$voucher->display_code;
+			$ss[] = ($voucher->used == 1)?'Sim':'Não';
+			$ss[] = $voucher['order']->first_name.' '.$voucher['order']->last_name;
+			$ss[] = $voucher['order']->email;
+
+			$spreadsheet[] = $ss;
+		}
+
+		print('<pre>');
+		print_r($spreadsheet);
+		print('</pre>');
+
+		// $config = new ExporterConfig();
+		// $exporter = new Exporter($config);
+
+		// $exporter->export('php://output', $spreadsheet);
 	}
 
 	public function getView($id)
 	{
-		$data['orderData'] = $this
-			->order
-			->findOrFail($id)
-			->with([
-				'user',
-				'offer',
-				'discount_coupon',
-				'order_offer_option',
-			])
-			// ->get([
-			// 	'',
-			// ])
-			->first()
-			->toArray();
+		$order = $this->order
+					->findOrFail($id)
+					->with([
+						'user',
+						'offer',
+						'discount_coupon',
+						'order_offer_option',
+					])
+					->first()
+					->toArray();
 
-		print('<pre>');
-		print_r($data['orderData']);
-		print('</pre>');
+		$data['orderData'] = [
+			'ID Compra' => $order['braspag_order_id'],
+			'Braspag ID' => $order['braspag_id'],
+			'Antifraud ID' => $order['antifraud_id'],
+		];
 
-		// $this->layout->content = View::make('admin.order.view', $data);
+		$ordered_offers = array();
+		$vouchers = '';
+
+
+		$i = 0;
+		foreach ($order['order_offer_option'] as $ord) {
+			$offer = $order['offer'][$i];
+			$ordered_offers = array_merge($ordered_offers,
+			[
+				'Item '.($i+1) => $ord['qty'].' x '.$offer['price_with_discount'].' #'.$offer['offer_id'].' '.$offer['offer_title'].' | '.$offer['title']
+			]);
+
+			$voucs = Voucher::where('order_offer_id', '=', $ord['id'])->get()->toArray();
+			foreach ($voucs as $vouc) {
+				$vouchers .= $vouc['id'].'-'.$vouc['display_code'].' ('.($vouc['used']?'Usado':'Não usado').') | ';
+			}
+
+			$ordered_offers = array_merge($ordered_offers,
+			[
+				'Vouchers' => $vouchers
+			]);
+
+			$i++;
+		}
+
+		$data['orderData'] = array_merge($data['orderData'], $ordered_offers);
+		$data['orderData'] = array_merge($data['orderData'],
+		[
+			'Total' => $order['total'],
+			'Cupom de desconto' => isset($order['discount_coupon'])?($order['discount_coupon']['value'].' | '. $order['discount_coupon']['display_code']) : '--',
+			'Crédito do usuário' => $order['credit_discount'],
+			'Meio de pagamento' => $order['payment_terms'],
+			'Títular do cartão' => $order['holder_card'],
+			'Número do cartão' => (isset($order['first_digits_card'])?$order['first_digits_card']:'****').' **** **** ****',
+			'CPF/CNPJ' => $order['cpf'],
+			'Telefone' => $order['telephone'],
+			'Conta INN' => $order['user']['first_name'].' '.$order['user']['last_name'].' | '. $order['user']['email'],
+			// 'Conta INN' => '<a href="'.route('admin.user.view', ['id' => $order['user']['id']]).'">'.$order['user']['first_name'].' '.$order['user']['last_name'].' | '. $order['user']['email'].'</a>',
+			'Início da transação' => $order['created_at'],
+			'Última atualização' => $order['updated_at'],
+			'Data/hora da captura' => $order['capture_date'],
+			'Histórico' => $order['history'],
+		]);
+
+		$data['orderData'] = array_map(function($v){
+			return (is_null($v)||empty($v)) ? "--" : $v;
+		}, $data['orderData']);
+
+		$this->layout->content = View::make('admin.order.view', $data);
 	}
 
-	public function getCreate()
-	{
-		$this->layout->content = View::make('admin.user.create');
+	private function sendTransactionalEmail($order, $new_status){
+		$ids = array();
+		$qties = array();
+		$$products_email = '';
+
+		$order_offers_options = OrderOfferOption::where('order_id', '=', $order->id);
+
+		foreach ($order_offers_options as $ooo) {
+			$ids[] = $ooo->offer_option_id;
+			$qties[] = $ooo->qty;
+		}
+
+		$offers_options = OfferOption::whereIn('id', $ids)->with(['offer', 'qty_sold'])->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle']);
+
+		// save the items the user ordered and calculate total
+		foreach ($offers_options as $offer_option) {
+			$qty_ordered = array_shift($qties); // pega o primeiro elemento de $qties e joga no final do próprio array $qties, além de obter o valor manipulado em si, claro
+			$products_email .= '<a href="https://www.innbativel.com.br/oferta/' . $offer_option->offer->slug . '">' . $qty_ordered . ' x ' . $offer_option->offer->destiny . ' | ' . $offer_option->title . '</a><br/>';
+		}
+
+		$products_email = substr($products_email, 0, -5);
+
+		$user = User::find($order->user_id)->with('profile');
+
+        $data = array('name' => $user->profile->first_name, 'products' => $products_email);
+
+        if($new_status == 'aprovado'){
+        	Mail::send('emails.order.order_approved', $data, function($message){
+				$message->to($user->email, 'INNBatível')->subject('Compra aprovada');
+			});
+        }
+        else{ // $new_status = 'rejeitado'
+        	Mail::send('emails.order.order_rejected', $data, function($message){
+				$message->to($user->email, 'INNBatível')->subject('Pagamento não aprovado');
+			});
+        }
+
 	}
 
-	public function postCreate()
-	{
+	private function updateOrder($order, $new_status, $comment){
+		$order->status = $new_status;
+		$order->history .= "<br/>" . date('d/m/Y H:i:s') . " - Status alterado para " . $new_status . " (" . $comment . " por " . Auth::user()->email . ")";
+		$order->save();
+
+		// inserir creditos por indicação
+		$credit_ind_user = UserCredit::where('new_user_id', '=', $order->user_id);
+
+		if($credit_ind_user){
+			$indicator_user = User::find($credit_ind_user->user_id);
+			$indicator_user->credit += $credit_ind_user->value;
+			$indicator_user->save();
+
+			$credit_ind_user->delete();
+		}
+	}
+
+	public function getVoid($id, $braspag_order_id, $comment){
+		$order = Order::find($id);
+		if($order->braspag_order_id != $braspag_order_id){
+			$error = 'Erro #1';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+		}
+
+		//////////////////////////////////////
+		// require_once('braspag/nusoap.php');
+	 	// require_once('braspag/vars.php');
+		//////////////////////////////////////
+
+	    $url_transacao = 'https://pagador.com.br/webservice/pagadorTransaction.asmx?WSDL';
+
+	    $client = new nusoap_client($url_transacao, 'wsdl', '', '', '', '');
+
+	    $err = $client->getError();
+
+	    if ($err) {
+			$error = 'Erro #2';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	    }
+
+	    $param = array(
+	      'request' => array(
+	        'MerchantId'   => $MerchantId,
+	        'RequestId'   => getGUID(),
+	        'Version' => '1.0',
+	        'TransactionDataCollection' => array(
+	          'TransactionDataRequest' => array(
+	            'BraspagTransactionId' => '{'.$order->braspag_id.'}',
+	            'Amount' => $order->total,
+	          ),
+	        ),
+	      ),
+	    );
+
+	    // print("<pre>");
+	    // print_r($param);
+	    // print("</pre>");
+
+	    $result = $client->call('RefundCreditCardTransaction', array('parameters' => $param), '', '', false, true);
+
+	    // print("<pre>");
+	    // print_r($result);
+	    // print("</pre>");
+
+	    if ($client->fault || !$result) {
+			$error = 'Erro #3';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	    } else {
+	      $err = $client->getError();
+	      if ($err) {
+	        $error = 'Erro #4';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	      } else {
+	        // print("<pre>");
+	        // print_r($result);
+	        // print("</pre>");
+	        if($result['RefundCreditCardTransactionResult']['Success'] == true){
+	        	$new_status = 'estronado';
+	        	$this->updateOrder($order, $new_status, $comment);
+	        }
+	        else{
+	        	$error = 'Erro #5';
+				return Redirect::route('admin.order')
+					->withErrors($error);
+	        }
+	      }
+	    }
+
+	    return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' estornado com sucesso.');
+	}
+
+	public function getCancel($id, $braspag_order_id, $comment){
+		$order = Order::find($id);
+		if($order->braspag_order_id != $braspag_order_id){
+			$error = 'Erro #6';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+		}
+
+		//////////////////////////////////////
+		// require_once('braspag/nusoap.php');
+	    // require_once('braspag/vars.php');
+	    //////////////////////////////////////
+	    $url_transacao = 'https://pagador.com.br/webservice/pagadorTransaction.asmx?WSDL';
+
+	    $client = new nusoap_client($url_transacao, 'wsdl', '', '', '', '');
+
+	    $err = $client->getError();
+
+	    if ($err) {
+	      	$error = 'Erro #7';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	    }
+
+	    $param = array(
+	      'request' => array(
+	        'MerchantId'   => $MerchantId,
+	        'RequestId'   => getGUID(),
+	        'Version' => '1.0',
+	        'TransactionDataCollection' => array(
+	          'TransactionDataRequest' => array(
+	            'BraspagTransactionId' => '{'.$order->braspag_id.'}',
+	            'Amount' => $order->total,
+	          ),
+	        ),
+	      ),
+	    );
+
+	    // print("<pre>");
+	    // print_r($param);
+	    // print("</pre>");
+
+	    $result = $client->call('VoidCreditCardTransaction', array('parameters' => $param), '', '', false, true);
+
+	    // print("<pre>");
+	    // print_r($result);
+	    // print("</pre>");
+
+	    if ($client->fault || !$result) {
+	      	$error = 'Erro #8';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	    } else {
+	      $err = $client->getError();
+	      if ($err) {
+	        $error = 'Erro #9';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	      } else {
+	        // print("<pre>");
+	        // print_r($result);
+	        // print("</pre>");
+	        if($result['VoidCreditCardTransactionResult']['Success'] == true){
+	        	$new_status = 'cancelado';
+	        	$this->updateOrder($order, $new_status, $comment);
+	        }
+	        else{
+	        	$error = 'Erro #10';
+				return Redirect::route('admin.order')
+					->withErrors($error);
+	        }
+	      }
+	    }
+
+	    return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' cancelado com sucesso.');
+	}
+
+	public function getReject($id, $braspag_order_id, $comment){
+		$order = Order::find($id);
+		if($order->braspag_order_id != $braspag_order_id){
+			$error = 'Erro #11';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+		}
+
+		//////////////////////////////////////
+		// require_once('braspag/nusoap.php');
+	    // require_once('braspag/vars.php');
+	    //////////////////////////////////////
+
+	    $url_antifraud = 'https://antifraude.braspag.com.br/AntiFraudeWS/AntiFraud.asmx?WSDL';
+
+	    $client = new nusoap_client($url_antifraud, 'wsdl', '', '', '', '');
+
+	    $err = $client->getError();
+
+	    if ($err) {
+	      	$error = 'Erro #12';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	    }
+
+	    $param = array(
+	      'updateStatusRequest' => array(
+	        'MerchantId'   => $MerchantId,
+	        'RequestId'   => getGUID(),
+	        'Version'   => '1.0',
+	        'AntiFraudTransactionId' => '{'.$order->antifraud_id.'}',
+	        'NewStatus' => 'REJECT',
+	        'Comment' => $comment,
+	      ),
+	    );
+
+	    // print("<pre>");
+	    // print_r($param);
+	    // print("</pre>");
+
+	    $result = $client->call('UpdateStatus', array('parameters' => $param), '', '', false, true);
+
+	    // print("<pre>");
+	    // print_r($result);
+	    // print("</pre>");
+
+	    if ($client->fault || !$result) {
+	      	$error = 'Erro #13';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	    } else {
+	      $err = $client->getError();
+	      if ($err) {
+	        $error = 'Erro #14';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	      } else {
+	        // print("<pre>");
+	        // print_r($result);
+	        // print("</pre>");
+
+	        if($result['UpdateStatusResult']['Success'] == true){
+	        	$new_status = 'rejeitado';
+	        	$this->updateOrder($order, $new_status, $comment);
+	        	$this->sendTransactionalEmail($order, $new_status);
+	        }
+	        else{
+	        	$error = 'Erro #15';
+				return Redirect::route('admin.order')
+					->withErrors($error);
+	        }
+	      }
+	    }
+
+	    return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' rejeitado com sucesso.');
+	}
+
+	public function getApprove($id, $braspag_order_id, $comment){
+		$order = Order::find($id);
+		if($order->braspag_order_id != $braspag_order_id){
+			$error = 'Erro #16';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+		}
+
+		//////////////////////////////////////
+		// require_once('braspag/nusoap.php');
+	    // require_once('braspag/vars.php');
+	    //////////////////////////////////////
+
+	    $url_antifraud = 'https://antifraude.braspag.com.br/AntiFraudeWS/AntiFraud.asmx?WSDL';
+
+	    $client = new nusoap_client($url_antifraud, 'wsdl', '', '', '', '');
+
+	    $err = $client->getError();
+
+	    if ($err) {
+	      	$error = 'Erro #17';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	    }
+
+	    $param = array(
+	      'updateStatusRequest' => array(
+	        'MerchantId'   => $MerchantId,
+	        'RequestId'   => getGUID(),
+	        'Version'   => '1.0',
+	        'AntiFraudTransactionId' => '{'.$order->antifraud_id.'}',
+	        'NewStatus' => 'ACCEPT',
+	        'Comment' => $comment,
+	      ),
+	    );
+
+	    // print("<pre>");
+	    // print_r($param);
+	    // print("</pre>");
+
+	    // echo "<br/><br/>";
+	    // $array = (array) $param;
+	    // $json = json_encode($array);
+	    // print_r($json);
+
+	    $result = $client->call('UpdateStatus', array('parameters' => $param), '', '', false, true);
+
+	    // echo "<br/><br/>";
+	    // print("<pre>");
+	    // print_r($result);
+	    // print("</pre>");
+
+	    // echo "<br/><br/>";
+	    // $array = (array) $result;
+	    // $json = json_encode($array);
+	    // print_r($json);
+
+	    if ($client->fault || !$result) {
+	      	$error = 'Erro #18';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	    } else {
+	      $err = $client->getError();
+	      if ($err) {
+	        $error = 'Erro #19';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	      } else {
+	        // print("<pre>");
+	        // print_r($result);
+	        // print("</pre>");
+	        if($result['UpdateStatusResult']['Success'] != true){
+	        	$error = 'Erro #20';
+				return Redirect::route('admin.order')
+					->withErrors($error);
+	        }
+	      }
+	    }
+
+
+	    ///////////////////////////////////////////////////////////////////////////////////
+	    ///////////////////////////////////////////////////////////////////////////////////
+	    //// CAPTURA - PAGADOR
+	    ///////////////////////////////////////////////////////////////////////////////////
+	    ///////////////////////////////////////////////////////////////////////////////////
+
+	    $url_transacao = 'https://pagador.com.br/webservice/pagadorTransaction.asmx?WSDL';
+
+	    $client_pagador = new nusoap_client($url_transacao, 'wsdl', '', '', '', '');
+
+	    $err = $client_pagador->getError();
+
+	    if ($err) {
+	      	$error = 'Erro #21';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	    }
+
+	    $param = array(
+	      'request' => array(
+	        'MerchantId'   => $MerchantId,
+	        'RequestId'   => getGUID(),
+	        'Version' => '1.0',
+	        'TransactionDataCollection' => array(
+	          'TransactionDataRequest' => array(
+	            'BraspagTransactionId' => $braspag_id,
+	            'Amount' => str_replace('.','',($valor_total*100)),
+	          ),
+	        ),
+	      ),
+	    );
+
+	    // print("<pre>");
+	    // print_r($param);
+	    // print("</pre>");
+
+	    // echo "<br/><br/>";
+	    // $array = (array) $param;
+	    // $json = json_encode($array);
+	    // print_r($json);
+
+	    unset($result);
+	    $result = $client_pagador->call('CaptureCreditCardTransaction', array('parameters' => $param), '', '', false, true);
+
+	    // print("<pre>");
+	    // print_r($result);
+	    // print("</pre>");
+
+	    // echo "<br/><br/>";
+	    // $array = (array) $result;
+	    // $json = json_encode($array);
+	    // print_r($json);
+
+	    // exit();
+
+	    if ($client_pagador->fault || !$result) {
+	    	$error = 'Erro #22';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	    } else {
+	      $err = $client_pagador->getError();
+	      if ($err) {
+	        $error = 'Erro #23';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+	      } else {
+	        // print("<pre>");
+	        // print_r($result);
+	        // print("</pre>");
+	        if($result['CaptureCreditCardTransactionResult']['Success'] == true){
+	        	$new_status = 'aprovado';
+	        	$this->updateOrder($order, $new_status, $comment);
+	        	$this->sendTransactionalEmail($order, $new_status);
+	        }
+	        else{
+	        	$error = 'Erro #24';
+				return Redirect::route('admin.order')
+					->withErrors($error);
+	        }
+	      }
+	    }
+
+	    return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' aprovado com sucesso.');
+	}
+
+	public function getConvertValue2Credit($id, $braspag_order_id, $comment){
+		$order = Order::find($id);
+		if($order->braspag_order_id != $braspag_order_id){
+			$error = 'Erro #25';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+		}
+
+		$new_status = 'cancelado';
+		$total = $order->total;
+
+		$this->updateOrder($order, $new_status, $comment);
+
+		$profile = Profile::where('user_id', '=', $order->user_id);
+		$profile->credit += $total;
+		$profile->save();
+
+		return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' convertido em créditos ao usuário com sucesso.');
+	}
+
+	public function getCancelBoletus($id, $braspag_order_id, $comment){
+		$order = Order::find($id);
+		if($order->braspag_order_id != $braspag_order_id){
+			$error = 'Erro #26';
+			return Redirect::route('admin.order')
+				->withErrors($error);
+		}
+
+		$new_status = 'cancelado';
+
+		$this->updateOrder($order, $new_status, $comment);
+
+		return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' via boleto cancelado com sucesso. Ainda é necessário reembolsar o cliente.');
+	}
+
+	public function postBraspagReturn(){
+		$server_addr = array(
+		  '10.144.84.94',
+		  '209.134.48.121',
+		  '209.235.236.174',
+		  '209.134.53.179',
+		  '209.235.236.162',
+		  '209.134.48.120',
+		  '209.235.236.164',
+		  '209.134.48.122',
+		  '209.134.48.211',
+		  '209.134.48.69',
+		  '209.134.53.185',
+		  '209.235.206.3',
+		  '209.134.53.180',
+		  '209.134.48.123',
+		  '209.235.236.161',
+		);
+
+		if (
+		  empty($_SERVER['SERVER_ADDR']) ||
+		  !in_array($_SERVER['SERVER_ADDR'], $server_addr) ||
+		  // empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+		  // !strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' &&
+		  !isset($_POST) ||
+		  empty($_POST)
+		) {
+		  return Response::make('<status>Acesso Negado</status>', 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
+		}
+
+		$braspag_order_id = $_POST['NumPedido'];
+		$codpagamento = $_POST['CODPAGAMENTO'];
+
+		// BOLETO
+		if($codpagamento == '06' || $codpagamento == '6'){
+		  $status = ($_POST['Status'] == '0')?'pago':'nao_pago';
+		}
+		// CARTÃO DE CRÉDITO
+		else{
+		  $status = ($_POST['Status'] == '0')?'aprovado':'abortado';
+		}
+
+		$order = $this->order->where('braspag_order_id', $braspag_order_id)->get();
+
+		$user_id = $order->user_id;
+
+		$order->historico .= '<br/>'.date('d/m/Y H:i:s')." - Status alterado para ".$status.", atualizado pelo retorno da Braspag";
+		$order->status = $status;
+		$order->save();
+
+		$user_credit = UserCredit::where('new_user_id', $user_id)->get();
+
+		if($user_credit){
+			$user_credit_id = $user_credit->user_id;
+			$value = $user_credit->value;
+
+			$user = Profile::where('user_id', $user_credit_id)->get();
+			$user->credit += $value;
+			$user->save();
+
+			$user_credit->destroy();
+		}
+
+		$this->sendTransactionalEmail($order, $status);
+
+		return Response::make('<status>OK</status>', 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
+	}
+
+	private function validateDiscountCoupon($offers_options_ids, $display_code){
+		$offer_ids = OfferOption::whereIn('id', $offers_options_ids)->get('offer_id');
+
+		$discount_coupon = DiscountCoupon::where('display_code', '=', $display_code)
+										  ->where( function ( $query )
+												   {
+												        $query->whereIn('offer_id', $offer_ids)
+												            ->orWhere('offer_id', 'IS', 'NULL');
+												   })
+										  ->where( function ( $query )
+												   {
+												        $query->where('user_id', '=', Auth::user()->id)
+												            ->orWhere('user_id', 'IS', 'NULL');
+												   })
+										  ->where('qty_used', '<', 'qty')
+										  ->where('starts_on', '<=', date('d/m/Y h:i:s'))
+										  ->where('ends_on', '>=', date('d/m/Y h:i:s'))
+										  ->get('id', 'value', 'qty_used')
+										  ->first()
+											;
+
+		return isset($discount_coupons)?$discount_coupons:NULL;
+	}
+
+	public function doOrder(){
+		// INPUTs:
+
+		// payment_type: credit_card or boletus
+		// flag: visa, master, etc
+		// number, month, year, cod, name, cpf_cnpj, telephone, installment
+		// reference_code
+		// donation
+		// offer_option_qty[id]
+		// discount_coupon_code
+
+		//get all user input
 		$inputs = Input::all();
 
-		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
-
 		$rules = [
-			'email' => 'required|email|unique:users,email',
-        	'profile.cpf' => 'required',
-        	'profile.city' => 'required',
-        	'profile.state' => 'required',
-        	'profile.country' => 'required',
+			'payment_type' => 'required',
+        	'reference_code' => 'required',
+        	'donation' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
 
-		if ($validation->passes())
-		{
-			$created = $this->user->create($inputs)->id;
+	    // validate user input
+		if ($validation->passes()){
+			//organize some of the user inputs
+			$user_id = Auth::user()->id;
+			$braspag_order_id = $inputs['reference_code'];
+			$donation = $inputs['donation'];
+			$discount_coupon_code = $inputs['discount_coupon_code'];
+			$total = 0;
+			$qty_total = 0;
+			$history = date('d/m/Y h:i:s').' - Transação iniciada.';
+			$status = 'iniciado';
 
-			$inputs['profile']['user_id'] = $created;
+			$order = New Order;
 
+			$order->user_id = $user_id;
+			$order->braspag_order_id = $braspag_order_id;
+			$order->donation = $donation;
+			$order->history = $history;
 
-			$user = User::find($created);
-			$user->profile()->create($inputs['profile']);
+			$order->save();
 
-			return Redirect::route('admin.user');
-		}
+			$order_id = $order->id;
 
-		/*
-		 * Return and display Errors
-		 */
-		return Redirect::route('admin.user.create')
-			->withInput()
-			->withErrors($validation);
-	}
+			$ids = array();
+			$qties = array();
+			$products = array();
+			$vouchers = array();
 
-	public function getEdit($id)
-	{
-		$user = $this->user->with('profile')->find($id);
-
-		if (is_null($user))
-		{
-			return Redirect::route('admin.user');
-		}
-
-		$this->layout->content = View::make('admin.user.edit', compact('user'));
-	}
-
-	public function postEdit($id)
-	{
-		/*
-		 * User
-		 */
-		$inputs = Input::all();
-
-		// if (is_null($inputs['username']) || empty($inputs['username'])) {
-		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
-		// }
-
-		$rules = [
-			'email' => 'required|email|unique:users,email,'. $id,
-        	'profile.cpf' => 'required',
-        	'profile.city' => 'required',
-        	'profile.state' => 'required',
-        	'profile.country' => 'required',
-		];
-
-	    $validation = Validator::make($inputs, $rules);
-
-		if ($validation->passes())
-		{
-			$user = $this->user->with('profile')->find($id);
-
-			if ($user)
-			{
-				$user->update($inputs);
-
-				if ($user->profile()->first()) {
-					$user->profile()->update($inputs['profile']);
-				}
-				else
-				{
-					$user->profile()->create($inputs['profile']);
-				}
-
+			// get id and quantity of product user just ordered
+			foreach ($inputs['offer_option_qty'] as $id => $qty) {
+				$ids[] = $id;
+				$qties[] = $qty;
 			}
 
-			return Redirect::route('admin.user.edit', $id);
-		}
+			$offers_options = OfferOption::whereIn('id', $ids)->with(['offer', 'qty_sold'])->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty', 'max_qty_per_buyer']);
 
-		/*
-		 * Return and display Errors
-		 */
-		return Redirect::route('admin.user.edit', $id)
-			->withInput()
-			->withErrors($validation);
-	}
+			// save the items the user ordered and calculate total
+			foreach ($offers_options as $offer_option) {
+				$qty_ordered = array_shift($qties); // pega o primeiro elemento de $qties e joga no final do próprio array $qties, além de obter o valor manipulado em si, claro
+				$max_qty_allowed = min($offer_option['max_qty_per_buyer'], ($offer_option['max_qty'] - $offer_option['min_qty'] - $offer_option['qty_sold']));
 
-	public function getDelete($id)
-	{
-		$user = $this->user->find($id);
+				if($qty_ordered > $max_qty_allowed){
+					// ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
+					$error = 'A quantidade selecionada para a oferta ' . $offer_option->offer->title . ' é maior do que a quantidade em estoque.';
 
-		if (is_null($user))
-		{
-			return Redirect::route('admin.user');
-		}
+					return Redirect::route('public.pagamento')
+							->withErrors($error);
+				}
+				else{
+					$order_offer_option['order_id'] = $order_id;
+					$order_offer_option['offer_option_id'] = $offer_option['id'];
+					$order_offer_option['qty'] = $qty_ordered;
+					$products[] = '<a href="https://www.innbativel.com.br/oferta/' . $order_offer_option->offer->slug . '">' . $qty_ordered . ' x ' . $order_offer_option->offer->destiny . ' | ' . $order_offer_option->title . '</a>';
 
-		Session::flash('error', 'Você tem certeza que deleja excluir este usuário? Esta operação não poderá ser desfeita.');
+					OrderOfferOption::create($order_offer_option);
 
-		$data['userData'] = $user->toArray();
-		$data['userArray'] = null;
-		$blackList = ['salt', 'created_at', 'updated_at', 'deleted_at'];
+					// save each ordered item now to create vouchers later (case the order go successfully)
+					for ($i=0; $i < $qty_ordered; $i++) {
+						$voucher['offer_option_id'] = $order_offer_option_id;
+						$voucher['order_id'] = $order_id;
+						$voucher['display_code'] = $braspag_order_id . $offer_option['offer_id'];
+						$vouchers[] = $voucher;
+					}
 
-		foreach ($data['userData'] as $key => $value) {
-			if (!is_array($value) && !in_array($key, $blackList)) {
-				$data['userArray'][Lang::get('user.'. $key)] = $value;
+					// sum the total
+					$total += ($qty_ordered * $offer_option['price_with_discount']);
+					$qty_total += $qty_ordered;
+				}
+			}
+
+			$discount_coupon_value = 0;
+
+			// if user have entered a discount coupon code
+			if($discount_coupon_code){
+				$discount = $this->validateDiscountCoupon($ids, $discount_coupon_code);
+				if($discount){
+					$discount_coupon_id = $discount['id'];
+					$discount_coupon_value = $discount['value'];
+				}
+			}
+
+			// subtrate discounts and user credit from the total, calculating the total left
+			if($discount_coupon_value < $total){
+				$user_profile = Profile::where('user_id', '=', $user_id)->get('credit');
+				$user_credit = $user_profile->credit;
+
+				$total_left = $total - ($discount_coupon_value + $user_credit);
+			}
+			// if the discount coupon value cover the product price
+			else{
+				$total_left = 0;
+			}
+
+			//*********************//
+			//*********************//
+			// paying for the order//
+			//*********************//
+			//*********************//
+
+			////////////////////////////////////////////////////////////////////////////
+			// paying via user credits and/or discount coupon
+			////////////////////////////////////////////////////////////////////////////
+			if($total_left <= 0){
+				$order->status = 'aprovado';
+				$order->coupon_id = $discount_coupon_id;
+				$order->total = $total;
+				$order->credit_discount = $total - $discount_coupon_value;
+				$order->payment_terms = 'Créditos e/ou cupom de disconto';
+				$order->history .= '<br/>'.date('d/m/Y h:i:s').' - Pagamento feito completamente com créditos do usuário e/ou cupom de disconto';
+
+				$order->save();
+			}
+
+			////////////////////////////////////////////////////////////////////////////
+			// paying via credti card
+			////////////////////////////////////////////////////////////////////////////
+			else if($inputs['payment_type'] == 'credit_card'){
+				$inputs['cpf_cnpj'] = preg_replace('/[^0-9]/', '', $inputs['cpf_cnpj']);
+				$inputs['telephone'] = preg_replace('/[^0-9]/', '', $inputs['telephone']);
+				$inputs['number'] = preg_replace('/\D/', '', $inputs['number']);
+
+				$rules = [
+					'cpf_cnpj' => 'required|digitsbetween:16,22',
+        			'telephone' => 'required|digitsbetween:10,20',
+					'flag' => 'required',
+		        	'number' => 'required|digits:16',
+		        	'month' => 'required|digits:2',
+		        	'year' => 'required|digits:4',
+		        	'cod' => 'required|digitsbetween:3,4',
+		        	'name' => 'required',
+		        	'installment' => 'required',
+				];
+
+			    $validation = Validator::make($inputs, $rules);
+
+			    if (!$validation->passes()){
+			    	return Redirect::route('public.pagamento')
+							->withInput()
+							->withErrors($validation);
+			    }
+
+			    $profile_info = Profile::where('user_id', '=', $user_id)->get('first_name', 'last_name', 'state', 'telephone')->first();
+
+				$first_name = $profile->first_name;
+				$last_name = $profile->last_name;
+				$state = $profile->state;
+				$email = Auth::user()->email;
+				$passenger_telephone = $profile->telephone;
+				$flag = $inputs['flag'];
+				$number = $inputs['number'];
+				$month = $inputs['month'];
+				$year = $inputs['year'];
+				$cod = $inputs['cod'];
+				$cpf_cnpj = $inputs['cpf_cnpj'];
+				$telephone = $inputs['telephone'];
+				list($holder_fname, $holder_surname) = explode(" ", $inputs['name'], 2);
+				$installment = $inputs['installment'];
+
+				$order->total = $total;
+				$order->credit_discount = $total - $total_left - $discount_coupon_value;
+				$order->holder_card = $inputs['name'];
+				$order->first_digits_card = substr($number, 0, 4);
+				$order->cpf = $cpf_cnpj;
+				$order->telephone = $telephone;
+				$order->payment_terms = 'Cartão de crédito - ' . $flag . ' - ' . $installment . 'x';
+
+				$order->save();
+
+				/////////////////////////////////////
+				/////////////////////////////////////
+				require_once 'admin/braspag/vars.php';
+				/////////////////////////////////////
+				/////////////////////////////////////
+
+				if(validateInstallment($installment, $total, $donation) == false){
+					$error = 'Número de parcelas inválido.';
+					return Redirect::route('public.pagamento')
+							->withErrors($error);
+				}
+
+				/////////////////////////////////////////////
+				/////////////////////////////////////////////
+		        require_once 'antifraud.php';
+		        /////////////////////////////////////////////
+		        /////////////////////////////////////////////
+
+	            $SoapClient = new AntiFraud($url_antifraud);
+	            $antifraude = new FraudAnalysis();
+	            $request = new FraudAnalysisRequest();
+	            $document = new AntiFraudDocumentData();
+	            $request->AntiFraudRequest = new AntiFraudRequest();
+	            $request->AntiFraudRequest->CardData = new CardData();
+	            $MerchantDefinedData = new MerchantDefinedData();
+	            $PurchaseTotalsData = new PurchaseTotalsData();
+	            $billToData = new BillToData();
+	            $itemData = new ItemData();
+	            $itemData->ProductData = new ProductData();
+	            $itemData->PassengerData = new PassengerData();
+
+	            $request->MerchantId = $MerchantIdAF;
+
+	            if(strlen($cpf_cnpj) == 11) $document->Cpf = $cpf_cnpj;
+	            else $document->Cnpj = $cpf_cnpj;
+
+	            $request->DocumentData = $document;
+
+	            $request->RequestId = getGUID_semchave();
+	            $request->AccessKey = getGUID_semchave();
+	            $request->AntiFraudSequenceType = "AnalyseOnly";
+
+	            $request->AntiFraudRequest->MerchantReferenceCode = $braspag_order_id;
+
+	            $request->AntiFraudRequest->CardData->AccountNumber = $number;
+	            $request->AntiFraudRequest->CardData->Bin = '';
+	            $request->AntiFraudRequest->CardData->Card = $flag;
+	            $request->AntiFraudRequest->CardData->ExpirationMonth = $month;
+	            $request->AntiFraudRequest->CardData->ExpirationYear = $year;
+
+	            $MerchantDefinedData->Field1 = $offers_options[0]->offer_id;
+	            $MerchantDefinedData->Field2 = $offers_options[0]->id;
+	            $MerchantDefinedData->Field3 = $offers_options[0]->voucher_validity_start;
+	            $MerchantDefinedData->Field4 = $offers_options[0]->voucher_validity_end;
+	            $MerchantDefinedData->Field5 = $offers_options[0]->price_with_discount;
+	            $MerchantDefinedData->Field6 = $offers_options[0]->title;
+	            $MerchantDefinedData->Field7 = $offers_options[0]->subtitle;
+	            $MerchantDefinedData->Field8 = $offers_options[0]->percent_off;
+
+	            $request->AntiFraudRequest->MerchantDefinedData = $MerchantDefinedData;
+
+	            $PurchaseTotalsData->Currency = 'BRL';
+	            $PurchaseTotalsData->GrandTotalAmount = $total_left;
+
+	            $request->AntiFraudRequest->PurchaseTotalsData = $PurchaseTotalsData;
+
+	            // Instancia o objeto que conter? os dados de cobran?a do cliente.
+	            $billToData->City = "Mountain View";
+	            $billToData->Country = "US";
+	            $billToData->Email = 'null@cybersource.com';
+	            $billToData->PhoneNumber = $telephone;
+	            $billToData->FirstName = $holder_fname;
+	            $billToData->LastName = $holder_surname;
+	            $billToData->State = "CA";
+	            $billToData->Street1 = "1295 Charleston Road";
+	            $billToData->PostalCode = "94043";
+	            $billToData->HttpBrowserCookiesAccepted = false;
+	            $billToData->IpAddress = get_real_ip();
+	            $request->AntiFraudRequest->BillToData = $billToData;
+
+	            $itemData->GiftCategory = "Off";
+	            $itemData->HostHedge = "Low";
+	            $itemData->NonSensicalHedge = "Off";
+	            $itemData->ObscenitiesHedge = "Off";
+	            $itemData->PhoneHedge = "Low";
+	            $itemData->TimeHedge = "Off";
+	            $itemData->VelocityHedge = "Off";
+	            $itemData->PassengerData->FirstName = $first_name;
+	            $itemData->PassengerData->LastName = $last_name;
+	            $itemData->PassengerData->PassengerId = $user_id;
+	            $itemData->PassengerData->Passenger = "Adult";
+	            $itemData->PassengerData->Email = $email;
+	            $itemData->PassengerData->Phone = $passenger_telephone;
+	            $itemData->ProductData->Code = "Default";
+	            $itemData->ProductData->Name = $offers_options[0]->title;
+	            $itemData->ProductData->Risk = "Low";
+	            $itemData->ProductData->Sku = $braspag_order_id;
+	            $itemData->ProductData->Quantity = $qty_ordered;
+	            $itemData->ProductData->UnitPrice = substr($offers_options[0]->price_with_discount,-2);
+	            $itemDataCollection = array($itemData);
+
+	            $request->AntiFraudRequest->ItemDataCollection->ItemData = $itemData;
+
+	            $antifraude->request = $request;
+
+	            $AntiFraudResponse = $SoapClient->FraudAnalysis($antifraude);
+
+	            $pagador = 'n';
+	            $status = antifraud_status_code_2_string($AntiFraudResponse->FraudAnalysisResult->TransactionStatusCode);
+
+	            switch ($AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse->ReasonCode) {
+	              case '100':
+	                // $return = 'Operação bem sucedida.';
+	                $returnBD = 'Operação bem sucedida.';
+	                $pagador = 'y';
+	                // vai pro pagadaor com auto-captura
+	                $pagadorTransactionType = 2; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTOCAPTURE;
+	                break;
+	              case '480':
+	                // $return = 'O pedido foi marcado para revisão pelo Gerenciador de Decisão.';
+	                $returnBD = 'O pedido foi marcado para revisão pelo Gerenciador de Decisão.';
+	                $pagador = 'y';
+	                // vai pro pagador apenas para autorizar a transacao (como foi para revisão, não podemos captura-la)
+	                // observação: por que prossegue para o pagador? porque o pagador grava todos os dados da compra, só esperando uma confirmação nossa (aprova ou rejeita)
+	                $pagadorTransactionType = 1; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTHORIZE;
+	                break;
+	              case '400':
+	                // $return = 'Pagamento não autorizado. Por favor, entre em contato com a operadora do cartão de crédito (CÓD: 045).';
+	                $returnBD = 'A pontuação de fraude ultrapassa o seu limite.';
+	                $pagador = 'y';
+	                // vai pro pagador apenas para autorizar a transacao (como foi para revisão, não podemos captura-la)
+	                // observação: por que prossegue para o pagador? porque o pagador grava todos os dados da compra, só esperando uma confirmação nossa (aprova ou rejeita)
+	                $pagadorTransactionType = 1; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTHORIZE;
+	                break;
+	              case '101':
+	                $return = 'Por favor, preencha todos os campos corretamente.';
+	                $returnBD = 'O pedido está faltando um ou mais campos necessários.';
+	                break;
+	              case '102':
+	                $return = 'Por favor, preencha todos os campos corretamente.';
+	                $returnBD = 'Um ou mais campos do pedido contêm dados inválidos.';
+	                break;
+	              case '150':
+	                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 009). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+	                $returnBD = 'Falha no sistema geral.';
+	                break;
+	              case '151':
+	                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 010). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+	                $returnBD = 'O pedido foi recebido, mas ocorreu time-out no servidor. Este erro não inclui time-out entre o cliente e o servidor.';
+	                break;
+	              case '152':
+	                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 011). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+	                $returnBD = 'O pedido foi recebido, mas ocorreu time-out.';
+	                break;
+	              case '202':
+	                $return = 'Cartão expirado ou data de validade incorreta.';
+	                $returnBD = 'CyberSource recusou o pedido porque o cartão expirou. Você também pode receber este código se a data de validade não coincidir com a data em arquivo do banco emissor.';
+	                break;
+	              case '231':
+	                $return = 'Número da conta inválido.';
+	                $returnBD = 'O número da conta é inválido.';
+	                break;
+	              case '234':
+	                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 012). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+	                $returnBD = 'Há um problema com a configuração do comerciante na CyberSource.';
+	                break;
+	              case '481':
+	                $pagador = 'y';
+	                $pagadorTransactionType = 1; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTHORIZE;
+	                //$return = 'Pagamento não autorizado. Por favor, entre em contato com a operadora do cartão de crédito (CÓD: 046).';
+	                $returnBD = 'O pedido foi rejeitado pelo Gerenciador de Decisão.';
+	                break;
+	              case '901':
+	                $return = 'Por favor, preencha todos os campos corretamente (CÓD: 047).';;
+	                $returnBD = 'Algum parâmetro está indevidamente nulo ou vazio.';
+	                break;
+	              case '902':
+	                $return = 'Por favor, preencha todos os campos corretamente (CÓD: 048).';
+	                $returnBD = 'O tamanho de algum parâmetro está inválido.';
+	                break;
+	              case '903':
+	                $return = 'Por favor, preencha todos os campos corretamente (CÓD: 049).';
+	                $returnBD = 'O valor de algum parêmtro está inválido.';
+	                break;
+	              case '904':
+	                $return = 'Por favor, preencha todos os campos corretamente (CÓD: 050).';
+	                $returnBD = 'Apenas valores numéricos são permitidos.';
+	                break;
+	              case '905':
+	                $return = 'Por favor, preencha todos os campos corretamente (CÓD: 051).';
+	                $returnBD = 'Algum parâmetro não estava no formato correto.';
+	                break;
+	              case '906':
+	                $return = 'Por favor, preencha todos os campos corretamente (CÓD: 052).';
+	                $returnBD = 'Apenas valores númericos são permitidos e/ou o tamanho de algum parâmetro está inválido.';
+	                break;
+	              case '907':
+	                $return = 'Por favor, preencha todos os campos corretamente (CÓD: 053).';
+	                $returnBD = 'Algum parâmetro é inválido.';
+	                break;
+	              default:
+	                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 013). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+	                $returnBD = 'Ocorreu um erro na solicitação.';
+	                break;
+	            }
+
+	            if ($pagador === 'n') {
+					// As vezes ocorreu algum erro, mas o antifraud retornou "aprovado" (ACCEPT). Nesse caso, salva no BD como "abortado".
+					$status = ($status === 'aprovado') ? 'abortado' : $status;
+
+					$order->status = $status;
+					$order->antifraud_id = $AntiFraudResponse->FraudAnalysisResult->AntiFraudTransactionId;
+					$order->history .= date('d/m/Y H:i:s') . " - Antifraud: ".$returnBD." (ReasonCode = ".$AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse->ReasonCode.")";
+
+					$order->save();
+
+					return Redirect::route('public.pagamento')
+							->withErrors($return);
+	            }
+	            else{
+					// $order->status = 'aprovado';
+					// $order->status = 'pendente';
+					$order->history .= date('d/m/Y H:i:s') . " - Antifraud: ".$returnBD." (".$status.")";
+
+					$order->save();
+	            }
+
+	            /////////////////////////////////////////////////
+	            /////////////////////////////////////////////////
+		        require_once 'admin/braspag/pagador/Braspag.php';
+		        /////////////////////////////////////////////////
+		        /////////////////////////////////////////////////
+
+		        $Braspag = new Braspag($ambiente_pagador);
+
+		        ///////////////
+		        //Customer
+		        ///////////////
+		        $Customer = new BraspagCustomerData();
+		        $Customer->setName($first_name . ' ' . $last_name);
+		        $Customer->setID($user_id);
+		        $Customer->setEmail($email);
+
+		        //Customer address (optional)
+		        $AddressData = new BraspagAddressData();
+		        // $AddressData->Street = 'Blvd. 28 de Setembro';
+		        // $AddressData->Number = '389';
+		        // $AddressData->Complement = 'Sala 512';
+		        // $AddressData->District = 'Vila Isabel';
+		        // $AddressData->City = 'Rio de Janeiro';
+		        $AddressData->State = $state;
+		        // $AddressData->ZipCode = '20551030';
+		        $AddressData->Country = 'BR';
+
+		        //Set address data is optional
+		        $Customer->setAddressData($AddressData);
+		        $Customer->setDeliveryAddressData($AddressData);
+
+		        ///////////////
+		        // Credit card
+		        ///////////////
+		        $CreditCard = new BraspagCreditCardModel();
+
+		        //Capture transaction after authorization
+		        $CreditCard->setTransactionType($pagadorTransactionType);
+
+		        //Testing
+		        $CreditCard->setMethod(card_type_2_code($card_type));
+
+		        //Order and payment info
+		        $CreditCard->setOrderId($braspag_order_id);
+		        $CreditCard->setCardNumber($number);
+		        $CreditCard->setCardHolder($holder_fname . ' ' . $holder_surname);
+		        $CreditCard->setCardExpirationDate($month, $year);
+		        $CreditCard->setCardSecurityCode($code);
+		        $CreditCard->setCurrency('BRL');
+		        $CreditCard->setCountry('BRA');
+		        $CreditCard->setAmount($total_left);
+		        $CreditCard->setPaymentPlan( (($installment == 1) ? 0 : 1) );
+		        $CreditCard->setNumberOfPayments($installment);
+		        $CreditCard->setSaveCreditCard(false);
+
+		        //Execute transaction
+		        $response = $Braspag->authorizeCreditCardTransaction($CreditCard, $Customer);
+
+		        $braspag_id = $response->PaymentDataCollection->PaymentDataResponse->BraspagTransactionId;
+
+		        $pagador = 'n';
+
+		        if($response->PaymentDataCollection->PaymentDataResponse->Status != 0 && $response->PaymentDataCollection->PaymentDataResponse->Status != 1){
+		        // if($response->PaymentDataCollection->PaymentDataResponse->Status != 1){
+		            switch ($response->PaymentDataCollection->PaymentDataResponse->ReturnCode) {
+		              case '1':
+		              case '2':
+		                $return = 'Pagamento não autorizado. Por favor, entre em contato com a operadora do cartão de crédito.';
+		                $returnBD = 'Transação negada. Referida.';
+		                break;
+		              case '3':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 016). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Transação negada. Estabelecimento inválido.';
+		                break;
+		              case '4':
+		              case '5':
+		              case '7':
+		              case '41':
+		              case '43':
+		              case '51':
+		              case '54':
+		              case '55':
+		              case '61':
+		              case '62':
+		              case '63':
+		              case '65':
+		              case '75':
+		              case '82':
+		              case '93':
+		              case '94':
+		                $return = 'Pagamento não autorizado. Por favor, verifique se todos os campos estão preenchidos corretamente. Se o erro persistir, entre em contato com a operadora do cartão de crédito.';
+		                $returnBD = 'Transação negada.';
+		                break;
+		              case '6':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 017). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Problemas ocorridos na transação eletrônica.';
+		                break;
+		              case '12':
+		              case '13':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 018). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Transação inválida.';
+		                break;
+		              case '14':
+		                $return = 'Oops, parece que alguma informação do cartão está digitada errada. Por favor, verifique todas as informações e tente novamente.';
+		                $returnBD = 'Cartão inválido.';
+		                break;
+		              case '15':
+		              case '91':
+		              case '98':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 019). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Emissor sem comunicação.';
+		                break;
+		              case '19':
+		              case '86':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 020). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Refaça a transação.';
+		                break;
+		              case '21':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 021). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Transação não localizada.';
+		                break;
+		              case '22':
+		                $return = 'Número de parcelas inválidas.';
+		                $returnBD = 'Parcelamento inválido.';
+		                break;
+		              case '25':
+		                $return = 'Número da conta inválido.';
+		                $returnBD = 'Número do cartão não foi enviado.';
+		                break;
+		              case '28':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 022). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Arquivo indisponível.';
+		                break;
+		              case '52':
+		                $return = 'Por favor, preencha todos os campos corretamente.';
+		                $returnBD = 'Cartão com dígito de controle inválido.';
+		                break;
+		              case '53':
+		                $return = 'Por favor, preencha todos os campos corretamente.';
+		                $returnBD = 'Cartão inválido para essa operação.';
+		                break;
+		              case '57':
+		                $return = 'Pagamento não autorizado. Por favor, verifique se todos os campos estão preenchidos corretamente. Se o erro persistir, entre em contato com a operadora do cartão de crédito.';
+		                $returnBD = 'Transação não permitida.';
+		                break;
+		              case '76':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 023). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Problemas com número de referência da transação.';
+		                break;
+		              case '77':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 024). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Dados não conferem com mensagem original.';
+		                break;
+		              case '80':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 025). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Data inválida.';
+		                break;
+		              case '81':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 026). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Erro de criptografia.';
+		                break;
+		              case '83':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 027). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Erro no sistema de senhas.';
+		                break;
+		              case '85':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 044). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Erro métodos de criptografia.';
+		                break;
+		              case '96':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 028). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Falha no sistema.';
+		                break;
+		              case '99':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 029). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Emissor sem comunicação. SITEF. Ou divergência cadastral (Ex: liberação de parcelado).';
+		                break;
+		              case '05':
+		              case '51':
+		              case '57':
+		                $return = 'Pagamento não autorizado. Por favor, entre em contato com a operadora do cartão de crédito.';
+		                $returnBD = 'Mensagem Bancaria.';
+		                break;
+		              case '08':
+		                $return = 'Código de segurança inválido.';
+		                $returnBD = 'Cód de Seg Invalido.';
+		                break;
+		              case '54':
+		                $return = 'Cartão expirado.';
+		                $returnBD = 'Cartão Vencido.';
+		                break;
+		              case '78':
+		                $return = 'Cartão bloqueado devido ao seu primeiro uso.';
+		                $returnBD = 'Cartão Bloqueado 1º USO.';
+		                break;
+		              case '170':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 030). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Autenticação do Banco Bradesco -Cliente deve digitar agencia, conta e senha do internet Bank.';
+		                break;
+		              case '99':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 031). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Parcelamento loja não esta liberado.';
+		                break;
+		              case '96':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 032). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Venda abaixo de  R$ 1,00.';
+		                break;
+		              case '13':
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 033). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Valor da parcela inferior a R$ 5,00 (parcelado loja).';
+		                break;
+		              case '57':
+		                $return = 'Pagamento não autorizado. Por favor, entre em contato com a operadora do cartão de crédito.';
+		                $returnBD = 'Mensagem Bancaria- Oriente o cliente a entrar em contato com o banco.';
+		                break;
+		              case '5115':
+		              case '5117':
+		                $return = 'Pagamento não autorizado. Por favor, entre em contato com a operadora do cartão de crédito.';
+		                $returnBD = 'Falha de autenticação - caso não possua a liberaçao de vendas internacionais contate a Visanet se possuir entre em contato com Banco emissor do cartão.';
+		                break;
+		              default:
+		                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 034). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+		                $returnBD = 'Ocorreu um erro na solicitação.';
+		                break;
+		            }
+
+		            $order->status = $status = 'abortado';
+		            $order->history .= $history = date('d/m/Y H:i:s') . " - Pagador: " . $returnBD . " (ReturnCode = " . $response->PaymentDataCollection->PaymentDataResponse->ReturnCode . " e Status =  " . $response->PaymentDataCollection->PaymentDataResponse->Status . ")";
+		            $order->braspag_id = $response->PaymentDataCollection->PaymentDataResponse->BraspagTransactionId;
+
+		            $order->save();
+
+		            // ERRO, NAO APROVADO, ETC...
+					return Redirect::route('public.pagamento')
+							->withErrors($return);
+		        }
+		        else{
+		            if($pagadorTransactionType == 1){
+		                $order->status = 'revisao';
+		                $order->history .= date('d/m/Y H:i:s') . " - Pagador: Transação autorizada, aguardando revisão";
+		                $order->braspag_id = $response->PaymentDataCollection->PaymentDataResponse->BraspagTransactionId;
+
+		            	$order->save();
+		            }
+		            else{
+		                $order->status = 'aprovado';
+		                $order->history .= date('d/m/Y H:i:s') . " - Pagador: Transação capturada";
+
+		                $order->save();
+		            }
+		        }
+			}
+
+			////////////////////////////////////////////////////////////////////////////
+			// paying via boletus
+			////////////////////////////////////////////////////////////////////////////
+			else{
+				//////////////////////////////////////
+				require_once 'admin/braspag/vars.php';
+				//////////////////////////////////////
+
+		        ////////////////////////////////////////
+		        require_once 'admin/braspag/nusoap.php';
+		        ////////////////////////////////////////
+
+		        $profile_info = Profile::where('user_id', '=', $user_id)->get('first_name', 'last_name')->first();
+
+				$name = $profile->first_name . ' ' . $profile->last_name;
+
+		        $client = new nusoap_client($url_boleto, 'wsdl', '', '', '', '');
+		        $client->soap_defencoding = 'UTF-8';
+		        $client->decode_utf8 = false;
+
+		        $err = $client->getError();
+
+		        $param = array(
+		          'merchantId'   => $MerchantId,
+		          'customerName'   => $name,
+		          'orderId'   => $order_id,
+		          'amount'   => $total_left,
+		          'expirationDate' => date('d/m/y', strtotime('+1 day')),
+		          'paymentMethod'   => '06',
+		          'instructions' => 'Este boleto pode ser pago até o dia '.date('d/m/y', strtotime('+1 day')).'. Assim que o pagamento for efetuado e aprovado, seu cupom será liberado em sua conta. Obrigado por comprar no INNBatível!',
+		          'emails' => Auth::user()->email,
+		        );
+
+		        $result = $client->call('CreateBoleto', array('parameters' => $param), '', '', false, true);
+
+		        if ($client->fault) {
+		        	$error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 039). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+					return Redirect::route('public.pagamento')
+							->withErrors($error);
+		        } else {
+		          $err = $client->getError();
+		          if ($err) {
+		            $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 040). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+					return Redirect::route('public.pagamento')
+							->withErrors($error);
+		          } else {
+		            if($result['CreateBoletoResult']['status'] == NULL){
+		                $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 041). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+						return Redirect::route('public.pagamento')
+							->withErrors($error);
+		            }
+		          }
+		        }
+
+		        $boletus_url = $result['CreateBoletoResult']['url'];
+
+		        $order->total = $total;
+		        $order->braspag_id = $result['CreateBoletoResult']['boletoNumber'];
+		        $order->boleto = $boletus_url;
+		        $order->payment_terms = "Boleto";
+		        $order->credit_discount = $total - $total_left - $discount_coupon_value;
+		        $order->history .= date('d/m/Y H:i:s') . " - Boleto emitido";
+
+		        $order->save();
+			}
+
+			// atualizar quantidade de discount_cupons usados, caso $discount != NULL, ou seja, caso o usuário tenha entrado com um cupom de desconto e ele tenha sido válido
+			if($discount){
+				$discount->qty_used++;
+				$discout->save();
+			}
+
+			// criar vouchers (remover o código da criação de vouchers antes de passar pelo antifraud/pagador)
+			Voucher::create($vouchers);
+
+			// atualizar creditos do usuario
+			if($user_profile){
+				$user_new_credit = ($user_credit - ($total - $discount_coupon_value));
+				$user_new_credit = ($user_new_credit > 0) ? $user_new_credit : 0;
+
+				$user_profile->credit = $user_new_credit;
+				$user_profile->save();
+			}
+
+			// inserir creditos por indicação
+			$credit_ind_user = UserCredit::where('new_user_id', '=', $user_id);
+
+			if($credit_ind_user){
+				$indicator_user = User::find($credit_ind_user->user_id);
+				$indicator_user->credit += $credit_ind_user->value;
+				$indicator_user->save();
+
+				$credit_ind_user->delete();
+			}
+
+			// caso a venda tenha sido concretizada
+			if($status == 'aprovado'){
+				foreach ($products as $product) {
+		        	$products_email .= $product . '<br/>';
+		        }
+
+		        $products_email = substr($products_email, 0, -5);
+
+		        $data = array('name' => $profile->first_name, 'products' => $products_email);
+
+		        Mail::send('emails.order.order_approved', $data, function($message){
+					$message->to(Auth::user()->email, 'INNBatível')->subject('Compra finalizada com sucesso');
+				});
+
+				return Redirect::route('public.success', array('status' => $status));
+			}
+			else if($status == 'iniciado' AND isset($boletus_url)){
+				foreach ($products as $product) {
+		        	$products_email .= $product . '<br/>';
+		        }
+
+		        $products_email = substr($products_email, 0, -5);
+
+		        $data = array('name' => $profile->first_name, 'products' => $products_email, 'boletus_url' => $boletus_url);
+
+		        Mail::send('emails.order.order.order_boletus', $data, function($message){
+					$message->to(Auth::user()->email, 'INNBatível')->subject('Compra finalizada com sucesso');
+				});
+
+				return Redirect::route('public.success', array('status' => $status, 'boletus_url' => $boletus_url));
+			}
+			else{
+				return Redirect::route('public.success', array('status' => $status));
 			}
 		}
-
-		$this->layout->content = View::make('admin.user.delete', $data);
-	}
-
-	public function postDelete($id)
-	{
-		$this->user->find($id)->delete();
-
-		Session::flash('success', 'Usuário excluído com sucesso.');
-
-		return Redirect::route('admin.user');
+		else{
+			// ERRO: algum dado invalido
+			return Redirect::route('public.pagamento')
+					->withInput()
+					->withErrors($validation);
+		}
 	}
 
 }

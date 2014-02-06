@@ -3,7 +3,7 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Lista de FAQS</h6>
+			<h6>Lista de FAQs</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.faq.create') }}" title="Criar FAQ" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
 	        </div>
@@ -13,14 +13,14 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('admin.faq')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::text('name')->label('')->class('input-medium')->placeholder('Nome') }}
-			{{ Former::text('value')->label('')->class('input-medium')->placeholder('Valor') }}
+			{{ Former::text('question')->class('input-medium')->placeholder('Pergunta')->label('Pergunta') }}
+			{{ Former::text('answer')->class('input-medium')->placeholder('Resposta')->label('Resposta') }}
+			{{ Former::text('group_title')->class('input-medium')->placeholder('Grupo')->label('Grupo') }}
 			{{ Former::submit() }}
 			{{ Former::link('Limpar Filtros', route('admin.faq')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
-	        	->label('')
 	        	->addOption('5', '5')
 	        	->addOption('10', '10')
 	        	->addOption('25', '25')
@@ -34,8 +34,9 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('ID', 'Questão', 'Estatus', 'Grupo', 'Ações') }}
+	{{ Table::headers('Questão', 'Resposta', 'Grupo', 'Ações') }}
 	{{ Table::body($faq)
+		->ignore(['id'])
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 			  	Navigation::links([

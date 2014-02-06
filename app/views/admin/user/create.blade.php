@@ -3,13 +3,14 @@
     <div class="well widget row-fluid">
 
         {{ Former::horizontal_open()->rules([
-            'email' => 'required|email',
-        	'password' => 'required|verified'
+        	'email' => 'required|email',
+        	'profile[cpf]' => 'required',
+        	'profile[city]' => 'required',
+        	'profile[state]' => 'required|exists:states,id',
+        	'profile[country]' => 'required',
         ]) }}
 
         {{ Former::email('email', 'E-mail')->class('span12') }}
-        {{ Former::password('password', 'Senha')->class('span12') }}
-        {{ Former::password('password_verification', 'Repita a Senha')->class('span12') }}
         {{ Former::text('profile[name]', 'Name')->class('span12') }}
         {{ Former::text('profile[city]', 'Cidade')->class('span12') }}
         {{ Former::select('profile[state]', 'Estado')

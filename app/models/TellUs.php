@@ -17,9 +17,11 @@ class TellUs extends Eloquent {
 
   public static $rules = array(
   	'name' => 'required',
-  	'email' => 'required',
-  	'depoiment' => 'required',
-  	'img' => 'required',
+	'destiny' => 'required',
+	'parner_name' => 'required',
+	'travel_date' => 'required',
+	'depoiment' => 'required',
+	'img' => 'required',
   );
 
 }

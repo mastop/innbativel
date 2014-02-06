@@ -1,13 +1,16 @@
 @section('content')
     <div class="well widget row-fluid">
 
-        {{ Former::horizontal_open()->rules(['email' => 'required|email']) }}
+        {{ Former::horizontal_open()->rules([
+        	'email' => 'required|email',
+        	'profile[cpf]' => 'required',
+        	'profile[city]' => 'required',
+        	'profile[state]' => 'required|exists:states,id',
+        	'profile[country]' => 'required',
+        ]) }}
 
         {{ Former::email('email', 'E-mail')->class('span12') }}
-        {{ Former::password('password', 'Senha')->class('span12') }}
-        {{ Former::password('password_confirmation', 'Confirmação de Senha')->class('span12') }}
-        {{ Former::text('profile[first_name]', 'Nome')->class('span12') }}
-        {{ Former::text('profile[last_name]', 'Sobrenome')->class('span12') }}
+        {{ Former::text('profile[name]', 'Name')->class('span12') }}
         {{ Former::text('profile[city]', 'Cidade')->class('span12') }}
         {{ Former::select('profile[state]', 'Estado')
         	->addOption('-- selecione uma opção --', null)
@@ -17,7 +20,7 @@
         {{ Former::text('profile[country]', 'País')->class('span12') }}
         {{ Former::text('profile[telephone]', 'Telefone')->class('span12') }}
         {{ Former::text('profile[cpf]', 'CPF')->class('span12') }}
-        {{ Former::text('profile[birthday]', 'Nascimento')->class('span12') }}
+        {{ Former::text('profile[birth]', 'Nascimento')->class('span12') }}
         {{ Former::text('profile[street]', 'Endereço')->class('span12') }}
         {{ Former::text('profile[number]', 'Número')->class('span12') }}
         {{ Former::text('profile[neighborhood]', 'Bairro')->class('span12') }}

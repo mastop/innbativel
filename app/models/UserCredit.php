@@ -21,9 +21,12 @@ class UserCredit extends Eloquent {
   	'value' => 'required',
   );
 
-  public function user()
-  {
-	return $this->belongsTo('User');
+  public function user(){
+    return $this->belongsTo('User')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
+  }
+
+  public function new_user(){
+    return $this->belongsTo('User', 'new_user_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
   }
 
 }
