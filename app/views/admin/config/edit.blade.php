@@ -10,7 +10,7 @@
         {{ Former::populate($config) }}
 
         {{ Former::text('name', 'Nome')->class('span12') }}
-        {{ Former::text('value', 'Valor')->class('span12') }}
+        {{ Former::textarea('value', 'Valor')->class('span12') }}
 
         {{ Former::actions()
           ->primary_submit('Enviar')
@@ -19,5 +19,8 @@
         {{ Former::close() }}
 
     </div>
+
+    {{ HTML::script('assets/vendor/tinymce/tinymce.min.js') }}
+    <script type="text/javascript">tinymce.init({forced_root_block : "", selector:'textarea'});</script>
 
 @stop

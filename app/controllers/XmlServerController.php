@@ -9,7 +9,7 @@ class XmlServerController extends BaseController {
 		// 				'offer_option.price_original', 'offers_options.price_with_discount',
 		// 				'offers.percent_off', 'offers.saveme_img', 'offers.slug',
 		// 				'offers.starts_on', 'offers.ends_on', 'offers.description',
-		// 				'offers.general_rules', 'offers_option.rules', 'offers.features',
+		// 				'offers.general_rules', 'offers_option.rules',
 		// 				'offers_saveme.priority', 'saveme.geocode', 'users.name', 'users.site',
 		// 				'users.country', 'users.city', 'users.state', 'users.neighborhood',
 		// 				'users.number', 'users.complement', 'users.zip', 'users.telephone',

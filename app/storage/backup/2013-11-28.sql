@@ -220,7 +220,6 @@ CREATE TABLE IF NOT EXISTS `offers` (
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `saveme_title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `slug` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `allow_coupons` tinyint(1) NOT NULL DEFAULT '0',
   `general_rules` text COLLATE utf8_unicode_ci,
   `features` text COLLATE utf8_unicode_ci,
   `installment` int(11) DEFAULT NULL,

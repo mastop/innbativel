@@ -325,7 +325,7 @@ class AdminOfferController extends BaseController {
 		 * Finally Obj
 		 */
 		$offers = $offerObj->orderBy('display_order', 'asc')
-						   ->where('ends_on', '>=', date("Y-m-d H:i:s"))
+						   // ->where('ends_on', '>=', date("Y-m-d H:i:s"))
 						   ->get();
 
 		/*

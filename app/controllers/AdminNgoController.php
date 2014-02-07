@@ -201,14 +201,6 @@ class AdminNgoController extends BaseController {
 			->withErrors($validation);
 	}
 
-		/*
-		 * Return and display Errors
-		 */
-		return Redirect::route('admin.ngo.edit', $id)
-			->withInput()
-			->withErrors($validation);
-	}
-
 	/**
 	 * Display NGO Delete Page.
 	 *

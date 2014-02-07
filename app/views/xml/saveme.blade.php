@@ -27,7 +27,7 @@
         @endforeach
         </regras>
         <destaques>
-        	<destaque><![CDATA[{{ $offer->features }}]]></destaque>
+        	<destaque><![CDATA[{{ $offer->subtitle }}]]></destaque>
         </destaques>
         <cidades>
         @foreach ($offer->saveme as $saveme)

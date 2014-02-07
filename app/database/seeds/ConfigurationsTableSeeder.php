@@ -35,6 +35,12 @@ class ConfigurationsTableSeeder extends DatabaseSeeder
       [
         'name' => 'enable_comment_moderation', 'value' => 'true',
       ],
+      [
+        'name' => 'privacy_policy', 'value' => 'PREENCHER DEPOIS DE LANÇAR',
+      ],
+      [
+        'name' => 'terms', 'value' => 'PREENCHER DEPOIS DE LANÇAR',
+      ],
     ];
 
     foreach ($configurations as $configuration)

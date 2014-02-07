@@ -24,7 +24,7 @@ class SetupConfigurationsTable extends Migration {
          */
 		$table->increments('id');
 		$table->string('name')->index();
-		$table->string('value')->index();
+		$table->text('value')->index();
       });
     }
 

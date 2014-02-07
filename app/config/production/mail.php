@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'host' => 'smtp.gmail.org',
+	'host' => 'smtp.gmail.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -57,6 +57,11 @@ return array(
 	'from' => [
 		'address' => 'programacao@innbativel.com.br',
 		'name' => 'Cawe Coy Rodrigues Marega'
+	],
+
+	'reply-to' => [
+		'address' => 'faleconosco@innbativel.com.br',
+		'name' => 'INNBatível'
 	],
 
 	/*

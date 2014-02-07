@@ -34,7 +34,6 @@ class SetupOffersTable extends Migration {
 		$table->string('saveme_title')->nullable();
 		$table->string('slug')->nullable();
 		$table->text('general_rules')->nullable(); // HTML
-		$table->text('features')->nullable(); // HTML
 		$table->dateTime('starts_on')->nullable();
 		$table->dateTime('ends_on')->nullable();
 		$table->string('cover_img')->nullable(); // URL

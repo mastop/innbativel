@@ -30,32 +30,9 @@
 				->fromQuery(DB::table('ngos')->get(['id', 'name']), 'name', 'id')
 				->class('span12')
 				}}
-				{{ Former::select('installment', 'Parcelas')
-					->addOption('-- selecione uma opção --', null)
-					->addOption('1x', '1')
-					->addOption('2x', '2')
-					->addOption('3x', '3')
-					->addOption('4x', '4')
-					->addOption('5x', '5')
-					->addOption('6x', '6')
-					->addOption('7x', '7')
-					->addOption('8x', '8')
-					->addOption('9x', '9')
-					->addOption('10x', '10')
-					->addOption('11x', '11')
-					->addOption('12x', '12')
-					->class('span12')
-				}}
-				{{ Former::inline_radios('allow_coupons', 'Permite Coupons')
-					  ->radios([
-					    'Sim' => ['value' => '1'],
-					    'Não' => ['value' => '0'],
-					  ])
-				}}
 				{{ Former::text('starts_on', 'Inicia em')->class('span12') }}
 				{{ Former::text('ends_on', 'Termina em')->class('span12') }}
 				{{ Former::text('description', 'descrição')->class('span12') }}
-				{{ Former::text('features', 'Destaques')->class('span12') }}
 				{{ Former::text('general_rules', 'regras Gerais')->class('span12') }}
 				{{ Former::text('video', 'Vídeo')->class('span12') }}
 				{{ Former::text('display_order', 'Ordem de Exibição')->class('span12') }}
