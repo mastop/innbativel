@@ -3,6 +3,8 @@
 
         {{ Former::horizontal_open()->rules([
         	'email' => 'required|email',
+        	'profile[first_name]' => 'required',
+        	'profile[last_name]' => 'required',
         	'profile[cpf]' => 'required',
         	'profile[city]' => 'required',
         	'profile[state]' => 'required|exists:states,id',
@@ -10,7 +12,8 @@
         ]) }}
 
         {{ Former::email('email', 'E-mail')->class('span12') }}
-        {{ Former::text('profile[name]', 'Name')->class('span12') }}
+        {{ Former::text('profile[first_name]', 'Nome')->class('span12') }}
+        {{ Former::text('profile[last_name]', 'Sobrenome')->class('span12') }}
         {{ Former::text('profile[city]', 'Cidade')->class('span12') }}
         {{ Former::select('profile[state]', 'Estado')
         	->addOption('-- selecione uma opção --', null)
@@ -20,7 +23,7 @@
         {{ Former::text('profile[country]', 'País')->class('span12') }}
         {{ Former::text('profile[telephone]', 'Telefone')->class('span12') }}
         {{ Former::text('profile[cpf]', 'CPF')->class('span12') }}
-        {{ Former::text('profile[birth]', 'Nascimento')->class('span12') }}
+        {{ Former::text('profile[birthday]', 'Nascimento')->class('span12') }}
         {{ Former::text('profile[street]', 'Endereço')->class('span12') }}
         {{ Former::text('profile[number]', 'Número')->class('span12') }}
         {{ Former::text('profile[neighborhood]', 'Bairro')->class('span12') }}

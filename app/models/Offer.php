@@ -10,8 +10,8 @@ class Offer extends Eloquent {
 	protected $table = 'offers';
 
 	public static $sluggable = array(
-	 'build_from' => 'title',
-	 'save_to'    => 'slug',
+		 'build_from' => 'fulldestiny',
+		 'save_to'    => 'slug',
 	 );
 
 	protected $guarded = [];
@@ -125,6 +125,11 @@ class Offer extends Eloquent {
 		}
 
 		return $value;
+	}
+
+	public function getFulldestinnyAttribute(){
+		$destiny = Destiny::where('id', $this->destiny_id)->select('title');
+		return $destiny->title;
 	}
 
 }

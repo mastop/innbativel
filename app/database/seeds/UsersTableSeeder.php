@@ -38,13 +38,13 @@ class UsersTableSeeder extends DatabaseSeeder
   {
     $users = [
       [
-        'username' => 'danielmai',
-        'email'    => 'designer@innbativel.com.br',
+        'username' => 'cawecoy',
+        'email'    => 'cawecoy@gmail.com',
         'password' => 'programmer',
       ],
       [
-        'username' => 'cawecoy',
-        'email'    => 'cawecoy@gmail.com',
+        'username' => 'danielmai',
+        'email'    => 'designer@innbativel.com.br',
         'password' => 'programmer',
       ],
     ];

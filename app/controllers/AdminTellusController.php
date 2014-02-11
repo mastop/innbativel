@@ -12,7 +12,7 @@ class AdminTellusController extends BaseController {
 	/**
 	 * Constructor
 	 */
-	public function __construct(Tellus $tellus)
+	public function __construct(TellUs $tellus)
 	{
 		/*
 		 * Set Tellus Instance

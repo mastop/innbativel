@@ -112,6 +112,7 @@ class AdminUserController extends BaseController {
 				'email',
 				'created_at'
 			])
+			->where('id', $id)
 			->first()
 			->toArray();
 
@@ -182,6 +183,8 @@ class AdminUserController extends BaseController {
 
 		$rules = [
 			'email' => 'required|email|unique:users,email',
+        	'profile.first_name' => 'required',
+        	'profile.last_name' => 'required',
         	'profile.cpf' => 'required',
         	'profile.city' => 'required',
         	'profile.state' => 'required',
@@ -256,6 +259,8 @@ class AdminUserController extends BaseController {
 
 		$rules = [
 			'email' => 'required|email|unique:users,email,'. $id,
+        	'profile.first_name' => 'required',
+        	'profile.last_name' => 'required',
         	'profile.cpf' => 'required',
         	'profile.city' => 'required',
         	'profile.state' => 'required',
@@ -346,7 +351,8 @@ class AdminUserController extends BaseController {
 
 	public function postDelete($id)
 	{
-		$this->user->find($id)->delete();
+		$user = $this->user->find($id);
+		$user->delete();
 
 		Session::flash('success', 'Usuário excluído com sucesso.');
 

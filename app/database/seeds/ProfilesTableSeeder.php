@@ -33,13 +33,13 @@ class ProfilesTableSeeder extends DatabaseSeeder
     $profiles = [
       [
         'user_id' => 1,
-        'first_name'  => 'Felipe',
-        'last_name' => 'Podestá',
+        'first_name' => 'Cawe',
+        'last_name' => 'Coy',
       ],
       [
         'user_id' => 2,
-        'first_name' => 'Cawe',
-        'last_name' => 'Coy',
+        'first_name' => 'Daniel',
+        'last_name' => 'Mai',
       ],
     ];
 

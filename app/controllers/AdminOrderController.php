@@ -603,7 +603,7 @@ class AdminOrderController extends BaseController {
 				'Item '.($i+1) => $ord['qty'].' x '.$offer['price_with_discount'].' #'.$offer['offer_id'].' '.$offer['offer_title'].' | '.$offer['title']
 			]);
 
-			$voucs = Voucher::where('order_offer_id', '=', $ord['id'])->get()->toArray();
+			$voucs = Voucher::where('order_id', '=', $ord['id'])->get()->toArray();
 			foreach ($voucs as $vouc) {
 				$vouchers .= $vouc['id'].'-'.$vouc['display_code'].' ('.($vouc['used']?'Usado':'Não usado').') | ';
 			}
@@ -670,12 +670,12 @@ class AdminOrderController extends BaseController {
 
         if($new_status == 'aprovado'){
         	Mail::send('emails.order.order_approved', $data, function($message){
-				$message->to($user->email, 'INNBatível')->subject('Compra aprovada');
+				$message->to($user->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra aprovada');
 			});
         }
         else{ // $new_status = 'rejeitado'
         	Mail::send('emails.order.order_rejected', $data, function($message){
-				$message->to($user->email, 'INNBatível')->subject('Pagamento não aprovado');
+				$message->to($user->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Pagamento não aprovado');
 			});
         }
 
@@ -1998,7 +1998,7 @@ class AdminOrderController extends BaseController {
 		        $data = array('name' => $profile->first_name, 'products' => $products_email);
 
 		        Mail::send('emails.order.order_approved', $data, function($message){
-					$message->to(Auth::user()->email, 'INNBatível')->subject('Compra finalizada com sucesso');
+					$message->to(Auth::user()->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra finalizada com sucesso');
 				});
 
 				return Redirect::route('public.success', array('status' => $status));
@@ -2013,7 +2013,7 @@ class AdminOrderController extends BaseController {
 		        $data = array('name' => $profile->first_name, 'products' => $products_email, 'boletus_url' => $boletus_url);
 
 		        Mail::send('emails.order.order.order_boletus', $data, function($message){
-					$message->to(Auth::user()->email, 'INNBatível')->subject('Compra finalizada com sucesso');
+					$message->to(Auth::user()->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra finalizada com sucesso');
 				});
 
 				return Redirect::route('public.success', array('status' => $status, 'boletus_url' => $boletus_url));

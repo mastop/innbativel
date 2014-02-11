@@ -35,6 +35,7 @@ App::error(function(Exception $exception, $code)
       {
           $message
             ->to(['programacao@innbativel.com.br'])
+            ->replyTo('faleconosco@innbativel.com.br', 'INNBatível')
             ->subject('Erro no Site Innbatível');
       });
   }
