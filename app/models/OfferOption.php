@@ -34,7 +34,7 @@ class OfferOption extends Eloquent {
      );
 
 	public function offer(){
-		return $this->belongsTo('Offer');
+		return $this->belongsTo('Offer')->leftJoin('destinies', 'offers.destiny_id', '=', 'destinies.id');
 	}
 
 	public function order(){

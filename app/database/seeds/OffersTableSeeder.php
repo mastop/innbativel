@@ -18,7 +18,7 @@
 //     $interpreter = new Interpreter();
 
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
-//     	$stmt = $pdo->prepare('INSERT INTO offers (id, partner_id, ngo_id, title, subtitle, description, destiny, saveme_title, general_rules, starts_on, ends_on, cover_img, offer_old_img, newsletter_img, saveme_img, video, slug, display_order, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+//     	$stmt = $pdo->prepare('INSERT INTO offers (id, partner_id, ngo_id, title, subtitle, description, destiny, saveme_title, general_rules, starts_on, ends_on, cover_img, offer_old_img, newsletter_img, saveme_img, video, slug, display_order, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 //         $stmt->execute($columns);
 //     });
 

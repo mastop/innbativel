@@ -37,7 +37,7 @@ class AdminOfferController extends BaseController {
 		/*
 		 * Obj
 		 */
-		$offer = $this->offer->with(['partner'])->select(['id', 'title', 'destiny', 'starts_on', 'ends_on', 'in_pre_booking']);
+		$offer = $this->offer;
 
 		/*
 		 * Paginate
@@ -64,10 +64,6 @@ class AdminOfferController extends BaseController {
 			$offer = $offer->where('id', Input::get('id'));
 		}
 
-		if (Input::has('destiny')) {
-			$offer = $offer->where('destiny', 'like', '%'. Input::get('destiny') .'%');
-		}
-
 		if (Input::has('title')) {
 			$offer = $offer->where('title', 'like', '%'. Input::get('title') .'%');
 		}
@@ -92,6 +88,17 @@ class AdminOfferController extends BaseController {
 		 * Finally Obj
 		 */
 		$offer = $offer
+			->with(['partner', 'destiny'])
+			// ->select(['id', 'title', 'starts_on', 'ends_on', 'in_pre_booking'])
+			->whereExists(function($query){
+                if (Input::has('destiny')) {
+					$query->select(DB::raw(1))
+	                      ->from('destinies')
+						  ->whereRaw('destinies.id = offers.destiniy_id')
+						  ->whereRaw('destinies.name LIKE "%'.Input::get('destiny').'%"');
+				}
+
+            })
 			->orderBy($sort, $order)
 			->paginate($pag)->appends([
 				'sort' => $sort,
@@ -103,7 +110,7 @@ class AdminOfferController extends BaseController {
 				'in_pre_booking' => Input::get('in_pre_booking'),
 				'starts_on' => Input::get('starts_on'),
 				'ends_on' => Input::get('ends_on'),
-		]);
+			]);
 
 		/*
 		 * Layout / View

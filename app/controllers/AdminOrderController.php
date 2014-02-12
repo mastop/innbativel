@@ -458,12 +458,12 @@ class AdminOrderController extends BaseController {
 	public function anyVouchers($offer_option_id = null){
 		$vouchers = new Voucher;
 
-		$offers = Offer::with(['offer_option'])->get();
+		$offers = Offer::with(['offer_option', 'destiny'])->get();
 
 		// $offersOptions irá preencher o <select> da opção da qual estamos visualizando os vouchers/cupons
 		foreach ($offers as $offer) {
 			foreach ($offer['offer_option'] as $offer_option) {
-				$t = $offer->id.' | '.$offer->destiny.' | '.$offer_option->title;
+				$t = $offer->id.' | '.$offer['destiny']->name.' | '.$offer_option->title;
 				$offersOptions[$offer_option->id] = $t;
 			}
 		}

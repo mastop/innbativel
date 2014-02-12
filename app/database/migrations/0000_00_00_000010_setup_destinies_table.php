@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class SetupStatesTable extends Migration {
+class SetupOffersTable extends Migration {
 
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class SetupStatesTable extends Migration {
     public function up()
     {
       // Creates the users table
-      Schema::create('states', function($table)
+      Schema::create('destinies', function($table)
       {
         /*
          * Storage Engines
@@ -22,9 +22,11 @@ class SetupStatesTable extends Migration {
         /*
          * Fields
          */
-		$table->string('id', 2)->unique()->index();
-		$table->string('name', 20)->unique()->index();
+		$table->increments('id');
+		$table->string('name')->nullable();
+
       });
+
     }
 
     /**
@@ -37,7 +39,7 @@ class SetupStatesTable extends Migration {
 		DB::statement('SET foreign_key_checks = 0');
 		DB::statement('SET UNIQUE_CHECKS=0');
 
-		Schema::drop('states');
+		Schema::drop('destinies');
 
 		DB::statement('SET foreign_key_checks = 1');
 		DB::statement('SET UNIQUE_CHECKS=1');

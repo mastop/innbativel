@@ -24,8 +24,8 @@ class Offer extends Eloquent {
 	     'partner_id' => 'required|integer',
 	     'ngo_id' => 'required|integer',
 	     'genre_id' => 'required|integer',
+	     'destiny_id' => 'required',
 	     'title' => 'required',
-	     'destiny' => 'required',
 	     'starts_on' => 'required',
 	     'ends_on' => 'required',
 	     'cover_img' => 'required|mimes:jpeg,jpg,png',
@@ -73,6 +73,10 @@ class Offer extends Eloquent {
 
 	public function genre(){
 		return $this->belongsTo('Genre');
+	}
+
+	public function destiny(){
+		return $this->belongsTo('Destiny', 'destiny_id');
 	}
 
 	public function partner(){
@@ -128,8 +132,8 @@ class Offer extends Eloquent {
 	}
 
 	public function getFulldestinnyAttribute(){
-		$destiny = Destiny::where('id', $this->destiny_id)->select('title');
-		return $destiny->title;
+		$destiny = Destiny::where('id', $this->destiny_id);
+		return $destiny->city.'-'.$destiny->state_id;
 	}
 
 }
