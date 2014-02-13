@@ -114,7 +114,7 @@ class PainelOrderController extends BaseController {
 		// $offersOptions irá preencher o <select> da opção da qual estamos visualizando os vouchers/cupons
 		foreach ($offers as $offer) {
 			foreach ($offer['offer_option'] as $offer_option) {
-				$t = $offer->id.' | '.$offer->destiny.' | '.$offer_option->title;
+				$t = $offer->id.' | '.$offer['destiny']->name.' | '.$offer_option->title;
 				$offersOptions[$offer_option->id] = $t;
 			}
 		}

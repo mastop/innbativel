@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'host' => 'smtp.gmail.com',
+	'host' => 'smtp.mandrillapp.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return array(
 	|
 	*/
 
-	'port' => 587,
+	'port' => 2525,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -55,11 +55,6 @@ return array(
 	*/
 
 	'from' => [
-		'address' => 'programacao@innbativel.com.br',
-		'name' => 'Cawe Coy Rodrigues Marega'
-	],
-
-	'reply-to' => [
 		'address' => 'faleconosco@innbativel.com.br',
 		'name' => 'INNBatível'
 	],
@@ -88,7 +83,7 @@ return array(
 	|
 	*/
 
-	'username' => 'programacao@innbativel.com.br',
+	'username' => 'envio@innbativel.com.br',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -101,7 +96,7 @@ return array(
 	|
 	*/
 
-	'password' => 'proinnbativel11',
+	'password' => 'DcNygr4cZHMp4tukM4jM8w',
 
 	/*
 	|--------------------------------------------------------------------------

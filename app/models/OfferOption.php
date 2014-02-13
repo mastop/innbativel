@@ -34,7 +34,7 @@ class OfferOption extends Eloquent {
      );
 
 	public function offer(){
-		return $this->belongsTo('Offer')->leftJoin('destinies', 'offers.destiny_id', '=', 'destinies.id');
+		return $this->belongsTo('Offer')->with(['destiny']);
 	}
 
 	public function order(){
@@ -43,6 +43,14 @@ class OfferOption extends Eloquent {
 
 	public function offer_additional(){
 		return $this->belongsToMany('Offer', 'offers_additional', 'offer_additional_id', 'offer_main_id');
+	}
+
+	public function qty_sold(){
+		return $this->belongsToMany('Order', 'orders_offers_options', 'offer_option_id', 'order_id')->withPivot('qty');
+	}
+
+	public function used_vouchers(){
+		return $this->belongsToMany('Order', 'vouchers', 'offer_option_id', 'order_id')->where('used', 1)->select(DB::raw('count(vouchers.offer_option_id) as qty'))->groupBy('vouchers.offer_option_id');
 	}
 
 	public function getPriceOriginalAttribute($value)

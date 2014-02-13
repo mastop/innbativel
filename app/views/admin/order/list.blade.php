@@ -60,7 +60,7 @@
 	</div>
 {{ Table::open() }}
 {{ Table::headers('ID', 'Status', 'Valor', 'Forma de pagamento', 'Data e hora', 'ID das Ofertas', 'Cliente', 'Ações') }}
-{{ Table::body($orderArray)->ignore(['user', 'offer', 'id', 'user_id', 'antifraud_id', 'braspag_id', 'coupon_id', 'donation', 'credit_discount', 'cpf', 'telephone', 'is_gift', 'boleto', 'capture_date', 'history', 'updated_at', 'braspag_order_id_string'])
+{{ Table::body($orderArray)->ignore(['user', 'offer', 'id', 'user_id', 'antifraud_id', 'braspag_id', 'coupon_id', 'first_digits_card', 'holder_card', 'donation', 'credit_discount', 'cpf', 'telephone', 'is_gift', 'boleto', 'capture_date', 'history', 'updated_at', 'braspag_order_id_string'])
 	->oferta(function($order) {
 		if(isset($order['offer'])) {
 			$id = '| ';

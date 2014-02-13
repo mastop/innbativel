@@ -339,13 +339,13 @@ class DestiniesTableSeeder extends DatabaseSeeder
 		  'name' => 'Ubatuba - SP',
 		],
 		[
-		  'name' => 'Urubici - SC'
+		  'name' => 'Urubici - SC',
 		],
     ];
 
     foreach ($destinies as $destiny)
     {
-      Destiny::create($destinies);
+      Destiny::create($destiny);
     }
   }
 }

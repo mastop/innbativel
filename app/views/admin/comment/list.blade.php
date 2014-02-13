@@ -15,7 +15,7 @@
 			{{ Former::text('comment')->class('input-medium')->placeholder('Comentário')->label('Comentário') }}
 			{{ Former::select('offer_id', 'Oferta')
 	        	->addOption('', null)
-				->fromQuery(DB::table('offers')->select(DB::raw('concat (id," | ",destiny) as id_destiny, id')), 'id_destiny', 'id')
+				->fromQuery(DB::table('offers')->select(DB::raw('concat (offers.id," | ",destinies.name) as id_destiny, offers.id as id'))->leftJoin('destinies', 'offers.destiny_id', '=', 'destinies.id'), 'id_destiny', 'id')
 	        }}
 	        {{ Former::select('user_id', 'Cliente')
 	        	->addOption('', null)
@@ -57,7 +57,7 @@
 		})
 		->offerr(function($body) {
 			if(isset($body['offer'])){
-				return $body['offer']->id.' | '.$body['offer']->destiny;
+				return $body['offer']->id.' | '.$body['offer']['destiny']->name;
 			}
 			return '--';
 		})

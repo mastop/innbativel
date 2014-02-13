@@ -136,7 +136,7 @@ class AdminOrderController extends BaseController {
 								]);
 
 		foreach ($orderArray as $key => &$value) {
-			if(isset($value->offer)){
+			if(isset($value['offer'])){
 				$braspag_order_id = $value->braspag_order_id;
 				$id = $value->id;
 
@@ -659,7 +659,7 @@ class AdminOrderController extends BaseController {
 		// save the items the user ordered and calculate total
 		foreach ($offers_options as $offer_option) {
 			$qty_ordered = array_shift($qties); // pega o primeiro elemento de $qties e joga no final do próprio array $qties, além de obter o valor manipulado em si, claro
-			$products_email .= '<a href="https://www.innbativel.com.br/oferta/' . $offer_option->offer->slug . '">' . $qty_ordered . ' x ' . $offer_option->offer->destiny . ' | ' . $offer_option->title . '</a><br/>';
+			$products_email .= '<a href="https://www.innbativel.com.br/oferta/' . $offer_option['offer']->slug . '">' . $qty_ordered . ' x ' . $offer_option['offer']['destiny']->name . ' | ' . $offer_option->title . '</a><br/>';
 		}
 
 		$products_email = substr($products_email, 0, -5);
@@ -1287,7 +1287,7 @@ class AdminOrderController extends BaseController {
 
 				if($qty_ordered > $max_qty_allowed){
 					// ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
-					$error = 'A quantidade selecionada para a oferta ' . $offer_option->offer->title . ' é maior do que a quantidade em estoque.';
+					$error = 'A quantidade selecionada para a oferta ' . $offer_option['offer']->title . ' é maior do que a quantidade em estoque.';
 
 					return Redirect::route('public.pagamento')
 							->withErrors($error);
@@ -1296,7 +1296,7 @@ class AdminOrderController extends BaseController {
 					$order_offer_option['order_id'] = $order_id;
 					$order_offer_option['offer_option_id'] = $offer_option['id'];
 					$order_offer_option['qty'] = $qty_ordered;
-					$products[] = '<a href="https://www.innbativel.com.br/oferta/' . $order_offer_option->offer->slug . '">' . $qty_ordered . ' x ' . $order_offer_option->offer->destiny . ' | ' . $order_offer_option->title . '</a>';
+					$products[] = '<a href="https://www.innbativel.com.br/oferta/' . $order_offer_option['offer']->slug . '">' . $qty_ordered . ' x ' . $order_offer_option['offer']['destiny']->name . ' | ' . $order_offer_option->title . '</a>';
 
 					OrderOfferOption::create($order_offer_option);
 

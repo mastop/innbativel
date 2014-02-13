@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class SetupOffersTable extends Migration {
+class SetupDestiniesTable extends Migration {
 
     /**
      * Run the migrations.

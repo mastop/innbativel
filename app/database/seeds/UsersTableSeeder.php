@@ -45,7 +45,12 @@ class UsersTableSeeder extends DatabaseSeeder
       [
         'username' => 'danielmai',
         'email'    => 'designer@innbativel.com.br',
-        'password' => 'programmer',
+        'password' => 'designer',
+      ],
+      [
+        'username' => 'paulosabbaneli',
+        'email'    => 'gerente@innbativel.com.br',
+        'password' => 'manager',
       ],
     ];
 

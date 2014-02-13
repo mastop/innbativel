@@ -22,11 +22,11 @@ class Comment extends Eloquent {
   );
 
   public function offer(){
-  	return $this->belongsTo('Offer');
+  	return $this->belongsTo('Offer')->with(['destiny']);
   }
 
   public function user(){
-  	return $this->belongsTo('User');
+  	return $this->belongsTo('User')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
   }
 
 }
