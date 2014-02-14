@@ -11,7 +11,7 @@
 
 	<oferta>
         <id>{{ $offer->id }}</id>
-        <titulo><![CDATA[{{ $offer->destiny }} | {{ $offer->saveme_title }}]]></titulo>
+        <titulo><![CDATA[{{ $offer['destiny']->name }} | {{ $offer->saveme_title }}]]></titulo>
         <preco-real>{{ $offer_option['price_original'] }}</preco-real>
         <preco-final>{{ $offer_option['price_with_discount'] }}</preco-final>
         <desconto>{{ $offer->percent_off }}</desconto>
@@ -30,7 +30,7 @@
         	<destaque><![CDATA[{{ $offer->subtitle }}]]></destaque>
         </destaques>
         <cidades>
-        @foreach ($offer->saveme as $saveme)
+        @foreach ($offer['saveme'] as $saveme)
 	        <cidade>
 	        	<codigo-cidade>{{ $saveme->geocode }}</codigo-cidade>
 	        	<prioridade-cidade>{{ $saveme->priority }}</prioridade-cidade>
@@ -39,20 +39,20 @@
         </cidades>
         <estabelecimentos>
 	        <estabelecimento>
-		        <nome-estabelecimento><![CDATA[{{ $offer->partner->name }}]]></nome-estabelecimento>
+		        <nome-estabelecimento><![CDATA[{{ $offer['partner']->name }}]]></nome-estabelecimento>
 		        <tipo-estabelecimento>1</tipo-estabelecimento>
-		        <site-estabelecimento>{{ $offer->partner->site }}</site-estabelecimento>
-		        <pais-estabelecimento>{{ $offer->partner->country }}</pais-estabelecimento>
-		        <cidade-estabelecimento><![CDATA[{{ $offer->partner->city }}]]></cidade-estabelecimento>
-		        <estado-estabelecimento><![CDATA[{{ $offer->partner->state }}]]></estado-estabelecimento>
-		        <bairro-estabelecimento><![CDATA[{{ $offer->partner->neighborhood }}]]></bairro-estabelecimento>
-		        <endereco-estabelecimento><![CDATA[{{ $offer->partner->street }}]]></endereco-estabelecimento>
-		        <numero-estabelecimento><![CDATA[{{ $offer->partner->number }}]]></numero-estabelecimento>
-		        <complemento-estabelecimento><![CDATA[{{ $offer->partner->complement }}]]></complemento-estabelecimento>
-		        <cep-estabelecimento><![CDATA[{{ $offer->partner->zip }}]]></cep-estabelecimento>
+		        <site-estabelecimento>{{ $offer['partner']->site }}</site-estabelecimento>
+		        <pais-estabelecimento>{{ $offer['partner']->country }}</pais-estabelecimento>
+		        <cidade-estabelecimento><![CDATA[{{ $offer['partner']->city }}]]></cidade-estabelecimento>
+		        <estado-estabelecimento><![CDATA[{{ $offer['partner']->state }}]]></estado-estabelecimento>
+		        <bairro-estabelecimento><![CDATA[{{ $offer['partner']->neighborhood }}]]></bairro-estabelecimento>
+		        <endereco-estabelecimento><![CDATA[{{ $offer['partner']->street }}]]></endereco-estabelecimento>
+		        <numero-estabelecimento><![CDATA[{{ $offer['partner']->number }}]]></numero-estabelecimento>
+		        <complemento-estabelecimento><![CDATA[{{ $offer['partner']->complement }}]]></complemento-estabelecimento>
+		        <cep-estabelecimento><![CDATA[{{ $offer['partner']->zip }}]]></cep-estabelecimento>
 		        <ddi-estabelecimento></ddi-estabelecimento>
 		        <ddd-estabelecimento></ddd-estabelecimento>
-		        <telefone-estabelecimento><![CDATA[{{ $offer->partner->telephone }}]]></telefone-estabelecimento>
+		        <telefone-estabelecimento><![CDATA[{{ $offer['partner']->telephone }}]]></telefone-estabelecimento>
 	        </estabelecimento>
         </estabelecimentos>
 	</oferta>

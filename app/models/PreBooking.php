@@ -25,7 +25,7 @@ class PreBooking extends Eloquent {
   }
 
   public function offer(){
-  	return $this->belongsTo('Offer');
+  	return $this->belongsTo('Offer')->with(['destiny']);
   }
 
 }

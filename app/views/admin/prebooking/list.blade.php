@@ -41,7 +41,7 @@
 		->ignore(['id', 'user_id', 'user', 'offer', 'created_at', 'updated_at'])
 		->destiny(function($body) {
 			if(isset($body['offer'])){
-				return $body['offer']->destiny;
+				return $body['offer']['destiny']->name;
 			}
 			return '--';
 		})

@@ -17,7 +17,7 @@ class XmlServerController extends BaseController {
 
 		$now = date('Y-m-d H:i:s');
 
-		$data['offers'] = Offer::with('saveme', 'offer_option', 'partner')->where('starts_on','<', $now)->where('ends_on','>', $now)->orderBy('starts_on', 'asc')->get();
+		$data['offers'] = Offer::with(['saveme', 'offer_option', 'partner', 'destiny'])->where('starts_on','<', $now)->where('ends_on','>', $now)->orderBy('starts_on', 'asc')->get();
 		// $data['offers'] = Offer::with('saveme', 'offer_option', 'partner')->get($select);
 
 		// d($data['offers'][0]->offer_option2);
@@ -29,7 +29,7 @@ class XmlServerController extends BaseController {
 	{
 		$now = date('Y-m-d H:i:s');
 		$data['offers'] =
-		DB::select('SELECT 	o.id, o.destiny, o.saveme_title, o.slug, o.starts_on, o.ends_on, o.cover_img, op.price_original, op.price_with_discount, op.percent_off, op.max_qty, op.voucher_validity_end, p.first_name, p.last_name,
+		DB::select('SELECT 	o.id, d.name AS destiny, o.saveme_title, o.slug, o.starts_on, o.ends_on, o.cover_img, op.price_original, op.price_with_discount, op.percent_off, op.max_qty, op.voucher_validity_end, p.first_name, p.last_name,
 						(
 						SELECT SUM( orop.qty )
 						FROM orders_offers_options AS orop
@@ -39,6 +39,7 @@ class XmlServerController extends BaseController {
 					FROM offers AS o
 					LEFT JOIN offers_options AS op ON o.id = op.offer_id
 					LEFT JOIN profiles AS p ON o.partner_id = p.user_id
+					LEFT JOIN destinies AS d ON o.destiny_id = d.id
 					-- WHERE o.starts_on < ? AND o.ends_on > ?
 					GROUP BY o.id
 					ORDER BY o.display_order, op.id ASC');

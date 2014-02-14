@@ -18,7 +18,7 @@
 		}}
 		{{ Former::select('offer_id', 'Oferta')
 			 	 ->addOption('-- selecione uma opção --', null)
-			 	 ->fromQuery(DB::table('offers')->where('ends_on', '>=', date("Y-m-d H:i:s"))->select(DB::raw('concat (id," | ",destiny) as id_destiny, id')), 'id_destiny', 'id')
+			 	 ->fromQuery(DB::table('offers')->where('ends_on', '>=', date("Y-m-d H:i:s"))->select(DB::raw('concat (offers.id," | ",destinies.name) as id_destiny, offers.id as id'))->leftJoin('destinies', 'offers.destiny_id', '=', 'destinies.id'), 'id_destiny', 'id')
 				 ->class('span12')
 		}}
 

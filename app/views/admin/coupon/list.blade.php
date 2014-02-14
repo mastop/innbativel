@@ -45,7 +45,7 @@
 		})
 		->offerr(function($body) {
 			if(isset($body['offer'])) {
-				return $body['offer']->id.' | '.$body['offer']->destiny;
+				return $body['offer']->id.' | '.$body['offer']['destiny']->name;
 			}
 			return 'Todas';
 		})

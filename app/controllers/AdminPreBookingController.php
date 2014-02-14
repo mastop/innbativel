@@ -72,8 +72,9 @@ class AdminPreBookingController extends BaseController {
 					                if (Input::has('destiny')) {
 										$query->select(DB::raw(1))
 						                      ->from('offers')
+						                      ->join('destinies', 'destinies.id', '=', 'offers.destiny_id')
 						                      ->whereRaw('pre_bookings.offer_id = offers.id')
-						                      ->whereRaw('offers.destiny LIKE "%'.Input::get('destiny').'%"');
+						                      ->whereRaw('destinies.name LIKE "%'.Input::get('destiny').'%"');
 									}
 
 					             })
@@ -136,8 +137,9 @@ class AdminPreBookingController extends BaseController {
 					                if ($destiny) {
 										$query->select(DB::raw(1))
 						                      ->from('offers')
+						                      ->join('destinies', 'destinies.id', '=', 'offers.destiny_id')
 						                      ->whereRaw('pre_bookings.offer_id = offers.id')
-						                      ->whereRaw('offers.destiny LIKE "%'.$destiny.'%"');
+						                      ->whereRaw('destinies.name LIKE "%'.$destiny.'%"');
 									}
 
 					             })
@@ -169,7 +171,7 @@ class AdminPreBookingController extends BaseController {
 		foreach ($prebooking as $pb) {
 			$ss = null;
 			$ss[] = $pb->offer_id;
-			$ss[] = $pb['offer']->destiny;
+			$ss[] = $pb['offer']['destiny']->name;
 			$ss[] = $pb['user']->first_name.' '.$pb['user']->last_name;
 			$ss[] = $pb['user']->email;
 			$ss[] = $pb['user']->telephone1;
