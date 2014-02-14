@@ -15,12 +15,10 @@ class ContractOption extends Eloquent {
   protected $softDelete = false;
   public $timestamps = false;
 
-  public static $rules = array(
-  	//'name' => 'required',
-  );
+  public static $rules = array();
 
   public function contract(){
-  	return $this->belongsTo('Contract');
+  	return $this->belongsTo('Contract', 'contract_id');
   }
 
 }
