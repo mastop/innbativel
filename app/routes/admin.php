@@ -412,6 +412,23 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::get('included/delete/{id}', ['as' => 'admin.included.delete', 'uses' => 'AdminIncludedController@getDelete']);
 	Route::post('included/delete/{id}', ['as' => 'admin.included.destroy', 'uses' => 'AdminIncludedController@postDelete']);
 
+	/*
+	 * Tags
+	 */
+
+	Route::any('tag', ['as' => 'admin.tag', 'uses' => 'AdminTagController@anyIndex']);
+
+	Route::get('tag/create', ['as' => 'admin.tag.create', 'uses' => 'AdminTagController@getCreate']);
+	Route::post('tag/create', ['as' => 'admin.tag.save', 'uses' => 'AdminTagController@postCreate']);
+
+	Route::any('tag/edit', function(){ return Redirect::route('admin.tag'); });
+	Route::get('tag/edit/{id}', ['as' => 'admin.tag.edit', 'uses' => 'AdminTagController@getEdit']);
+	Route::post('tag/edit/{id}', ['as' => 'admin.tag.update', 'uses' => 'AdminTagController@postEdit']);
+
+	Route::any('tag/delete', function(){ return Redirect::route('admin.tag'); });
+	Route::get('tag/delete/{id}', ['as' => 'admin.tag.delete', 'uses' => 'AdminTagController@getDelete']);
+	Route::post('tag/delete/{id}', ['as' => 'admin.tag.destroy', 'uses' => 'AdminTagController@postDelete']);
+
 });
 
 Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){

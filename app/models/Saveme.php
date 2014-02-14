@@ -21,7 +21,7 @@ class Saveme extends Eloquent {
   );
 
   public function offer(){
-  	return $this->belongsToMany('Offer', 'offers_saveme')->withPivot('priority');
+  	return $this->belongsToMany('Offer', 'offers_saveme', 'saveme_id', 'offer_id')->withPivot('priority');
   }
 
 }

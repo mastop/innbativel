@@ -23,13 +23,14 @@ class DatabaseSeeder extends Seeder {
 		$this->call('GenresTableSeeder');
 		$this->call('StatesTableSeeder');
 		$this->call('DestiniesTableSeeder');
+		$this->call('IncludedTableSeeder');
+		$this->call('TagsTableSeeder');
 		$this->call('OffersTableSeeder');
 		$this->call('OffersOptionsTableSeeder');
 		$this->call('OffersImagesTableSeeder');
 		$this->call('CategoriesTableSeeder');
 		$this->call('SubcategoriesTableSeeder');
 		$this->call('SavemesTableSeeder');
-		$this->call('IncludedTableSeeder');
 		$this->call('OffersSavemeTableSeeder');
 		$this->call('CommentsTableSeeder');
 		$this->call('DiscountsCouponsTableSeeder');

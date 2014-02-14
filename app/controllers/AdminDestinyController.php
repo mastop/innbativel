@@ -49,7 +49,7 @@ class AdminDestinyController extends BaseController {
 		 * Sort filter
 		 */
 
-    	$sort = in_array(Input::get('sort'), ['name', 'description']) ? Input::get('sort') : 'id';
+    	$sort = in_array(Input::get('sort'), ['name']) ? Input::get('sort') : 'id';
 
 		/*
 		 * Order filter
