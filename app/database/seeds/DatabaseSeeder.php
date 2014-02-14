@@ -43,6 +43,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('TellUsTableSeeder');
 		$this->call('PartnersTestimoniesTableSeeder');
 		$this->call('SuggestATripTableSeeder');
+		$this->call('ContractsTableSeeder');
 	}
 
 }
