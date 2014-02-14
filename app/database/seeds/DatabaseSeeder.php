@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('CategoriesTableSeeder');
 		$this->call('SubcategoriesTableSeeder');
 		$this->call('SavemesTableSeeder');
+		$this->call('IncludedTableSeeder');
 		$this->call('OffersSavemeTableSeeder');
 		$this->call('CommentsTableSeeder');
 		$this->call('DiscountsCouponsTableSeeder');

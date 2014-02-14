@@ -36,7 +36,7 @@ class SetupOffersOptionsTable extends Migration {
 		$table->dateTime('voucher_validity_start')->nullable();
 		$table->dateTime('voucher_validity_end')->nullable();
 		$table->text('rules')->nullable(); //HTML
-		$table->string('display_order')->nullable(); // ordem da opções na página da oferta
+		$table->integer('display_order')->default(99); // ordem da opções na página da oferta
 
         /*
          * Foreign Keys

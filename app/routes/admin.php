@@ -395,6 +395,23 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::get('destiny/delete/{id}', ['as' => 'admin.destiny.delete', 'uses' => 'AdminDestinyController@getDelete']);
 	Route::post('destiny/delete/{id}', ['as' => 'admin.destiny.destroy', 'uses' => 'AdminDestinyController@postDelete']);
 
+	/*
+	 * Included
+	 */
+
+	Route::any('included', ['as' => 'admin.included', 'uses' => 'AdminIncludedController@anyIndex']);
+
+	Route::get('included/create', ['as' => 'admin.included.create', 'uses' => 'AdminIncludedController@getCreate']);
+	Route::post('included/create', ['as' => 'admin.included.save', 'uses' => 'AdminIncludedController@postCreate']);
+
+	Route::any('included/edit', function(){ return Redirect::route('admin.included'); });
+	Route::get('included/edit/{id}', ['as' => 'admin.included.edit', 'uses' => 'AdminIncludedController@getEdit']);
+	Route::post('included/edit/{id}', ['as' => 'admin.included.update', 'uses' => 'AdminIncludedController@postEdit']);
+
+	Route::any('included/delete', function(){ return Redirect::route('admin.included'); });
+	Route::get('included/delete/{id}', ['as' => 'admin.included.delete', 'uses' => 'AdminIncludedController@getDelete']);
+	Route::post('included/delete/{id}', ['as' => 'admin.included.destroy', 'uses' => 'AdminIncludedController@postDelete']);
+
 });
 
 Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){

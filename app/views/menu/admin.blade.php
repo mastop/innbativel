@@ -7,6 +7,7 @@
           ['Permissões', route('admin.perm'), false, false, null, 'leaf'],
           ['Ofertas', route('admin.offer'), false, false, null, 'fire'],
           ['Destinos', route('admin.destiny'), false, false, null, 'fire'],
+          ['Itens Inclusos', route('admin.included'), false, false, null, 'fire'],
           ['Pagamentos', route('admin.order'), false, false, null, 'leaf'],
           ['Saveme', route('admin.saveme'), false, false, null, 'leaf'],
           ['Pré-reservas', route('admin.prebooking'), false, false, null, 'leaf'],

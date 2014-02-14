@@ -27,7 +27,7 @@ class SetupCommentsTable extends Migration {
 		$table->integer('user_id')->unsigned()->index();
 		$table->text('comment')->nullable();
 		$table->boolean('approved')->default(false);
-		$table->string('display_order')->default(99);
+		$table->integer('display_order')->default(99);
 
         /*
          * Foreign Keys

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class SetupGeoCategoriesTable extends Migration {
+class SetupIncludedTable extends Migration {
 
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class SetupGeoCategoriesTable extends Migration {
     public function up()
     {
       // Creates the users table
-      Schema::create('geo_categories', function($table)
+      Schema::create('included', function($table)
       {
         /*
          * Storage Engines
@@ -24,13 +24,14 @@ class SetupGeoCategoriesTable extends Migration {
          */
 		$table->increments('id');
 		$table->string('title')->nullable();
-		$table->string('slug')->nullable();
-		$table->integer('display_order')->default(99);
+		$table->string('description')->nullable();
+		$table->string('icon')->nullable();
+
       });
 
       ////////////////////////////////////////////////////
 
-      Schema::create('offers_geo_categories', function($table)
+      Schema::create('offers_options_included', function($table)
       {
         /*
          * Storage Engines
@@ -40,14 +41,16 @@ class SetupGeoCategoriesTable extends Migration {
         /*
          * Fields
          */
-		$table->integer('offer_id')->unsigned()->index();
-		$table->integer('geo_category_id')->unsigned()->index();
+		$table->integer('offer_option_id')->unsigned()->index();
+		$table->integer('included_id')->unsigned()->index();
+		$table->boolean('display_home')->default(false);
+		$table->integer('display_order')->default(99);
 
         /*
          * Foreign Keys
          */
-		$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
-		$table->foreign('geo_category_id')->references('id')->on('geo_categories')->onDelete('cascade');
+		$table->foreign('offer_option_id')->references('id')->on('offers_options')->onDelete('cascade');
+		$table->foreign('included_id')->references('id')->on('included')->onDelete('cascade');
       });
     }
 
@@ -61,8 +64,8 @@ class SetupGeoCategoriesTable extends Migration {
 		DB::statement('SET foreign_key_checks = 0');
 		DB::statement('SET UNIQUE_CHECKS=0');
 
-		// Schema::drop('geo_categories');
-		Schema::drop('offer_geo_category');
+		Schema::drop('included');
+		Schema::drop('offers_options_included');
 
 		DB::statement('SET foreign_key_checks = 1');
 		DB::statement('SET UNIQUE_CHECKS=1');

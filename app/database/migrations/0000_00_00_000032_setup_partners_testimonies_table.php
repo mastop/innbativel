@@ -29,7 +29,7 @@ class SetupPartnersTestimoniesTable extends Migration {
 		$table->string('role')->nullable();
 		$table->string('testimony')->nullable();
 		$table->string('img')->nullable();
-		$table->string('display_order')->default(99);
+		$table->integer('display_order')->default(99);
       });
     }
 

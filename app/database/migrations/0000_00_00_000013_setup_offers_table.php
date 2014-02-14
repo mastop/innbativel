@@ -42,7 +42,7 @@ class SetupOffersTable extends Migration {
 		$table->string('saveme_img')->nullable(); // URL
 		$table->string('video')->nullable(); // URL
 		$table->boolean('in_pre_booking')->default(false);
-		$table->string('display_order')->default(99); // ordem das ofertas na home, em categorias e em qualquer outro lugar
+		$table->integer('display_order')->default(99); // ordem das ofertas na home, em categorias e em qualquer outro lugar
 		$table->integer('pre_booking_order')->default(99);
 
         /*

@@ -29,7 +29,7 @@ class SetupTellUsTable extends Migration {
 		$table->dateTime('travel_date')->nullable();
 		$table->string('depoiment')->nullable();
 		$table->string('img')->nullable();
-		$table->string('display_order')->default(99);
+		$table->integer('display_order')->default(99);
 
         /*
          * Time Stamps

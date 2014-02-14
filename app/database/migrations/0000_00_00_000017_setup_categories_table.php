@@ -25,7 +25,7 @@ class SetupCategoriesTable extends Migration {
 		$table->increments('id');
 		$table->string('title')->nullable();
 		$table->string('slug')->nullable();
-		$table->string('display_order')->nullable();
+		$table->integer('display_order')->default(99);
       });
     }
 
