@@ -378,6 +378,23 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 
 	Route::any('credit_indication', ['as' => 'admin.credit_indication', 'uses' => 'AdminUserCreditController@anyIndex']);
 
+	/*
+	 * Destinos
+	 */
+
+	Route::any('destiny', ['as' => 'admin.destiny', 'uses' => 'AdminDestinyController@anyIndex']);
+
+	Route::get('destiny/create', ['as' => 'admin.destiny.create', 'uses' => 'AdminDestinyController@getCreate']);
+	Route::post('destiny/create', ['as' => 'admin.destiny.save', 'uses' => 'AdminDestinyController@postCreate']);
+
+	Route::any('destiny/edit', function(){ return Redirect::route('admin.destiny'); });
+	Route::get('destiny/edit/{id}', ['as' => 'admin.destiny.edit', 'uses' => 'AdminDestinyController@getEdit']);
+	Route::post('destiny/edit/{id}', ['as' => 'admin.destiny.update', 'uses' => 'AdminDestinyController@postEdit']);
+
+	Route::any('destiny/delete', function(){ return Redirect::route('admin.destiny'); });
+	Route::get('destiny/delete/{id}', ['as' => 'admin.destiny.delete', 'uses' => 'AdminDestinyController@getDelete']);
+	Route::post('destiny/delete/{id}', ['as' => 'admin.destiny.destroy', 'uses' => 'AdminDestinyController@postDelete']);
+
 });
 
 Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
