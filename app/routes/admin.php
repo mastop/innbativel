@@ -429,6 +429,23 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::get('tag/delete/{id}', ['as' => 'admin.tag.delete', 'uses' => 'AdminTagController@getDelete']);
 	Route::post('tag/delete/{id}', ['as' => 'admin.tag.destroy', 'uses' => 'AdminTagController@postDelete']);
 
+	/*
+	 * Contracts
+	 */
+
+	Route::any('contract', ['as' => 'admin.contract', 'uses' => 'AdminContractController@anyIndex']);
+
+	Route::get('contract/create', ['as' => 'admin.contract.create', 'uses' => 'AdminContractController@getCreate']);
+	Route::post('contract/create', ['as' => 'admin.contract.save', 'uses' => 'AdminContractController@postCreate']);
+
+	Route::any('contract/edit', function(){ return Redirect::route('admin.contract'); });
+	Route::get('contract/edit/{id}', ['as' => 'admin.contract.edit', 'uses' => 'AdminContractController@getEdit']);
+	Route::post('contract/edit/{id}', ['as' => 'admin.contract.update', 'uses' => 'AdminContractController@postEdit']);
+
+	Route::any('contract/delete', function(){ return Redirect::route('admin.contract'); });
+	Route::get('contract/delete/{id}', ['as' => 'admin.contract.delete', 'uses' => 'AdminContractController@getDelete']);
+	Route::post('contract/delete/{id}', ['as' => 'admin.contract.destroy', 'uses' => 'AdminContractController@postDelete']);
+
 });
 
 Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){

@@ -27,6 +27,8 @@ class AdminContractController extends BaseController {
 		$this->sidebar = true;
 	}
 
+	// todos os campos de 'contracts' --> 'id', 'partner_id', 'company_name', 'cnpj', 'trading_name', 'address', 'complement', 'neighborhood', 'zip', 'city', 'state', 'agent1_name', 'agent1_cpf', 'agent1_telephone', 'agent2_name', 'agent2_cpf', 'agent2_telephone', 'bank_name', 'bank_number', 'bank_holder', 'bank_agency', 'bank_account', 'bank_financial_email', 'is_signed', 'is_sent', 'consultant', 'term', 'restriction', 'has_scheduling', 'sched_contact', 'sched_max_date', 'sched_dates', 'sched_min_antecedence', 'n_people', 'details', 'clauses', 'ip', 'signed_at', 'created_at', 'updated_at'
+
 	/**
 	 * Display all Perms.
 	 *
@@ -99,7 +101,7 @@ class AdminContractController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$contract = $contract->orderBy($sort, $order)->paginate($pag)->appends([
+		$contract = $contract->with(['partner'])->get(['id', 'consultant', 'partner', 'trading_name', 'agent1_name','is_signed', 'is_sent', 'created_at', 'signed_at',])->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
 			'id' => Input::get('id'),
@@ -119,161 +121,161 @@ class AdminContractController extends BaseController {
 		$this->layout->content = View::make('admin.contract.list', compact('sort', 'order', 'pag', 'contract'));
 	}
 
-	/**
-	 * Display contract Create Page.
-	 *
-	 * @return Response
-	 */
+	// /**
+	//  * Display contract Create Page.
+	//  *
+	//  * @return Response
+	//  */
 
-	public function getCreate()
-	{
-		/*
-		 * Layout / View
-		 */
+	// public function getCreate()
+	// {
+	// 	/*
+	// 	 * Layout / View
+	// 	 */
 
-		$this->layout->content = View::make('admin.contract.create');
-	}
+	// 	$this->layout->content = View::make('admin.contract.create');
+	// }
 
-	/**
-	 * Create contract.
-	 *
-	 * @return Response
-	 */
+	// /**
+	//  * Create contract.
+	//  *
+	//  * @return Response
+	//  */
 
-	public function postCreate()
-	{
-		$inputs = Input::all();
+	// public function postCreate()
+	// {
+	// 	$inputs = Input::all();
 
-		$rules = [
-        	'term' => 'required|date',
-			'restriction' => 'required',
-			'n_people' => 'required|integer',
-		];
+	// 	$rules = [
+ //        	'term' => 'required|date',
+	// 		'restriction' => 'required',
+	// 		'n_people' => 'required|integer',
+	// 	];
 
-	    $validation = Validator::make($inputs, $rules);
+	//     $validation = Validator::make($inputs, $rules);
 
-		if ($validation->passes())
-		{
-			$this->contract->create($inputs);
+	// 	if ($validation->passes())
+	// 	{
+	// 		$this->contract->create($inputs);
 
-			return Redirect::route('admin.contract');
-		}
+	// 		return Redirect::route('admin.contract');
+	// 	}
 
-		/*
-		 * Return and display Errors
-		 */
-		return Redirect::route('admin.contract.create')
-			->withInput()
-			->withErrors($validation);
-	}
+	// 	/*
+	// 	 * Return and display Errors
+	// 	 */
+	// 	return Redirect::route('admin.contract.create')
+	// 		->withInput()
+	// 		->withErrors($validation);
+	// }
 
-	/**
-	 * Display contract Create Page.
-	 *
-	 * @return Response
-	 */
+	// /**
+	//  * Display contract Create Page.
+	//  *
+	//  * @return Response
+	//  */
 
-	public function getEdit($id)
-	{
-		$contract = $this->contract->find($id);
+	// public function getEdit($id)
+	// {
+	// 	$contract = $this->contract->find($id);
 
-		if (is_null($contract))
-		{
-			return Redirect::route('admin.contract');
-		}
+	// 	if (is_null($contract))
+	// 	{
+	// 		return Redirect::route('admin.contract');
+	// 	}
 
-		/*
-		 * Layout / View
-		 */
+	// 	/*
+	// 	 * Layout / View
+	// 	 */
 
-		$this->layout->content = View::make('admin.contract.edit', compact('contract'));
-	}
+	// 	$this->layout->content = View::make('admin.contract.edit', compact('contract'));
+	// }
 
-	/**
-	 * Update contract.
-	 *
-	 * @return Response
-	 */
+	// /**
+	//  * Update contract.
+	//  *
+	//  * @return Response
+	//  */
 
-	public function postEdit($id)
-	{
-		/*
-		 * Permuration
-		 */
-		$inputs = Input::all();
+	// public function postEdit($id)
+	// {
+	// 	/*
+	// 	 * Permuration
+	// 	 */
+	// 	$inputs = Input::all();
 
-		$rules = [
-        	'term' => 'required|date',
-			'restriction' => 'required',
-			'n_people' => 'required|integer',
-		];
+	// 	$rules = [
+ //        	'term' => 'required|date',
+	// 		'restriction' => 'required',
+	// 		'n_people' => 'required|integer',
+	// 	];
 
-	    $validation = Validator::make($inputs, $rules);
+	//     $validation = Validator::make($inputs, $rules);
 
-		if ($validation->passes())
-		{
-			$contract = $this->contract->find($id);
+	// 	if ($validation->passes())
+	// 	{
+	// 		$contract = $this->contract->find($id);
 
-			if ($contract)
-			{
-				$contract->update($inputs);
-			}
+	// 		if ($contract)
+	// 		{
+	// 			$contract->update($inputs);
+	// 		}
 
-			return Redirect::route('admin.contract');
-		}
+	// 		return Redirect::route('admin.contract');
+	// 	}
 
-		/*
-		 * Return and display Errors
-		 */
-		return Redirect::route('admin.contract.edit', $id)
-			->withInput()
-			->withErrors($validation);
-	}
+	// 	/*
+	// 	 * Return and display Errors
+	// 	 */
+	// 	return Redirect::route('admin.contract.edit', $id)
+	// 		->withInput()
+	// 		->withErrors($validation);
+	// }
 
-	/**
-	 * Display contract Delete Page.
-	 *
-	 * @return Response
-	 */
+	// /**
+	//  * Display contract Delete Page.
+	//  *
+	//  * @return Response
+	//  */
 
-	public function getDelete($id)
-	{
-		$contract = $this->contract->find($id);
+	// public function getDelete($id)
+	// {
+	// 	$contract = $this->contract->find($id);
 
-		if (is_null($contract))
-		{
-			return Redirect::route('admin.contract');
-		}
+	// 	if (is_null($contract))
+	// 	{
+	// 		return Redirect::route('admin.contract');
+	// 	}
 
-		Session::flash('error', 'Você tem certeza que deleja excluir este contrato? Esta operação não poderá ser desfeita.');
+	// 	Session::flash('error', 'Você tem certeza que deleja excluir este contrato? Esta operação não poderá ser desfeita.');
 
-		$data['contractData'] = $contract->toArray();
-		$data['contractArray'] = null;
+	// 	$data['contractData'] = $contract->toArray();
+	// 	$data['contractArray'] = null;
 
-		foreach ($data['contractData'] as $key => $value) {
-			$data['contractArray'][Lang::get('contract.'. $key)] = $value;
-		}
+	// 	foreach ($data['contractData'] as $key => $value) {
+	// 		$data['contractArray'][Lang::get('contract.'. $key)] = $value;
+	// 	}
 
-		/*
-		 * Layout / View
-		 */
+	// 	/*
+	// 	 * Layout / View
+	// 	 */
 
-		$this->layout->content = View::make('admin.contract.delete', $data);
-	}
+	// 	$this->layout->content = View::make('admin.contract.delete', $data);
+	// }
 
-	/**
-	 * Delete contract.
-	 *
-	 * @return Response
-	 */
+	// /**
+	//  * Delete contract.
+	//  *
+	//  * @return Response
+	//  */
 
-	public function postDelete($id)
-	{
-		$this->contract->find($id)->delete();
+	// public function postDelete($id)
+	// {
+	// 	$this->contract->find($id)->delete();
 
-		Session::flash('success', 'Contrato excluído com sucesso.');
+	// 	Session::flash('success', 'Contrato excluído com sucesso.');
 
-		return Redirect::route('admin.contract');
-	}
+	// 	return Redirect::route('admin.contract');
+	// }
 
 }
