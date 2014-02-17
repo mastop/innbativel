@@ -8,7 +8,7 @@ class ContractsTableSeeder extends DatabaseSeeder
 {
   public function run()
   {
-    $pdo = new PDO('mysql:host=localhost;dbname=innbativel', 'root', '');
+    $pdo = new PDO('mysql:host=localhost;dbname=innbativel', 'innbativel', 'aWdh2kHAF6A3');
 
     $config = new LexerConfig();
     $config->setToCharset('UTF-8');

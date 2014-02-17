@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('PartnersTestimoniesTableSeeder');
 		$this->call('SuggestATripTableSeeder');
 		$this->call('ContractsTableSeeder');
+		$this->call('ContractOptionsTableSeeder');
 	}
 
 }

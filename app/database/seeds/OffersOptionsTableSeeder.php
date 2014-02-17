@@ -11,7 +11,7 @@ class OffersOptionsTableSeeder extends DatabaseSeeder
 	$sql = File::get(app_path() . '/database/seeds/assets/sql/offersOptions.sql');
 	DB::statement($sql);
 
-  //   $pdo = new PDO('mysql:host=localhost;dbname=innbativel', 'root', '');
+  //   $pdo = new PDO('mysql:host=localhost;dbname=innbativel', 'innbativel', 'aWdh2kHAF6A3');
 
   //   $config = new LexerConfig();
   //   $config->setToCharset('UTF-8');
