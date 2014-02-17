@@ -101,20 +101,10 @@ class AdminContractController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$contract = $contract->with(['partner'])->get(['id', 'consultant', 'partner', 'trading_name', 'agent1_name','is_signed', 'is_sent', 'created_at', 'signed_at',])->orderBy($sort, $order)->paginate($pag)->appends([
-			'sort' => $sort,
-			'order' => $order,
-			'id' => Input::get('id'),
-			'partner_id' => Input::get('partner_id'),
-			'agent1_name' => Input::get('agent1_name'),
-			'is_signed' => Input::get('is_signed'),
-			'is_sent' => Input::get('is_sent'),
-			'created_at_begin' => Input::get('created_at_begin'),
-			'created_at_end' => Input::get('created_at_end'),
-			'signed_at_begin' => Input::get('signed_at_begin'),
-			'signed_at_end' => Input::get('signed_at_end'),
-		]);
-
+		$contract = $contract->with(['partner'])->select(['id', 'consultant', 'trading_name', 'agent1_name','is_signed', 'is_sent', 'created_at', 'signed_at',])->get()->toArray();
+		print('<pre>');
+		print_r($contract);
+		print('</pre>'); die();
 		/*
 		 * Layout / View
 		 */
