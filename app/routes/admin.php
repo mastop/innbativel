@@ -435,8 +435,14 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 
 	Route::any('contract', ['as' => 'admin.contract', 'uses' => 'AdminContractController@anyIndex']);
 
+	Route::get('contract/view/{id}', ['as' => 'admin.contract.view', 'uses' => 'AdminContractController@getView']);
+
+	Route::get('contract/print/{id}', ['as' => 'admin.contract.print', 'uses' => 'AdminContractController@getPrint']);
+
 	Route::get('contract/create', ['as' => 'admin.contract.create', 'uses' => 'AdminContractController@getCreate']);
 	Route::post('contract/create', ['as' => 'admin.contract.save', 'uses' => 'AdminContractController@postCreate']);
+
+	Route::get('contract/send/{id}', ['as' => 'admin.contract.send', 'uses' => 'AdminContractController@getSend']);
 
 	Route::any('contract/edit', function(){ return Redirect::route('admin.contract'); });
 	Route::get('contract/edit/{id}', ['as' => 'admin.contract.edit', 'uses' => 'AdminContractController@getEdit']);

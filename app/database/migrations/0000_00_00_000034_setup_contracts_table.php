@@ -59,7 +59,7 @@ class SetupContractsTable extends Migration {
 		$table->text('details')->nullable();
 		$table->text('clauses')->nullable();
 		$table->string('ip')->nullable();
-		$table->date('signed_at')->nullable();
+		$table->datetime('signed_at')->nullable();
 
 		$table->foreign('partner_id')->references('id')->on('users');
 
@@ -82,7 +82,7 @@ class SetupContractsTable extends Migration {
          */
 		$table->increments('id');
 		$table->integer('contract_id')->unsigned()->index();
-		$table->string('option')->nullable();
+		$table->string('description')->nullable();
 		$table->integer('price_original')->nullable();
 		$table->integer('price_with_discount')->nullable();
 		$table->integer('percent_off')->nullable();

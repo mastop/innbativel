@@ -71,15 +71,15 @@ class AdminContractController extends BaseController {
 		}
 
 		if (Input::has('agent1_name')) {
-			$contract = $contract->where('agent1_name', 'like', '%'. Input::get('description') .'%')->orWhere('agent2_name', 'like', '%'. Input::get('description') .'%');
+			$contract = $contract->where('agent1_name', 'like', '%'. Input::get('description') .'%');
 		}
 
 		if (Input::has('is_signed')) {
-			$contract = $contract->where('is_signed', Input::get('is_signed'));
+			$contract = $contract->where('is_signed', (int) Input::get('is_signed'));
 		}
 
 		if (Input::has('is_sent')) {
-			$contract = $contract->where('is_sent', Input::get('is_sent'));
+			$contract = $contract->where('is_sent', (int) Input::get('is_sent'));
 		}
 
 		if (Input::has('created_at_begin')) {
@@ -101,63 +101,77 @@ class AdminContractController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$contract = $contract->with(['partner'])->select(['id', 'consultant', 'trading_name', 'agent1_name','is_signed', 'is_sent', 'created_at', 'signed_at',])->get()->toArray();
-		print('<pre>');
-		print_r($contract);
-		print('</pre>'); die();
+		$contract = $contract->with(['partner'])->orderBy($sort, $order)->paginate($pag)->appends([
+			'sort' => $sort,
+			'order' => $order,
+			'id' => Input::get('id'),
+			'partner_id' => Input::get('partner_id'),
+			'agent1_name' => Input::get('agent1_name'),
+			'is_signed' => Input::get('is_signed'),
+			'is_sent' => Input::get('is_sent'),
+			'created_at_begin' => Input::get('created_at_begin'),
+			'created_at_end' => Input::get('created_at_end'),
+			'signed_at_begin' => Input::get('signed_at_begin'),
+			'signed_at_end' => Input::get('signed_at_end'),
+		]);
+
 		/*
 		 * Layout / View
 		 */
 		$this->layout->content = View::make('admin.contract.list', compact('sort', 'order', 'pag', 'contract'));
 	}
 
-	// /**
-	//  * Display contract Create Page.
-	//  *
-	//  * @return Response
-	//  */
+	/**
+	 * Display contract Create Page.
+	 *
+	 * @return Response
+	 */
 
-	// public function getCreate()
-	// {
-	// 	/*
-	// 	 * Layout / View
-	// 	 */
+	public function getCreate()
+	{
+		/*
+		 * Layout / View
+		 */
 
-	// 	$this->layout->content = View::make('admin.contract.create');
-	// }
+		$this->layout->content = View::make('admin.contract.create');
+	}
 
-	// /**
-	//  * Create contract.
-	//  *
-	//  * @return Response
-	//  */
+	/**
+	 * Create contract.
+	 *
+	 * @return Response
+	 */
 
-	// public function postCreate()
-	// {
-	// 	$inputs = Input::all();
+	public function postCreate()
+	{
+		$inputs = Input::all();
 
-	// 	$rules = [
- //        	'term' => 'required|date',
-	// 		'restriction' => 'required',
-	// 		'n_people' => 'required|integer',
-	// 	];
+		print('<pre>');
+		print_r($inputs);
+		print('</pre>'); die();
 
-	//     $validation = Validator::make($inputs, $rules);
+		$rules = [
+        	'term' => 'required|date',
+			'restriction' => 'required',
+			'n_people' => 'required|integer',
+		];
 
-	// 	if ($validation->passes())
-	// 	{
-	// 		$this->contract->create($inputs);
+	    $validation = Validator::make($inputs, $rules);
 
-	// 		return Redirect::route('admin.contract');
-	// 	}
+		if ($validation->passes())
+		{
+			$this->contract->create($inputs);
 
-	// 	/*
-	// 	 * Return and display Errors
-	// 	 */
-	// 	return Redirect::route('admin.contract.create')
-	// 		->withInput()
-	// 		->withErrors($validation);
-	// }
+			return Redirect::route('admin.contract');
+		}
+
+		/*
+		 * Return and display Errors
+		 */
+		return Redirect::route('admin.contract.create')
+			->withInput()
+			->withErrors($validation);
+	}
 
 	// /**
 	//  * Display contract Create Page.
