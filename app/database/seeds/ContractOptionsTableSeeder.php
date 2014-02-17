@@ -11,7 +11,7 @@ class ContractOptionsTableSeeder extends DatabaseSeeder
     $pdo = new PDO('mysql:host=innbativel.ctypvw54pblq.us-east-1.rds.amazonaws.com;dbname=innbativel', 'innbativel', 'aWdh2kHAF6A3');
 
     $config = new LexerConfig();
-    $config->setToCharset('UTF-8');
+    $config->setToCharset('UTF-8')->setDelimiter(';');
     $lexer = new Lexer($config); //ISO8591 ou UTF-8
 
     $interpreter = new Interpreter();
