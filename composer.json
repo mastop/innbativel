@@ -11,8 +11,6 @@
 		"cviebrock/eloquent-sluggable": "1.0.*",
 		"sebastian/money": "1.0.*",
 		"intervention/image": "dev-master",
-		"leafo/lessphp": "v0.3.9",
-		"leafo/scssphp": "0.0.7",
 		"natxet/CssMin": "dev-master",
 		"lmammino/jsmin4assetic": "1.0.*",
 		"nitra/php-min": "dev-master",
@@ -22,7 +20,8 @@
 		"patricktalmadge/bootstrapper": "dev-develop",
 		"kennedytedesco/validation": "dev-master",
 		"tijsverkoyen/css-to-inline-styles": "1.2.*@dev",
-		"facebook/php-sdk": "dev-master"
+		"facebook/php-sdk": "dev-master",
+		"goodby/csv": "*"
 	},
 	"autoload": {
 		"classmap": [

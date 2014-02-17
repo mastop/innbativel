@@ -40,6 +40,7 @@ return array(
     'HtmlObject' => array($vendorDir . '/anahkiasen/html-object/src'),
     'Guzzle\\Tests' => array($vendorDir . '/guzzle/guzzle/tests'),
     'Guzzle' => array($vendorDir . '/guzzle/guzzle/src'),
+    'Goodby\\CSV' => array($vendorDir . '/goodby/csv/src'),
     'Former' => array($vendorDir . '/anahkiasen/former/src'),
     'Doctrine\\DBAL\\' => array($vendorDir . '/doctrine/dbal/lib'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),

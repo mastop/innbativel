@@ -2134,97 +2134,6 @@
         ]
     },
     {
-        "name": "leafo/lessphp",
-        "version": "v0.3.9",
-        "version_normalized": "0.3.9.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/leafo/lessphp.git",
-            "reference": "a11a6141b5715162b933c405379765d817891c5d"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/leafo/lessphp/zipball/a11a6141b5715162b933c405379765d817891c5d",
-            "reference": "a11a6141b5715162b933c405379765d817891c5d",
-            "shasum": ""
-        },
-        "time": "2013-03-02 16:13:31",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "0.3-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "lessc.inc.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT",
-            "GPL-3.0"
-        ],
-        "authors": [
-            {
-                "name": "Leaf Corcoran",
-                "email": "leafot@gmail.com",
-                "homepage": "http://leafo.net"
-            }
-        ],
-        "description": "lessphp is a compiler for LESS written in PHP.",
-        "homepage": "http://leafo.net/lessphp/"
-    },
-    {
-        "name": "leafo/scssphp",
-        "version": "v0.0.7",
-        "version_normalized": "0.0.7.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/leafo/scssphp.git",
-            "reference": "e5a79218c349cbc03dc99004fbad938c7b82391f"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/leafo/scssphp/zipball/e5a79218c349cbc03dc99004fbad938c7b82391f",
-            "reference": "e5a79218c349cbc03dc99004fbad938c7b82391f",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2.0"
-        },
-        "require-dev": {
-            "php": ">=5.3.0",
-            "phpunit/phpunit": "3.7.*"
-        },
-        "time": "2013-05-24 14:04:53",
-        "bin": [
-            "pscss"
-        ],
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "scss.inc.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT",
-            "GPL-3.0"
-        ],
-        "authors": [
-            {
-                "name": "Leaf Corcoran",
-                "email": "leafot@gmail.com",
-                "homepage": "http://leafo.net"
-            }
-        ],
-        "description": "scssphp is a compiler for SCSS written in PHP.",
-        "homepage": "http://leafo.net/scssphp/"
-    },
-    {
         "name": "natxet/CssMin",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -2439,18 +2348,12 @@
             "cssmin/cssmin": "*",
             "joliclic/javascript-packer": "*",
             "kamicane/packager": "*",
-            "leafo/lessphp": "*",
-            "leafo/scssphp": "*",
-            "leafo/scssphp-compass": "*",
             "mrclay/minify": "*",
             "phpunit/phpunit": "~3.7",
             "ptachoire/cssembed": "*",
             "twig/twig": "~1.6"
         },
         "suggest": {
-            "leafo/lessphp": "Assetic provides the integration with the lessphp LESS compiler",
-            "leafo/scssphp": "Assetic provides the integration with the scssphp SCSS compiler",
-            "leafo/scssphp-compass": "Assetic provides the integration with the SCSS compass plugin",
             "ptachoire/cssembed": "Assetic provides the integration with phpcssembed to embed data uris",
             "twig/twig": "Assetic provides the integration with the Twig templating engine"
         },
@@ -3250,6 +3153,65 @@
             "permissions",
             "roles",
             "verify"
+        ]
+    },
+    {
+        "name": "goodby/csv",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/goodby/csv.git",
+            "reference": "04fc4fa9f03bea666c6a3d6f3d57814f55ddf3ec"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/goodby/csv/zipball/04fc4fa9f03bea666c6a3d6f3d57814f55ddf3ec",
+            "reference": "04fc4fa9f03bea666c6a3d6f3d57814f55ddf3ec",
+            "shasum": ""
+        },
+        "require": {
+            "ext-mbstring": "*",
+            "php": ">=5.3.2"
+        },
+        "require-dev": {
+            "mikey179/vfsstream": ">=1.1.0",
+            "mockery/mockery": ">=0.7.2",
+            "phpunit/phpunit": "3.7.*",
+            "suin/php-expose": ">=1.0"
+        },
+        "time": "2014-02-06 06:16:34",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Goodby\\CSV": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "suin",
+                "email": "suinyeze@gmail.com",
+                "homepage": "https://www.facebook.com/suinyeze",
+                "role": "Developer, Renaming Specialist"
+            },
+            {
+                "name": "reoring",
+                "email": "mori.reo@gmail.com",
+                "homepage": "https://www.facebook.com/reoring",
+                "role": "Developer"
+            }
+        ],
+        "description": "CSV import/export library",
+        "homepage": "https://github.com/goodby/csv",
+        "keywords": [
+            "csv",
+            "export",
+            "import"
         ]
     }
 ]
