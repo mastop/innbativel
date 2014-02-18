@@ -1,13 +1,13 @@
 <?php
 
-class AdminUserController extends BaseController {
+class AdminPartnerController extends BaseController {
 
 	/**
-	 * User Repository
+	 * partner Repository
 	 *
-	 * @var User
+	 * @var partner
 	 */
-	protected $user;
+	protected $partner;
 
 	/**
 	 * Profile Repository
@@ -19,7 +19,7 @@ class AdminUserController extends BaseController {
 	/**
 	 * Construct Instance
 	 */
-	public function __construct(User $user, Profile $profile)
+	public function __construct(User $partner, Profile $profile)
 	{
 		/*
 		 * Enable Sidebar
@@ -31,23 +31,23 @@ class AdminUserController extends BaseController {
 		 * Enable and Set Actions
 		 */
 
-		$this->actions = 'admin.user';
+		$this->actions = 'admin.partner';
 
 		/*
 		 * Models Instance
 		 */
 
-		$this->user = $user;
+		$this->partner = $partner;
 		$this->profile = $profile;
 	}
 
     public function missingMethod($parameters)
     {
-        Redirect::route('admin.user');
+        Redirect::route('admin.partner');
     }
 
 	/**
-	 * Display all Users.
+	 * Display all partners.
 	 *
 	 * @return Response
 	 */
@@ -56,7 +56,7 @@ class AdminUserController extends BaseController {
 		/*
 		 * Obj
 		 */
-		$user = $this->user->select(['id', 'email', 'created_at'])->with(['profile', 'roles']);
+		$partner = $this->partner->select(['id', 'email', 'created_at'])->with(['profile', 'roles']);
 
 		/*
 		 * Paginate
@@ -80,13 +80,21 @@ class AdminUserController extends BaseController {
 		 * Search filters
 		 */
 		if (Input::has('email')) {
-			$user = $user->where('email', 'like', '%'. Input::get('email') .'%');
+			$partner = $partner->where('email', 'like', '%'. Input::get('email') .'%');
 		}
 
 		/*
 		 * Finally Obj
 		 */
-		$user = $user->orderBy($sort, $order)->paginate($pag)->appends([
+		$partner = $partner
+		->whereExists(function($query){
+			$query->select(DB::raw(1))
+                  ->from('role_user')
+				  ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                  ->whereRaw('role_user.user_id = users.id')
+                  ->whereRaw('roles.name = \'parceiro\'');
+        })
+		->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
 			'email' => Input::get('email'),
@@ -95,13 +103,13 @@ class AdminUserController extends BaseController {
 		/*
 		 * Layout / View
 		 */
-		$this->layout->content = View::make('admin.user.list', compact('sort', 'order', 'pag', 'user'));
+		$this->layout->content = View::make('admin.partner.list', compact('sort', 'order', 'pag', 'partner'));
 	}
 
 	public function getView($id)
 	{
-		$data['userData'] = $this
-			->user
+		$data['partnerData'] = $this
+			->partner
 			->findOrFail($id)
 			->with([
 				'profile',
@@ -116,48 +124,48 @@ class AdminUserController extends BaseController {
 			->first()
 			->toArray();
 
-		$data['userArray'] = null;
+		$data['partnerArray'] = null;
 
-		foreach ($data['userData'] as $key => $value) {
+		foreach ($data['partnerData'] as $key => $value) {
 			if (!is_array($value)) {
-				$data['userArray'][Lang::get('user.'. $key)] = $value;
+				$data['partnerArray'][Lang::get('partner.'. $key)] = $value;
 			}
 		}
 
 		$blackList = [
-			'user_id',
-			// 'img',
-			// 'facebook_id',
-			// 'total_purchasses',
-			// 'credit',
-			// 'ip',
-			// 'created_at',
-			// 'updated_at',
+			'img',
+			'facebook_id',
+			'partner_id',
+			'total_purchasses',
+			'credit',
+			'ip',
+			'created_at',
+			'updated_at',
 		];
 
-		foreach ($data['userData']['profile'] as $key => $value) {
+		foreach ($data['partnerData']['profile'] as $key => $value) {
 			if (!is_array($value) && !in_array($key, $blackList)) {
-				$data['userArray'][Lang::get('user.'. $key)] = $value;
+				$data['partnerArray'][Lang::get('partner.'. $key)] = $value;
 			}
 		}
 
-		$data['userArray'][Lang::get('user.role')] = '~ ';
+		$data['partnerArray'][Lang::get('partner.role')] = '~ ';
 
-		foreach ($data['userData']['roles'] as $roles) {
+		foreach ($data['partnerData']['roles'] as $roles) {
 			foreach ($roles as $key => $value) {
 				if ($key == 'description') {
-					$data['userArray'][Lang::get('user.role')] .= $value .' ~ ';
+					$data['partnerArray'][Lang::get('partner.role')] .= $value .' ~ ';
 				}
 			}
 		}
 
-		foreach ($data['userArray'] as $key => $value) {
+		foreach ($data['partnerArray'] as $key => $value) {
 			if (is_null($value) || empty($value)) {
-				$data['userArray'][$key] = '~ '. Lang::get('messages.undefined'). ' ~';
+				$data['partnerArray'][$key] = '~ '. Lang::get('messages.undefined'). ' ~';
 			}
 		}
 
-		$this->layout->content = View::make('admin.user.view', $data);
+		$this->layout->content = View::make('admin.partner.view', $data);
 	}
 
 	public function getCreate()
@@ -172,17 +180,17 @@ class AdminUserController extends BaseController {
 
         Former::populateField('roles', $roles);
 
-		$this->layout->content = View::make('admin.user.create', compact('roles'));
+		$this->layout->content = View::make('admin.partner.create', compact('roles'));
 	}
 
 	public function postCreate()
 	{
 		$inputs = Input::all();
 
-		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
+		$inputs['partnername'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
-			'email' => 'required|email|unique:users,email',
+			'email' => 'required|email|unique:partners,email',
         	'profile.first_name' => 'required',
         	'profile.last_name' => 'required',
         	'profile.cpf' => 'required',
@@ -195,12 +203,12 @@ class AdminUserController extends BaseController {
 
 		if ($validation->passes())
 		{
-			$created = $this->user->create($inputs)->id;
+			$created = $this->partner->create($inputs)->id;
 
-			$inputs['profile']['user_id'] = $created;
+			$inputs['profile']['partner_id'] = $created;
 
-			$user = User::find($created);
-			$user->profile()->create($inputs['profile']);
+			$partner = partner::find($created);
+			$partner->profile()->create($inputs['profile']);
 
 			/*
 			 * Roles
@@ -211,26 +219,26 @@ class AdminUserController extends BaseController {
 				$roles[] = $value;
 			}
 
-			$user->roles()->sync($roles);
+			$partner->roles()->sync($roles);
 
-			return Redirect::route('admin.user');
+			return Redirect::route('admin.partner');
 		}
 
 		/*
 		 * Return and display Errors
 		 */
-		return Redirect::route('admin.user.create')
+		return Redirect::route('admin.partner.create')
 			->withInput()
 			->withErrors($validation);
 	}
 
 	public function getEdit($id)
 	{
-		$user = $this->user->with(['profile', 'roles'])->find($id);
+		$partner = $this->partner->with(['profile', 'roles'])->find($id);
 
-		if (is_null($user))
+		if (is_null($partner))
 		{
-			return Redirect::route('admin.user');
+			return Redirect::route('admin.partner');
 		}
 
 		$roles = [];
@@ -238,27 +246,27 @@ class AdminUserController extends BaseController {
 			$roles[$role->name] = [
 				'value' => $role->id,
 				'name' => 'roles['. $role->name .']',
-				'checked' => $user->is($role->name) ? 'checked' : null,
+				'checked' => $partner->is($role->name) ? 'checked' : null,
 			];
 		}
 
-        Former::populate($user);
+        Former::populate($partner);
         Former::populateField('roles', $roles);
 
-		$this->layout->content = View::make('admin.user.edit', compact('user', 'roles'));
+		$this->layout->content = View::make('admin.partner.edit', compact('partner', 'roles'));
 	}
 
 	public function postEdit($id)
 	{
 		/*
-		 * User
+		 * partner
 		 */
 		$inputs = Input::all();
 
-		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
+		$inputs['partnername'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
-			'email' => 'required|email|unique:users,email,'. $id,
+			'email' => 'required|email|unique:partners,email,'. $id,
         	'profile.first_name' => 'required',
         	'profile.last_name' => 'required',
         	'profile.cpf' => 'required',
@@ -272,14 +280,14 @@ class AdminUserController extends BaseController {
 
 		if ($validation->passes())
 		{
-			$user = $this->user->with(['profile', 'roles'])->find($id);
+			$partner = $this->partner->with(['profile', 'roles'])->find($id);
 
-			if ($user)
+			if ($partner)
 			{
 				/*
-				 * User
+				 * partner
 				 */
-				$user->update($inputs);
+				$partner->update($inputs);
 
 				/*
 				 * Roles
@@ -292,71 +300,71 @@ class AdminUserController extends BaseController {
 						$roles[] = $value;
 					}
 
-					$user->roles()->sync($roles);
+					$partner->roles()->sync($roles);
 				}
 
 				else
 				{
-					$user->roles()->sync([]);
+					$partner->roles()->sync([]);
 				}
 
 				/*
 				 * Profile
 				 */
-				if ($user->profile()->first()) {
-					$user->profile()->update($inputs['profile']);
+				if ($partner->profile()->first()) {
+					$partner->profile()->update($inputs['profile']);
 				}
 				else
 				{
-					$user->profile()->create($inputs['profile']);
+					$partner->profile()->create($inputs['profile']);
 				}
 			}
 
-			Session::flash('success', 'Usuário <em>#'. $user->id .' - '. $user->email .'</em> atualizado.');
+			Session::flash('success', 'Usuário <em>#'. $partner->id .' - '. $partner->email .'</em> atualizado.');
 
-			return Redirect::route('admin.user');
+			return Redirect::route('admin.partner');
 		}
 
 		/*
 		 * Return and display Errors
 		 */
-		return Redirect::route('admin.user.edit', $id)
+		return Redirect::route('admin.partner.edit', $id)
 			->withInput()
 			->withErrors($validation);
 	}
 
 	public function getDelete($id)
 	{
-		$user = $this->user->find($id);
+		$partner = $this->partner->find($id);
 
-		if (is_null($user))
+		if (is_null($partner))
 		{
-			return Redirect::route('admin.user');
+			return Redirect::route('admin.partner');
 		}
 
 		Session::flash('error', 'Você tem certeza que deleja excluir este usuário? Esta operação não poderá ser desfeita.');
 
-		$data['userData'] = $user->toArray();
-		$data['userArray'] = null;
+		$data['partnerData'] = $partner->toArray();
+		$data['partnerArray'] = null;
 		$blackList = ['salt', 'created_at', 'updated_at', 'deleted_at'];
 
-		foreach ($data['userData'] as $key => $value) {
+		foreach ($data['partnerData'] as $key => $value) {
 			if (!is_array($value) && !in_array($key, $blackList)) {
-				$data['userArray'][Lang::get('user.'. $key)] = $value;
+				$data['partnerArray'][Lang::get('partner.'. $key)] = $value;
 			}
 		}
 
-		$this->layout->content = View::make('admin.user.delete', $data);
+		$this->layout->content = View::make('admin.partner.delete', $data);
 	}
 
 	public function postDelete($id)
 	{
-		$user = $this->user->find($id);
-		$user->delete();
+		$partner = $this->partner->find($id);
+		$partner->delete();
 
 		Session::flash('success', 'Usuário excluído com sucesso.');
 
-		return Redirect::route('admin.user');
+		return Redirect::route('admin.partner');
 	}
 
 	public function anyDeleted()
@@ -364,7 +372,7 @@ class AdminUserController extends BaseController {
 		/*
 		 * Obj
 		 */
-		$user = $this->user->onlyTrashed()->select(['id', 'email', 'created_at'])->with(['profile', 'roles']);
+		$partner = $this->partner->onlyTrashed()->select(['id', 'email', 'created_at'])->with(['profile', 'roles']);
 
 		/*
 		 * Paginate
@@ -388,13 +396,13 @@ class AdminUserController extends BaseController {
 		 * Search filters
 		 */
 		if (Input::has('email')) {
-			$user = $user->where('email', 'like', '%'. Input::get('email') .'%');
+			$partner = $partner->where('email', 'like', '%'. Input::get('email') .'%');
 		}
 
 		/*
 		 * Finally Obj
 		 */
-		$user = $user->orderBy($sort, $order)->paginate($pag)->appends([
+		$partner = $partner->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
 			'email' => Input::get('email'),
@@ -403,13 +411,13 @@ class AdminUserController extends BaseController {
 		/*
 		 * Layout / View
 		 */
-		$this->layout->content = View::make('admin.user.deleted.list', compact('sort', 'order', 'pag', 'user'));
+		$this->layout->content = View::make('admin.partner.deleted.list', compact('sort', 'order', 'pag', 'partner'));
 	}
 
 	public function getDeletedView($id)
 	{
-		$data['userData'] = $this
-			->user
+		$data['partnerData'] = $this
+			->partner
 			->onlyTrashed()
 			->findOrFail($id)
 			->with([
@@ -424,18 +432,18 @@ class AdminUserController extends BaseController {
 			->first()
 			->toArray();
 
-		$data['userArray'] = null;
+		$data['partnerArray'] = null;
 
-		foreach ($data['userData'] as $key => $value) {
+		foreach ($data['partnerData'] as $key => $value) {
 			if (!is_array($value)) {
-				$data['userArray'][Lang::get('user.'. $key)] = $value;
+				$data['partnerArray'][Lang::get('partner.'. $key)] = $value;
 			}
 		}
 
 		$blackList = [
 			'img',
 			'facebook_id',
-			'user_id',
+			'partner_id',
 			'total_purchasses',
 			'credit',
 			'ip',
@@ -443,38 +451,38 @@ class AdminUserController extends BaseController {
 			'updated_at',
 		];
 
-		foreach ($data['userData']['profile'] as $key => $value) {
+		foreach ($data['partnerData']['profile'] as $key => $value) {
 			if (!is_array($value) && !in_array($key, $blackList)) {
-				$data['userArray'][Lang::get('user.'. $key)] = $value;
+				$data['partnerArray'][Lang::get('partner.'. $key)] = $value;
 			}
 		}
 
-		$data['userArray'][Lang::get('user.role')] = '~ ';
+		$data['partnerArray'][Lang::get('partner.role')] = '~ ';
 
-		foreach ($data['userData']['roles'] as $roles) {
+		foreach ($data['partnerData']['roles'] as $roles) {
 			foreach ($roles as $key => $value) {
 				if ($key == 'description') {
-					$data['userArray'][Lang::get('user.role')] .= $value .' ~ ';
+					$data['partnerArray'][Lang::get('partner.role')] .= $value .' ~ ';
 				}
 			}
 		}
 
-		foreach ($data['userArray'] as $key => $value) {
+		foreach ($data['partnerArray'] as $key => $value) {
 			if (is_null($value) || empty($value)) {
-				$data['userArray'][$key] = '~ '. Lang::get('messages.undefined'). ' ~';
+				$data['partnerArray'][$key] = '~ '. Lang::get('messages.undefined'). ' ~';
 			}
 		}
 
-		$this->layout->content = View::make('admin.user.deleted.view', $data);
+		$this->layout->content = View::make('admin.partner.deleted.view', $data);
 	}
 
 	public function getDeletedEdit($id)
 	{
-		$user = $this->user->onlyTrashed()->with(['profile', 'roles'])->find($id);
+		$partner = $this->partner->onlyTrashed()->with(['profile', 'roles'])->find($id);
 
-		if (is_null($user))
+		if (is_null($partner))
 		{
-			return Redirect::route('admin.user');
+			return Redirect::route('admin.partner');
 		}
 
 		$roles = [];
@@ -482,27 +490,27 @@ class AdminUserController extends BaseController {
 			$roles[$role->name] = [
 				'value' => $role->id,
 				'name' => 'roles['. $role->name .']',
-				// 'checked' => $user->is($role->name) ? 'checked' : null,
+				// 'checked' => $partner->is($role->name) ? 'checked' : null,
 			];
 		}
 
-        Former::populate($user);
+        Former::populate($partner);
         Former::populateField('roles', $roles);
 
-		$this->layout->content = View::make('admin.user.deleted.edit', compact('user', 'roles'));
+		$this->layout->content = View::make('admin.partner.deleted.edit', compact('partner', 'roles'));
 	}
 
 	public function postDeletedEdit($id)
 	{
 		/*
-		 * User
+		 * partner
 		 */
 		$inputs = Input::all();
 
-		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
+		$inputs['partnername'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
-			'email' => 'required|email|unique:users,email,'. $id,
+			'email' => 'required|email|unique:partners,email,'. $id,
         	'profile.cpf' => 'required',
         	'profile.city' => 'required',
         	'profile.state' => 'required',
@@ -513,14 +521,14 @@ class AdminUserController extends BaseController {
 
 		if ($validation->passes())
 		{
-			$user = $this->user->onlyTrashed()->with(['profile', 'roles'])->find($id);
+			$partner = $this->partner->onlyTrashed()->with(['profile', 'roles'])->find($id);
 
-			if ($user)
+			if ($partner)
 			{
 				/*
-				 * User
+				 * partner
 				 */
-				$user->update($inputs);
+				$partner->update($inputs);
 
 				/*
 				 * Roles
@@ -533,68 +541,68 @@ class AdminUserController extends BaseController {
 						$roles[] = $value;
 					}
 
-					$user->roles()->sync($roles);
+					$partner->roles()->sync($roles);
 				}
 
 				else
 				{
-					$user->roles()->sync([]);
+					$partner->roles()->sync([]);
 				}
 
 				/*
 				 * Profile
 				 */
-				if ($user->profile()->first()) {
-					$user->profile()->update($inputs['profile']);
+				if ($partner->profile()->first()) {
+					$partner->profile()->update($inputs['profile']);
 				}
 				else
 				{
-					$user->profile()->create($inputs['profile']);
+					$partner->profile()->create($inputs['profile']);
 				}
 			}
 
-			return Redirect::route('admin.user.deleted.edit', $id);
+			return Redirect::route('admin.partner.deleted.edit', $id);
 		}
 
 		/*
 		 * Return and display Errors
 		 */
-		return Redirect::route('admin.user.deleted.edit', $id)
+		return Redirect::route('admin.partner.deleted.edit', $id)
 			->withInput()
 			->withErrors($validation);
 	}
 
 	public function getDeletedDelete($id)
 	{
-		$user = $this->user->onlyTrashed()->find($id);
+		$partner = $this->partner->onlyTrashed()->find($id);
 
-		if (is_null($user))
+		if (is_null($partner))
 		{
-			return Redirect::route('admin.user');
+			return Redirect::route('admin.partner');
 		}
 
 		Session::flash('error', 'Você tem certeza que deleja excluir este usuário? Esta operação não poderá ser desfeita.');
 
-		$data['userData'] = $user->toArray();
-		$data['userArray'] = null;
+		$data['partnerData'] = $partner->toArray();
+		$data['partnerArray'] = null;
 		$blackList = ['salt', 'created_at', 'updated_at', 'deleted_at'];
 
-		foreach ($data['userData'] as $key => $value) {
+		foreach ($data['partnerData'] as $key => $value) {
 			if (!is_array($value) && !in_array($key, $blackList)) {
-				$data['userArray'][Lang::get('user.'. $key)] = $value;
+				$data['partnerArray'][Lang::get('partner.'. $key)] = $value;
 			}
 		}
 
-		$this->layout->content = View::make('admin.user.deleted.delete', $data);
+		$this->layout->content = View::make('admin.partner.deleted.delete', $data);
 	}
 
 	public function postDeletedDelete($id)
 	{
-		$this->user->onlyTrashed()->find($id)->forceDelete();
+		$this->partner->onlyTrashed()->find($id)->forceDelete();
 
 		Session::flash('success', 'Usuário excluído com sucesso.');
 
-		return Redirect::route('admin.user.deleted');
+		return Redirect::route('admin.partner.deleted');
 	}
 
 }
