@@ -41,6 +41,8 @@ class SetupProfilesTable extends Migration {
         $table->string('complement')->nullable();
         $table->string('neighborhood')->nullable();
         $table->string('zip')->nullable();
+        $table->string('company_name')->nullable();
+        $table->string('cnpj')->nullable();
         $table->string('coordinates')->nullable();
         $table->string('site')->nullable();
         $table->string('ip')->nullable();
