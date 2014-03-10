@@ -39,7 +39,7 @@
 {{ Table::body($user)
 	->ignore(['profile', 'roles', 'created_at'])
 	->nome(function($user) {
-		if(isset($user['profile']['first_name']) && isset($user['profile']['last_name'])) {
+		if(isset($user['profile']['first_name']) || isset($user['profile']['last_name'])) {
 			return $user['profile']['first_name'] .' '. $user['profile']['last_name'];
 		}
 		return 'Não cadastrado.';

@@ -25,6 +25,7 @@ class SetupUsersTable extends Migration {
 		$table->increments('id');
 		$table->string('username', 30)->unique()->index();
 		$table->string('password', 60)->index();
+		$table->string('api_key', 255)->unique()->index();
 		$table->string('salt', 32);
 		$table->string('email', 255)->unique()->index();
 		$table->boolean('verified')->default(1);

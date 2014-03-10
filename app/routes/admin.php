@@ -39,6 +39,10 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::get('user/deleted/forcedelete/{id}', ['as' => 'admin.user.deleted.delete', 'uses' => 'AdminUserController@getDeletedDelete']);
 	Route::post('user/deleted/forcedelete/{id}', ['as' => 'admin.user.deleted.destroy', 'uses' => 'AdminUserController@postDeletedDelete']);
 
+	Route::any('user/deleted/restore', function(){ return Redirect::route('admin.user.deleted'); });
+	Route::get('user/deleted/restore/{id}', ['as' => 'admin.user.deleted.restore', 'uses' => 'AdminUserController@getDeletedRestore']);
+	Route::post('user/deleted/restore/{id}', ['as' => 'admin.user.deleted.reactivate', 'uses' => 'AdminUserController@postDeletedRestore']);
+
 	/*
 	 * Partners (users whose role is 'partner')
 	 */
@@ -69,6 +73,10 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('partner/deleted/forcedelete', function(){ return Redirect::route('admin.partner.deleted'); });
 	Route::get('partner/deleted/forcedelete/{id}', ['as' => 'admin.partner.deleted.delete', 'uses' => 'AdminPartnerController@getDeletedDelete']);
 	Route::post('partner/deleted/forcedelete/{id}', ['as' => 'admin.partner.deleted.destroy', 'uses' => 'AdminPartnerController@postDeletedDelete']);
+
+	Route::any('partner/deleted/restore', function(){ return Redirect::route('admin.partner.deleted'); });
+	Route::get('partner/deleted/restore/{id}', ['as' => 'admin.partner.deleted.restore', 'uses' => 'AdminPartnerController@getDeletedRestore']);
+	Route::post('partner/deleted/restore/{id}', ['as' => 'admin.partner.deleted.reactivate', 'uses' => 'AdminPartnerController@postDeletedRestore']);
 
 	/*
 	 * Roles

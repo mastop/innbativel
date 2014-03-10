@@ -90,9 +90,8 @@ class AdminPartnerController extends BaseController {
 		->whereExists(function($query){
 			$query->select(DB::raw(1))
                   ->from('role_user')
-				  ->join('roles', 'roles.id', '=', 'role_user.role_id')
                   ->whereRaw('role_user.user_id = users.id')
-                  ->whereRaw('roles.name = \'parceiro\'');
+                  ->whereRaw('role_user.role_id = 9');
         })
 		->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
@@ -170,17 +169,7 @@ class AdminPartnerController extends BaseController {
 
 	public function getCreate()
 	{
-		$roles = [];
-		foreach (Role::all() as $role) {
-			$roles[$role->name] = [
-				'value' => $role->id,
-				'name' => 'roles['. $role->name .']'
-			];
-		}
-
-        Former::populateField('roles', $roles);
-
-		$this->layout->content = View::make('admin.partner.create', compact('roles'));
+		$this->layout->content = View::make('admin.partner.create');
 	}
 
 	public function postCreate()
@@ -190,13 +179,17 @@ class AdminPartnerController extends BaseController {
 		$inputs['partnername'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
-			'email' => 'required|email|unique:partners,email',
+			'email' => 'required|email|unique:users,email',
         	'profile.first_name' => 'required',
-        	'profile.last_name' => 'required',
-        	'profile.cpf' => 'required',
+        	'profile.company_name' => 'required',
+        	'profile.cnpj' => 'required',
+            'profile.street' => 'required',
+            'profile.number' => 'required',
+        	'profile.neighborhood' => 'required',
         	'profile.city' => 'required',
-        	'profile.state' => 'required',
-        	'profile.country' => 'required',
+        	'profile.state' => 'required|exists:states,id',
+            'profile.country' => 'required',
+        	'profile.telephone' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -205,21 +198,16 @@ class AdminPartnerController extends BaseController {
 		{
 			$created = $this->partner->create($inputs)->id;
 
-			$inputs['profile']['partner_id'] = $created;
+			$inputs['profile']['user_id'] = $created;
 
-			$partner = partner::find($created);
+			$partner = User::find($created);
 			$partner->profile()->create($inputs['profile']);
 
 			/*
 			 * Roles
 			 */
-			$roles = [];
 
-			foreach ($inputs['roles'] as $key => $value) {
-				$roles[] = $value;
-			}
-
-			$partner->roles()->sync($roles);
+			$partner->roles()->sync([9]);  // Role = Partner (Parceiro) | ID = 9
 
 			return Redirect::route('admin.partner');
 		}
@@ -241,19 +229,9 @@ class AdminPartnerController extends BaseController {
 			return Redirect::route('admin.partner');
 		}
 
-		$roles = [];
-		foreach (Role::all() as $role) {
-			$roles[$role->name] = [
-				'value' => $role->id,
-				'name' => 'roles['. $role->name .']',
-				'checked' => $partner->is($role->name) ? 'checked' : null,
-			];
-		}
-
         Former::populate($partner);
-        Former::populateField('roles', $roles);
 
-		$this->layout->content = View::make('admin.partner.edit', compact('partner', 'roles'));
+		$this->layout->content = View::make('admin.partner.edit', compact('partner'));
 	}
 
 	public function postEdit($id)
@@ -266,14 +244,17 @@ class AdminPartnerController extends BaseController {
 		$inputs['partnername'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
-			'email' => 'required|email|unique:partners,email,'. $id,
+			'email' => 'required|email|unique:users,email,'.$id,
         	'profile.first_name' => 'required',
-        	'profile.last_name' => 'required',
-        	'profile.cpf' => 'required',
+        	'profile.company_name' => 'required',
+        	'profile.cnpj' => 'required',
+            'profile.street' => 'required',
+            'profile.number' => 'required',
+        	'profile.neighborhood' => 'required',
         	'profile.city' => 'required',
-        	'profile.state' => 'required',
-        	'profile.country' => 'required',
-        	'profile.birth' => 'date_format:d/m/Y',
+        	'profile.state' => 'required|exists:states,id',
+            'profile.country' => 'required',
+        	'profile.telephone' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -285,28 +266,9 @@ class AdminPartnerController extends BaseController {
 			if ($partner)
 			{
 				/*
-				 * partner
+				 * User
 				 */
 				$partner->update($inputs);
-
-				/*
-				 * Roles
-				 */
-				$roles = [];
-
-				if (isset($inputs['roles']))
-				{
-					foreach ($inputs['roles'] as $key => $value) {
-						$roles[] = $value;
-					}
-
-					$partner->roles()->sync($roles);
-				}
-
-				else
-				{
-					$partner->roles()->sync([]);
-				}
 
 				/*
 				 * Profile
@@ -402,7 +364,14 @@ class AdminPartnerController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$partner = $partner->orderBy($sort, $order)->paginate($pag)->appends([
+		$partner = $partner
+		->whereExists(function($query){
+			$query->select(DB::raw(1))
+                  ->from('role_user')
+                  ->whereRaw('role_user.user_id = users.id')
+                  ->whereRaw('role_user.role_id = 9');
+        })
+		->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
 			'email' => Input::get('email'),
@@ -601,6 +570,39 @@ class AdminPartnerController extends BaseController {
 		$this->partner->onlyTrashed()->find($id)->forceDelete();
 
 		Session::flash('success', 'Usuário excluído com sucesso.');
+
+		return Redirect::route('admin.partner.deleted');
+	}
+
+	public function getDeletedRestore($id)
+	{
+		$partner = $this->partner->onlyTrashed()->find($id);
+
+		if (is_null($partner))
+		{
+			return Redirect::route('admin.partner');
+		}
+
+		Session::flash('error', 'Você tem certeza que deleja reativar este usuário?');
+
+		$data['partnerData'] = $partner->toArray();
+		$data['partnerArray'] = null;
+		$blackList = ['salt', 'created_at', 'updated_at', 'deleted_at'];
+
+		foreach ($data['partnerData'] as $key => $value) {
+			if (!is_array($value) && !in_array($key, $blackList)) {
+				$data['partnerArray'][Lang::get('partner.'. $key)] = $value;
+			}
+		}
+
+		$this->layout->content = View::make('admin.partner.deleted.restore', $data);
+	}
+
+	public function postDeletedRestore($id)
+	{
+		$this->partner->onlyTrashed()->find($id)->restore();
+
+		Session::flash('success', 'Usuário reativado com sucesso.');
 
 		return Redirect::route('admin.partner.deleted');
 	}

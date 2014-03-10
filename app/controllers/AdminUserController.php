@@ -615,4 +615,37 @@ class AdminUserController extends BaseController {
 		return Redirect::route('admin.user.deleted');
 	}
 
+	public function getDeletedRestore($id)
+	{
+		$user = $this->user->onlyTrashed()->find($id);
+
+		if (is_null($user))
+		{
+			return Redirect::route('admin.user');
+		}
+
+		Session::flash('error', 'Você tem certeza que deleja reativar este usuário?');
+
+		$data['userData'] = $user->toArray();
+		$data['userArray'] = null;
+		$blackList = ['salt', 'created_at', 'updated_at', 'deleted_at'];
+
+		foreach ($data['userData'] as $key => $value) {
+			if (!is_array($value) && !in_array($key, $blackList)) {
+				$data['userArray'][Lang::get('user.'. $key)] = $value;
+			}
+		}
+
+		$this->layout->content = View::make('admin.user.deleted.restore', $data);
+	}
+
+	public function postDeletedRestore($id)
+	{
+		$this->user->onlyTrashed()->find($id)->restore();
+
+		Session::flash('success', 'Usuário reativado com sucesso.');
+
+		return Redirect::route('admin.user.deleted');
+	}
+
 }

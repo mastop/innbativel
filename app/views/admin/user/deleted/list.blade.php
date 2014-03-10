@@ -37,7 +37,7 @@
 {{ Table::body($user)
 	->ignore(['profile', 'roles', 'created_at'])
 	->nome(function($user) {
-		if(isset($user['profile']['first_name']) && isset($user['profile']['last_name'])) {
+		if(isset($user['profile']['first_name']) || isset($user['profile']['last_name'])) {
 			return $user['profile']['first_name'] .' '. $user['profile']['last_name'];
 		}
 		return 'Não cadastrado.';
@@ -65,7 +65,7 @@
 		  	Navigation::links([
 				['Ver', route('admin.user.deleted.view', $body['id'])],
 				['Editar', route('admin.user.deleted.edit', $body['id'])],
-				['Re/Ativar Usuário', route('admin.user.deleted.delete', $body['id'])],
+				['Reaivar Usuário', route('admin.user.deleted.restore', $body['id'])],
 				['Excluir Permanentemente', route('admin.user.deleted.delete', $body['id'])],
 		    ])
 		)->pull_right()->split();

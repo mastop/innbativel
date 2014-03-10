@@ -36,8 +36,8 @@
 {{ Table::body($partner)
 	->ignore(['profile', 'roles', 'created_at'])
 	->nome(function($partner) {
-		if(isset($partner['profile']['name'])) {
-			return $partner['profile']['name'];
+		if(isset($partner['profile']['first_name']) || isset($partner['profile']['last_name'])) {
+			return $partner['profile']['first_name'] .' '. $partner['profile']['last_name'];
 		}
 		return 'Não cadastrado.';
 	})
@@ -64,7 +64,7 @@
 		  	Navigation::links([
 				['Ver', route('admin.partner.deleted.view', $body['id'])],
 				['Editar', route('admin.partner.deleted.edit', $body['id'])],
-				['Re/Ativar Usuário', route('admin.partner.deleted.delete', $body['id'])],
+				['Reativar Usuário', route('admin.partner.deleted.restore', $body['id'])],
 				['Excluir Permanentemente', route('admin.partner.deleted.delete', $body['id'])],
 		    ])
 		)->pull_right()->split();

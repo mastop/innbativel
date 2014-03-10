@@ -38,7 +38,7 @@
 {{ Table::body($partner)
 	->ignore(['profile', 'roles', 'created_at'])
 	->nome(function($partner) {
-		if(isset($partner['profile']['first_name']) && isset($partner['profile']['last_name'])) {
+		if(isset($partner['profile']['first_name']) || isset($partner['profile']['last_name'])) {
 			return $partner['profile']['first_name'] .' '. $partner['profile']['last_name'];
 		}
 		return 'Não cadastrado.';
