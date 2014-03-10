@@ -86,11 +86,20 @@ class AdminUserController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$user = $user->orderBy($sort, $order)->paginate($pag)->appends([
-			'sort' => $sort,
-			'order' => $order,
-			'email' => Input::get('email'),
-		]);
+		$user = $user->whereExists(function($query){
+		            if (Input::has('name')) {
+						$query->select(DB::raw(1))
+		                      ->from('profiles')
+							  ->whereRaw('profiles.user_id = users.id')
+							  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.Input::get('name').'%"');
+					}
+		        })
+				->orderBy($sort, $order)->paginate($pag)->appends([
+					'sort' => $sort,
+					'order' => $order,
+					'email' => Input::get('email'),
+					'name' => Input::get('name'),
+				]);
 
 		/*
 		 * Layout / View
@@ -394,11 +403,20 @@ class AdminUserController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$user = $user->orderBy($sort, $order)->paginate($pag)->appends([
-			'sort' => $sort,
-			'order' => $order,
-			'email' => Input::get('email'),
-		]);
+		$user = $user->whereExists(function($query){
+		            if (Input::has('name')) {
+						$query->select(DB::raw(1))
+		                      ->from('profiles')
+							  ->whereRaw('profiles.user_id = users.id')
+							  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.Input::get('name').'%"');
+					}
+		        })
+				->orderBy($sort, $order)->paginate($pag)->appends([
+					'sort' => $sort,
+					'order' => $order,
+					'email' => Input::get('email'),
+					'name' => Input::get('name'),
+				]);
 
 		/*
 		 * Layout / View
@@ -433,14 +451,14 @@ class AdminUserController extends BaseController {
 		}
 
 		$blackList = [
-			'img',
-			'facebook_id',
 			'user_id',
-			'total_purchasses',
-			'credit',
-			'ip',
-			'created_at',
-			'updated_at',
+			// 'img',
+			// 'facebook_id',
+			// 'total_purchasses',
+			// 'credit',
+			// 'ip',
+			// 'created_at',
+			// 'updated_at',
 		];
 
 		foreach ($data['userData']['profile'] as $key => $value) {

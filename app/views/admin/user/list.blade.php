@@ -14,6 +14,7 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('admin.user')) }}
 			{{ Former::label('Pesquisar: ') }}
+			{{ Former::text('name')->label('')->class('input-medium')->placeholder('Nome') }}
 			{{ Former::text('email')->label('')->class('input-medium')->placeholder('E-mail') }}
 			{{ Former::submit() }}
 			{{ Former::link('Limpar Filtros', route('admin.user')) }}

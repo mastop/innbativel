@@ -14,6 +14,7 @@
 			{{ Former::inline_open(route('admin.user.deleted')) }}
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('email')->class('input-medium')->placeholder('E-mail') }}
+			{{ Former::text('name')->class('input-medium')->placeholder('Nome') }}
 			{{ Former::submit() }}
 			{{ Former::link('Limpar Filtros', route('admin.user')) }}
 			<div class="dataTables_length">
@@ -36,8 +37,8 @@
 {{ Table::body($user)
 	->ignore(['profile', 'roles', 'created_at'])
 	->nome(function($user) {
-		if(isset($user['profile']['name'])) {
-			return $user['profile']['name'];
+		if(isset($user['profile']['first_name']) && isset($user['profile']['last_name'])) {
+			return $user['profile']['first_name'] .' '. $user['profile']['last_name'];
 		}
 		return 'Não cadastrado.';
 	})
