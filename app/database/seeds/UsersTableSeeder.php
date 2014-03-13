@@ -36,27 +36,32 @@ class UsersTableSeeder extends DatabaseSeeder
 {
   public function run()
   {
-    $users = [
-      [
-        'username' => 'cawecoy',
-        'email'    => 'cawecoy@gmail.com',
-        'password' => 'programmer',
-      ],
-      [
-        'username' => 'danielmai',
-        'email'    => 'designer@innbativel.com.br',
-        'password' => 'designer',
-      ],
-      [
-        'username' => 'paulosabbaneli',
-        'email'    => 'gerente@innbativel.com.br',
-        'password' => 'manager',
-      ],
-    ];
+	$users = [
+	  [
+		'username' => 'cawecoy',
+		'email'    => 'cawecoy@gmail.com',
+		'password' => 'programmer',
+	  ],
+	  [
+		'username' => 'programacao',
+		'email'    => 'programacao@innbativel.com.br',
+		'password' => 'ff99bad467e5496212b799b5490392c4',
+	  ],
+	  [
+		'username' => 'danielmai',
+		'email'    => 'designer@innbativel.com.br',
+		'password' => 'designer',
+	  ],
+	  [
+		'username' => 'paulosabbaneli',
+		'email'    => 'gerente@innbativel.com.br',
+		'password' => 'manager',
+	  ],
+	];
 
-    foreach ($users as $user)
-    {
-      $created = User::create($user);
-    }
+	foreach ($users as $user)
+	{
+	  $created = User::create($user);
+	}
   }
 }

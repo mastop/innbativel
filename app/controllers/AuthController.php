@@ -23,19 +23,20 @@ class AuthController extends BaseController {
 
 	public function postLogin()
 	{
+
 		$user = [
 		'username' => Input::get('email'),
 		'password' => Input::get('password'),
 		];
 
 		$validator = Validator::make(Input::all(), [
-		                             'username' => 'required',
-		                             'password' => 'required'
-		                             ]);
+									 'username' => 'required',
+									 'password' => 'required'
+									 ]);
 
 		$isEmail = Validator::make(Input::only('email'), [
-		                           'email' => 'email',
-		                           ]);
+								   'email' => 'email',
+								   ]);
 
 		if ($isEmail->passes())
 		{
@@ -45,9 +46,9 @@ class AuthController extends BaseController {
 			];
 
 			$validator = Validator::make(Input::all(), [
-			                             'email' => 'required|email',
-			                             'password' => 'required'
-			                             ]);
+										 'email' => 'required|email',
+										 'password' => 'required'
+										 ]);
 		}
 
 		$errors = new MessageBag();
@@ -58,91 +59,109 @@ class AuthController extends BaseController {
 		}
 
 		$data = ['errors' => $errors];
+		$auth = false;
 
 		if ($validator->passes())
 		{
 			try
 			{
-				Auth::attempt($user);
-
 				if (Auth::attempt($user)) {
+					$auth = true;
+				}
 
-					$destination = Session::get('destination');
-
-					if (!is_null($destination))
+			}
+			catch (Exception $e)
+			{
+				try{
+					// Caso o usuário tenha
+					if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>md5(Input::get('password')))))
 					{
-						Session::forget('destination');
-						return Redirect::to($destination)
-						->with('success', Lang::get('auth.loggin-success'));
-					}
+						$auth = true;
 
-					if (Auth::user()->is('programador') ||
-					    Auth::user()->is('administrador') ||
-					    Auth::user()->is('gerente'))
-					{
-						return Redirect::route('admin')
-						->with('success', Lang::get('auth.loggin-success'))
-						->with('success', Lang::get('auth.loggin-as-god'));
-					}
-
-					elseif (Auth::user()->is('parceiro'))
-					{
-						return Redirect::route('admin')
-						->with('success', Lang::get('auth.loggin-success'))
-						->with('success', Lang::get('auth.loggin-as-partner'));
-					}
-
-					elseif (Auth::user()->is('cliente'))
-					{
-						return Redirect::route('admin')
-						->with('success', Lang::get('auth.loggin-success'))
-						->with('success', Lang::get('auth.loggin-as-customer'));
-					}
-
-					else
-					{
-						return Redirect::route('home')
-						->with('success', Lang::get('auth.loggin-success'));
+						Auth::user()->password = Input::get('password');
+						Auth::user()->save();
 					}
 				}
-			}
-			catch (Toddish\Verify\UserNotFoundException $e)
-			{
-				return Redirect::route('login')
-				->with('warning', 'Usuário não encontrado.')
-				->withInput();
-			}
-			catch (Toddish\Verify\UserUnverifiedException $e)
-			{
-				$userId = User::where('email', $user['email'])->first()->id;
-				$userToUpdate = User::find($userId);
-				$userToUpdate->verified = '1';
-				$userToUpdate->save();
-			}
-			catch (Toddish\Verify\UserDisabledException $e)
-			{
-				return Redirect::route('login')
-				->with('warning', 'Usuário Inativo ou Bloqueado.')
-				->withInput();
-			}
-			catch (Toddish\Verify\UserDeletedException $e)
-			{
-				return Redirect::route('login')
-				->with('warning', 'Usuário excluído.')
-				->withInput();
-			}
-			catch (Toddish\Verify\UserPasswordIncorrectException $e)
-			{
-				return Redirect::route('login')
-				->with('warning', 'Usuário e/ou senha incorretos.')
-				->withInput();
+				catch (Toddish\Verify\UserNotFoundException $e)
+				{
+					return Redirect::route('login')
+					->with('warning', 'Usuário não encontrado.')
+					->withInput();
+				}
+				catch (Toddish\Verify\UserUnverifiedException $e)
+				{
+					$userId = User::where('email', $user['email'])->first()->id;
+					$userToUpdate = User::find($userId);
+					$userToUpdate->verified = '1';
+					$userToUpdate->save();
+				}
+				catch (Toddish\Verify\UserDisabledException $e)
+				{
+					return Redirect::route('login')
+					->with('warning', 'Usuário Inativo ou Bloqueado.')
+					->withInput();
+				}
+				catch (Toddish\Verify\UserDeletedException $e)
+				{
+					return Redirect::route('login')
+					->with('warning', 'Usuário excluído.')
+					->withInput();
+				}
+				catch (Toddish\Verify\UserPasswordIncorrectException $e)
+				{
+					return Redirect::route('login')
+					->with('warning', 'Usuário e/ou senha incorretos.')
+					->withInput();
+				}
 			}
 		}
 
+		if($auth){
+
+			$destination = Session::get('destination');
+
+			if (!is_null($destination))
+			{
+				Session::forget('destination');
+				return Redirect::to($destination)
+				->with('success', Lang::get('auth.loggin-success'));
+			}
+
+			if (Auth::user()->is('programador') ||
+				Auth::user()->is('administrador') ||
+				Auth::user()->is('gerente'))
+			{
+				return Redirect::route('admin')
+				->with('success', Lang::get('auth.loggin-success'))
+				->with('success', Lang::get('auth.loggin-as-god'));
+			}
+
+			elseif (Auth::user()->is('parceiro'))
+			{
+				return Redirect::route('admin')
+				->with('success', Lang::get('auth.loggin-success'))
+				->with('success', Lang::get('auth.loggin-as-partner'));
+			}
+
+			elseif (Auth::user()->is('cliente'))
+			{
+				return Redirect::route('admin')
+				->with('success', Lang::get('auth.loggin-success'))
+				->with('success', Lang::get('auth.loggin-as-customer'));
+			}
+
+			else
+			{
+				return Redirect::route('home')
+				->with('success', Lang::get('auth.loggin-success'));
+			}
+
+		}
+
 		$data['errors'] = new MessageBag([
-		                                 'username' => ['Username and/or password invalid.'],
-		                                 'password' => ['Username and/or password invalid.'],
-		                                 ]);
+										 'username' => ['Username and/or password invalid.'],
+										 'password' => ['Username and/or password invalid.'],
+										 ]);
 
 		$data['username'] = Input::get('username');
 
@@ -196,17 +215,17 @@ class AuthController extends BaseController {
 
 		$rules = [
 			'email' => 'required|email|exists:users,email',
-		    'password' => 'required|between:7,15|alpha_num|confirmed',
-    		'password_confirmation' => 'required|alpha_num|between:7,15',
+			'password' => 'required|between:7,15|alpha_num|confirmed',
+			'password_confirmation' => 'required|alpha_num|between:7,15',
 		];
 
-	    $validation = Validator::make($credentials, $rules);
+		$validation = Validator::make($credentials, $rules);
 
-	    if( $validation->fails() )
-	    {
-	    	return Redirect::route('password.reset', ['token' => $credentials['token']])
-	    		->withErrors($validation->messages());
-	    }
+		if( $validation->fails() )
+		{
+			return Redirect::route('password.reset', ['token' => $credentials['token']])
+				->withErrors($validation->messages());
+		}
 
 		$credentials = Input::only(['email', 'password']);
 
@@ -222,83 +241,83 @@ class AuthController extends BaseController {
 	public function getFacebook()
 	{
 
-	    /**
-	     * Facebook Config
-	     *
-	     * @return array
-	     */
-	    $config = Config::get('facebook');
+		/**
+		 * Facebook Config
+		 *
+		 * @return array
+		 */
+		$config = Config::get('facebook');
 
-	    /**
-	     * Facebook Config
-	     *
-	     * @return Facebook
-	     */
-	    $facebook = new Facebook($config);
+		/**
+		 * Facebook Config
+		 *
+		 * @return Facebook
+		 */
+		$facebook = new Facebook($config);
 
 
-	    /**
-	     * Facebook User ID
-	     *
-	     * @return var
-	     */
-	    $user = $facebook->getUser();
+		/**
+		 * Facebook User ID
+		 *
+		 * @return var
+		 */
+		$user = $facebook->getUser();
 
-	    /**
-	     * If User ID is not null
-	     */
-	    if($user){
+		/**
+		 * If User ID is not null
+		 */
+		if($user){
 
-	        try
-	        {
-	            $profile = $facebook->api('/me');
-	        }
+			try
+			{
+				$profile = $facebook->api('/me');
+			}
 
-	        catch (FacebookApiException $e)
-	        {
-	            error_log($e);
-	            $user = null;
-	        }
+			catch (FacebookApiException $e)
+			{
+				error_log($e);
+				$user = null;
+			}
 
-	        if(!empty($profile))
-	        {
-	            $uid = $profile['id'];
-	            $email = $profile['email'];
+			if(!empty($profile))
+			{
+				$uid = $profile['id'];
+				$email = $profile['email'];
 
-	            $emailExists = User::where('email', '=', $email)->first();
-	        	$profileExists = Profile::where('facebook_id', '=', $uid)->first();
+				$emailExists = User::where('email', '=', $email)->first();
+				$profileExists = Profile::where('facebook_id', '=', $uid)->first();
 
-	        	if (!is_null($emailExists))
-	        	{
-	        		$userObj = User::find($emailExists->id);
-	        		$profileObj = $userObj->profile->exists;
+				if (!is_null($emailExists))
+				{
+					$userObj = User::find($emailExists->id);
+					$profileObj = $userObj->profile->exists;
 
-	        		if ($profileObj) {
+					if ($profileObj) {
 
-	        			$facebookExists = $userObj->profile->facebook_id;
+						$facebookExists = $userObj->profile->facebook_id;
 
-	        			if (!is_null($facebookExists)) {
-	        				$profileUpdate = Profile::where('user_id', $userObj->id);
-	        				$profileUpdate->facebook_id = $uid;
-	        				$profileUpdate->update();
-	        			}
+						if (!is_null($facebookExists)) {
+							$profileUpdate = Profile::where('user_id', $userObj->id);
+							$profileUpdate->facebook_id = $uid;
+							$profileUpdate->update();
+						}
 
-		                Auth::login($userObj);
-		                return Redirect::route('home');
-	        		}
-	        	}
+						Auth::login($userObj);
+						return Redirect::route('home');
+					}
+				}
 
-	        	if (!is_null($emailExists))
-	        	{
-	        		$login = User::find($emailExists->id);
-	                Auth::login($login);
-	                return Redirect::route('home');
-	        	}
+				if (!is_null($emailExists))
+				{
+					$login = User::find($emailExists->id);
+					Auth::login($login);
+					return Redirect::route('home');
+				}
 
-	        	else
-	        	{
+				else
+				{
 
-	        		$new = [
+					$new = [
 						'email' => $profile['email'],
 						'username' => Str::lower(Str::slug($profile['email']) . '-' .Str::random(16)),
 						'password' => Str::random(8),
@@ -323,88 +342,88 @@ class AuthController extends BaseController {
 
 					$user = User::find($created);
 					$user->profile()->create($createdUser);
-	        	}
-	        }
+				}
+			}
 
-	         return Redirect::route('home');
-	    }
+			 return Redirect::route('home');
+		}
 
-	    else
-	    {
-	        $login = $facebook->getLoginUrl([
+		else
+		{
+			$login = $facebook->getLoginUrl([
 				'scope' => 'email',
 				'redirect_uri' => URL::route('login.facebook', null, true),
 			]);
 
-	        return Redirect::to($login);
-	    }
+			return Redirect::to($login);
+		}
 
 	}
 
 	public function getFacebookAjax()
 	{
 
-	    /**
-	     * Facebook Config
-	     *
-	     * @return array
-	     */
-	    $config = Config::get('facebook');
+		/**
+		 * Facebook Config
+		 *
+		 * @return array
+		 */
+		$config = Config::get('facebook');
 
-	    /**
-	     * Facebook Config
-	     *
-	     * @return Facebook
-	     */
-	    $facebook = new Facebook($config);
+		/**
+		 * Facebook Config
+		 *
+		 * @return Facebook
+		 */
+		$facebook = new Facebook($config);
 
 
-	    /**
-	     * Facebook User ID
-	     *
-	     * @return var
-	     */
-	    $user = $facebook->getUser();
+		/**
+		 * Facebook User ID
+		 *
+		 * @return var
+		 */
+		$user = $facebook->getUser();
 
-	    /**
-	     * If User ID is not null
-	     */
-	    if($user){
+		/**
+		 * If User ID is not null
+		 */
+		if($user){
 
-	        try
-	        {
-	            $profile = $facebook->api('/me');
-	        }
+			try
+			{
+				$profile = $facebook->api('/me');
+			}
 
-	        catch (FacebookApiException $e)
-	        {
-	            error_log($e);
-	            $user = null;
-	        }
+			catch (FacebookApiException $e)
+			{
+				error_log($e);
+				$user = null;
+			}
 
-	        if(!empty($profile))
-	        {
-	            $uid = $profile['id'];
-	            $email = $profile['email'];
+			if(!empty($profile))
+			{
+				$uid = $profile['id'];
+				$email = $profile['email'];
 
-	            $emailExists = User::where('email', '=', $email)->first();
-	        	$profileExists = Profile::where('facebook_id', '=', $uid)->first();
+				$emailExists = User::where('email', '=', $email)->first();
+				$profileExists = Profile::where('facebook_id', '=', $uid)->first();
 
-	        	if (!is_null($profileExists))
-	        	{
-	        		$login = User::find($emailExists->id);
-	                Auth::login($login);
-	                return Response::json('yep');
-	        	}
+				if (!is_null($profileExists))
+				{
+					$login = User::find($emailExists->id);
+					Auth::login($login);
+					return Response::json('yep');
+				}
 
-	        	else
-	        	{
-	        		return Response::json('nope');
-	        	}
-	        }
+				else
+				{
+					return Response::json('nope');
+				}
+			}
 
-	         return 'none';
-	    }
+			 return 'none';
+		}
 
 	}
 
@@ -430,13 +449,13 @@ class AuthController extends BaseController {
 
 		$rules = [
 			'email' => 'required|email|unique:users,email',
-        	'profile.cpf' => 'required',
-        	'profile.city' => 'required',
-        	'profile.state' => 'required',
-        	'profile.country' => 'required',
+			'profile.cpf' => 'required',
+			'profile.city' => 'required',
+			'profile.state' => 'required',
+			'profile.country' => 'required',
 		];
 
-	    $validation = Validator::make($inputs, $rules);
+		$validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{

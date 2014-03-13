@@ -41,10 +41,10 @@ class AdminUserController extends BaseController {
 		$this->profile = $profile;
 	}
 
-    public function missingMethod($parameters)
-    {
-        Redirect::route('admin.user');
-    }
+	public function missingMethod($parameters)
+	{
+		Redirect::route('admin.user');
+	}
 
 	/**
 	 * Display all Users.
@@ -62,19 +62,19 @@ class AdminUserController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+		$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
 
 		/*
 		 * Sort filter
 		 */
 
-    	$sort = in_array(Input::get('sort'), ['name']) ? Input::get('sort') : 'id';
+		$sort = in_array(Input::get('sort'), ['name']) ? Input::get('sort') : 'id';
 
 		/*
 		 * Order filter
 		 */
 
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+		$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
 
 		/*
 		 * Search filters
@@ -87,13 +87,13 @@ class AdminUserController extends BaseController {
 		 * Finally Obj
 		 */
 		$user = $user->whereExists(function($query){
-		            if (Input::has('name')) {
+					if (Input::has('name')) {
 						$query->select(DB::raw(1))
-		                      ->from('profiles')
+							  ->from('profiles')
 							  ->whereRaw('profiles.user_id = users.id')
 							  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.Input::get('name').'%"');
 					}
-		        })
+				})
 				->orderBy($sort, $order)->paginate($pag)->appends([
 					'sort' => $sort,
 					'order' => $order,
@@ -179,7 +179,7 @@ class AdminUserController extends BaseController {
 			];
 		}
 
-        Former::populateField('roles', $roles);
+		Former::populateField('roles', $roles);
 
 		$this->layout->content = View::make('admin.user.create', compact('roles'));
 	}
@@ -192,15 +192,15 @@ class AdminUserController extends BaseController {
 
 		$rules = [
 			'email' => 'required|email|unique:users,email',
-        	'profile.first_name' => 'required',
-        	'profile.last_name' => 'required',
-        	'profile.cpf' => 'required',
-        	'profile.city' => 'required',
-        	'profile.state' => 'required',
-        	'profile.country' => 'required',
+			'profile.first_name' => 'required',
+			'profile.last_name' => 'required',
+			'profile.cpf' => 'required',
+			'profile.city' => 'required',
+			'profile.state' => 'required',
+			'profile.country' => 'required',
 		];
 
-	    $validation = Validator::make($inputs, $rules);
+		$validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
@@ -251,8 +251,8 @@ class AdminUserController extends BaseController {
 			];
 		}
 
-        Former::populate($user);
-        Former::populateField('roles', $roles);
+		Former::populate($user);
+		Former::populateField('roles', $roles);
 
 		$this->layout->content = View::make('admin.user.edit', compact('user', 'roles'));
 	}
@@ -268,16 +268,16 @@ class AdminUserController extends BaseController {
 
 		$rules = [
 			'email' => 'required|email|unique:users,email,'. $id,
-        	'profile.first_name' => 'required',
-        	'profile.last_name' => 'required',
-        	'profile.cpf' => 'required',
-        	'profile.city' => 'required',
-        	'profile.state' => 'required',
-        	'profile.country' => 'required',
-        	'profile.birth' => 'date_format:d/m/Y',
+			'profile.first_name' => 'required',
+			'profile.last_name' => 'required',
+			'profile.cpf' => 'required',
+			'profile.city' => 'required',
+			'profile.state' => 'required',
+			'profile.country' => 'required',
+			'profile.birth' => 'date_format:d/m/Y',
 		];
 
-	    $validation = Validator::make($inputs, $rules);
+		$validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
@@ -379,19 +379,19 @@ class AdminUserController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+		$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
 
 		/*
 		 * Sort filter
 		 */
 
-    	$sort = in_array(Input::get('sort'), ['name']) ? Input::get('sort') : 'id';
+		$sort = in_array(Input::get('sort'), ['name']) ? Input::get('sort') : 'id';
 
 		/*
 		 * Order filter
 		 */
 
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+		$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
 
 		/*
 		 * Search filters
@@ -404,13 +404,13 @@ class AdminUserController extends BaseController {
 		 * Finally Obj
 		 */
 		$user = $user->whereExists(function($query){
-		            if (Input::has('name')) {
+					if (Input::has('name')) {
 						$query->select(DB::raw(1))
-		                      ->from('profiles')
+							  ->from('profiles')
 							  ->whereRaw('profiles.user_id = users.id')
 							  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.Input::get('name').'%"');
 					}
-		        })
+				})
 				->orderBy($sort, $order)->paginate($pag)->appends([
 					'sort' => $sort,
 					'order' => $order,
@@ -504,8 +504,8 @@ class AdminUserController extends BaseController {
 			];
 		}
 
-        Former::populate($user);
-        Former::populateField('roles', $roles);
+		Former::populate($user);
+		Former::populateField('roles', $roles);
 
 		$this->layout->content = View::make('admin.user.deleted.edit', compact('user', 'roles'));
 	}
@@ -521,13 +521,13 @@ class AdminUserController extends BaseController {
 
 		$rules = [
 			'email' => 'required|email|unique:users,email,'. $id,
-        	'profile.cpf' => 'required',
-        	'profile.city' => 'required',
-        	'profile.state' => 'required',
-        	'profile.country' => 'required',
+			'profile.cpf' => 'required',
+			'profile.city' => 'required',
+			'profile.state' => 'required',
+			'profile.country' => 'required',
 		];
 
-	    $validation = Validator::make($inputs, $rules);
+		$validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
