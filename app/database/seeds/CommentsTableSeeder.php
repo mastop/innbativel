@@ -29,23 +29,23 @@ class CommentsTableSeeder extends DatabaseSeeder
 {
   public function run()
   {
-    $comments = [
-      [
-        'offer_id' => 783,
-        'user_id' => 1,
-        'comment' => 'bla bla bla',
-        'approved' => true,
-      ],
-      [
-        'offer_id' => 783,
-        'user_id' => 2,
-        'comment' => 'uh uh uh',
-      ],
-    ];
+	// $comments = [
+	//   [
+	//     'offer_id' => 783,
+	//     'user_id' => 1,
+	//     'comment' => 'bla bla bla',
+	//     'approved' => true,
+	//   ],
+	//   [
+	//     'offer_id' => 783,
+	//     'user_id' => 2,
+	//     'comment' => 'uh uh uh',
+	//   ],
+	// ];
 
-    foreach ($comments as $comment)
-    {
-      Comment::create($comment);
-    }
+	// foreach ($comments as $comment)
+	// {
+	//   Comment::create($comment);
+	// }
   }
 }
