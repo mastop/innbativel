@@ -51,7 +51,7 @@ class IncludedTableSeeder extends DatabaseSeeder
 		[ 'id' => 59, 'title' => '3 Diárias', 			'icon' => '<span class="entypo adjust"></span>', 'description' => 'Inclui hospedagem', ],
 		[ 'id' => 60, 'title' => '2 Diárias', 			'icon' => '<span class="entypo adjust"></span>', 'description' => 'Inclui hospedagem', ],
 		[ 'id' => 61, 'title' => 'vista campo', 		'icon' => '<span class="entypo adjust"></span>', 'description' => 'Inclui hospedagem', ],
-		[ 'id' => 62, 'title' => 'Aéreo', 				'icon' => '<span class="entypo airplane"></span>', 'description' => 'Inclui passagens aéreas', ],
+		[ 'id' => 65, 'title' => 'Aéreo', 				'icon' => '<span class="entypo airplane"></span>', 'description' => 'Inclui passagens aéreas', ],
 	];
 
 	foreach ($includeds as $included)
