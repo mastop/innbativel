@@ -29,20 +29,20 @@ class OffersImagesTableSeeder extends DatabaseSeeder
 {
   public function run()
   {
-    $offers_images = [
-      [
-        'offer_id' => 783,
-        'url' => 'http://ofertasinnbativel.s3.amazonaws.com/c683df579fcdeb8334ffbabdeaa6940e2270_t.jpg',
-      ],
-      [
-        'offer_id' => 784,
-        'url' => 'http://ofertasinnbativel.s3.amazonaws.com/08ee15aa60a7b2cd6352ab38e073eea712336_t.jpg',
-      ],
-    ];
+	// $offers_images = [
+	//   [
+	//     'offer_id' => 783,
+	//     'url' => 'http://ofertasinnbativel.s3.amazonaws.com/c683df579fcdeb8334ffbabdeaa6940e2270_t.jpg',
+	//   ],
+	//   [
+	//     'offer_id' => 784,
+	//     'url' => 'http://ofertasinnbativel.s3.amazonaws.com/08ee15aa60a7b2cd6352ab38e073eea712336_t.jpg',
+	//   ],
+	// ];
 
-    foreach ($offers_images as $offer_image)
-    {
-      OfferImage::create($offer_image);
-    }
+	// foreach ($offers_images as $offer_image)
+	// {
+	//   OfferImage::create($offer_image);
+	// }
   }
 }
