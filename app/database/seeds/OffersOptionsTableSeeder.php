@@ -178,49 +178,49 @@ class OffersOptionsTableSeeder extends DatabaseSeeder
 
 	  switch($op->id){
 		case 1:
-			$op->included->attach(65, array('display_order' => 1,'display_home' => true));
-			$op->included->attach(54, array('display_order' => 2,'display_home' => true));
-			$op->included->attach(58, array('display_order' => 3,'display_home' => true));
-			$op->included->attach(50, array('display_order' => 4,'display_home' => true));
+			$op->included()->attach(65, array('display_order' => 1,'display_home' => true));
+			$op->included()->attach(54, array('display_order' => 2,'display_home' => true));
+			$op->included()->attach(58, array('display_order' => 3,'display_home' => true));
+			$op->included()->attach(50, array('display_order' => 4,'display_home' => true));
 			break;
 		case 2:
-			$op->included->attach(53, array('display_order' => 1,'display_home' => true));
-			$op->included->attach(59, array('display_order' => 2,'display_home' => true));
-			$op->included->attach(50, array('display_order' => 3,'display_home' => true));
+			$op->included()->attach(53, array('display_order' => 1,'display_home' => true));
+			$op->included()->attach(59, array('display_order' => 2,'display_home' => true));
+			$op->included()->attach(50, array('display_order' => 3,'display_home' => true));
 			break;
 		case 3:
-			$op->included->attach(53, array('display_order' => 1,'display_home' => true));
-			$op->included->attach(60, array('display_order' => 2,'display_home' => true));
-			$op->included->attach(50, array('display_order' => 3,'display_home' => true));
+			$op->included()->attach(53, array('display_order' => 1,'display_home' => true));
+			$op->included()->attach(60, array('display_order' => 2,'display_home' => true));
+			$op->included()->attach(50, array('display_order' => 3,'display_home' => true));
 			break;
 		case 4:
-			$op->included->attach(65, array('display_order' => 1,'display_home' => true));
-			$op->included->attach(54, array('display_order' => 2,'display_home' => true));
-			$op->included->attach(59, array('display_order' => 3,'display_home' => true));
+			$op->included()->attach(65, array('display_order' => 1,'display_home' => true));
+			$op->included()->attach(54, array('display_order' => 2,'display_home' => true));
+			$op->included()->attach(59, array('display_order' => 3,'display_home' => true));
 			break;
 		case 5:
-			$op->included->attach(65, array('display_order' => 1,'display_home' => true));
-			$op->included->attach(54, array('display_order' => 2,'display_home' => true));
-			$op->included->attach(57, array('display_order' => 3,'display_home' => true));
+			$op->included()->attach(65, array('display_order' => 1,'display_home' => true));
+			$op->included()->attach(54, array('display_order' => 2,'display_home' => true));
+			$op->included()->attach(57, array('display_order' => 3,'display_home' => true));
 			break;
 		case 6:
-			$op->included->attach(65, array('display_order' => 1,'display_home' => true));
-			$op->included->attach(54, array('display_order' => 2,'display_home' => true));
-			$op->included->attach(59, array('display_order' => 3,'display_home' => true));
+			$op->included()->attach(65, array('display_order' => 1,'display_home' => true));
+			$op->included()->attach(54, array('display_order' => 2,'display_home' => true));
+			$op->included()->attach(59, array('display_order' => 3,'display_home' => true));
 			break;
 		case 7:
-			$op->included->attach(65, array('display_order' => 1,'display_home' => true));
-			$op->included->attach(54, array('display_order' => 2,'display_home' => true));
-			$op->included->attach(59, array('display_order' => 3,'display_home' => true));
+			$op->included()->attach(65, array('display_order' => 1,'display_home' => true));
+			$op->included()->attach(54, array('display_order' => 2,'display_home' => true));
+			$op->included()->attach(59, array('display_order' => 3,'display_home' => true));
 			break;
 		case 8:
-			$op->included->attach(65, array('display_order' => 1,'display_home' => true));
-			$op->included->attach(54, array('display_order' => 2,'display_home' => true));
-			$op->included->attach(58, array('display_order' => 3,'display_home' => true));
+			$op->included()->attach(65, array('display_order' => 1,'display_home' => true));
+			$op->included()->attach(54, array('display_order' => 2,'display_home' => true));
+			$op->included()->attach(58, array('display_order' => 3,'display_home' => true));
 			break;
 		case 9:
-			$op->included->attach(53, array('display_order' => 1,'display_home' => true));
-			$op->included->attach(57, array('display_order' => 2,'display_home' => true));
+			$op->included()->attach(53, array('display_order' => 1,'display_home' => true));
+			$op->included()->attach(57, array('display_order' => 2,'display_home' => true));
 			break;
 	  }
 	}
