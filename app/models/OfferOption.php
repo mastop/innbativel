@@ -20,18 +20,18 @@ class OfferOption extends Eloquent {
 	public $timestamps = false;
 
 	public static $rules = array(
-     'offer_id' => 'required|integer',
-     'title' => 'required',
-     'subtitle' => 'required',
-     'price_original' => 'required',
-     'price_with_discount' => 'required',
-     'min_qty' => 'required|integer',
-     'max_qty' => 'required|integer',
-     'max_qty_per_buyer' => 'required|integer',
-     'percent_off' => 'required|integer|max:100',
-     'voucher_validity_start' => 'required',
-     'voucher_validity_end' => 'required',
-     );
+	 'offer_id' => 'required|integer',
+	 'title' => 'required',
+	 'subtitle' => 'required',
+	 'price_original' => 'required',
+	 'price_with_discount' => 'required',
+	 'min_qty' => 'required|integer',
+	 'max_qty' => 'required|integer',
+	 'max_qty_per_buyer' => 'required|integer',
+	 'percent_off' => 'required|integer|max:100',
+	 'voucher_validity_start' => 'required',
+	 'voucher_validity_end' => 'required',
+	 );
 
 	public function offer(){
 		return $this->belongsTo('Offer')->with(['destiny']);
@@ -53,9 +53,13 @@ class OfferOption extends Eloquent {
 		return $this->belongsToMany('Order', 'vouchers', 'offer_option_id', 'order_id')->where('used', 1)->select(DB::raw('count(vouchers.offer_option_id) as qty'))->groupBy('vouchers.offer_option_id');
 	}
 
+	public function included(){
+		return $this->belongsToMany('Included', 'offers_options_included', 'offer_option_id', 'included_id')->withPivot('display_home', 'display_order');
+	}
+
 	public function getPriceOriginalAttribute($value)
 	{
-        $value = (int) $value;
+		$value = (int) $value;
 
 		$money = new Money($value, new Currency('BRL'));
 		$inter = new IntlFormatter('pt_BR');
@@ -65,11 +69,11 @@ class OfferOption extends Eloquent {
 
 	public function getPriceWithDiscountAttribute($value)
 	{
-        $value = (int) $value;
+		$value = (int) $value;
 
-        $money = new Money($value, new Currency('BRL'));
-        $inter = new IntlFormatter('pt_BR');
+		$money = new Money($value, new Currency('BRL'));
+		$inter = new IntlFormatter('pt_BR');
 
-        return $inter->format($money);
+		return $inter->format($money);
 	}
 }

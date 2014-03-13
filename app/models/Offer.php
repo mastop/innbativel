@@ -21,15 +21,15 @@ class Offer extends Eloquent {
 	public $timestamps = true;
 
 	public static $rules = [
-	     'partner_id' => 'required|integer',
-	     'ngo_id' => 'required|integer',
-	     'genre_id' => 'required|integer',
-	     'destiny_id' => 'required',
-	     'title' => 'required',
-	     'starts_on' => 'required',
-	     'ends_on' => 'required',
-	     'cover_img' => 'required|mimes:jpeg,jpg,png',
-     ];
+		 'partner_id' => 'required|integer',
+		 'ngo_id' => 'required|integer',
+		 'genre_id' => 'required|integer',
+		 'destiny_id' => 'required',
+		 'title' => 'required',
+		 'starts_on' => 'required',
+		 'ends_on' => 'required',
+		 'cover_img' => 'required|mimes:jpeg,jpg,png',
+	 ];
 
 	public function order(){
 		return $this->hasMany('Order');
@@ -61,6 +61,10 @@ class Offer extends Eloquent {
 
 	public function saveme(){
 		return $this->belongsToMany('Saveme')->withPivot('priority');
+	}
+
+	public function group(){
+		return $this->belongsToMany('Included', 'offers_groups', 'offer_id', 'group_id')->withPivot('display_order');
 	}
 
 	public function discount_coupon(){
@@ -113,18 +117,18 @@ class Offer extends Eloquent {
 	public function getInstallmentAttribute($value)
 	{
 		if (!empty($value) &&
-		    !is_null($value) &&
-		    !empty($this->offer_option[0]->price_with_discount) &&
-		    !is_null($this->offer_option[0]->price_with_discount)
+			!is_null($value) &&
+			!empty($this->offer_option[0]->price_with_discount) &&
+			!is_null($this->offer_option[0]->price_with_discount)
 		){
 			$price = (int) preg_replace('/[^0-9]/', '', $this->offer_option[0]->price_with_discount);
 			$value = 12;
 
 			if($price <= 251){
-			    $value = 3;
+				$value = 3;
 			}
 			else if($price <= 501){
-			    $value = 6;
+				$value = 6;
 			}
 		}
 

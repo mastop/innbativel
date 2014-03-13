@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('DestiniesTableSeeder');
 		$this->call('IncludedTableSeeder');
 		$this->call('TagsTableSeeder');
+		$this->call('GroupsTableSeeder');
 		$this->call('OffersTableSeeder');
 		$this->call('OffersOptionsTableSeeder');
 		$this->call('OffersImagesTableSeeder');

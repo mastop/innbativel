@@ -41,21 +41,25 @@ class UsersTableSeeder extends DatabaseSeeder
 		'username' => 'cawecoy',
 		'email'    => 'cawecoy@gmail.com',
 		'password' => 'programmer',
+		'api_key' => 'ashd908hads9',
 	  ],
 	  [
 		'username' => 'programacao',
 		'email'    => 'programacao@innbativel.com.br',
 		'password' => 'ff99bad467e5496212b799b5490392c4',
+		'api_key' => 'sadmio0sadh089sa',
 	  ],
 	  [
 		'username' => 'danielmai',
 		'email'    => 'designer@innbativel.com.br',
 		'password' => 'designer',
+		'api_key' => 'sjdsa8hsdia',
 	  ],
 	  [
 		'username' => 'paulosabbaneli',
 		'email'    => 'gerente@innbativel.com.br',
 		'password' => 'manager',
+		'api_key' => 'mj09sd0jh09dsha',
 	  ],
 	];
 

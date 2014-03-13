@@ -1,13 +1,13 @@
 <?php
 
-class Genre extends Eloquent {
+class Group extends Eloquent {
 
   /**
    * The name of the table associated with the model.
    *
    * @var string
    */
-  protected $table = 'genres';
+  protected $table = 'groups';
 
   protected $guarded = [];
   protected $fillable = [];
@@ -17,12 +17,10 @@ class Genre extends Eloquent {
 
   public static $rules = array(
 	'title' => 'required',
-	'icon' => 'required'
   );
 
-  public function offer()
-  {
-	  return $this->belongsToMany('Offer');
+  public function offer(){
+	return $this->belongsToMany('Offer', 'offers_groups', 'group_id', 'offer_id');
   }
 
 }
