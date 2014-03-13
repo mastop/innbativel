@@ -117,7 +117,7 @@
 			<div id="widget-selos">
 				<h4><span class="entypo lock"></span>Compre com Segurança</h4>
 				<div id="selo-bandeiras">
-					<figure><img src="{{ asset('assets/images/bandeiras.jpg') }}" alt="Bandeiras de Cartão de Crédito" width="212" height="83"></figure>
+					<figure><img src="{{ asset('assets/images/bandeiras.png') }}" alt="Bandeiras de Cartão de Crédito" width="212" height="83"></figure>
 				</div>
 				<div id="selo-ebit">
 					<figure>
