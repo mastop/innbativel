@@ -11,143 +11,206 @@
 	<link rel="alternate" hreflang="{{ Config::get('app.locale') }}" href="{{ URL::current() }}">
 	<link rel="canonical" href="{{ URL::current() }}">
 	<link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-	@stylesheets($type)
-
-	<script>{{ Config::get('app.sysname') }} = window.{{ Config::get('app.sysname') }} || {}; {{ Config::get('app.sysname') }}.basePath = '{{ url() }}'; {{ Config::get('app.sysname') }}.userAuth = @if(Auth::check()) 'true' @else 'false' @endif;</script>
-	@javascripts($type)
-
+	<link rel="stylesheet" type="text/css" href="assets/themes/floripa/frontend/css/bootstrap.css" />
+	<script src="assets/vendor/jquery/jquery.latest.min.js"></script>
+	<script src="assets/vendor/jquery.migrate/jquery.migrate.min.js"></script>
+	<script src="assets/vendor/bootstrap/3/dist/js/bootstrap.min.js"></script>
+	<script src="assets/themes/floripa/frontend/js/main.js"></script>
 </head>
+
 <body class="{{ $body_classes }}">
-	<div id="header" class="navbar navbar-default">
+
+	<div id="header-scroll" class="navbar navbar-default navbar-fixed-top out">
 		<div class="container">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<a class="navbar-brand" href="{{ route('home') }}">
+					<img class="logo" alt="INNbatível" src="{{ asset('assets/images/logo.png') }}">
+				</a>
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navMenuCollapse2">
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a id="home" class="navbar-brand" href="{{ route('home') }}">
-					<img id="logo" alt="INNbatível" src="{{ asset('assets/images/logo.png') }}">
-				</a>
+				<div class="clearfix super-search">
+					<form accept-charset="utf-8" class="form-inline" method="GET">
+						<div class="control-group required">
+							<div class="controls"><span class="entypo search"></span><input required type="text" name="search" placeholder="Onde você quer aproveitar?"><input class="btn" type="submit" value="Buscar agora"></div>
+						</div>
+					</form>
+				</div>
 			</div>
-			<div class="navbar-collapse collapse">
-				<ul class="nav navbar-nav navbar-right">
-					@if(Auth::check())
-					<li><a href="{{ route('home') }}">Minha Conta</a></li>
-					<li><a href="{{ route('logout') }}">Sair</a></li>
-					@else
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Acessar <b class="caret"></b></a>
-						<div id="login-dropdown" class="dropdown-menu">
-							@include('forms.login')
+			<div class="collapse navbar-collapse navMenuCollapse2">
+				<ul class="navbar-nav nav">
+					<li>
+						<div class="clearfix super-search">
+							<form accept-charset="utf-8" class="form-inline" method="GET">
+								<div class="control-group required">
+									<div class="controls"><span class="entypo search"></span><input required type="text" name="search" placeholder="Onde você quer aproveitar?"><input class="btn" type="submit" value="Buscar agora"></div>
+								</div>
+							</form>
 						</div>
 					</li>
-					<li><a href="{{ route('account.get') }}">Cadastre-se</a></li>
+					@if(Auth::check())
+					<li><a href="{{ route('logout') }}">Sair <span class="entypo login"></span></a></li>
+					@else
+					<li><a href="#">Entrar <span class="entypo login"></span></a></li>
 					@endif
-					<li><a href="#">Cadastre-se em nossa Newsletter</a></li>
+					<li><a href="#">Receba nossa <strong>Newsletter</strong> <span class="entypo mail"></span></a></li>
+					<li><a href="hoteis-e-pousadas">Hot&eacute;is &amp; Pousadas</a></li>
+					<li><a href="pacotes-nacionais">Pacotes Nacionais</a></li>
+					<li><a href="pacotes-internacionais">Pacotes Internacionais</a></li>
+					<li><a href="feriados" class="single-line"><span>Feriados</span></a></li>
+					<li><a href="passeios-gastronomia">Passeios &amp; Gatronomia</a></li>
 				</ul>
 			</div>
 		</div>
 	</div>
+
+	<div id="header" class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="">
+					<img class="logo" alt="INNbatível" src="{{ asset('assets/images/logo.png') }}">
+				</a>
+			</div>
+			<div class="btn-newsletter"><a href="#">Receba nossa <strong>Newsletter</strong> <span class="entypo mail"></span></a></div>
+			@if(Auth::check())
+			<a class="btn-login" href="{{ route('logout') }}">Sair <span class="entypo login"></span></a>
+			@else
+			<a class="btn-login" href="#">Entrar <span class="entypo login"></span></a>
+			@endif
+		</div>
+	</div>
+
 	<nav id="nav">
-	    <div class="container">
-	    	@include('menu.main')
-	    </div>
+		<div class="container">
+			<nav class="navbar-default navbar" role="navigation">
+				<div class="container">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navMenuCollapse">
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					</div>
+					<div class="collapse navbar-collapse navMenuCollapse">
+						<ul class="navbar-nav nav">
+							<li><a href="hoteis-e-pousadas">Hot&eacute;is &amp; Pousadas</a></li>
+							<li><a href="pacotes-nacionais">Pacotes Nacionais</a></li>
+							<li><a href="pacotes-internacionais">Pacotes Internacionais</a></li>
+							<li><a href="feriados" class="single-line"><span>Feriados</span></a></li>
+							<li><a href="passeios-gastronomia">Passeios &amp; Gatronomia</a></li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</div>
 	</nav>
+
 	<div id="main" class="container">
 		@include('forms.super-search')
 		@yield('content')
 	</div>
-	<footer id="footer" class="clearfix">
+
+	<div id="pre-footer" class="clearfix">
 		<div class="container">
-			<ul id="menu-institucional">
-				<li><strong>Institucional</strong></li>
-				<li><a href="">Fale Conosco</a></li>
-				<li><a href="">Quem Somos</a></li>
-				<li><a href="">Ação Social</a></li>
-				<li><a href="">Trabalhe Conosco</a></li>
-				<li><a href="">Imprensa</a></li>
-				<li><a href="">Termos e Condições de Uso</a></li>
-				<li><a href="">Política de Privacidade</a></li>
-			</ul>
-			<ul id="menu-participe">
-				<li><strong>Participe</strong></li>
-				<li><a href="">Seja Nosso Parceiro</a></li>
-				<li><a href="">Sugira uma Viagem</a></li>
-				<li><a href="">Conte pra Gente</a></li>
-				<li><a href="">Indique e Ganhe</a></li>
-			</ul>
-			<ul id="menu-viaje">
-				<li><strong>Viaje</strong></li>
-				<li><a href="">Hoteis</a></li>
-				<li><a href="">Pacotes Internacionais</a></li>
-				<li><a href="">Pacotes Nacionais</a></li>
-				<li><a href="">Passeios e Gastronomia</a></li>
-			</ul>
+			<div id="widget-selos">
+				<h4><span class="entypo lock"></span>Compre com Segurança</h4>
+				<div id="selo-bandeiras">
+					<figure><img src="{{ asset('assets/images/bandeiras.jpg') }}" alt="Bandeiras de Cartão de Crédito" width="212" height="83"></figure>
+				</div>
+				<div id="selo-ebit">
+					<figure>
+						<a id="seloEbit" href="http://www.ebit.com.br/#innbativel" target="_blank" onclick="redir(this.href);">Avaliação de Lojas e-bit</a>
+						<script type="text/javascript" id="getSelo" src="https://558701205.r.anankecdn.com.br/ebitBR/static/getSelo.js?40747" >
+						</script>
+					</figure>
+				</div>
+				<div id="selo-siteblindado">
+					<a href="https://selo.siteblindado.com.br/verificar?url=innbativel.com.br" title="Visualizou o selo Site Blindado? Navegue tranquilamente, esse site está BLINDADO CONTRA ATAQUES. Realizamos milhares de testes simulando ataques de hacker, para garantir a segurança do site. Clique no selo e confira o certificado."><img src="https://s3-sa-east-1.amazonaws.com/selo.siteblindado.com/seals_aw/innbativel.com.br/siteblindado_pr.gif" alt="Selo Site Blindado"></a>
+					<param id="aw_nav_post" value="1">
+					<script type="text/javascript" src="//selo.siteblindado.com/aw.js"></script>
+				</div>
+				<div id="selo-embratur">
+					<figure>
+						<img src="{{ asset('assets/images/embratur.png') }}" alt="Embratur" width="140" height="19">
+					</figure>
+				</div>
+				<div id="selo-site-sustentavel">
+					<a href="http://www.sitesustentavel.com.br/certificado/list?url=innbativel.com.br" title="Site Sustentável" target="_blank">
+						<img src="{{ asset('assets/images/site-sustentavel.png') }}" alt="Site Sustentável" width="142" height="40">
+					</a>
+				</div>
+			</div>
+
 			<div id="widget-facebook">
-				<div class="fb-follow" data-href="https://www.facebook.com/innbativel" data-width="285" data-colorscheme="light" data-layout="standard" data-show-faces="true"></div>
+				<h4>INNBatível no Facebook</h4>
+				<div class="fb-like-box" data-href="http://www.facebook.com/innbativel" data-colorscheme="light" data-show-faces="true" data-header="false" data-stream="false" data-show-border="false" width="292"></div>
+
+				<div id="fb-root"></div>
+				<script>
+					(function(d, s, id) {
+					  var js, fjs = d.getElementsByTagName(s)[0];
+					  if (d.getElementById(id)) return;
+					  js = d.createElement(s); js.id = id;
+					  js.src = "//connect.facebook.net/pt_BR/all.js#xfbml=1";
+					  fjs.parentNode.insertBefore(js, fjs);
+					}(document, 'script', 'facebook-jssdk'));
+				</script>
+
 			</div>
 			<div id="widget-twitter">
-              <a class="twitter-timeline" width="285" height="270" href="https://twitter.com/INNBativel" data-widget-id="332136990269120512">Tweets by @INNBativel</a>
-			</div>
-			<div id="widget-selos">
-				<ul id="menu-selos">
-		            <li id="selo-embratur">
-		            	<figure>
-		            		<img src="{{ asset('assets/images/embratur.png') }}" alt="Logomarca da Embratur" width="170" height="68">
-		            	</figure></li>
-		            <li id="selo-bandeiras">
-		            	<figure><img src="{{ asset('assets/images/bandeiras.jpg') }}" alt="Logomarca da Embratur" width="402" height="46"></figure>
-		            </li>
-		        	<li id="selo-ebit">
-		        		<figure>
-		        			<a id="seloEbit" href="http://www.ebit.com.br/innbativel/selo" target="_blank" title="Avaliado pelos consumidores">
-		        				<img src="https://a248.e.akamai.net/f/248/52872/0s/img.ebit.com.br/ebitBR/selo/img_40747.png">
-		        			</a>
-		        			<script type="text/javascript" id="getSelo" src="https://558701205.r.anankecdn.com.br/ebitBR/static/getSelo.js?40747"></script>
-		        		</figure>
-		        	</li>
-		            <li id="selo-siteblindado">
-		            	<figure>
-		                    <a rel="canonical" href="https://selo.siteblindado.com.br/verificar?url=innbativel.com.br" title="Visualizou o selo Site Blindado? Navegue tranquilamente, esse site esta BLINDADO CONTRA ATAQUES. Realizamos milhares de testes simulando ataques de hacker, para garantir a segurança do site. Clique no selo e confira o certificado."><img src="https://s3-sa-east-1.amazonaws.com/selo.siteblindado.com/seals_aw/innbativel.com.br/siteblindado_pr.gif"></a>
-		                    <param id="aw_nav_post" value="1">
-		                    <script type="text/javascript" src="//selo.siteblindado.com/aw.js"></script>
-		                </figure>
-		            </li>
+				<h4>Twitter do INNBatível</h4>
+				<a class="twitter-timeline" width="300" height="230" href="https://twitter.com/INNBativel" data-widget-id="279588524427190272">Tweets de @INNBativel</a>
 
-		        </ul>
+				<script>
+					try {!function(d,s,id){
+						var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+						if(!d.getElementById(id)){js=d.createElement(s);
+							js.id=id;js.src=p+"://platform.twitter.com/widgets.js";
+							fjs.parentNode.insertBefore(js,fjs);
+						}
+					}(document,"script","twitter-wjs");} catch(e){}
+				</script>
+
+			</div>
+		</div>
+	</div>
+
+	<footer id="footer" class="clearfix">
+		<div class="container">
+			<div id="menu-footer">
+				<ul id="menu-viaje">
+					<li><strong>Viaje</strong></li>
+					<li><a href="hoteis-e-pousadas">Hot&eacute;is &amp; Pousadas</a></li>
+					<li><a href="pacotes-nacionais">Pacotes Nacionais</a></li>
+					<li><a href="pacotes-internacionais">Pacotes Internacionais</a></li>
+					<li><a href="feriados">Feriados</a></li>
+					<li><a href="passeios-gastronomia">Passeios &amp; Gatronomia</a></li>
+				</ul>
+				<ul id="menu-participe">
+					<li><strong>Participe</strong></li>
+					<li><a href="#">Seja Nosso Parceiro</a></li>
+					<li><a href="#">Sugira uma Viagem</a></li>
+					<li><a href="#">Conte pra Gente</a></li>
+					<li><a href="#">Indique e Ganhe</a></li>
+				</ul>
+				<ul id="menu-institucional">
+					<li><strong>Institucional</strong></li>
+					<li><a href="#">Fale Conosco</a></li>
+					<li><a href="#">Quem Somos</a></li>
+					<li><a href="#">Ação Social</a></li>
+					<li><a href="#">Trabalhe Conosco</a></li>
+					<li><a href="#">Imprensa</a></li>
+					<li><a href="#">Termos e Condições de Uso</a></li>
+					<li><a href="#">Política de Privacidade</a></li>
+				</ul>
 			</div>
 			<div id="copyright-and-legal">
 				<p>ASN Serviços de Informações Digitais na Web LTDA., CNPJ n° 12.784.420/0001-95, Rod. Armando Calil Bulos, nº 5405, Florianópolis – SC</p>
 			</div>
 		</div>
 	</footer>
-	<!--div id="fb-root"></div>
-	<script>
-	  window.fbAsyncInit = function() {
-	    FB.init({
-	      appId: '{{ Config::get('facebook.appId') }}',
-	      status: true,
-	      xfbml: true
-	    });
-	  };
-	  (function(){
-	     if (document.getElementById('facebook-jssdk')) {return;}
-	     var firstScriptElement = document.getElementsByTagName('script')[0];
-	     var facebookJS = document.createElement('script');
-	     facebookJS.id = 'facebook-jssdk';
-	     facebookJS.src = '//connect.facebook.net/pt_BR/all.js#xfbml=1&appId=145684162279488';
-	     firstScriptElement.parentNode.insertBefore(facebookJS, firstScriptElement);
-	   }());
-	</script>
-	<script>
-		try {!function(d,s,id){
-			var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-			if(!d.getElementById(id)){js=d.createElement(s);
-				js.id=id;js.src=p+"://platform.twitter.com/widgets.js";
-				fjs.parentNode.insertBefore(js,fjs);
-			}
-		}(document,"script","twitter-wjs");} catch(e){}
-	</script-->
+
 </body>
 </html>
