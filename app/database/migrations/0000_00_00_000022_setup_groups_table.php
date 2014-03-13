@@ -49,7 +49,7 @@ class SetupGroupsTable extends Migration {
 		 * Foreign Keys
 		 */
 		$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
-		$table->foreign('offer_id')->references('id')->on('tags')->onDelete('cascade');
+		$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
 	  });
 	}
 
