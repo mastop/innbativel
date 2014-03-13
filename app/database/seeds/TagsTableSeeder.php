@@ -10,12 +10,12 @@ class TagsTableSeeder extends DatabaseSeeder
 		[ 'title' => 'páscoa' ],
 		[ 'title' => 'feriado' ],
 		[ 'title' => 'copa do mundo 2014' ],
-		[ 'title' => 'olimíadas 2016' ],
+		[ 'title' => 'olimpíadas 2016' ],
 	];
 
-    foreach ($tags as $tag)
-    {
-      Tag::create($tag);
-    }
+	foreach ($tags as $tag)
+	{
+	  Tag::create($tag);
+	}
   }
 }

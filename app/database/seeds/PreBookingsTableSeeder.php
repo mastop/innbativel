@@ -29,16 +29,16 @@ class PreBookingsTableSeeder extends DatabaseSeeder
 {
   public function run()
   {
-    $pre_bookings = [
-      [
-        'offer_id' => 783,
-        'user_id' => 1,
-      ],
-    ];
+	// $pre_bookings = [
+	//   [
+	//     'offer_id' => 783,
+	//     'user_id' => 1,
+	//   ],
+	// ];
 
-    foreach ($pre_bookings as $pre_booking)
-    {
-      PreBooking::create($pre_booking);
-    }
+	// foreach ($pre_bookings as $pre_booking)
+	// {
+	//   PreBooking::create($pre_booking);
+	// }
   }
 }
