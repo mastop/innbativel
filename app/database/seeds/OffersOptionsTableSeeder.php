@@ -176,7 +176,7 @@ class OffersOptionsTableSeeder extends DatabaseSeeder
 	{
 	  $op = OfferOption::create($offer_option);
 
-	  switch($o->id){
+	  switch($op->id){
 		case 1:
 			$op->included->attach(65, array('display_order' => 1,'display_home' => true));
 			$op->included->attach(54, array('display_order' => 2,'display_home' => true));
