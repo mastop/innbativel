@@ -106,7 +106,6 @@
 		  @if(isset($offer['genre']))
 		  <div class="offer-label">{{ $offer['genre']['icon'] . $offer['genre']['title'] }}</div>
 		  @endif
-		  @endif
 		  @if(isset($offer['genre2']))
 		  <div class="offer-label">{{ $offer['genre2']['icon'] . $offer['genre2']['title'] }}</div>
 		  @endif
