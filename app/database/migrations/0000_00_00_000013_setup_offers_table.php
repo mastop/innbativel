@@ -4,28 +4,29 @@ use Illuminate\Database\Migrations\Migration;
 
 class SetupOffersTable extends Migration {
 
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-      // Creates the users table
-      Schema::create('offers', function($table)
-      {
-        /*
-         * Storage Engines
-         */
-        $table->engine = 'InnoDB';
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+	  // Creates the users table
+	  Schema::create('offers', function($table)
+	  {
+		/*
+		 * Storage Engines
+		 */
+		$table->engine = 'InnoDB';
 
-        /*
-         * Fields
-         */
+		/*
+		 * Fields
+		 */
 		$table->increments('id');
-        $table->integer('partner_id')->unsigned()->index();
-        $table->integer('ngo_id')->unsigned()->index();
-        $table->integer('genre_id')->unsigned()->index();
+		$table->integer('partner_id')->unsigned()->index();
+		$table->integer('ngo_id')->unsigned()->index();
+		$table->integer('genre_id')->unsigned()->index();
+		$table->integer('genre2_id')->unsigned()->index();
 		$table->integer('destiny_id')->unsigned()->index();
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
@@ -45,29 +46,30 @@ class SetupOffersTable extends Migration {
 		$table->integer('display_order')->default(99); // ordem das ofertas na home, em categorias e em qualquer outro lugar
 		$table->integer('pre_booking_order')->default(99);
 
-        /*
-         * Foreign Keys
-         */
+		/*
+		 * Foreign Keys
+		 */
 		$table->foreign('partner_id')->references('id')->on('users'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('ngo_id')->references('id')->on('ngos'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('genre_id')->references('id')->on('genres'); // COM OU SEM "ON DELETE CASCATE"?
+		$table->foreign('genre2_id')->references('id')->on('genres'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('destiny_id')->references('id')->on('destinies'); // COM OU SEM "ON DELETE CASCATE"?
 
-        /*
-         * Time Stamps
-         */
-        $table->timestamps();
-      });
+		/*
+		 * Time Stamps
+		 */
+		$table->timestamps();
+	  });
 
-    }
+	}
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
 		DB::statement('SET foreign_key_checks = 0');
 		DB::statement('SET UNIQUE_CHECKS=0');
 
@@ -75,6 +77,6 @@ class SetupOffersTable extends Migration {
 
 		DB::statement('SET foreign_key_checks = 1');
 		DB::statement('SET UNIQUE_CHECKS=1');
-    }
+	}
 
 }
