@@ -25,7 +25,7 @@ class SetupOffersTable extends Migration {
 		$table->increments('id');
 		$table->integer('partner_id')->unsigned()->index();
 		$table->integer('ngo_id')->unsigned()->index();
-		$table->integer('genre_id')->unsigned()->index();
+		$table->integer('genre_id')->unsigned()->index()->nullable();
 		$table->integer('genre2_id')->unsigned()->index()->nullable();
 		$table->integer('destiny_id')->unsigned()->index();
 		$table->string('title')->nullable();
