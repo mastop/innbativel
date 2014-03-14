@@ -108,7 +108,6 @@
 	</nav>
 
 	<div id="main" class="container">
-		@include('forms.super-search')
 		@yield('content')
 	</div>
 

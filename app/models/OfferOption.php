@@ -54,26 +54,30 @@ class OfferOption extends Eloquent {
 	}
 
 	public function included(){
-		return $this->belongsToMany('Included', 'offers_options_included', 'offer_option_id', 'included_id')->withPivot('display_home', 'display_order');
+		return $this->belongsToMany('Included', 'offers_options_included', 'offer_option_id', 'included_id')->withPivot('display_home', 'display_order')->where('display_home', 1)->orderBy('display_home', 'asc');
 	}
 
 	public function getPriceOriginalAttribute($value)
 	{
-		$value = (int) $value;
+		// $value = (int) $value;
 
-		$money = new Money($value, new Currency('BRL'));
-		$inter = new IntlFormatter('pt_BR');
+		// $money = new Money($value, new Currency('BRL'));
+		// $inter = new IntlFormatter('pt_BR');
 
-		return $inter->format($money);
+		// return $inter->format($money);
+
+		return substr($value, 0, -2);
 	}
 
 	public function getPriceWithDiscountAttribute($value)
 	{
-		$value = (int) $value;
+		// $value = (int) $value;
 
-		$money = new Money($value, new Currency('BRL'));
-		$inter = new IntlFormatter('pt_BR');
+		// $money = new Money($value, new Currency('BRL'));
+		// $inter = new IntlFormatter('pt_BR');
 
-		return $inter->format($money);
+		// return $inter->format($money);
+
+		return substr($value, 0, -2);
 	}
 }

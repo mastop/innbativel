@@ -48,7 +48,11 @@ class Offer extends Eloquent {
 	}
 
 	public function offer_option(){
-		return $this->hasMany('OfferOption');
+		return $this->hasMany('OfferOption')->orderBy('display_order', 'asc');
+	}
+
+	public function offer_option_home(){
+		return $this->hasMany('OfferOption')->orderBy('display_order', 'asc');
 	}
 
 	public function subcategory(){
@@ -64,7 +68,7 @@ class Offer extends Eloquent {
 	}
 
 	public function group(){
-		return $this->belongsToMany('Included', 'offers_groups', 'offer_id', 'group_id')->withPivot('display_order');
+		return $this->belongsToMany('Group', 'offers_groups', 'offer_id', 'group_id')->withPivot('display_order')->orderBy('display_order', 'asc');
 	}
 
 	public function discount_coupon(){

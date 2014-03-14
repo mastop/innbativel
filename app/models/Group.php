@@ -20,7 +20,10 @@ class Group extends Eloquent {
   );
 
   public function offer(){
-	return $this->belongsToMany('Offer', 'offers_groups', 'group_id', 'offer_id');
+	return $this->belongsToMany('Offer', 'offers_groups', 'group_id', 'offer_id')
+				->where('offers.starts_on', '<=', Carbon::now()->toDateTimeString())
+				->where('offers.ends_on'  , '>=', Carbon::now()->toDateTimeString())
+				->orderBy('offers_groups.display_order', 'asc');
   }
 
 }
