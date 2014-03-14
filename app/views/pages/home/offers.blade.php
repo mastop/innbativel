@@ -21,6 +21,9 @@
 		  @if(isset($offer['genre']))
 		  <div class="offer-label">{{ $offer['genre']['icon'] . $offer['genre']['title'] }}</div>
 		  @endif
+		  @if(isset($offer['genre2']))
+		  <div class="offer-label">{{ $offer['genre2']['icon'] . $offer['genre2']['title'] }}</div>
+		  @endif
 		  <figure>
 			<img src="{{ $offer['cover_img']['http'] }}" alt="{{ $offer['subtitle'] }}">
 		  </figure>
@@ -102,6 +105,10 @@
 		<a href="{{ $offer['slug'] }}" class="offer-grid-inner clearfix">
 		  @if(isset($offer['genre']))
 		  <div class="offer-label">{{ $offer['genre']['icon'] . $offer['genre']['title'] }}</div>
+		  @endif
+		  @endif
+		  @if(isset($offer['genre2']))
+		  <div class="offer-label">{{ $offer['genre2']['icon'] . $offer['genre2']['title'] }}</div>
 		  @endif
 		  <figure>
 			<img src="{{ $offer['cover_img']['http'] }}" alt="{{ $offer['subtitle'] }}">

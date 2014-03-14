@@ -26,6 +26,7 @@ class SetupOffersTable extends Migration {
 		$table->integer('partner_id')->unsigned()->index();
 		$table->integer('ngo_id')->unsigned()->index();
 		$table->integer('genre_id')->unsigned()->index();
+		$table->integer('genre2_id')->unsigned()->index()->nullable();
 		$table->integer('destiny_id')->unsigned()->index();
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
@@ -51,6 +52,7 @@ class SetupOffersTable extends Migration {
 		$table->foreign('partner_id')->references('id')->on('users'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('ngo_id')->references('id')->on('ngos'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('genre_id')->references('id')->on('genres'); // COM OU SEM "ON DELETE CASCATE"?
+		$table->foreign('genre2_id')->references('id')->on('genres'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('destiny_id')->references('id')->on('destinies'); // COM OU SEM "ON DELETE CASCATE"?
 
 		/*
