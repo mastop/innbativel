@@ -17,7 +17,7 @@
 	<div class="row">
 
 	  <div itemscope class="offer-grid-item col-8 col-sm-8 col-lg-8 clearfix">
-		<a href="oferta.html" class="offer-grid-inner clearfix">
+		<a href="oferta/{{ $offer['slug'] }}" class="offer-grid-inner clearfix">
 		  @if(isset($offer['genre']))
 		  <div class="offer-label">{{ $offer['genre']['icon'] . $offer['genre']['title'] }}</div>
 		  @endif
@@ -102,7 +102,7 @@
 	  @foreach ($group['offer'] as $offer)
 	  <?php $offer_option = $offer['offer_option_home'][0]; ?>
 	  <div itemscope class="offer-grid-item col-6 col-sm-6 col-lg-6 clearfix">
-		<a href="{{ $offer['slug'] }}" class="offer-grid-inner clearfix">
+		<a href="oferta/{{ $offer['slug'] }}" class="offer-grid-inner clearfix">
 		  @if(isset($offer['genre']))
 		  <div class="offer-label">{{ $offer['genre']['icon'] . $offer['genre']['title'] }}</div>
 		  @endif

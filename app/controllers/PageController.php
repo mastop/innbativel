@@ -9,10 +9,6 @@ class PageController extends BaseController {
 						->remember(5)
 						->get()->toArray();
 
-						// print('<pre>');
-						// print_r($groups);
-						// print('</pre>'); exit();
-
 		$banners = Banner::limit(3)->remember(3)->get()->toArray();
 
 		$this->layout->content = View::make('pages.home', compact('groups', 'banners'));
