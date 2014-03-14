@@ -83,10 +83,6 @@ class Offer extends Eloquent {
 		return $this->belongsTo('Genre');
 	}
 
-	public function genre2(){
-		return $this->belongsTo('Genre', 'genre2_id');
-	}
-
 	public function destiny(){
 		return $this->belongsTo('Destiny', 'destiny_id');
 	}
