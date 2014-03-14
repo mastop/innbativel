@@ -10,7 +10,7 @@ class Offer extends Eloquent {
 	protected $table = 'offers';
 
 	public static $sluggable = array(
-		 'build_from' => 'fulldestiny',
+		 'build_from' => 'title',
 		 'save_to'    => 'slug',
 	 );
 
@@ -81,6 +81,10 @@ class Offer extends Eloquent {
 
 	public function genre(){
 		return $this->belongsTo('Genre');
+	}
+
+	public function genre2(){
+		return $this->belongsTo('Genre', 'genre2_id');
 	}
 
 	public function destiny(){

@@ -21,6 +21,9 @@
 		  @if(isset($offer['genre']))
 		  <div class="offer-label">{{ $offer['genre']['icon'] . $offer['genre']['title'] }}</div>
 		  @endif
+		  @if(isset($offer['genre2']))
+		  <div class="offer-label">{{ $offer['genre2']['icon'] . $offer['genre2']['title'] }}</div>
+		  @endif
 		  <figure>
 			<img src="{{ $offer['cover_img']['http'] }}" alt="{{ $offer['subtitle'] }}">
 		  </figure>
@@ -103,6 +106,9 @@
 		  @if(isset($offer['genre']))
 		  <div class="offer-label">{{ $offer['genre']['icon'] . $offer['genre']['title'] }}</div>
 		  @endif
+		  @if(isset($offer['genre2']))
+		  <div class="offer-label">{{ $offer['genre2']['icon'] . $offer['genre2']['title'] }}</div>
+		  @endif
 		  <figure>
 			<img src="{{ $offer['cover_img']['http'] }}" alt="{{ $offer['subtitle'] }}">
 		  </figure>
@@ -129,7 +135,7 @@
 	  </div>
 	  @endforeach
 
-	  <a class="more" href="{{ $group['title'] }}">Veja mais ofertas</a>
+	  <a class="more" href="{{ $group['url'] }}">Veja mais ofertas</a>
 
 	</div>
 	@endforeach
