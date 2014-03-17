@@ -51,7 +51,7 @@ return array(
 			'host'      => 'localhost',
 			'database'  => 'innbativel',
 			'username'  => 'root',
-			'password'  => 'pode',
+			'password'  => '',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
