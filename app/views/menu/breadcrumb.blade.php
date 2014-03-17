@@ -1,0 +1,1 @@
+{{ Breadcrumb::create($bread) }}
