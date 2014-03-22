@@ -29,4 +29,12 @@ class PageController extends BaseController {
     {
         $this->layout->content = View::make('pages.politica-de-privacidade');
     }
+
+    /**
+     * Show Política de Privacidade
+     */
+    public function anyQuemSomos()
+    {
+        $this->layout->content = View::make('pages.quem-somos');
+    }
 }
