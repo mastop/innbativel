@@ -15,10 +15,18 @@ class PageController extends BaseController {
 	}
 
     /**
-     * Show termos de uso
+     * Show Termos de uso
      */
     public function anyTermosDeUso()
     {
-        $this->layout->content = View::make('pages.termos-de-uso', compact('groups', 'banners'));
+        $this->layout->content = View::make('pages.termos-de-uso');
+    }
+
+    /**
+     * Show Política de Privacidade
+     */
+    public function anyPoliticaDePrivacidade()
+    {
+        $this->layout->content = View::make('pages.politica-de-privacidade');
     }
 }

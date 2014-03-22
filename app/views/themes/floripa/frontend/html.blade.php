@@ -202,7 +202,7 @@
 					<li><a href="#">Trabalhe Conosco</a></li>
 					<li><a href="#">Imprensa</a></li>
 					<li><a href="{{ URL::route('termos-de-uso') }}">Termos e Condições de Uso</a></li>
-					<li><a href="#">Política de Privacidade</a></li>
+					<li><a href="{{ URL::route('politica-de-privacidade') }}">Política de Privacidade</a></li>
 				</ul>
 			</div>
 			<div id="copyright-and-legal">
