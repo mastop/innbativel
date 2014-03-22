@@ -51,4 +51,12 @@ class PageController extends BaseController {
     {
         $this->layout->content = View::make('pages.acao-social');
     }
+
+    /**
+     * Show Imprensa
+     */
+    public function anyImprensa()
+    {
+        $this->layout->content = View::make('pages.imprensa');
+    }
 }

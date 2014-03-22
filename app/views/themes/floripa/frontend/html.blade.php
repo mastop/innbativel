@@ -200,7 +200,7 @@
 					<li><a href="{{ URL::route('quem-somos') }}">Quem Somos</a></li>
 					<li><a href="{{ URL::route('acao-social') }}">Ação Social</a></li>
 					<li><a href="#">Trabalhe Conosco</a></li>
-					<li><a href="#">Imprensa</a></li>
+					<li><a href="{{ URL::route('imprensa') }}">Imprensa</a></li>
 					<li><a href="{{ URL::route('termos-de-uso') }}">Termos e Condições de Uso</a></li>
 					<li><a href="{{ URL::route('politica-de-privacidade') }}">Política de Privacidade</a></li>
 				</ul>
