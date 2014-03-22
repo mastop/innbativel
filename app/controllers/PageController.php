@@ -14,4 +14,11 @@ class PageController extends BaseController {
 		$this->layout->content = View::make('pages.home', compact('groups', 'banners'));
 	}
 
+    /**
+     * Show termos de uso
+     */
+    public function anyTermosDeUso()
+    {
+        $this->layout->content = View::make('pages.termos-de-uso', compact('groups', 'banners'));
+    }
 }
