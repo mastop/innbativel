@@ -198,7 +198,7 @@
 					<li><strong>Institucional</strong></li>
 					<li><a href="#">Fale Conosco</a></li>
 					<li><a href="{{ URL::route('quem-somos') }}">Quem Somos</a></li>
-					<li><a href="#">Ação Social</a></li>
+					<li><a href="{{ URL::route('acao-social') }}">Ação Social</a></li>
 					<li><a href="#">Trabalhe Conosco</a></li>
 					<li><a href="#">Imprensa</a></li>
 					<li><a href="{{ URL::route('termos-de-uso') }}">Termos e Condições de Uso</a></li>

@@ -1,7 +1,13 @@
 <?php
 
+/**
+ *
+ */
 class PageController extends BaseController {
 
+    /**
+     * Show Home
+     */
 	public function anyHome()
 	{
 		$groups = Group::with(['offer.genre', 'offer.genre2', 'offer.offer_option_home.included'])
@@ -31,10 +37,18 @@ class PageController extends BaseController {
     }
 
     /**
-     * Show Política de Privacidade
+     * Show Quem somos
      */
     public function anyQuemSomos()
     {
         $this->layout->content = View::make('pages.quem-somos');
+    }
+
+    /**
+     * Show Ação Social
+     */
+    public function anyAcaoSocial()
+    {
+        $this->layout->content = View::make('pages.acao-social');
     }
 }
