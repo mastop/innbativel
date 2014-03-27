@@ -143,6 +143,7 @@ return array(
 		'KennedyTedesco\Validation\ValidationServiceProvider',
 		'Intervention\Image\ImageServiceProvider',
 		'Aws\Laravel\AwsServiceProvider',
+        'Barryvdh\Debugbar\ServiceProvider',
 	),
 
 	/*
@@ -240,7 +241,7 @@ return array(
 		'Typography'      => 'Bootstrapper\Typography',
 		'Image'			  => 'Intervention\Image\Facades\Image',
 		'AWS' 			  => 'Aws\Laravel\AwsFacade',
-
+        //'Debugbar' => 'Barryvdh\Debugbar\Facade',
 	),
 
 );
