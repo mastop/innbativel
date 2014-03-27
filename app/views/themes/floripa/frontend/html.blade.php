@@ -196,7 +196,7 @@
 				</ul>
 				<ul id="menu-institucional">
 					<li><strong>Institucional</strong></li>
-					<li><a href="#">Fale Conosco</a></li>
+					<li><a href="{{ URL::route('fale-conosco') }}">Fale Conosco</a></li>
 					<li><a href="{{ URL::route('quem-somos') }}">Quem Somos</a></li>
 					<li><a href="{{ URL::route('acao-social') }}">Ação Social</a></li>
 					<li><a href="#">Trabalhe Conosco</a></li>

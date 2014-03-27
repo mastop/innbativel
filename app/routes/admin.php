@@ -1,17 +1,14 @@
 <?php
 
 Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
-
 	/*
 	 * Dashboard
 	 */
-
 	Route::get('/', ['as' => 'admin', 'uses' => 'AdminController@getDashboard', 'after' => 'cache.public']);
 
 	/*
 	 * Users
 	 */
-
 	Route::any('user', ['as' => 'admin.user', 'uses' => 'AdminUserController@anyIndex']);
 
 	Route::get('user/view/{id}', ['as' => 'admin.user.view', 'uses' => 'AdminUserController@getView']);

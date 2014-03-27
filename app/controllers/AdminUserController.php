@@ -1,5 +1,4 @@
 <?php
-
 class AdminUserController extends BaseController {
 
 	/**
@@ -188,41 +187,44 @@ class AdminUserController extends BaseController {
 	{
 		$inputs = Input::all();
 
-		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
-
 		$rules = [
-			'email' => 'required|email|unique:users,email',
-			'profile.first_name' => 'required',
-			'profile.last_name' => 'required',
-			'profile.cpf' => 'required',
-			'profile.city' => 'required',
+			'email' => 'Required|Max:255|Email|Unique:users,email',
+            'roles' => 'required',
+			'profile.first_name' => 'required|Alpha',
+			'profile.last_name' => 'required|Alpha',
+			'profile.cpf' => 'required|numeric',
+			'profile.city' => 'required|Alpha',
 			'profile.state' => 'required',
-			'profile.country' => 'required',
+			'profile.country' => 'required|Alpha',
 		];
-
 		$validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
-			$created = $this->user->create($inputs)->id;
+            $inputs['username'] = Str::lower(Str::slug(Input::get('email')));
+            $inputs['api_key'] = md5($inputs['username']);
+            $inputs['password'] = $this->user->setPasswordAttribute($inputs['username']);
 
-			$inputs['profile']['user_id'] = $created;
+            if ($user = $this->user->create($inputs))
+            {
+                $inputs['profile']['user_id'] = $user->id;
 
-			$user = User::find($created);
-			$user->profile()->create($inputs['profile']);
+                $user->profile()->create($inputs['profile']);
 
-			/*
-			 * Roles
-			 */
-			$roles = [];
+                /*
+                 * Roles
+                 */
+                $roles = [];
 
-			foreach ($inputs['roles'] as $key => $value) {
-				$roles[] = $value;
-			}
+                foreach ($inputs['roles'] as $key => $value) {
+                    $roles[] = $value;
+                }
 
-			$user->roles()->sync($roles);
+                $user->roles()->sync($roles);
 
-			return Redirect::route('admin.user');
+                return Redirect::route('admin.user');
+            }
+
 		}
 
 		/*
@@ -264,7 +266,7 @@ class AdminUserController extends BaseController {
 		 */
 		$inputs = Input::all();
 
-		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
+		$inputs['username'] = Str::lower(Str::slug(Input::get('email')));
 
 		$rules = [
 			'email' => 'required|email|unique:users,email,'. $id,
