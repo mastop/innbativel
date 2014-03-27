@@ -59,4 +59,12 @@ class PageController extends BaseController {
     {
         $this->layout->content = View::make('pages.imprensa');
     }
+
+    /**
+     * Show Imprensa
+     */
+    public function anyFaleConosco()
+    {
+        $this->layout->content = View::make('pages.fale-conosco');
+    }
 }
