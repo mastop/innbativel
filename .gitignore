@@ -7,4 +7,3 @@ vendor/
 server/
 .idea/
 .elasticbeanstalk/
-.ebextensions/
