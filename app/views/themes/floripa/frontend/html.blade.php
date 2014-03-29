@@ -5,7 +5,7 @@
 	<title>{{ $seo['title'] }}</title>
 
     @if (App::environment() == 'elastic')
-        {{-- Impede que o site seja indexado pelos bots de busca, apenas no ambiente "elastic" --}}
+            {{-- Impede que o site seja indexado pelos bots de busca, apenas no ambiente "elastic" --}}
         <meta name="robots" content="noindex">
     @endif
 
@@ -219,3 +219,6 @@
 	</footer>
 </body>
 </html>
+
+
+
