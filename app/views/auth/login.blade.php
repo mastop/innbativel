@@ -22,6 +22,9 @@
 			{{ Former::danger_submit('Entrar')->class('btn btn-danger btn-block') }}
 		</div>
 		{{ Former::close() }}
+
+        <br />
+        Ainda não é cadastrado? <a href="{{ route('account.get') }}">Clique aqui e faça já sua conta!</a>
 	</div>
 </div>
 

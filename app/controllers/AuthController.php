@@ -23,10 +23,9 @@ class AuthController extends BaseController {
 
 	public function postLogin()
 	{
-
 		$user = [
-		'username' => Input::get('email'),
-		'password' => Input::get('password'),
+            'username' => Input::get('email'),
+            'password' => Input::get('password'),
 		];
 
 		$validator = Validator::make(Input::all(), [
@@ -429,9 +428,20 @@ class AuthController extends BaseController {
 
 	public function getCreate()
 	{
-		$rules = ['email' => 'required', 'password' => 'required'];
+		$rules = [
+                'profile.first_name' => 'required|Alpha',
+                'profile.last_name' => 'required|Alpha',
+                'email' => 'Required|Max:255|Email|Unique:users,email',
+                'password'              => 'required|confirmed',
+                'password_confirmation' => 'required'
+        ];
 
 		$form  = Former::horizontal_open(route('account.create'))->class('row-fluid')->rules($rules);
+
+
+        $form .= Former::text('profile.first_name')->label('Nome')->class('span12');
+        $form .= Former::text('profile.last_name')->label('Sobrenome')->class('span12');
+
 		$form .= Former::text('email')->class('span12');
 		$form .= Former::password('password')->label('Senha')->class('span12');
 		$form .= Former::password('password_confirmation')->label('Senha')->class('span12');
@@ -448,11 +458,12 @@ class AuthController extends BaseController {
 		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
-			'email' => 'required|email|unique:users,email',
-			'profile.cpf' => 'required',
-			'profile.city' => 'required',
-			'profile.state' => 'required',
-			'profile.country' => 'required',
+            'email' => 'Required|Max:255|Email|Unique:users,email',
+            'roles' => 'required',
+            'profile.first_name' => 'required|Alpha',
+            'profile.last_name' => 'required|Alpha',
+            'password'              => 'required|confirmed',
+            'password_confirmation' => 'required',
 		];
 
 		$validation = Validator::make($inputs, $rules);

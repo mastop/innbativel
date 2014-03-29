@@ -1,21 +1,28 @@
 <!DOCTYPE html>
 <html class="{{ $html_classes }}" lang="{{ Config::get('app.locale') }}" dir="ltr">
 <head>
-	<meta charset="utf-8">
+	<meta charset="utf-8" />
 	<title>{{ $seo['title'] }}</title>
-	<meta name="author" content="{{ $seo['metatag']['author'] }}">
-	<meta name="keywords" content="{{ $seo['metatag']['keywords'] }}">
-	<meta name="description" content="{{ $seo['metatag']['description'] }}">
-	<meta name="csrf-token" content="{{ csrf_token() }}">
+
+    @if (App::environment() == 'elastic')
+            {{-- Impede que o site seja indexado pelos bots de busca, apenas no ambiente "elastic" --}}
+        <meta name="robots" content="noindex">
+    @endif
+
+	<meta name="author" content="{{ $seo['metatag']['author'] }}" />
+	<meta name="keywords" content="{{ $seo['metatag']['keywords'] }}" />
+	<meta name="description" content="{{ $seo['metatag']['description'] }}" />
+	<meta name="csrf-token" content="{{ csrf_token() }}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="alternate" hreflang="{{ Config::get('app.locale') }}" href="{{ URL::current() }}">
-	<link rel="canonical" href="{{ URL::current() }}">
-	<link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-	<link rel="stylesheet" type="text/css" href="assets/themes/floripa/frontend/css/bootstrap.css" />
-	<script src="assets/vendor/jquery/jquery.latest.min.js"></script>
-	<script src="assets/vendor/jquery.migrate/jquery.migrate.min.js"></script>
-	<script src="assets/vendor/bootstrap/3/dist/js/bootstrap.min.js"></script>
-	<script src="assets/themes/floripa/frontend/js/main.js"></script>
+	<link rel="alternate" hreflang="{{ Config::get('app.locale') }}" href="{{ URL::current() }}" />
+	<link rel="canonical" href="{{ URL::current() }}" />
+	<link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/themes/floripa/frontend/css/bootstrap.css') }}" />
+	<script src="{{ asset('assets/vendor/jquery/jquery.latest.min.js') }}"></script>
+	<script src="{{ asset('assets/vendor/jquery.migrate/jquery.migrate.min.js') }}"></script>
+	<script src="{{ asset('assets/vendor/bootstrap/3/dist/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('assets/themes/floripa/frontend/js/main.js') }}"></script>
 </head>
 
 <body class="{{ $body_classes }}">
@@ -53,7 +60,7 @@
 					@if(Auth::check())
 					<li><a href="{{ route('logout') }}">Sair <span class="entypo login"></span></a></li>
 					@else
-					<li><a href="#">Entrar <span class="entypo login"></span></a></li>
+					<li><a href="{{ route('login') }}">Entrar <span class="entypo login"></span></a></li>
 					@endif
 					<li><a href="#">Receba nossa <strong>Newsletter</strong> <span class="entypo mail"></span></a></li>
 					<li><a href="hoteis-e-pousadas">Hot&eacute;is &amp; Pousadas</a></li>
@@ -77,7 +84,7 @@
 			@if(Auth::check())
 			<a class="btn-login" href="{{ route('logout') }}">Sair <span class="entypo login"></span></a>
 			@else
-			<a class="btn-login" href="#">Entrar <span class="entypo login"></span></a>
+			<a class="btn-login" href="{{ route('login') }}">Entrar <span class="entypo login"></span></a>
 			@endif
 		</div>
 	</div>
@@ -212,3 +219,6 @@
 	</footer>
 </body>
 </html>
+
+
+
