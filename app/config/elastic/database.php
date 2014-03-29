@@ -46,19 +46,17 @@ return array(
 
 	'connections' => array(
 
-		'mysql' => array(
-			'driver'    => 'mysql',
-			'host'      => 'localhost',
-			'database'  => 'innbativel',
-			'username'  => 'root',
-			'password'  => '',
-			'charset'   => 'utf8',
-			'collation' => 'utf8_unicode_ci',
-			'prefix'    => '',
-			// 'options'   => array(
-			// 	PDO::MYSQL_ATTR_INIT_COMMAND => 'SET time_zone = \'America/Sao_Paulo\'', //SET lc_time_names = 'pt_BR';
-   //          ),
-		),
+        'mysql' => array(
+            'driver'    => 'mysql',
+            'host'      => $_SERVER['RDS_HOSTNAME'],
+            'port'      => $_SERVER['RDS_PORT'],
+            'database'  => $_SERVER['RDS_DB_NAME'],
+            'username'  => $_SERVER['RDS_USERNAME'],
+            'password'  => $_SERVER['RDS_PASSWORD'],
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+        ),
 
 	),
 
@@ -86,17 +84,17 @@ return array(
 	|
 	*/
 
-	'redis' => array(
-
-		'cluster' => true,
-
-		'default' => array(
-			'host'     => 'innbativel.vel2nk.0001.use1.cache.amazonaws.com',
-			'port'     => 6379,
-			'database' => 'innbativel',
-		),
-
-	),
+//	'redis' => array(
+//
+//		'cluster' => true,
+//
+//		'default' => array(
+//			'host'     => 'innbativel.vel2nk.0001.use1.cache.amazonaws.com',
+//			'port'     => 6379,
+//			'database' => 'innbativel',
+//		),
+//
+//	),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -104,11 +102,11 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	*/
-	'backup' => array(
-		'path' => storage_path() . '/backup',
-		's3' => array(
-			'path' => 'your/s3/dump/folder'
-		),
-	),
+//	'backup' => array(
+//		'path' => storage_path() . '/backup',
+//		's3' => array(
+//			'path' => 'your/s3/dump/folder'
+//		),
+//	),
 
 );
