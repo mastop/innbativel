@@ -29,6 +29,16 @@ class User extends BaseUser {
         parent::__construct($attributes);
     }
 
+    /**
+     * Retorna o Nome completo
+     *
+     * @return string
+     */
+    public function fullName()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
 	public function profile()
 	{
 		return $this->hasOne('Profile');
