@@ -1,4 +1,4 @@
-	<div id="super-search" class="clearfix">
+<!--	<div id="super-search" class="clearfix">
 	  <form accept-charset="utf-8" class="form-inline" method="GET">
 		<div class="control-group required">
 		  <label for="search" class="control-label">Encontre ofertas INNBatíveis</label>
@@ -6,7 +6,7 @@
 		</div>
 
 	  </form>
-	</div>
+	</div> -->
 
 	<?php
 	$first_group = array_shift($groups);
