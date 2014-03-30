@@ -61,8 +61,8 @@ class SetupGeoCategoriesTable extends Migration {
 		DB::statement('SET foreign_key_checks = 0');
 		DB::statement('SET UNIQUE_CHECKS=0');
 
-		// Schema::drop('geo_categories');
-		Schema::drop('offer_geo_category');
+		Schema::drop('geo_categories');
+		Schema::drop('offers_geo_categories');
 
 		DB::statement('SET foreign_key_checks = 1');
 		DB::statement('SET UNIQUE_CHECKS=1');
