@@ -1,13 +1,3 @@
-	<div id="super-search" class="clearfix">
-	  <form accept-charset="utf-8" class="form-inline" method="GET">
-		<div class="control-group required">
-		  <label for="search" class="control-label">Encontre ofertas INNBatíveis</label>
-		  <div class="controls"><span class="entypo search"></span><input required id="search" type="text" name="search" placeholder="Onde você quer aproveitar?"><input class="btn" type="submit" value="Buscar agora"></div>
-		</div>
-
-	  </form>
-	</div>
-
 	<?php
 	$first_group = array_shift($groups);
 	$offer = $first_group['offer'][0];
