@@ -40,7 +40,7 @@ class UsersTableSeeder extends DatabaseSeeder
 	  [
 		'username' => 'cawecoy',
 		'email'    => 'cawecoy@gmail.com',
-		'password' => 'programmer',
+		'password' => 'a425352a84b14c7acb601495bd156322', // "programmer" em MD5
 		'api_key' => 'ashd908hads9',
 	  ],
 	  [
