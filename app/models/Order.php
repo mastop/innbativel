@@ -38,4 +38,8 @@ class Order extends Eloquent {
   	return $this->belongsToMany('OfferOption', 'orders_offers_options', 'order_id', 'offer_option_id')->leftJoin('offers', 'offers_options.offer_id', '=', 'offers.id')->select(['offers.id','offers.title AS offer_title']);
   }
 
+  public function optional_item(){
+    return $this->belongsToMany('OptionalItem', 'orders_optional_itens', 'order_id', 'optional_item_id');
+  }
+
 }

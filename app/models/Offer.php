@@ -95,6 +95,10 @@ class Offer extends Eloquent {
 		return $this->belongsTo('User', 'partner_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
 	}
 
+	public function tell_us(){
+		return $this->belongsTo('TellUs', 'tell_us_id');
+	}
+
 	private function convertImageString($value)
 	{
 		if (!is_null($value)) {

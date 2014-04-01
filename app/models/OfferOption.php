@@ -57,6 +57,10 @@ class OfferOption extends Eloquent {
 		return $this->belongsToMany('Included', 'offers_options_included', 'offer_option_id', 'included_id')->withPivot('display_home', 'display_order')->where('display_home', 1)->orderBy('display_home', 'asc');
 	}
 
+	public function departure_city(){
+		return $this->belongsTo('Destiny', 'departure_city_id');
+	}
+
 	public function getPriceOriginalAttribute($value)
 	{
 		// $value = (int) $value;

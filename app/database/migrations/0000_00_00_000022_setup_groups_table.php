@@ -25,6 +25,7 @@ class SetupGroupsTable extends Migration {
 		$table->increments('id');
 		$table->string('title')->nullable();
 		$table->string('url')->nullable();
+		$table->string('icon')->nullable();
 		$table->integer('display_order')->default(99);
 
 	  });
