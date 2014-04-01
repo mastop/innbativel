@@ -6,3 +6,5 @@
 vendor/
 server/
 .idea/
+drop_tables.php
+/app/config/database.php

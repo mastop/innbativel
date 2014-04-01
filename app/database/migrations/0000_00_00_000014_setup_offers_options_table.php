@@ -24,7 +24,7 @@ class SetupOffersOptionsTable extends Migration {
          */
 		$table->increments('id');
         $table->integer('offer_id')->unsigned()->index();
-		$table->integer('departure_city_id')->unsigned()->index();
+		$table->integer('departure_city_id')->unsigned()->index()->nullable();
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
 		$table->text('included')->nullable(); // HTML

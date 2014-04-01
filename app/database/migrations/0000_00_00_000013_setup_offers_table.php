@@ -51,7 +51,7 @@ class SetupOffersTable extends Migration {
 		 * Foreign Keys
 		 */
 		$table->foreign('partner_id')->references('id')->on('users'); // COM OU SEM "ON DELETE CASCATE"?
-		$table->foreign('category_id')->references('id')->on('users'); // COM OU SEM "ON DELETE CASCATE"?
+		$table->foreign('category_id')->references('id')->on('categories'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('ngo_id')->references('id')->on('ngos'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('genre_id')->references('id')->on('genres'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('genre2_id')->references('id')->on('genres'); // COM OU SEM "ON DELETE CASCATE"?
