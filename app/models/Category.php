@@ -10,7 +10,7 @@ class Category extends Eloquent {
   protected $table = 'categories';
 
   public static $sluggable = array(
-    'build_from' => 'name',
+    'build_from' => 'title',
     'save_to'    => 'slug',
   );
 
