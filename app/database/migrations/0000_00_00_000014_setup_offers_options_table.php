@@ -27,7 +27,6 @@ class SetupOffersOptionsTable extends Migration {
 		$table->integer('departure_city_id')->unsigned()->index()->nullable();
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
-		$table->text('included')->nullable(); // HTML
 		$table->integer('price_original')->nullable();
 		$table->integer('price_with_discount')->nullable();
 		$table->integer('min_qty')->nullable();
@@ -36,7 +35,6 @@ class SetupOffersOptionsTable extends Migration {
 		$table->integer('percent_off')->nullable();
 		$table->dateTime('voucher_validity_start')->nullable();
 		$table->dateTime('voucher_validity_end')->nullable();
-		$table->text('rules')->nullable(); //HTML
 		$table->integer('display_order')->default(99); // ordem da opções na página da oferta
 
         /*
