@@ -10,7 +10,7 @@ class Category extends Eloquent {
   protected $table = 'categories';
 
   public static $sluggable = array(
-    'build_from' => 'name',
+    'build_from' => 'title',
     'save_to'    => 'slug',
   );
 
@@ -25,30 +25,30 @@ class Category extends Eloquent {
   	'slug' => 'required'
   );
 
-  public function subcategory()
+  public function offer()
   {
-      return $this->hasMany('Subcategory');
+      return $this->hasMany('Offer', 'category_id');
   }
 
   public function scopeMenu($query)
   {
-	$value = Cache::remember('category.menu.scope', 1, function() use ($query)
-	{
-	    $select  = $query->select(['title', 'slug'])
-					 	   ->orderBy('display_order', 'asc')
-					  	 ->get()
-					  	 ->toArray();
+  	$value = Cache::remember('category.menu.scope', 1, function() use ($query)
+  	{
+  	    $select  = $query->select(['title', 'slug'])
+  					 	   ->orderBy('display_order', 'asc')
+  					  	 ->get()
+  					  	 ->toArray();
 
-		$result = [];
+  		$result = [];
 
-        foreach ($select as $value) {
-        	$result[] = [$value['title'], $value['slug']];
-        }
+          foreach ($select as $value) {
+          	$result[] = [$value['title'], $value['slug']];
+          }
 
-        return $result;
-	});
+          return $result;
+  	});
 
-	return $value;
+  	return $value;
   }
 
 }

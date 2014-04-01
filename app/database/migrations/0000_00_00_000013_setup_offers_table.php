@@ -18,16 +18,18 @@ class SetupOffersTable extends Migration {
 		 * Storage Engines
 		 */
 		$table->engine = 'InnoDB';
-
+		
 		/*
 		 * Fields
 		 */
 		$table->increments('id');
 		$table->integer('partner_id')->unsigned()->index();
-		$table->integer('ngo_id')->unsigned()->index();
+		$table->integer('category_id')->unsigned()->index();
 		$table->integer('genre_id')->unsigned()->index()->nullable();
 		$table->integer('genre2_id')->unsigned()->index()->nullable();
 		$table->integer('destiny_id')->unsigned()->index();
+		$table->integer('ngo_id')->unsigned()->index();
+		$table->integer('tell_us_id')->unsigned()->index()->nullable();
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
 		$table->text('description')->nullable(); // HTML
@@ -50,11 +52,13 @@ class SetupOffersTable extends Migration {
 		 * Foreign Keys
 		 */
 		$table->foreign('partner_id')->references('id')->on('users'); // COM OU SEM "ON DELETE CASCATE"?
-		$table->foreign('ngo_id')->references('id')->on('ngos'); // COM OU SEM "ON DELETE CASCATE"?
+		$table->foreign('category_id')->references('id')->on('categories'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('genre_id')->references('id')->on('genres'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('genre2_id')->references('id')->on('genres'); // COM OU SEM "ON DELETE CASCATE"?
 		$table->foreign('destiny_id')->references('id')->on('destinies'); // COM OU SEM "ON DELETE CASCATE"?
-
+		$table->foreign('ngo_id')->references('id')->on('ngos'); // COM OU SEM "ON DELETE CASCATE"?
+		$table->foreign('tell_us_id')->references('id')->on('tell_us'); // COM OU SEM "ON DELETE CASCATE"?
+		
 		/*
 		 * Time Stamps
 		 */

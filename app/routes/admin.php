@@ -211,23 +211,7 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 
 	Route::any('order/voucher/exportar', function(){ return Redirect::route('admin.order'); });
 	Route::get('order/voucher/exportar/{offer_option_id?}/{id?}', ['as' => 'admin.order.voucher_export', 'uses' => 'AdminOrderController@getVoucherExport']);
-
-	/*
-	 * Subcategory
-	 */
-	Route::any('subcategory', ['as' => 'admin.subcategory', 'uses' => 'AdminSubcategoryController@anyIndex']);
-
-	Route::get('subcategory/create', ['as' => 'admin.subcategory.create', 'uses' => 'AdminSubcategoryController@getCreate']);
-	Route::post('subcategory/create', ['as' => 'admin.subcategory.save', 'uses' => 'AdminSubcategoryController@postCreate']);
-
-	Route::any('subcategory/edit', function(){ return Redirect::route('admin.subcategory'); });
-	Route::get('subcategory/edit/{id}', ['as' => 'admin.subcategory.edit', 'uses' => 'AdminSubcategoryController@getEdit']);
-	Route::post('subcategory/edit/{id}', ['as' => 'admin.subcategory.update', 'uses' => 'AdminSubcategoryController@postEdit']);
-
-	Route::any('subcategory/delete', function(){ return Redirect::route('admin.subcategory'); });
-	Route::get('subcategory/delete/{id}', ['as' => 'admin.subcategory.delete', 'uses' => 'AdminSubcategoryController@getDelete']);
-	Route::post('subcategory/delete/{id}', ['as' => 'admin.subcategory.destroy', 'uses' => 'AdminSubcategoryController@postDelete']);
-
+	
 	/*
 	 * Category
 	 */

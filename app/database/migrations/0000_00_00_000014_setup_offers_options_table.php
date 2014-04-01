@@ -23,7 +23,8 @@ class SetupOffersOptionsTable extends Migration {
          * Fields
          */
 		$table->increments('id');
-		$table->integer('offer_id')->unsigned()->index();
+        $table->integer('offer_id')->unsigned()->index();
+		$table->integer('departure_city_id')->unsigned()->index()->nullable();
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
 		$table->text('included')->nullable(); // HTML
@@ -42,6 +43,7 @@ class SetupOffersOptionsTable extends Migration {
          * Foreign Keys
          */
 		$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
+        $table->foreign('departure_city_id')->references('id')->on('destinies')->onDelete('cascade');
       });
 
 		// TABELA PIVOT (MANY TO MANY) ENTRE "OFERTAS" (PRODUTOS COMPOSTOS)
