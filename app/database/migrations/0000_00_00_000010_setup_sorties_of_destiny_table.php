@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class SetupSubcategoriesTable extends Migration {
+class SetupSortiesOfDestinyTable extends Migration {
 
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class SetupSubcategoriesTable extends Migration {
     public function up()
     {
       // Creates the users table
-      Schema::create('subcategories', function($table)
+      Schema::create('sorties_of_destiny', function($table)
       {
         /*
          * Storage Engines
@@ -23,17 +23,13 @@ class SetupSubcategoriesTable extends Migration {
          * Fields
          */
 		$table->increments('id');
-		$table->integer('category_id')->unsigned()->index();
 		$table->string('title')->nullable();
-		$table->integer('is_active')->default(1);
-		$table->integer('display_order')->default(99);
-
-		$table->foreign('category_id')->references('id')->on('categories');
+		$table->boolean('is_active')->default(true);
       });
 
       ////////////////////////////////////////////////////
 
-      Schema::create('offers_subcategories', function($table)
+      Schema::create('destinies_sorties_of_destiny', function($table)
       {
         /*
          * Storage Engines
@@ -43,14 +39,14 @@ class SetupSubcategoriesTable extends Migration {
         /*
          * Fields
          */
-		$table->integer('offer_id')->unsigned()->index();
-		$table->integer('subcategory_id')->unsigned()->index();
+		$table->integer('destiny_id')->unsigned()->index();
+		$table->integer('sort_of_destiny_id')->unsigned()->index();
 
         /*
          * Foreign Keys
          */
-		$table->foreign('offer_id')->references('id')->on('offers');
-		$table->foreign('subcategory_id')->references('id')->on('subcategories');
+		$table->foreign('destiny_id')->references('id')->on('destinies')->onDelete('cascade');
+		$table->foreign('sort_of_destiny_id')->references('id')->on('sorties_of_destiny')->onDelete('cascade');
       });
     }
 
@@ -64,8 +60,8 @@ class SetupSubcategoriesTable extends Migration {
 		DB::statement('SET foreign_key_checks = 0');
 		DB::statement('SET UNIQUE_CHECKS=0');
 
-		Schema::drop('subcategories');
-		Schema::drop('offers_subcategories');
+		Schema::drop('sorties_of_destiny');
+		Schema::drop('destinies_sorties_of_destiny');
 
 		DB::statement('SET foreign_key_checks = 1');
 		DB::statement('SET UNIQUE_CHECKS=1');
