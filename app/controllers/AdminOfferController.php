@@ -43,7 +43,8 @@ class AdminOfferController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+
+    	$pag = Input::get('pag', 25);
 
 		/*
 		 * Sort filter
@@ -89,12 +90,12 @@ class AdminOfferController extends BaseController {
 		 */
 		$offer = $offer
 			->with(['partner', 'destiny'])
-			// ->select(['id', 'title', 'starts_on', 'ends_on', 'in_pre_booking'])
+			->select(['id', 'title', 'destiny_id', 'starts_on', 'ends_on', 'in_pre_booking'])
 			->whereExists(function($query){
                 if (Input::has('destiny')) {
 					$query->select(DB::raw(1))
 	                      ->from('destinies')
-						  ->whereRaw('destinies.id = offers.destiniy_id')
+						  ->whereRaw('destinies.id = offers.destiny_id')
 						  ->whereRaw('destinies.name LIKE "%'.Input::get('destiny').'%"');
 				}
 
