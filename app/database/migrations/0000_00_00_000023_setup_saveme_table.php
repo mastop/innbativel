@@ -62,7 +62,7 @@ class SetupSavemeTable extends Migration {
 		DB::statement('SET UNIQUE_CHECKS=0');
 
 		Schema::drop('saveme');
-		Schema::drop('offer_saveme');
+		Schema::drop('offers_saveme');
 
 		DB::statement('SET foreign_key_checks = 1');
 		DB::statement('SET UNIQUE_CHECKS=1');

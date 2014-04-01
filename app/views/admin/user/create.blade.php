@@ -11,7 +11,6 @@
         	'profile[state]' => 'required|exists:states,id',
         	'profile[country]' => 'required',
         ]) }}
-
         {{ Former::email('email', 'E-mail')->class('span12') }}
         {{ Former::text('profile[first_name]', 'Nome')->class('span12') }}
         {{ Former::text('profile[last_name]', 'Sobrenome')->class('span12') }}

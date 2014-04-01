@@ -147,9 +147,10 @@ class Offer extends Eloquent {
 		return $value;
 	}
 
-	public function getFulldestinnyAttribute(){
-		$destiny = Destiny::where('id', $this->destiny_id);
-		return $destiny->city.'-'.$destiny->state_id;
+	public function getFullDestinnyAttribute(){
+        $destiny = Destiny::find($this->destiny_id);
+		//return $destiny->city.'-'.$destiny->state_id;
+		return $destiny->name;
 	}
 
 }

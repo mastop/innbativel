@@ -1,6 +1,8 @@
+
 /bootstrap/compiled.php
 /public/assets/cdn
 /public/assets/*
+/public/packages/*
 /app/storage/*
 .DS_Store
 vendor/
@@ -8,3 +10,4 @@ server/
 .idea/
 drop_tables.php
 /app/config/database.php
+.elasticbeanstalk/

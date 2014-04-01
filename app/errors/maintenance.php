@@ -23,41 +23,22 @@ App::error(function(Exception $exception, $code)
 
   Log::error($exception);
 
-  if (Config::getEnvironment() == 'production' ||
-	  Config::getEnvironment() == 'staging' ||
-	  Config::getEnvironment() == 'local')
+  if (Config::getEnvironment() == 'production' || Config::getEnvironment() == 'elastic')
   {
-	  $data = [
-		'exception' => $exception
-	  ];
-
-	  // Mail::send('emails.error.log', $data, function($message)
-	  // {
-		 //  $message
-			// ->to(['programacao@innbativel.com.br'])
-			// // ->replyTo('faleconosco@innbativel.com.br', 'INNBatível')
-			// ->subject('Erro no Site Innbatível');
-	  // });
-
-	  // print('<pre>');
-	  // print_r($exception);
-	  // print('</pre>'); die();
+      switch ($code) {
+          case 403:
+          case 404:
+          case 405:
+          case 500:
+          case 503:
+              return Response::view('error.'.$code, [], $code);
+              break;
+              break;
+          default:
+              return Response::view('error.500', [], $code);
+              break;
+      }
   }
-
-  switch ($code) {
-	case 403:
-	case 404:
-	case 405:
-	case 500:
-	case 503:
-	  return Response::view('error.'.$code, [], $code);
-	  break;
-	break;
-	default:
-	  return Response::view('error.500', [], $code);
-	break;
-  }
-
 });
 
 /*

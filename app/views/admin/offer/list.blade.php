@@ -22,7 +22,7 @@
 			{{ Former::text('title')->class('input-medium')->placeholder('Título')->label('Título') }}
 			{{ Former::select('genre_id', 'Gênero')
 	        	->addOption('', null)
-				->fromQuery(DB::table('genres')->get(['name', 'id']), 'name', 'id')
+				->fromQuery(DB::table('genres')->get(['title', 'id']), 'title', 'id')
 	        }}
 			{{ Former::select('in_pre_booking', 'Em pré-reservas?')
 	        	->addOption('', null)
@@ -41,6 +41,7 @@
 	        	->addOption('25', '25')
 	        	->addOption('50', '50')
 	        	->addOption('100', '100')
+                ->select($pag)
 	        }}
 	        </div>
 			{{ Former::hidden('sort', $sort) }}
@@ -51,9 +52,20 @@
 	{{ Table::open() }}
 	{{ Table::headers('ID', 'Título', 'Destino', 'Início', 'Fim', 'Em pré-reservas?', 'Ações') }}
 	{{ Table::body($offer)
-		->ignore(['in_pre_booking'])
-		->in_pre_booking(function($body) {
+		->ignore(['destiny', 'partner'])
+        ->destiny_id__noreplace__(function($body) {
+            return $body->getFullDestinnyAttribute();
+        })
+        ->in_pre_booking__noreplace__(function($body) {
 			return ($body->in_pre_booking == 0)?'Não':'Sim';
+		})
+        ->starts_on__noreplace__(function($body) {
+            $phpdate = strtotime( $body->starts_on );
+            return date( 'd/m/Y H:i:s', $phpdate );
+		})
+        ->ends_on__noreplace__(function($body) {
+            $phpdate = strtotime( $body->ends_on );
+            return date( 'd/m/Y H:i:s', $phpdate );
 		})
 		->acoes(function($body) {
 			if($body->in_pre_booking == 0){
