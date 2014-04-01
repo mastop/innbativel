@@ -111,6 +111,7 @@ class AdminOfferController extends BaseController {
 				'in_pre_booking' => Input::get('in_pre_booking'),
 				'starts_on' => Input::get('starts_on'),
 				'ends_on' => Input::get('ends_on'),
+				'pag' => Input::get('pag'),
 			]);
 
 		/*
