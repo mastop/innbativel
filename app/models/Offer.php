@@ -55,8 +55,8 @@ class Offer extends Eloquent {
 		return $this->hasMany('OfferOption')->orderBy('display_order', 'asc');
 	}
 
-	public function subcategory(){
-		return $this->belongsToMany('Subcategory');
+	public function category(){
+		return $this->belongsTo('Category', 'category_id');
 	}
 
 	public function offer_image(){
