@@ -15,7 +15,6 @@
           ['Indicações', route('admin.indication'), false, false, null, 'leaf'],
           ['Créditos de indicações', route('admin.credit_indication'), false, false, null, 'leaf'],
           ['Categorias', route('admin.category'), false, false, null, 'leaf'],
-          ['Sub-Categorias', route('admin.subcategory'), false, false, null, 'leaf'],
           ['Coupons', route('admin.coupon'), false, false, null, 'leaf'],
           ['Comentários', route('admin.comment'), false, false, null, 'leaf'],
           ['NGO', route('admin.ngo'), false, false, null, 'leaf'],
