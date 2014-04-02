@@ -132,6 +132,7 @@ class AdminOfferController extends BaseController {
 		 * Layout / View
 		 */
 
+		$this->layout->page_title = 'Criar Oferta';
 		$this->layout->content = View::make('admin.offer.create');
 	}
 
