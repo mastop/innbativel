@@ -22,7 +22,7 @@
 		  </header>
 		  <div class="content clearfix">
 			<div class="info row" itemscope itemprop="offers">
-			  @foreach ($offer_option['included'] as $included)
+			  @foreach ($offer['included'] as $included)
 			  <div class="col-lg-2 tooltip" data-tip="{{ $included['description'] }}">{{ $included['icon'] . $included['title'] }}</div>
 			  @endforeach
 			</div>
@@ -107,7 +107,7 @@
 		  </header>
 		  <div class="content clearfix">
 			<div class="info row" itemscope itemprop="offers">
-			  @foreach ($offer_option['included'] as $included)
+			  @foreach ($offer['included'] as $included)
 			  <div class="col-lg-2 tooltip" data-tip="{{ $included['description'] }}">{{ $included['icon'] . $included['title'] }}</div>
 			  @endforeach
 			</div>
