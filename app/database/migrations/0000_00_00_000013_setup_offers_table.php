@@ -32,11 +32,11 @@ class SetupOffersTable extends Migration {
 		$table->integer('tell_us_id')->unsigned()->index()->nullable();
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
-		$table->text('description')->nullable(); // HTML
-		$table->string('event')->nullable();
+		$table->string('subsubtitle')->nullable(); // HTML
+		$table->text('rules')->nullable(); // HTML
+		$table->text('features')->nullable(); // HTML
 		$table->string('saveme_title')->nullable();
 		$table->string('slug')->nullable();
-		$table->text('general_rules')->nullable(); // HTML
 		$table->dateTime('starts_on')->nullable();
 		$table->dateTime('ends_on')->nullable();
 		$table->string('cover_img')->nullable(); // URL
@@ -44,6 +44,7 @@ class SetupOffersTable extends Migration {
 		$table->string('newsletter_img')->nullable(); // URL
 		$table->string('saveme_img')->nullable(); // URL
 		$table->string('video')->nullable(); // URL
+		$table->boolean('display_map')->default(false);
 		$table->boolean('in_pre_booking')->default(false);
 		$table->integer('display_order')->default(99); // ordem das ofertas na home, em categorias e em qualquer outro lugar
 		$table->integer('pre_booking_order')->default(99);

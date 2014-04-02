@@ -64,7 +64,7 @@ class Offer extends Eloquent {
 	}
 
 	public function saveme(){
-		return $this->belongsToMany('Saveme')->withPivot('priority');
+		return $this->belongsToMany('Saveme', 'offers_saveme', 'saveme_id', 'offer_id')->withPivot('priority');
 	}
 
 	public function group(){
@@ -97,6 +97,14 @@ class Offer extends Eloquent {
 
 	public function tell_us(){
 		return $this->belongsTo('TellUs', 'tell_us_id');
+	}
+
+	public function holiday(){
+		return $this->belongsToMany('Holiday', 'offers_holidays', 'offer_id', 'holiday_id');
+	}
+
+	public function included(){
+		return $this->belongsToMany('Included', 'offers_included', 'offer_id', 'included_id')->withPivot('display_order')->orderBy('display_order', 'asc');
 	}
 
 	private function convertImageString($value)

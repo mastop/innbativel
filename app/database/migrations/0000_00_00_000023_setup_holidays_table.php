@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class SetupOptionalItensTable extends Migration {
+class SetupHolidaysTable extends Migration {
 
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class SetupOptionalItensTable extends Migration {
     public function up()
     {
       // Creates the users table
-      Schema::create('optional_itens', function($table)
+      Schema::create('holidays', function($table)
       {
         /*
          * Storage Engines
@@ -23,15 +23,13 @@ class SetupOptionalItensTable extends Migration {
          * Fields
          */
 		$table->increments('id');
-		$table->string('icon')->nullable();
 		$table->string('title')->nullable();
-        $table->integer('price')->nullable();
-        $table->integer('display_order')->nullable();
+		$table->integer('display_order')->default(99);
       });
 
       ////////////////////////////////////////////////////
 
-      Schema::create('offers_optional_itens', function($table)
+      Schema::create('offers_holidays', function($table)
       {
         /*
          * Storage Engines
@@ -42,13 +40,13 @@ class SetupOptionalItensTable extends Migration {
          * Fields
          */
 		$table->integer('offer_id')->unsigned()->index();
-		$table->integer('optional_iten_id')->unsigned()->index();
+		$table->integer('holiday_id')->unsigned()->index();
 
         /*
          * Foreign Keys
          */
 		$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
-		$table->foreign('optional_iten_id')->references('id')->on('optional_itens')->onDelete('cascade');
+		$table->foreign('holiday_id')->references('id')->on('holidays')->onDelete('cascade');
       });
     }
 
@@ -62,8 +60,8 @@ class SetupOptionalItensTable extends Migration {
 		DB::statement('SET foreign_key_checks = 0');
 		DB::statement('SET UNIQUE_CHECKS=0');
 
-		Schema::drop('optional_itens');
-		Schema::drop('offers_optional_itens');
+		Schema::drop('holidays');
+		Schema::drop('offers_holidays');
 
 		DB::statement('SET foreign_key_checks = 1');
 		DB::statement('SET UNIQUE_CHECKS=1');
