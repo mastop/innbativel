@@ -58,6 +58,7 @@ class SetupOffersOptionsTable extends Migration {
 		$table->increments('id');
 		$table->integer('offer_main_id')->unsigned()->index();
 		$table->integer('offer_additional_id')->unsigned()->index();
+        $table->integer('display_order')->default(99);
         /*
          * Foreign Keys
          */
