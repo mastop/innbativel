@@ -103,6 +103,10 @@ class Offer extends Eloquent {
 		return $this->belongsToMany('Holiday', 'offers_holidays', 'offer_id', 'holiday_id');
 	}
 
+	public function included(){
+		return $this->belongsToMany('Included', 'offers_included', 'offer_id', 'included_id')->withPivot('display_order')->orderBy('display_order', 'asc');
+	}
+
 	private function convertImageString($value)
 	{
 		if (!is_null($value)) {

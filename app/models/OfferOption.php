@@ -53,10 +53,6 @@ class OfferOption extends Eloquent {
 		return $this->belongsToMany('Order', 'vouchers', 'offer_option_id', 'order_id')->where('used', 1)->select(DB::raw('count(vouchers.offer_option_id) as qty'))->groupBy('vouchers.offer_option_id');
 	}
 
-	public function included(){
-		return $this->belongsToMany('Included', 'offers_options_included', 'offer_option_id', 'included_id')->withPivot('display_home', 'display_order')->where('display_home', 1)->orderBy('display_home', 'asc');
-	}
-
 	public function departure_city(){
 		return $this->belongsTo('Destiny', 'departure_city_id');
 	}

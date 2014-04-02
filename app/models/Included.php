@@ -22,7 +22,7 @@ class Included extends Eloquent {
   );
 
   public function offer(){
-  	return $this->belongsToMany('OfferOption', 'offers_options_included', 'included_id', 'offer_option_id')->withPivot('display_home', 'display_order');
+  	return $this->belongsToMany('Offer', 'offers_included', 'included_id', 'offer_id')->withPivot('display_order');
   }
 
 }
