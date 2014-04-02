@@ -26,6 +26,7 @@ class SetupOptionalItensTable extends Migration {
 		$table->string('icon')->nullable();
 		$table->string('title')->nullable();
         $table->integer('price')->nullable();
+        $table->integer('display_order')->nullable();
       });
 
       ////////////////////////////////////////////////////

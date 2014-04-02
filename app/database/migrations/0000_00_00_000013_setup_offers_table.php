@@ -32,7 +32,7 @@ class SetupOffersTable extends Migration {
 		$table->integer('tell_us_id')->unsigned()->index()->nullable();
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
-		$table->text('description')->nullable(); // HTML
+		$table->string('subsubtitle')->nullable(); // HTML
 		$table->text('rules')->nullable(); // HTML
 		$table->text('features')->nullable(); // HTML
 		$table->string('saveme_title')->nullable();
