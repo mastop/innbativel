@@ -261,42 +261,4 @@ class AdminCategoryController extends BaseController {
 
 		return Redirect::route('admin.category.sort');
 	}
-
-	public function getSortSub($category_id){
-		$category = Category::where('id', $category_id)->get(['title'])->first();
-		$category = $category->title;
-
-		/*
-		 * Finally Obj
-		 */
-		$subcategories = Subcategory::where('category_id', $category_id)
-								   	  ->orderBy('display_order', 'asc')
-								   	  ->get();
-
-		// print('<pre>');
-		// print_r($subcategories);
-		// print('</pre>');
-
-		/*
-		 * Layout / View
-		 */
-		$this->layout->content = View::make('admin.category.sort_sub', compact('category', 'subcategories', 'category_id'));
-	}
-
-	public function postSortSub(){
-		$subcategories = Input::get('subcategories');
-
-		// print('<pre>');
-		// print_r($subcategories);
-		// print('</pre>');
-
-		foreach ($subcategories as $display_order => $id) {
-			$sc = Subcategory::find($id);
-			$sc->display_order = $display_order;
-			$sc->save();
-		}
-
-		return Redirect::route('admin.category.sort_sub', array('category_id' => Input::get('category_id')));
-	}
-
 }

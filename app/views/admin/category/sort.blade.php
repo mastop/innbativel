@@ -4,7 +4,7 @@
 		<div class="navbar-inner">
 			<h6>Ordenar Categorias</h6>
 	        <div class="nav pull-right">
-	            <a href="{{ route('admin.category.create') }}" title="Criar Subcategoria" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
+	            <a href="{{ route('admin.category.create') }}" title="Criar Categoria" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
 	        </div>
 		</div>
 	</div>

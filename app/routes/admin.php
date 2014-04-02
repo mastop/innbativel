@@ -231,8 +231,6 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::get('category/sort', ['as' => 'admin.category.sort', 'uses' => 'AdminCategoryController@getSort']);
 	Route::post('category/sort', ['as' => 'admin.category.save_sort', 'uses' => 'AdminCategoryController@postSort']);
 
-	Route::get('category/sort_sub/{category_id}', ['as' => 'admin.category.sort_sub', 'uses' => 'AdminCategoryController@getSortSub']);
-	Route::post('category/sort_sub', ['as' => 'admin.category.save_sort_sub', 'uses' => 'AdminCategoryController@postSortSub']);
 
 	/*
 	 * Discount Coupons

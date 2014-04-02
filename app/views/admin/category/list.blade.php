@@ -39,7 +39,6 @@
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 				Navigation::links([
-					['Ordenar subcategorias', route('admin.category.sort_sub', $body['id'])],
 					['Editar', route('admin.category.edit', $body['id'])],
 					['Excluir', route('admin.category.delete', $body['id'])],
 				])
