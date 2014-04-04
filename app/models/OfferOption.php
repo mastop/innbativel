@@ -23,12 +23,11 @@ class OfferOption extends Eloquent {
 	 'offer_id' => 'required|integer',
 	 'title' => 'required',
 	 'subtitle' => 'required',
-	 'price_original' => 'required',
 	 'price_with_discount' => 'required',
 	 'min_qty' => 'required|integer',
 	 'max_qty' => 'required|integer',
 	 'max_qty_per_buyer' => 'required|integer',
-	 'percent_off' => 'required|integer|max:100',
+	 'percent_off' => 'integer|max:100',
 	 'voucher_validity_start' => 'required',
 	 'voucher_validity_end' => 'required',
 	 );
