@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class SetupOptionalItensTable extends Migration {
+class SetupSortsOfDestinyTable extends Migration {
 
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class SetupOptionalItensTable extends Migration {
     public function up()
     {
       // Creates the users table
-      Schema::create('optional_itens', function($table)
+      Schema::create('sorts_of_destiny', function($table)
       {
         /*
          * Storage Engines
@@ -23,15 +23,13 @@ class SetupOptionalItensTable extends Migration {
          * Fields
          */
 		$table->increments('id');
-		$table->string('icon')->nullable();
 		$table->string('title')->nullable();
-        $table->integer('price')->nullable();
-        $table->integer('display_order')->nullable();
+		$table->boolean('is_active')->default(true);
       });
 
       ////////////////////////////////////////////////////
 
-      Schema::create('offers_optional_itens', function($table)
+      Schema::create('destinies_sorts_of_destiny', function($table)
       {
         /*
          * Storage Engines
@@ -41,14 +39,14 @@ class SetupOptionalItensTable extends Migration {
         /*
          * Fields
          */
-		$table->integer('offer_id')->unsigned()->index();
-		$table->integer('optional_iten_id')->unsigned()->index();
+		$table->integer('destiny_id')->unsigned()->index();
+		$table->integer('sort_of_destiny_id')->unsigned()->index();
 
         /*
          * Foreign Keys
          */
-		$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
-		$table->foreign('optional_iten_id')->references('id')->on('optional_itens')->onDelete('cascade');
+		$table->foreign('destiny_id')->references('id')->on('destinies')->onDelete('cascade');
+		$table->foreign('sort_of_destiny_id')->references('id')->on('sorts_of_destiny')->onDelete('cascade');
       });
     }
 
@@ -62,8 +60,8 @@ class SetupOptionalItensTable extends Migration {
 		DB::statement('SET foreign_key_checks = 0');
 		DB::statement('SET UNIQUE_CHECKS=0');
 
-		Schema::drop('optional_itens');
-		Schema::drop('offers_optional_itens');
+		Schema::drop('sorts_of_destiny');
+		Schema::drop('destinies_sorts_of_destiny');
 
 		DB::statement('SET foreign_key_checks = 1');
 		DB::statement('SET UNIQUE_CHECKS=1');

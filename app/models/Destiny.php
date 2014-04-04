@@ -28,7 +28,7 @@ class Destiny extends Eloquent {
   }
 
   public function sort_of_destiny(){
-    return $this->belongsToMany('SortyOfDestiny', 'destinies_sorties_of_destiny', 'destiny_id', 'sort_of_destiny_id');
+    return $this->belongsToMany('SortOfDestiny', 'destinies_sorts_of_destiny', 'destiny_id', 'sort_of_destiny_id');
   }
 
 }
