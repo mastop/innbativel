@@ -2,7 +2,7 @@
 <html class="{{ $html_classes }}" lang="{{ Config::get('app.locale') }}" dir="ltr">
 <head>
 	<meta charset="utf-8">
-	<title>{{ $seo['title'] }}</title>
+	<title>{{ $page_title }}</title>
 	<meta name="author" content="{{ $seo['metatag']['author'] }}">
 	<meta name="keywords" content="{{ $seo['metatag']['keywords'] }}">
 	<meta name="description" content="{{ $seo['metatag']['description'] }}">
@@ -53,8 +53,8 @@
 				@include('partials.messages')
 				<div class="page-header">
 					<div class="page-title">
-						<h5>{{ $seo['title'] }}</h5>
-						<span>{{ $seo['metatag']['description'] }}</span>
+						<h5>{{ $page_title }}</h5>
+						<span>{{ $page_description }}</span>
 					</div>
 				</div>
 

@@ -3,7 +3,7 @@
 use Toddish\Verify\Models\User as BaseUser;
 
 /**
- * Classe dos usu·rios
+ * Classe dos usu√°rios
  *
  * @author Saulo Lima <saulolimajf@gmail.com>
  * @createdAt 25/03/14
@@ -36,7 +36,7 @@ class User extends BaseUser {
      */
     public function fullName()
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return isset($this->profile) ? $this->profile->first_name . ' ' . $this->profile->last_name : $this->username;
     }
 
 	public function profile()
@@ -47,5 +47,18 @@ class User extends BaseUser {
     public function facebook()
     {
         return $this->hasMany('FacebookOA');
+    }
+
+    public static function getAllByRole($roleName){
+
+        $users = Role::where('name', '=', $roleName)->first()->users()->get();
+        $users->load('profile');
+        $ret = array();
+        if(!empty($users)){
+            foreach($users as $u){
+                $ret[$u->id] = $u->fullName();
+            }
+        }
+        return $ret;
     }
 }

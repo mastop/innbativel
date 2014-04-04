@@ -1,7 +1,9 @@
 
 /bootstrap/compiled.php
 /public/assets/cdn
-/public/assets/*
+/public/assets/images
+/public/assets/uploads
+/public/assets/vendor
 /public/packages/*
 /app/storage/*
 .DS_Store
