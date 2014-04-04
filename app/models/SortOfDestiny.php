@@ -7,7 +7,7 @@ class SortOfDestiny extends Eloquent {
    *
    * @var string
    */
-  protected $table = 'sorties_of_destiny';
+  protected $table = 'sorts_of_destiny';
 
   protected $guarded = [];
   protected $fillable = [];
@@ -20,7 +20,7 @@ class SortOfDestiny extends Eloquent {
   );
 
   public function destiny(){
-  	return $this->belongsToMany('Destiny', 'destinies_sorties_of_destiny', 'sort_of_destiny_id', 'destiny_id');
+  	return $this->belongsToMany('Destiny', 'destinies_sorts_of_destiny', 'sort_of_destiny_id', 'destiny_id');
   }
 
 }
