@@ -62,30 +62,25 @@ class AuthController extends BaseController {
 
 		if ($validator->passes())
 		{
-			try
+            try
 			{
 				if (Auth::attempt($user)) {
 					$auth = true;
-				}
-
+                }
 			}
 			catch (Exception $e)
 			{
 				try{
-					// Caso o usuário tenha
-					if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>md5(Input::get('password')))))
-					{
-						$auth = true;
-
-						Auth::user()->password = Input::get('password');
-						Auth::user()->save();
-					}
+                    if (Auth::attempt(array('email' => Input::get('email'), 'password' => $this->user->setPasswordAttribute(Input::get('password')))))
+                    {
+                        return Redirect::intended('dashboard');
+                    }
 				}
 				catch (Toddish\Verify\UserNotFoundException $e)
 				{
 					return Redirect::route('login')
-					->with('warning', 'Usuário não encontrado.')
-					->withInput();
+                        ->with('warning', 'Usuário não encontrado.')
+                        ->withInput();
 				}
 				catch (Toddish\Verify\UserUnverifiedException $e)
 				{
@@ -97,20 +92,34 @@ class AuthController extends BaseController {
 				catch (Toddish\Verify\UserDisabledException $e)
 				{
 					return Redirect::route('login')
-					->with('warning', 'Usuário Inativo ou Bloqueado.')
-					->withInput();
+                        ->with('warning', 'Usuário Inativo ou Bloqueado.')
+                        ->withInput();
 				}
 				catch (Toddish\Verify\UserDeletedException $e)
 				{
 					return Redirect::route('login')
-					->with('warning', 'Usuário excluído.')
-					->withInput();
+                        ->with('warning', 'Usuário excluído.')
+                        ->withInput();
 				}
 				catch (Toddish\Verify\UserPasswordIncorrectException $e)
 				{
-					return Redirect::route('login')
-					->with('warning', 'Usuário e/ou senha incorretos.')
-					->withInput();
+                    try{
+                        // Caso o usuário tenha senha em MD5
+                        if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>md5(Input::get('password')))))
+                        {
+                            $auth = true;
+                            Auth::user()->password = Input::get('password');
+                            Auth::user()->save();
+
+                            return Redirect::intended('dashboard');
+                        }
+                    }
+                    catch (Toddish\Verify\UserPasswordIncorrectException $e)
+                    {
+					    return Redirect::route('login')
+                            ->with('warning', 'Usuário e/ou senha incorretos.')
+                            ->withInput();
+                    }
 				}
 			}
 		}
@@ -312,7 +321,6 @@ class AuthController extends BaseController {
 					Auth::login($login);
 					return Redirect::route('home');
 				}
-
 				else
 				{
 
