@@ -73,7 +73,9 @@ class AuthController extends BaseController {
 				try{
                     if (Auth::attempt(array('email' => Input::get('email'), 'password' => $this->user->setPasswordAttribute(Input::get('password')))))
                     {
-                        return Redirect::intended('dashboard');
+                        return Redirect::intended('dashboard')
+                            ->with('success', 'Login efetuado com sucesso!')
+                            ->withInput();
                     }
 				}
 				catch (Toddish\Verify\UserNotFoundException $e)
@@ -111,7 +113,9 @@ class AuthController extends BaseController {
                             Auth::user()->password = Input::get('password');
                             Auth::user()->save();
 
-                            return Redirect::intended('dashboard');
+                            return Redirect::intended('dashboard')
+                            ->with('success', 'Login efetuado com sucesso!')
+                            ->withInput();
                         }
                     }
                     catch (Toddish\Verify\UserPasswordIncorrectException $e)

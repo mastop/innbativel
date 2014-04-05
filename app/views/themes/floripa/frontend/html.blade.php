@@ -27,6 +27,8 @@
 
 <body class="{{ $body_classes }}">
 
+    @include('partials.messages')
+
 	<div id="header-scroll" class="navbar navbar-default navbar-fixed-top out">
 		<div class="container">
 			<div class="navbar-header">
@@ -58,9 +60,9 @@
 						</div>
 					</li>
 					@if(Auth::check())
-					<li><a href="{{ route('logout') }}">Sair <span class="entypo login"></span></a></li>
+					    <li><a href="{{ route('logout') }}">Sair <span class="entypo login"></span></a></li>
 					@else
-					<li><a href="{{ route('login') }}">Entrar <span class="entypo login"></span></a></li>
+					    <li><a href="{{ route('login') }}">Entrar <span class="entypo login"></span></a></li>
 					@endif
 					<li><a href="#">Receba nossa <strong>Newsletter</strong> <span class="entypo mail"></span></a></li>
 					<li><a href="hoteis-e-pousadas">Hot&eacute;is &amp; Pousadas</a></li>
@@ -82,9 +84,9 @@
 			</div>
 			<div class="btn-newsletter"><a href="#">Receba nossa <strong>Newsletter</strong> <span class="entypo mail"></span></a></div>
 			@if(Auth::check())
-			<a class="btn-login" href="{{ route('logout') }}">Sair <span class="entypo login"></span></a>
+			    <a class="btn-login" href="{{ route('logout') }}">Sair <span class="entypo login"></span></a>
 			@else
-			<a class="btn-login" href="{{ route('login') }}">Entrar <span class="entypo login"></span></a>
+			    <a class="btn-login" href="{{ route('login') }}">Entrar <span class="entypo login"></span></a>
 			@endif
 		</div>
 	</div>
