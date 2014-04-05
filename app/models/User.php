@@ -21,7 +21,10 @@ use Toddish\Verify\Models\User as BaseUser;
 
 class User extends BaseUser {
 
-    /* Sobrecarga para adicionar o atributo "api_key" na classe */
+    /**
+     * Sobrecarga para adicionar o atributo "api_key" na classe
+     *
+     */
     public function __construct (array $attributes = array()) {
         $this->fillable = array_merge ($this->fillable, array(
             'api_key'

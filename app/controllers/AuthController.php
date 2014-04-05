@@ -428,23 +428,22 @@ class AuthController extends BaseController {
 
 	public function getCreate()
 	{
-		$rules = [
-                'profile.first_name' => 'required|Alpha',
-                'profile.last_name' => 'required|Alpha',
-                'email' => 'Required|Max:255|Email|Unique:users,email',
-                'password'              => 'required|confirmed',
-                'password_confirmation' => 'required'
+        $rules = [
+            'email' => 'Required|Max:255|Email',
+            'profile.first_name' => 'Required|Max:255|Alpha',
+            'profile.last_name' => 'Required|Max:255|Alpha',
+            'password'              => 'Required|confirmed',
+            'password_confirmation' => 'Required',
         ];
 
 		$form  = Former::horizontal_open(route('account.create'))->class('row-fluid')->rules($rules);
-
 
         $form .= Former::text('profile.first_name')->label('Nome')->class('span12');
         $form .= Former::text('profile.last_name')->label('Sobrenome')->class('span12');
 
 		$form .= Former::text('email')->class('span12');
 		$form .= Former::password('password')->label('Senha')->class('span12');
-		$form .= Former::password('password_confirmation')->label('Senha')->class('span12');
+		$form .= Former::password('password_confirmation')->label('Confirmar senha')->class('span12');
 		$form .= Former::submit('Cadastrar')->class('btn btn-danger btn-block');
 		$form .= Former::close();
 
@@ -455,46 +454,69 @@ class AuthController extends BaseController {
 	{
 		$inputs = Input::all();
 
-		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
-
 		$rules = [
             'email' => 'Required|Max:255|Email|Unique:users,email',
-            'roles' => 'required',
-            'profile.first_name' => 'required|Alpha',
-            'profile.last_name' => 'required|Alpha',
-            'password'              => 'required|confirmed',
-            'password_confirmation' => 'required',
+            'profile.first_name' => 'Required|Max:255',
+            'profile.last_name' => 'Required|Max:255',
+            'password'              => 'Required|confirmed',
+            'password_confirmation' => 'Required',
 		];
 
 		$validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
-			$created = $this->user->create($inputs)->id;
+            $inputs['username'] = Str::lower(Str::slug(Input::get('email')));
+            $inputs['api_key'] = md5($inputs['username']);
+            $inputs['password'] = $this->user->setPasswordAttribute($inputs['password']);
 
-			$inputs['profile']['user_id'] = $created;
+            if ($user = $this->user->create($inputs))
+            {
+                $inputs['profile']['user_id'] = $user->id;
 
-			$user = User::find($created);
-			$user->profile()->create($inputs['profile']);
+                $user->profile()->create($inputs['profile']);
 
-			/*
-			 * Roles
-			 */
-			$roles = [];
+                /*
+                 * Roles
+                 */
+                $roles = [];
+                foreach ($inputs['roles'] as $key => $value) {
+                    $roles[] = $value;
+                }
 
-			foreach ($inputs['roles'] as $key => $value) {
-				$roles[] = $value;
-			}
+                $user->roles()->sync($roles);
 
-			$user->roles()->sync($roles);
+                print_r($roles);
+                print_r($user->roles());
 
-			return Redirect::route('admin.user');
+                // Data to be used on the email view
+                $data = array(
+                    'user' => $user,
+                    'activationcode' => $user->getActivationCode()
+                );
+                print_r($data);
+
+                /*
+                // Send the activation code through email
+                Mail::send('emails.welcome', $data, function($m) use ($user)
+                {
+                    $m->to($user->email, $user->first_name . ' ' . $user->last_name)->subject('Welcome ' . $user->first_name);
+                });
+                */
+
+                // Redirect to the register page
+                return Redirect::route('login')
+                    ->withInput()
+                    ->withErrors('success', 'Seu cadastro foi feito com sucesso!');
+
+                //return Redirect::route('admin.user');
+            }
 		}
 
 		/*
 		 * Return and display Errors
 		 */
-		return Redirect::route('admin.user.create')
+		return Redirect::route('account.create')
 			->withInput()
 			->withErrors($validation);
 	}
