@@ -20,7 +20,15 @@ class Destiny extends Eloquent {
   );
 
   public function offer(){
-  	return $this->belongsTo('Offer');
+    return $this->belongsTo('Offer', 'destiny_id');
+  }
+
+  public function offer_option(){
+    return $this->belongsTo('OfferOption', 'departure_city_id');
+  }
+
+  public function sort_of_destiny(){
+    return $this->belongsToMany('SortOfDestiny', 'destinies_sorts_of_destiny', 'destiny_id', 'sort_of_destiny_id');
   }
 
 }

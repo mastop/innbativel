@@ -31,7 +31,7 @@ class SetupIncludedTable extends Migration {
 
       ////////////////////////////////////////////////////
 
-      Schema::create('offers_options_included', function($table)
+      Schema::create('offers_included', function($table)
       {
         /*
          * Storage Engines
@@ -41,15 +41,14 @@ class SetupIncludedTable extends Migration {
         /*
          * Fields
          */
-		$table->integer('offer_option_id')->unsigned()->index();
+		$table->integer('offer_id')->unsigned()->index();
 		$table->integer('included_id')->unsigned()->index();
-		$table->boolean('display_home')->default(false);
 		$table->integer('display_order')->default(99);
 
         /*
          * Foreign Keys
          */
-		$table->foreign('offer_option_id')->references('id')->on('offers_options')->onDelete('cascade');
+		$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
 		$table->foreign('included_id')->references('id')->on('included')->onDelete('cascade');
       });
     }
@@ -65,7 +64,7 @@ class SetupIncludedTable extends Migration {
 		DB::statement('SET UNIQUE_CHECKS=0');
 
 		Schema::drop('included');
-		Schema::drop('offers_options_included');
+		Schema::drop('offers_included');
 
 		DB::statement('SET foreign_key_checks = 1');
 		DB::statement('SET UNIQUE_CHECKS=1');

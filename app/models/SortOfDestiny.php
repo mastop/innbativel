@@ -1,13 +1,13 @@
 <?php
 
-class Included extends Eloquent {
+class SortOfDestiny extends Eloquent {
 
   /**
    * The name of the table associated with the model.
    *
    * @var string
    */
-  protected $table = 'included';
+  protected $table = 'sorts_of_destiny';
 
   protected $guarded = [];
   protected $fillable = [];
@@ -17,12 +17,10 @@ class Included extends Eloquent {
 
   public static $rules = array(
   	'title' => 'required',
-  	'description' => 'required',
-  	'icon' => 'required',
   );
 
-  public function offer(){
-  	return $this->belongsToMany('Offer', 'offers_included', 'included_id', 'offer_id')->withPivot('display_order');
+  public function destiny(){
+  	return $this->belongsToMany('Destiny', 'destinies_sorts_of_destiny', 'sort_of_destiny_id', 'destiny_id');
   }
 
 }

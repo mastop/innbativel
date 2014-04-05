@@ -87,17 +87,25 @@ class AdminPartnerController extends BaseController {
 		 * Finally Obj
 		 */
 		$partner = $partner
-		->whereExists(function($query){
-			$query->select(DB::raw(1))
-                  ->from('role_user')
-                  ->whereRaw('role_user.user_id = users.id')
-                  ->whereRaw('role_user.role_id = 9');
-        })
-		->orderBy($sort, $order)->paginate($pag)->appends([
-			'sort' => $sort,
-			'order' => $order,
-			'email' => Input::get('email'),
-		]);
+				 ->whereExists(function($query){
+					if (Input::has('nome')) {
+						$query->select(DB::raw(1))
+			                  ->from('profiles')
+			                  ->whereRaw('profiles.user_id = users.id')
+			                  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name) LIKE "%'.Input::get('name').'%"');
+		            }
+		         })
+		         ->whereExists(function($query){
+					$query->select(DB::raw(1))
+		                  ->from('role_user')
+		                  ->whereRaw('role_user.user_id = users.id')
+		                  ->whereRaw('role_user.role_id = 9');
+		         })
+				 ->orderBy($sort, $order)->paginate($pag)->appends([
+					'sort' => $sort,
+					'order' => $order,
+					'email' => Input::get('email'),
+				 ]);
 
 		/*
 		 * Layout / View
@@ -118,6 +126,7 @@ class AdminPartnerController extends BaseController {
 			->get([
 				'id',
 				'email',
+				'api_key',
 				'created_at'
 			])
 			->first()
@@ -176,7 +185,7 @@ class AdminPartnerController extends BaseController {
 	{
 		$inputs = Input::all();
 
-		$inputs['partnername'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
+		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
 			'email' => 'required|email|unique:users,email',
@@ -208,6 +217,22 @@ class AdminPartnerController extends BaseController {
 			 */
 
 			$partner->roles()->sync([9]);  // Role = Partner (Parceiro) | ID = 9
+
+			// INÍCIO E-MAIL DE BOAS VINDAS
+
+			$token = Hash::make($inputs['email']);
+			$email = $inputs['email'];
+			$nome = $inputs['profile']['first_name'];
+
+			DB::insert('insert into password_reminders (email, token) values (?, ?)', array($email, $token));
+
+			$data = array('nome' => $nome, 'email' => $email, 'token' => $token);
+
+        	Mail::send('emails.partner.create', $data, function($message) use($email, $nome){
+				$message->to($email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Sejam bem vindos, '.$nome);
+			});
+
+        	// FIM E-MAIL DE BOAS VINDAS
 
 			return Redirect::route('admin.partner');
 		}

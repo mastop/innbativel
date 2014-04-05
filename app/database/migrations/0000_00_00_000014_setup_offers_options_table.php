@@ -23,10 +23,10 @@ class SetupOffersOptionsTable extends Migration {
          * Fields
          */
 		$table->increments('id');
-		$table->integer('offer_id')->unsigned()->index();
+        $table->integer('offer_id')->unsigned()->index();
+		$table->integer('departure_city_id')->unsigned()->index()->nullable();
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
-		$table->text('included')->nullable(); // HTML
 		$table->integer('price_original')->nullable();
 		$table->integer('price_with_discount')->nullable();
 		$table->integer('min_qty')->nullable();
@@ -35,13 +35,13 @@ class SetupOffersOptionsTable extends Migration {
 		$table->integer('percent_off')->nullable();
 		$table->dateTime('voucher_validity_start')->nullable();
 		$table->dateTime('voucher_validity_end')->nullable();
-		$table->text('rules')->nullable(); //HTML
 		$table->integer('display_order')->default(99); // ordem da opções na página da oferta
 
         /*
          * Foreign Keys
          */
 		$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
+        $table->foreign('departure_city_id')->references('id')->on('destinies')->onDelete('cascade');
       });
 
 		// TABELA PIVOT (MANY TO MANY) ENTRE "OFERTAS" (PRODUTOS COMPOSTOS)
@@ -58,6 +58,7 @@ class SetupOffersOptionsTable extends Migration {
 		$table->increments('id');
 		$table->integer('offer_main_id')->unsigned()->index();
 		$table->integer('offer_additional_id')->unsigned()->index();
+        $table->integer('display_order')->default(99);
         /*
          * Foreign Keys
          */

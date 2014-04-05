@@ -55,8 +55,8 @@ class Offer extends Eloquent {
 		return $this->hasMany('OfferOption')->orderBy('display_order', 'asc');
 	}
 
-	public function subcategory(){
-		return $this->belongsToMany('Subcategory');
+	public function category(){
+		return $this->belongsTo('Category', 'category_id');
 	}
 
 	public function offer_image(){
@@ -64,7 +64,7 @@ class Offer extends Eloquent {
 	}
 
 	public function saveme(){
-		return $this->belongsToMany('Saveme')->withPivot('priority');
+		return $this->belongsToMany('Saveme', 'offers_saveme', 'saveme_id', 'offer_id')->withPivot('priority');
 	}
 
 	public function group(){
@@ -93,6 +93,18 @@ class Offer extends Eloquent {
 
 	public function partner(){
 		return $this->belongsTo('User', 'partner_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
+	}
+
+	public function tell_us(){
+		return $this->belongsTo('TellUs', 'tell_us_id');
+	}
+
+	public function holiday(){
+		return $this->belongsToMany('Holiday', 'offers_holidays', 'offer_id', 'holiday_id');
+	}
+
+	public function included(){
+		return $this->belongsToMany('Included', 'offers_included', 'offer_id', 'included_id')->withPivot('display_order')->orderBy('display_order', 'asc');
 	}
 
 	private function convertImageString($value)
@@ -143,9 +155,10 @@ class Offer extends Eloquent {
 		return $value;
 	}
 
-	public function getFulldestinnyAttribute(){
-		$destiny = Destiny::where('id', $this->destiny_id);
-		return $destiny->city.'-'.$destiny->state_id;
+	public function getFullDestinnyAttribute(){
+        $destiny = Destiny::find($this->destiny_id);
+		//return $destiny->city.'-'.$destiny->state_id;
+		return $destiny->name;
 	}
 
 }
