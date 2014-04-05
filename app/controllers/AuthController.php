@@ -23,6 +23,7 @@ class AuthController extends BaseController {
 
 	public function postLogin()
 	{
+        echo "AQUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUu";
 		$user = [
             'username' => Input::get('email'),
             'password' => Input::get('password'),
@@ -40,8 +41,8 @@ class AuthController extends BaseController {
 		if ($isEmail->passes())
 		{
 			$user = [
-			'email' => Input::get('email'),
-			'password' => Input::get('password')
+                'email' => Input::get('email'),
+                'password' => Input::get('password')
 			];
 
 			$validator = Validator::make(Input::all(), [
@@ -165,8 +166,8 @@ class AuthController extends BaseController {
 		$data['username'] = Input::get('username');
 
 		return Redirect::back()
-		->withInput($data)
-		->withErrors($data['errors']);
+            ->withInput($data)
+            ->withErrors($data['errors']);
 	}
 
 	public function getLogout()
@@ -432,16 +433,16 @@ class AuthController extends BaseController {
             'email' => 'Required|Max:255|Email',
             'profile.first_name' => 'Required|Max:255|Alpha',
             'profile.last_name' => 'Required|Max:255|Alpha',
-            'password'              => 'Required|confirmed',
-            'password_confirmation' => 'Required',
+            'password'              => 'Required|Min:6|Max:255|confirmed',
+            'password_confirmation' => 'Required|Min:6|Max:255',
         ];
 
 		$form  = Former::horizontal_open(route('account.create'))->class('row-fluid')->rules($rules);
+        $form .= Form::hidden('roles[name]', 10);// Cliente
+        $form .= Former::text('profile[first_name]')->label('Nome')->class('span12')->value(Input::old('profile[first_name]'));
+        $form .= Former::text('profile[last_name]')->label('Sobrenome')->class('span12')->value(Input::old('profile[last_name]'));
 
-        $form .= Former::text('profile.first_name')->label('Nome')->class('span12');
-        $form .= Former::text('profile.last_name')->label('Sobrenome')->class('span12');
-
-		$form .= Former::text('email')->class('span12');
+		$form .= Former::text('email')->class('span12')->value(Input::old('email'));
 		$form .= Former::password('password')->label('Senha')->class('span12');
 		$form .= Former::password('password_confirmation')->label('Confirmar senha')->class('span12');
 		$form .= Former::submit('Cadastrar')->class('btn btn-danger btn-block');
@@ -456,10 +457,10 @@ class AuthController extends BaseController {
 
 		$rules = [
             'email' => 'Required|Max:255|Email|Unique:users,email',
-            'profile.first_name' => 'Required|Max:255',
-            'profile.last_name' => 'Required|Max:255',
-            'password'              => 'Required|confirmed',
-            'password_confirmation' => 'Required',
+            'profile.first_name' => 'Required|Max:255|Alpha',
+            'profile.last_name' => 'Required|Max:255|Alpha',
+            'password'              => 'Required|Min:6|Max:255|confirmed',
+            'password_confirmation' => 'Required|Min:6|Max:255',
 		];
 
 		$validation = Validator::make($inputs, $rules);
@@ -486,18 +487,14 @@ class AuthController extends BaseController {
 
                 $user->roles()->sync($roles);
 
-                print_r($roles);
-                print_r($user->roles());
-
-                // Data to be used on the email view
-                $data = array(
+                // Dados para o usuário ativar sua conta por email
+                /*
+                 $data = array(
                     'user' => $user,
                     'activationcode' => $user->getActivationCode()
                 );
-                print_r($data);
 
-                /*
-                // Send the activation code through email
+                // Envia um email para a conta do usuário com o link de ativação da conta
                 Mail::send('emails.welcome', $data, function($m) use ($user)
                 {
                     $m->to($user->email, $user->first_name . ' ' . $user->last_name)->subject('Welcome ' . $user->first_name);
@@ -505,11 +502,10 @@ class AuthController extends BaseController {
                 */
 
                 // Redirect to the register page
-                return Redirect::route('login')
+                return //Redirect::route('home')
+                    Redirect::route('login')
                     ->withInput()
                     ->withErrors('success', 'Seu cadastro foi feito com sucesso!');
-
-                //return Redirect::route('admin.user');
             }
 		}
 
