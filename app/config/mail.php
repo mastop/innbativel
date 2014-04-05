@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'host' => 'smtp.mailgun.org',
+	'host' => 'smtp.mandrillapp.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return array(
 	|
 	*/
 
-	'port' => 587,
+	'port' => 2525,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -55,8 +55,8 @@ return array(
 	*/
 
 	'from' => [
-		'address' => 'felipepodesta@me.com',
-		'name' => 'Felipe Podestá'
+		'address' => 'faleconosco@innbativel.com.br',
+		'name' => 'INNBatível'
 	],
 
 	/*
@@ -83,7 +83,7 @@ return array(
 	|
 	*/
 
-	'username' => 'postmaster@sandbox42.mailgun.org',
+	'username' => 'envio@innbativel.com.br',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ return array(
 	|
 	*/
 
-	'password' => '5tqsokl00h52',
+	'password' => 'DcNygr4cZHMp4tukM4jM8w',
 
 	/*
 	|--------------------------------------------------------------------------
