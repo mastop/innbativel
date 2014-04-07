@@ -24,6 +24,7 @@ return [
       {
         $collection->stylesheet('assets/themes/floripa/backend/css/plugins.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/js/plugins/chosen/chosen.css')->apply('UriRewriteFilter');
+        $collection->stylesheet('assets/themes/floripa/backend/js/plugins/file-upload/css/jquery.fileupload.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/css/font-awesome.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/css/icons.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/css/jquery.custom.css')->apply('UriRewriteFilter');
