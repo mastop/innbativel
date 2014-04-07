@@ -25,4 +25,8 @@ class Included extends Eloquent {
   	return $this->belongsToMany('Offer', 'offers_included', 'included_id', 'offer_id')->withPivot('display_order');
   }
 
+  public function __toString(){
+      return $this->icon.' '.$this->title;
+  }
+
 }

@@ -8,6 +8,7 @@ class PermRoleUsersTableSeeder extends DatabaseSeeder
 		$roles = Role::select('id')
 					 ->where('name', 'programador')
 					 ->orWhere('name', 'administrador')
+					 ->orWhere('name', 'parceiro') // Adicionado pois precisamos de ao menos um parceiro
 					 ->get('id');
 
 		foreach ($roles as $key) {

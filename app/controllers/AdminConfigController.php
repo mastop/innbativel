@@ -134,6 +134,8 @@ class AdminConfigController extends BaseController {
 		{
 			$config = $this->config->find($id);
 
+            Cache::forget('conf.'.$config->name); // Deleta do cache para atualizar o valor
+
 			if ($config)
 			{
 				$config->update($inputs);
