@@ -25,4 +25,8 @@ class Genre extends Eloquent {
 	  return $this->belongsToMany('Offer');
   }
 
+    public function __toString(){
+        return $this->icon.' '.$this->title;
+    }
+
 }
