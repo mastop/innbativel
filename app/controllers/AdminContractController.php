@@ -195,13 +195,13 @@ class AdminContractController extends BaseController {
 
 		if ($validation->passes())
 		{
-			$c = $this->contract->create($inputs);
+			$contract = $this->contract->create($inputs);
 
 			$n_options = count($options['title']);
 
 			for ($i=0; $i < $n_options; $i++) { 
-				$co = [
-					'contract_id' 		  => $c->id,
+				$contract_option = [
+					'contract_id' 		  => $contract->id,
 					'title'		  		  => $options['title'][$i],
 					'price_original'	  => $options['price_original'][$i],
 					'price_with_discount' => $options['price_with_discount'][$i],
@@ -210,7 +210,7 @@ class AdminContractController extends BaseController {
 					'max_qty'		  	  => $options['max_qty'][$i],
 				];
 
-				$this->contract_option->create($co);
+				$this->contract_option->create($contract_option);
 			}
 
 			return Redirect::route('admin.contract');
@@ -224,68 +224,116 @@ class AdminContractController extends BaseController {
 			->withErrors($validation);
 	}
 
-	// /**
-	//  * Display contract Create Page.
-	//  *
-	//  * @return Response
-	//  */
+	/**
+	 * Display contract Create Page.
+	 *
+	 * @return Response
+	 */
 
-	// public function getEdit($id)
-	// {
-	// 	$contract = $this->contract->find($id);
+	public function getEdit($id)
+	{
+		$contract = $this->contract->find($id);
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
 
-	// 	if (is_null($contract))
-	// 	{
-	// 		return Redirect::route('admin.contract');
-	// 	}
+		if (is_null($contract))
+		{
+			return Redirect::route('admin.contract');
+		}
 
-	// 	/*
-	// 	 * Layout / View
-	// 	 */
+		/*
+		 * Layout / View
+		 */
 
-	// 	$this->layout->content = View::make('admin.contract.edit', compact('contract'));
-	// }
+		$this->layout->content = View::make('admin.contract.edit', compact('contract', 'contract_options'));
+	}
 
-	// /**
-	//  * Update contract.
-	//  *
-	//  * @return Response
-	//  */
+	/**
+	 * Update contract.
+	 *
+	 * @return Response
+	 */
 
-	// public function postEdit($id)
-	// {
-	// 	/*
-	// 	 * Permuration
-	// 	 */
-	// 	$inputs = Input::all();
+	public function postEdit($id)
+	{
+		$inputs = Input::all();
 
-	// 	$rules = [
- //        	'term' => 'required|date',
-	// 		'restriction' => 'required',
-	// 		'n_people' => 'required|integer',
-	// 	];
+		// $partner = Profile::where('user_id', $inputs['partner_id'])->first();
 
-	//     $validation = Validator::make($inputs, $rules);
+		// $inputs['company_name'] = $partner->company_name;
+		// $inputs['trading_name'] = $partner->first_name.' '.$partner->last_name;
+		// $inputs['cnpj'] = $partner->cnpj;
+		// $inputs['address'] = $partner->address.(isset($partner->number)?(', '.$partner->number):'');
+		// $inputs['complement'] = $partner->complement;
+		// $inputs['neighborhood'] = $partner->neighborhood;
+		// $inputs['zip'] = $partner->zip;
+		// $inputs['city'] = $partner->city;
+		// $inputs['state'] = $partner->state;
 
-	// 	if ($validation->passes())
-	// 	{
-	// 		$contract = $this->contract->find($id);
+		// $inputs['consultant_id'] = Auth::user()->id;
+		
+		// $inputs['clauses'] = Configuration::get('clauses');
 
-	// 		if ($contract)
-	// 		{
-	// 			$contract->update($inputs);
-	// 		}
+		$options = $inputs['options'];
+		unset($inputs['options']);
+		unset($inputs['_token']);
 
-	// 		return Redirect::route('admin.contract');
-	// 	}
+		$rules = [
+        	'partner_id' => 'required',
+        	'agent1_name' => 'required',
+        	'agent1_cpf' => 'required',
+        	'agent1_telephone' => 'required',
+        	'bank_name' => 'required',
+        	'bank_number' => 'required',
+        	'bank_holder' => 'required',
+        	'bank_agency' => 'required',
+        	'bank_account' => 'required',
+        	'initial_term' => 'required|date',
+        	'final_term' => 'required|date',
+			'n_people' => 'required|integer',
+			'restriction' => 'required',
+			'features' => 'required',
+			'rules' => 'required',
+		];
 
-	// 	/*
-	// 	 * Return and display Errors
-	// 	 */
-	// 	return Redirect::route('admin.contract.edit', $id)
-	// 		->withInput()
-	// 		->withErrors($validation);
-	// }
+	    $validation = Validator::make($inputs, $rules);
+
+		if ($validation->passes())
+		{
+			$contract = $this->contract->find($id);
+
+			if($contract)
+			{
+				$contract->update($inputs);
+
+				$this->contract_option->where('contract_id', $contract->id)->delete();
+
+				$n_options = count($options['title']);
+
+				for ($i=0; $i < $n_options; $i++) { 
+					$contract_option = [
+						'contract_id' 		  => $contract->id,
+						'title'		  		  => $options['title'][$i],
+						'price_original'	  => $options['price_original'][$i],
+						'price_with_discount' => $options['price_with_discount'][$i],
+						'percent_off'		  => $options['percent_off'][$i],
+						'transfer'		  	  => $options['transfer'][$i],
+						'max_qty'		  	  => $options['max_qty'][$i],
+					];
+
+					$this->contract_option->create($contract_option);
+				}
+			}
+
+			return Redirect::route('admin.contract');
+		}
+
+		/*
+		 * Return and display Errors
+		 */
+		return Redirect::route('admin.contract.create')
+			->withInput()
+			->withErrors($validation);
+	}
 
 	// /**
 	//  * Display contract Delete Page.
