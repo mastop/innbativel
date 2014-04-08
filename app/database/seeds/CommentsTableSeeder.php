@@ -18,7 +18,7 @@
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //     	$columns[3] = ($columns[3] == 's') ? true : false;
 //         $stmt = $pdo->prepare('INSERT INTO comments (offer_id, user_id, comment, approved, display_order, created_at) VALUES (?, ?, ?, ?, ?, ?)');
-//         $stmt->execute($columns);
+//         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 
 //     $lexer->parse(app_path().'/database/seeds/assets/comments.csv', $interpreter);

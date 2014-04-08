@@ -18,7 +18,7 @@
 
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //     	$stmt = $pdo->prepare('INSERT INTO pre_bookings (offer_id, user_id, email, name, telephone, created_at) VALUES (?, ?, ?, ?, ?, ?)');
-//         $stmt->execute($columns);
+//         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 
 //     $lexer->parse(app_path().'/database/seeds/assets/pre_bookings.csv', $interpreter);

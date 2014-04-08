@@ -70,8 +70,8 @@ class AdminContractController extends BaseController {
 			$contract = $contract->where('partner_id', Input::get('partner_id'));
 		}
 
-		if (Input::has('agent1_name')) {
-			$contract = $contract->where('agent1_name', 'like', '%'. Input::get('description') .'%');
+		if (Input::has('consultant_id')) {
+			$contract = $contract->where('consultant_id', Input::get('consultant_id'));
 		}
 
 		if (Input::has('is_signed')) {
@@ -101,12 +101,12 @@ class AdminContractController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$contract = $contract->with(['partner'])->orderBy($sort, $order)->paginate($pag)->appends([
+		$contract = $contract->with(['partner', 'consultant'])->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
 			'id' => Input::get('id'),
 			'partner_id' => Input::get('partner_id'),
-			'agent1_name' => Input::get('agent1_name'),
+			'consultant_id' => Input::get('consultant'),
 			'is_signed' => Input::get('is_signed'),
 			'is_sent' => Input::get('is_sent'),
 			'created_at_begin' => Input::get('created_at_begin'),

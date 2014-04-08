@@ -24,9 +24,10 @@ class SetupContractsTable extends Migration {
          */
 		$table->increments('id');
 		$table->integer('partner_id')->unsigned()->index();
-		$table->string('company_name')->nullable();
+		$table->integer('consultant_id')->unsigned()->index();
+		$table->string('company_name')->nullable(); //razao_social
 		$table->string('cnpj')->nullable();
-		$table->string('trading_name')->nullable();
+		$table->string('trading_name')->nullable();	//nome_fantasia
 		$table->string('address')->nullable();
 		$table->string('complement')->nullable();
 		$table->string('neighborhood')->nullable();
@@ -47,8 +48,8 @@ class SetupContractsTable extends Migration {
 		$table->string('bank_financial_email')->nullable();
 		$table->boolean('is_signed')->default(false);
 		$table->boolean('is_sent')->default(false);
-		$table->string('consultant')->nullable();
-		$table->date('term')->nullable(); /////// PRAZO
+		$table->date('initial_term')->nullable(); // PRAZO INICIAL
+		$table->date('final_term')->nullable(); // PRAZO FINAL
 		$table->string('restriction')->nullable();
 		$table->string('has_scheduling')->nullable();
 		$table->string('sched_contact')->nullable();
@@ -56,12 +57,14 @@ class SetupContractsTable extends Migration {
 		$table->string('sched_dates')->nullable();
 		$table->string('sched_min_antecedence')->nullable();
 		$table->integer('n_people')->nullable();
-		$table->text('details')->nullable();
+		$table->text('features')->nullable();
+		$table->text('rules')->nullable();
 		$table->text('clauses')->nullable();
 		$table->string('ip')->nullable();
 		$table->datetime('signed_at')->nullable();
 
 		$table->foreign('partner_id')->references('id')->on('users');
+		$table->foreign('consultant_id')->references('id')->on('users');
 
         /*
          * Time Stamps
@@ -82,7 +85,7 @@ class SetupContractsTable extends Migration {
          */
 		$table->increments('id');
 		$table->integer('contract_id')->unsigned()->index();
-		$table->string('description')->nullable();
+		$table->string('title')->nullable();
 		$table->integer('price_original')->nullable();
 		$table->integer('price_with_discount')->nullable();
 		$table->integer('percent_off')->nullable();

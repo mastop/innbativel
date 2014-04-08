@@ -28,18 +28,25 @@ class Contract extends Eloquent {
   	'agent1_name' => 'required',
   	'agent1_cpf' => 'required',
   	'agent1_telephone' => 'required',
+    'consultant_id' => 'required',
+    'partner_id' => 'required',
   	//consultant side
-  	'term' => 'required|date',
+  	'initial_term' => 'required|date',
+    'final_term' => 'required|date',
   	'restriction' => 'required',
   	'n_people' => 'required|integer',
   );
 
   public function option(){
-  	return $this->hasMany('ContractOption', 'contract_id');
+    return $this->hasMany('ContractOption', 'contract_id');
+  }
+
+  public function consultant(){
+    return $this->belongsTo('User', 'consultant_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
   }
 
   public function partner(){
-  	return $this->belongsTo('User')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
+  	return $this->belongsTo('User', 'partner_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
   }
 
 }

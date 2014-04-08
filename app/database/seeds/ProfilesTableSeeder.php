@@ -18,7 +18,7 @@
 
 // 	$interpreter->addObserver(function(array $columns) use ($pdo) {
 // 		$stmt = $pdo->prepare('INSERT INTO profiles (id, user_id, facebook_id, first_name, last_name, birthday, cpf, telephone, telephone2, img, credit, city, state, street, number, complement, neighborhood, zip, company_name, cnpj, site, coordinates, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-// 	    $stmt->execute($columns);
+// 	    if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 // 	});
 
 // 	$lexer->parse(app_path().'/database/seeds/assets/profiles.csv', $interpreter);
@@ -40,6 +40,16 @@ class ProfilesTableSeeder extends DatabaseSeeder
         'user_id' => 2,
         'first_name' => 'Daniel',
         'last_name' => 'Mai',
+      ],
+      [
+        'user_id' => 3,
+        'first_name' => 'Alguem Nome',
+        'last_name' => 'Sobrenome',
+      ],
+      [
+        'user_id' => 4,
+        'first_name' => 'Fulano',
+        'last_name' => 'De Tal',
       ],
     ];
 

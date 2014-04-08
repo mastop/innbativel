@@ -26,7 +26,7 @@ class OffersOptionsTableSeeder extends DatabaseSeeder
   //   	$codigos_inclusos = array_pop($columns);
 
 		// $stmt = $pdo->prepare('INSERT INTO offers_options (id, offer_id, title, price_with_discount, max_qty, max_qty_per_buyer, min_qty, voucher_validity_start, voucher_validity_end, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-  //       $stmt->execute($columns);
+  //       if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 
   //       $id = $columns[0];
   //       $codigos_inclusos = explode("|", $codigos_inclusos);

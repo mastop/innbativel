@@ -20,7 +20,7 @@
 
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //     	$stmt = $pdo->prepare('INSERT INTO tell_us (name, destiny, partner_name, travel_date, depoiment, img, display_order, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-//         $stmt->execute($columns);
+//         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 
 //     $lexer->parse(app_path().'/database/seeds/assets/tell_us.csv', $interpreter);
