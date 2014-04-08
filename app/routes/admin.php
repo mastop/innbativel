@@ -472,11 +472,16 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 
 });
 
-Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 
-	/*
-	 * Painel/Orders
+Route::group(array('prefix' => 'painel', 'before' => 'auth'), function(){
+    /*
+	 * Painel/Dashboard
 	 */
+    Route::any('/', ['as' => 'painel', 'uses' => 'PainelController@getDashboard', 'after' => 'cache.public']);
+
+    /*
+     * Painel/Orders
+     */
 	Route::any('ofertas', ['as' => 'painel.order.offers', 'uses' => 'PainelOrderController@anyListByOffer']);
 
 	Route::any('ofertas/exportar', function(){ return Redirect::route('painel.order.offers'); });
