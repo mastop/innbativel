@@ -3,9 +3,21 @@
     <div class="well widget row-fluid">
 
         {{ Former::horizontal_open()->rules([
-        	'term' => 'required|date',
-			'restriction' => 'required',
+        	'partner_id' => 'required',
+        	'agent1_name' => 'required',
+        	'agent1_cpf' => 'required',
+        	'agent1_telephone' => 'required',
+        	'bank_name' => 'required',
+        	'bank_number' => 'required',
+        	'bank_holder' => 'required',
+        	'bank_agency' => 'required',
+        	'bank_account' => 'required',
+        	'initial_term' => 'required|date',
+        	'final_term' => 'required|date',
 			'n_people' => 'required|integer',
+			'restriction' => 'required',
+			'features' => 'required',
+			'rules' => 'required',
         ]) }}
 
         <div class="control-group"><h1>Empresa</h1></div>
@@ -15,19 +27,29 @@
 				 ->class('span12')
 		}}
 
-		<div class="control-group"><h1>Consultor INNBatível</h1></div>
+		<div class="control-group"><h1>Representantes legais com poderes previstos no Contrato Social</h1></div>
 
-		{{ Former::select('consultant', 'Nome')
-	        	 ->addOption('Terence Plentz', 'Terence Plentz')
-	        	 ->addOption('Rodrigo Giannocaro', 'Rodrigo Giannocaro')
-	        	 ->addOption('Danilo Konrad', 'Danilo Konrad')
-	        	 ->addOption('Fernanda Mendes', 'Fernanda Mendes')
-	        	 ->addOption('Marina Gerald', 'Marina Gerald')
-	    }}
+		{{ Former::text('agent1_name', 'Nome representante 1')->class('span12') }}
+		{{ Former::text('agent1_cpf', 'CPF representante 1')->class('span12') }}
+		{{ Former::text('agent1_telephone', 'Telefone representante 1')->class('span12') }}
+
+		{{ Former::text('agent2_name', 'Nome representante 2')->class('span12') }}
+		{{ Former::text('agent2_cpf', 'CPF representante 2')->class('span12') }}
+		{{ Former::text('agent2_telephone', 'Telefone representante 2')->class('span12') }}
+
+		<div class="control-group"><h1>Dados Bancários (devem necessariamente ser dados vinculados ao CNPJ e Razão Social acima)</h1></div>
+
+		{{ Former::text('bank_name', 'Nome do banco')->class('span12') }}
+		{{ Former::text('bank_number', 'Número do banco')->class('span12') }}
+		{{ Former::text('bank_holder', 'Ttular')->class('span12') }}
+		{{ Former::text('bank_agency', 'Agência')->class('span12') }}
+		{{ Former::text('bank_account', 'Conta')->class('span12') }}
+		{{ Former::text('bank_financial_email', 'E-mail do dpto financeiro')->class('span12') }}
 
 		<div class="control-group"><h1>Regras do cupom</h1></div>
 
-        {{ Former::date('term', 'Prazo de utilização')->class('span12') }}
+        {{ Former::date('initial_term', 'Prazo inicial de utilização')->class('span12') }}
+        {{ Former::date('final_term', 'Prazo final de utilização')->class('span12') }}
         {{ Former::number('n_people', 'Nº de pessoas por cupom')->class('span12') }}
         {{ Former::text('restriction', 'Restrição')->class('span12') }}
 		{{ Former::select('has_scheduling', 'Agendamento?')
@@ -42,6 +64,8 @@
         	{{ Former::text('sched_min_antecedence', 'Antecedência mínima para agendamento')->class('span12') }}
 		</span>
 
+		<script type="text/javascript">$('#yes_has_scheaduling').hide()</script>
+
 		<div class="control-group">
 			<h1>Detalhamento dos serviços oferecidos</h1>
 
@@ -51,7 +75,8 @@
 			Ex gastronomia: bebidas, taxa de serviço
 		</div>
 
-       	{{ Former::textarea('details', 'Detalhamento')->class('span12') }}
+       	{{ Former::textarea('features', 'Destaques')->class('span12') }}
+       	{{ Former::textarea('rules', 'Regras')->class('span12') }}
 
 		<div class="control-group">
 			<table class="table table-striped">
@@ -68,12 +93,12 @@
 				</thead>
 				<tbody id="options">
 					<tr>
-						<td><input type="text" value="" name="opcoes[][opcao]"/></td>
-						<td><input type="text" value="" name="opcoes[][preco_original]"/></td>
-						<td><input type="text" value="" name="opcoes[][preco_com_desconto]"/></td>
-						<td><input type="number" value="" name="opcoes[][percentagem]"/></td>
-						<td><input type="text" value="" name="opcoes[][repasse]"/></td>
-						<td><input type="number" value="" name="opcoes[][maximo]"/></td>
+						<td><input type="text" value="" name="options[title][]"/></td>
+						<td><input type="text" value="" name="options[price_original][]"/></td>
+						<td><input type="text" value="" name="options[price_with_discount][]"/></td>
+						<td><input type="number" value="" name="options[percent_off][]"/></td>
+						<td><input type="text" value="" name="options[transfer][]"/></td>
+						<td><input type="number" value="" name="options[max_qty][]"/></td>
 						<td><button class="remove btn btn-danger">Remover esta opção</button></td>
 					</tr>
 				</tbody>
@@ -95,6 +120,17 @@
 					}
 					return false;
 				});
+
+				$("#has_scheduling").on('change', function(e) {
+					var myselect = document.getElementById("has_scheduling");
+				    if(myselect.value == 1){
+				        $('#yes_has_scheaduling').show();
+				    }
+				    else{
+				        $('#yes_has_scheaduling').hide();
+				    }
+					return false;
+				});
 			</script>
 		</div>
 
@@ -102,7 +138,7 @@
 			<h1>Cláusulas</h1>
 
 			<?php
-			$config = Configuration::where('name', 'terms')->first();
+			$config = Configuration::where('name', 'clauses')->first();
 			echo $config->value;
 			?>
 		</div>

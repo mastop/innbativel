@@ -114,7 +114,7 @@
 							Navigation::links([
 								['Visualizar', route('admin.contract.view', $body['id'])],
 								['Imprimir', route('admin.contract.print', $body['id'])],
-								['Enviar', route('admin.contract.sent', $body['id'])],
+								['Enviar', route('admin.contract.send', $body['id'])],
 								['Editar', route('admin.contract.edit', $body['id'])],
 								['Excluir', route('admin.contract.delete', $body['id'])],
 							])

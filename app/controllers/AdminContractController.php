@@ -12,13 +12,14 @@ class AdminContractController extends BaseController {
 	/**
 	 * Constructor
 	 */
-	public function __construct(Contract $contract)
+	public function __construct(Contract $contract, ContractOption $contract_option)
 	{
 		/*
 		 * Set contract Instance
 		 */
 
 		$this->contract = $contract;
+		$this->contract_option = $contract_option;
 
 		/*
 		 * Set Sidebar Status
@@ -146,21 +147,71 @@ class AdminContractController extends BaseController {
 	{
 		$inputs = Input::all();
 
-		print('<pre>');
-		print_r($inputs);
-		print('</pre>'); die();
+		$partner = Profile::where('user_id', $inputs['partner_id'])->first();
+
+		$inputs['company_name'] = $partner->company_name;
+		$inputs['trading_name'] = $partner->first_name.' '.$partner->last_name;
+		$inputs['cnpj'] = $partner->cnpj;
+		$inputs['address'] = $partner->address.(isset($partner->number)?(', '.$partner->number):'');
+		$inputs['complement'] = $partner->complement;
+		$inputs['neighborhood'] = $partner->neighborhood;
+		$inputs['zip'] = $partner->zip;
+		$inputs['city'] = $partner->city;
+		$inputs['state'] = $partner->state;
+
+		$inputs['consultant_id'] = Auth::user()->id;
+		
+		$inputs['clauses'] = Configuration::get('clauses');
+		
+		$inputs['ip'] = getenv('HTTP_CLIENT_IP')?:
+			            getenv('HTTP_X_FORWARDED_FOR')?:
+			            getenv('HTTP_X_FORWARDED')?:
+			            getenv('HTTP_FORWARDED_FOR')?:
+			            getenv('HTTP_FORWARDED')?:
+			            getenv('REMOTE_ADDR');
+
+		$options = $inputs['options'];
+		unset($inputs['options']);
 
 		$rules = [
-        	'term' => 'required|date',
-			'restriction' => 'required',
+        	'partner_id' => 'required',
+        	'agent1_name' => 'required',
+        	'agent1_cpf' => 'required',
+        	'agent1_telephone' => 'required',
+        	'bank_name' => 'required',
+        	'bank_number' => 'required',
+        	'bank_holder' => 'required',
+        	'bank_agency' => 'required',
+        	'bank_account' => 'required',
+        	'initial_term' => 'required|date',
+        	'final_term' => 'required|date',
 			'n_people' => 'required|integer',
+			'restriction' => 'required',
+			'features' => 'required',
+			'rules' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
-			$this->contract->create($inputs);
+			$c = $this->contract->create($inputs);
+
+			$n_options = count($options['title']);
+
+			for ($i=0; $i < $n_options; $i++) { 
+				$co = [
+					'contract_id' 		  => $c->id,
+					'title'		  		  => $options['title'][$i],
+					'price_original'	  => $options['price_original'][$i],
+					'price_with_discount' => $options['price_with_discount'][$i],
+					'percent_off'		  => $options['percent_off'][$i],
+					'transfer'		  	  => $options['transfer'][$i],
+					'max_qty'		  	  => $options['max_qty'][$i],
+				];
+
+				$this->contract_option->create($co);
+			}
 
 			return Redirect::route('admin.contract');
 		}
