@@ -23,6 +23,8 @@ return [
       'backend' => function($collection)
       {
         $collection->stylesheet('assets/themes/floripa/backend/css/plugins.css')->apply('UriRewriteFilter');
+        $collection->stylesheet('assets/themes/floripa/backend/js/plugins/chosen/chosen.css')->apply('UriRewriteFilter');
+        $collection->stylesheet('assets/themes/floripa/backend/js/plugins/file-upload/css/jquery.fileupload.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/css/font-awesome.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/css/icons.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/css/jquery.custom.css')->apply('UriRewriteFilter');
@@ -36,6 +38,7 @@ return [
         $collection->javascript('jquery-easytabs')->apply('JsMin');
         $collection->javascript('jquery-collapsible')->apply('JsMin');
         $collection->javascript('jquery-inputmask')->apply('JsMin');
+        $collection->javascript('jquery-chosen')->apply('JsMin');
         $collection->javascript('bootstrap-js')->apply('JsMin');
         $collection->javascript('underscore')->apply('JsMin');
         $collection->javascript('holder')->apply('JsMin');
@@ -163,6 +166,7 @@ return [
             'jquery-collapsible'        => 'assets/vendor/jquery.collapsible/jquery.collapsible.min.js',
             'jquery-inputmask'          => 'assets/vendor/jquery.inputmask/dist/jquery.inputmask.bundle.min.js',
             'jquery-datatables'         => 'assets/themes/floripa/backend/js/plugins/tables/jquery.dataTables.min.js',
+            'jquery-chosen'             => 'assets/themes/floripa/backend/js/plugins/chosen/chosen.jquery.min.js',
             'bootstrap-js'              => 'assets/vendor/bootstrap/3/dist/js/bootstrap.min.js',
             'prettify-js'               => 'assets/vendor/prettify/prettify.js',
             'underscore'                => 'assets/vendor/underscore/underscore.min.js',

@@ -40,6 +40,14 @@ class TellUsTableSeeder extends DatabaseSeeder
         'depoiment' => 'A viage foi paulada eim',
         'img' => '/assets/uploads/images/tellus/img/ecoa-23-anos.jpg',
         'display_order' => 1,
+      ],[
+        'name' => 'Fernando Santos',
+        'destiny' => 'Oiapoque',
+        'partner_name' => 'Orkut',
+        'travel_date' => '2030-12-30 10:44:42',
+        'depoiment' => 'Eu queria ver a neve. E para ver a neve, nada melhor que ir ao Oiapoque, já que no Chuí o tempo estava quente.',
+        'img' => '/assets/uploads/images/tellus/img/ecoa-23-anos.jpg',
+        'display_order' => 2,
       ],
     ];
 

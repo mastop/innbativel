@@ -40,8 +40,8 @@ class AuthController extends BaseController {
 		if ($isEmail->passes())
 		{
 			$user = [
-			'email' => Input::get('email'),
-			'password' => Input::get('password')
+                'email' => Input::get('email'),
+                'password' => Input::get('password')
 			];
 
 			$validator = Validator::make(Input::all(), [
@@ -62,30 +62,27 @@ class AuthController extends BaseController {
 
 		if ($validator->passes())
 		{
-			try
+            try
 			{
 				if (Auth::attempt($user)) {
 					$auth = true;
-				}
-
+                }
 			}
 			catch (Exception $e)
 			{
 				try{
-					// Caso o usuário tenha
-					if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>md5(Input::get('password')))))
-					{
-						$auth = true;
-
-						Auth::user()->password = Input::get('password');
-						Auth::user()->save();
-					}
+                    if (Auth::attempt(array('email' => Input::get('email'), 'password' => $this->user->setPasswordAttribute(Input::get('password')))))
+                    {
+                        return Redirect::intended('dashboard')
+                            ->with('success', 'Login efetuado com sucesso!')
+                            ->withInput();
+                    }
 				}
 				catch (Toddish\Verify\UserNotFoundException $e)
 				{
 					return Redirect::route('login')
-					->with('warning', 'Usuário não encontrado.')
-					->withInput();
+                        ->with('warning', 'Usuário não encontrado.')
+                        ->withInput();
 				}
 				catch (Toddish\Verify\UserUnverifiedException $e)
 				{
@@ -97,20 +94,36 @@ class AuthController extends BaseController {
 				catch (Toddish\Verify\UserDisabledException $e)
 				{
 					return Redirect::route('login')
-					->with('warning', 'Usuário Inativo ou Bloqueado.')
-					->withInput();
+                        ->with('warning', 'Usuário Inativo ou Bloqueado.')
+                        ->withInput();
 				}
 				catch (Toddish\Verify\UserDeletedException $e)
 				{
 					return Redirect::route('login')
-					->with('warning', 'Usuário excluído.')
-					->withInput();
+                        ->with('warning', 'Usuário excluído.')
+                        ->withInput();
 				}
 				catch (Toddish\Verify\UserPasswordIncorrectException $e)
 				{
-					return Redirect::route('login')
-					->with('warning', 'Usuário e/ou senha incorretos.')
-					->withInput();
+                    try{
+                        // Caso o usuário tenha senha em MD5
+                        if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>md5(Input::get('password')))))
+                        {
+                            $auth = true;
+                            Auth::user()->password = Input::get('password');
+                            Auth::user()->save();
+
+                            return Redirect::intended('dashboard')
+                            ->with('success', 'Login efetuado com sucesso!')
+                            ->withInput();
+                        }
+                    }
+                    catch (Toddish\Verify\UserPasswordIncorrectException $e)
+                    {
+					    return Redirect::route('login')
+                            ->with('warning', 'Usuário e/ou senha incorretos.')
+                            ->withInput();
+                    }
 				}
 			}
 		}
@@ -165,8 +178,8 @@ class AuthController extends BaseController {
 		$data['username'] = Input::get('username');
 
 		return Redirect::back()
-		->withInput($data)
-		->withErrors($data['errors']);
+            ->withInput($data)
+            ->withErrors($data['errors']);
 	}
 
 	public function getLogout()
@@ -265,8 +278,8 @@ class AuthController extends BaseController {
 		/**
 		 * If User ID is not null
 		 */
-		if($user){
-
+		if($user)
+        {
 			try
 			{
 				$profile = $facebook->api('/me');
@@ -289,19 +302,29 @@ class AuthController extends BaseController {
 				if (!is_null($emailExists))
 				{
 					$userObj = User::find($emailExists->id);
-					$profileObj = $userObj->profile->exists;
+
+					$profileObj = $userObj->profile;
 
 					if ($profileObj) {
 
 						$facebookExists = $userObj->profile->facebook_id;
 
 						if (!is_null($facebookExists)) {
-							$profileUpdate = Profile::where('user_id', $userObj->id);
-							$profileUpdate->facebook_id = $uid;
+                            $profileUpdate = Profile::where('user_id', $userObj->id)->first();
+                            $profileUpdate->facebook_id = $uid;
+                            $profileUpdate->first_name = $profile['name'];
+
+                            if (isset($profile['location']) && !empty($profile['location']))
+                            {
+                                $location = explode(',', $profile['location']['name']);
+                                $profileUpdate->city = (isset($location[0]) && !empty($location[0])) ? $location[0] : "";
+                                $profileUpdate->state = (isset($location[1]) && !empty($location[1])) ? $location[1] : "";
+                            }
 							$profileUpdate->update();
 						}
 
 						Auth::login($userObj);
+
 						return Redirect::route('home');
 					}
 				}
@@ -310,12 +333,11 @@ class AuthController extends BaseController {
 				{
 					$login = User::find($emailExists->id);
 					Auth::login($login);
+
 					return Redirect::route('home');
 				}
-
 				else
 				{
-
 					$new = [
 						'email' => $profile['email'],
 						'username' => Str::lower(Str::slug($profile['email']) . '-' .Str::random(16)),
@@ -330,17 +352,19 @@ class AuthController extends BaseController {
 					$createdUser = [
 						'user_id' => $created,
 						'facebook_id' => $profile['id'],
-						'name' => $profile['name'],
+						'first_name' => $profile['name'],
 					];
 
 					if (isset($profile['location']) && !empty($profile['location']))
 					{
-						$createdUser['city'] = $location[0];
-						$createdUser['state'] = $location[1];
+						$createdUser['city'] = (isset($location[0]) && !empty($location[0])) ? $location[0] : "";
+						$createdUser['state'] = (isset($location[1]) && !empty($location[1])) ? $location[1] : "";
 					}
 
 					$user = User::find($created);
 					$user->profile()->create($createdUser);
+
+                    Auth::login($user);
 				}
 			}
 
@@ -428,23 +452,22 @@ class AuthController extends BaseController {
 
 	public function getCreate()
 	{
-		$rules = [
-                'profile.first_name' => 'required|Alpha',
-                'profile.last_name' => 'required|Alpha',
-                'email' => 'Required|Max:255|Email|Unique:users,email',
-                'password'              => 'required|confirmed',
-                'password_confirmation' => 'required'
+        $rules = [
+            'email' => 'Required|Max:255|Email',
+            'profile.first_name' => 'Required|Max:255|Alpha',
+            'profile.last_name' => 'Required|Max:255|Alpha',
+            'password'              => 'Required|Min:6|Max:255|confirmed',
+            'password_confirmation' => 'Required|Min:6|Max:255',
         ];
 
 		$form  = Former::horizontal_open(route('account.create'))->class('row-fluid')->rules($rules);
+        $form .= Form::hidden('roles[name]', 10);// Cliente
+        $form .= Former::text('profile[first_name]')->label('Nome')->class('span12')->value(Input::old('profile[first_name]'));
+        $form .= Former::text('profile[last_name]')->label('Sobrenome')->class('span12')->value(Input::old('profile[last_name]'));
 
-
-        $form .= Former::text('profile.first_name')->label('Nome')->class('span12');
-        $form .= Former::text('profile.last_name')->label('Sobrenome')->class('span12');
-
-		$form .= Former::text('email')->class('span12');
+		$form .= Former::text('email')->class('span12')->value(Input::old('email'));
 		$form .= Former::password('password')->label('Senha')->class('span12');
-		$form .= Former::password('password_confirmation')->label('Senha')->class('span12');
+		$form .= Former::password('password_confirmation')->label('Confirmar senha')->class('span12');
 		$form .= Former::submit('Cadastrar')->class('btn btn-danger btn-block');
 		$form .= Former::close();
 
@@ -455,46 +478,50 @@ class AuthController extends BaseController {
 	{
 		$inputs = Input::all();
 
-		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
-
 		$rules = [
             'email' => 'Required|Max:255|Email|Unique:users,email',
-            'roles' => 'required',
-            'profile.first_name' => 'required|Alpha',
-            'profile.last_name' => 'required|Alpha',
-            'password'              => 'required|confirmed',
-            'password_confirmation' => 'required',
+            'profile.first_name' => 'Required|Max:255|Alpha',
+            'profile.last_name' => 'Required|Max:255|Alpha',
+            'password'              => 'Required|Min:6|Max:255|confirmed',
+            'password_confirmation' => 'Required|Min:6|Max:255',
 		];
 
 		$validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
-			$created = $this->user->create($inputs)->id;
+            $inputs['username'] = Str::lower(Str::slug(Input::get('email')));
+            $inputs['api_key'] = md5($inputs['username']);
+            $inputs['password'] = $this->user->setPasswordAttribute($inputs['password']);
 
-			$inputs['profile']['user_id'] = $created;
+            if ($user = $this->user->create($inputs))
+            {
+                $inputs['profile']['user_id'] = $user->id;
 
-			$user = User::find($created);
-			$user->profile()->create($inputs['profile']);
+                $user->profile()->create($inputs['profile']);
 
-			/*
-			 * Roles
-			 */
-			$roles = [];
+                /*
+                 * Roles
+                 */
+                $roles = [];
+                foreach ($inputs['roles'] as $key => $value) {
+                    $roles[] = $value;
+                }
 
-			foreach ($inputs['roles'] as $key => $value) {
-				$roles[] = $value;
-			}
+                $user->roles()->sync($roles);
 
-			$user->roles()->sync($roles);
-
-			return Redirect::route('admin.user');
+                // Redirect to the register page
+                return //Redirect::route('home')
+                    Redirect::route('login')
+                    ->withInput()
+                    ->withErrors('success', 'Seu cadastro foi feito com sucesso!');
+            }
 		}
 
 		/*
 		 * Return and display Errors
 		 */
-		return Redirect::route('admin.user.create')
+		return Redirect::route('account.create')
 			->withInput()
 			->withErrors($validation);
 	}

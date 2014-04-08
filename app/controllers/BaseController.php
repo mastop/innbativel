@@ -135,6 +135,8 @@ class BaseController extends Controller {
         	$this->layout->body_classes .= ' sidebar';
         }
 
+        $this->layout->page_title = 'Título Padrão';
+        $this->layout->page_description = '';
         $this->layout->seo = Config::get('seo');
 	}
 

@@ -9,10 +9,19 @@ class ConfigurationsTableSeeder extends DatabaseSeeder
         'name' => 'merchant_id', 'value' => '1234',
       ],
       [
-        'name' => 'amazons3_id', 'value' => '1234',
+        'name' => 's3access', 'value' => 'AKIAI363KZF7K272NNDQ',
       ],
       [
-        'name' => 'amazons3_bucket', 'value' => 'innb',
+        'name' => 's3secret', 'value' => '4cOD4MaYbrVQ+A+ftLfvuXXFoslI2NKTt4TbH+IY',
+      ],
+      [
+        'name' => 's3bucket', 'value' => 'innbativel-dev',
+      ],
+      [
+        'name' => 's3region', 'value' => 'sa-east-1',
+      ],
+      [
+        'name' => 's3url', 'value' => 'innbativel-dev.s3.amazonaws.com',
       ],
       [
         'name' => 'popup_time', 'value' => '30',

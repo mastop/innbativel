@@ -13,6 +13,10 @@
 			</div>
 		</div>
 	</div>
+    <a href="{{ route('login.facebook') }}">
+        <img alt="Acesse via Facebook" src="{{ asset('assets/images/facebook-connect.png') }}">
+    </a>
+    <br /><br />
 	<div class="well">
 		{{ Former::horizontal_open()->class('row-fluid')->rules(['email' => 'required', 'password' => 'required', ]) }}
 		{{ Former::text('email')->class('span12')->placeholder('E-mail') }}

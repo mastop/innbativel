@@ -17,4 +17,13 @@ class Configuration extends BaseModel {
 
   public static $rules = [];
 
+    public static function get($name){
+
+        $val = Cache::rememberForever('conf.'.$name, function() use ($name)
+        {
+            return Configuration::where('name', $name)->first()->value;
+        });
+        return $val;
+    }
+
 }

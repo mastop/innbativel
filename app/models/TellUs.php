@@ -24,4 +24,8 @@ class TellUs extends Eloquent {
 	'img' => 'required',
   );
 
+    public function __toString(){
+        return $this->destiny.' | '.$this->name.' | '.substr($this->depoiment, 0, 60).(isset($this->depoiment{61}) ? '...' : null);
+    }
+
 }
