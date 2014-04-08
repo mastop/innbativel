@@ -278,8 +278,8 @@ class AuthController extends BaseController {
 		/**
 		 * If User ID is not null
 		 */
-		if($user){
-
+		if($user)
+        {
 			try
 			{
 				$profile = $facebook->api('/me');
@@ -302,19 +302,29 @@ class AuthController extends BaseController {
 				if (!is_null($emailExists))
 				{
 					$userObj = User::find($emailExists->id);
-					$profileObj = $userObj->profile->exists;
+
+					$profileObj = $userObj->profile;
 
 					if ($profileObj) {
 
 						$facebookExists = $userObj->profile->facebook_id;
 
 						if (!is_null($facebookExists)) {
-							$profileUpdate = Profile::where('user_id', $userObj->id);
-							$profileUpdate->facebook_id = $uid;
+                            $profileUpdate = Profile::where('user_id', $userObj->id)->first();
+                            $profileUpdate->facebook_id = $uid;
+                            $profileUpdate->first_name = $profile['name'];
+
+                            if (isset($profile['location']) && !empty($profile['location']))
+                            {
+                                $location = explode(',', $profile['location']['name']);
+                                $profileUpdate->city = (isset($location[0]) && !empty($location[0])) ? $location[0] : "";
+                                $profileUpdate->state = (isset($location[1]) && !empty($location[1])) ? $location[1] : "";
+                            }
 							$profileUpdate->update();
 						}
 
 						Auth::login($userObj);
+
 						return Redirect::route('home');
 					}
 				}
@@ -323,11 +333,11 @@ class AuthController extends BaseController {
 				{
 					$login = User::find($emailExists->id);
 					Auth::login($login);
+
 					return Redirect::route('home');
 				}
 				else
 				{
-
 					$new = [
 						'email' => $profile['email'],
 						'username' => Str::lower(Str::slug($profile['email']) . '-' .Str::random(16)),
@@ -342,17 +352,19 @@ class AuthController extends BaseController {
 					$createdUser = [
 						'user_id' => $created,
 						'facebook_id' => $profile['id'],
-						'name' => $profile['name'],
+						'first_name' => $profile['name'],
 					];
 
 					if (isset($profile['location']) && !empty($profile['location']))
 					{
-						$createdUser['city'] = $location[0];
-						$createdUser['state'] = $location[1];
+						$createdUser['city'] = (isset($location[0]) && !empty($location[0])) ? $location[0] : "";
+						$createdUser['state'] = (isset($location[1]) && !empty($location[1])) ? $location[1] : "";
 					}
 
 					$user = User::find($created);
 					$user->profile()->create($createdUser);
+
+                    Auth::login($user);
 				}
 			}
 
@@ -497,20 +509,6 @@ class AuthController extends BaseController {
                 }
 
                 $user->roles()->sync($roles);
-
-                // Dados para o usuário ativar sua conta por email
-                /*
-                 $data = array(
-                    'user' => $user,
-                    'activationcode' => $user->getActivationCode()
-                );
-
-                // Envia um email para a conta do usuário com o link de ativação da conta
-                Mail::send('emails.welcome', $data, function($m) use ($user)
-                {
-                    $m->to($user->email, $user->first_name . ' ' . $user->last_name)->subject('Welcome ' . $user->first_name);
-                });
-                */
 
                 // Redirect to the register page
                 return //Redirect::route('home')
