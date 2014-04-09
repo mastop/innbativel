@@ -67,3 +67,28 @@ foreach ($required_paths as $required_path) {
 	}
 
 }
+
+// Macro para adicionar o campo de imagem com upload
+
+HTML::macro('ImageUpload', function($name, $label)
+{
+    return '<div class="control-group">
+            <label for="'.$name.'_file" class="control-label">'.$label.'</label>
+            <div class="controls">
+                <div class="fade well dropzone span12">
+                    <div class="dropinfo">
+                        Arraste a imagem até aqui.
+                        <p>(ou clique)</p>
+                    </div>
+                    <div class="progress" style="display: none">
+                        <div class="bar progress-bar-success"></div>
+                    </div>
+                    <div class="fileremove">
+                        '.Button::danger('<span class="icon icon-remove"> Remover</span>', ['class'=>'btn-mini']).'
+                    </div>
+                </div>
+                <input id="'.$name.'_file" type="file" name="file" class="fileupload">
+                <input id="'.$name.'_uploaded" type="hidden" name="'.$name.'" class="fileuploaded" value="">
+            </div>
+        </div>';
+});
