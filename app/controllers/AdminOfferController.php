@@ -141,14 +141,16 @@ class AdminOfferController extends BaseController {
             array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
         );
 
-        $postObject = new Aws\S3\Model\PostObject($s3, $s3bucket, array('acl' => 'public-read'));
+        $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
+
+        $postObject = new Aws\S3\Model\PostObject($s3, $s3bucket, array('acl' => 'public-read', 'Cache-Control' => 'max-age=315360000', 'Content-Type' => '^', 'Expires' => $expires));
         $form = $postObject->prepareData()->getFormInputs();
         $policy = $form['policy'];
         $signature = $form['signature'];
         $uid = uniqid();
 
 		$this->layout->page_title = 'Criar Oferta';
-		$this->layout->content = View::make('admin.offer.create', compact('policy', 'signature', 'uid', 's3bucket', 's3access'));
+		$this->layout->content = View::make('admin.offer.create', compact('policy', 'signature', 'uid', 's3bucket', 's3access', 'expires'));
 	}
 
 	/**

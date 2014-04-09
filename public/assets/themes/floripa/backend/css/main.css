@@ -2473,3 +2473,42 @@ dl.listing dt { clear: left; width: 15%; text-align: right; }
 	margin: 20px;
 	border-radius: 1000px;
 }
+
+.dropzone {
+    background: #fefefe;
+    height: 150px;
+    text-align: center;
+    font-weight: bold;
+    border: 2px dashed #D5D5D5;
+    position: relative;
+    cursor: pointer;
+    padding-top: 55px;
+}
+.dropzone.in {
+    width: 600px;
+    height: 200px;
+    line-height: 200px;
+    font-size: larger;
+}
+.dropzone.hover {
+    background: #94ff9f;
+    border-color: #0e90d2;
+}
+.dropzone.fade {
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    opacity: 1;
+}
+
+.dropzone div.progress{
+    diplay:none;
+    position: absolute;
+    top: 55px;
+}
+
+input.fileupload{
+    display:none;
+}

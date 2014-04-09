@@ -75,15 +75,22 @@
 
         {{ Former::legend('Fotos') }}
 
-        <span class="btn btn-success fileinput-button">
-        <i class="ico-plus"></i>
-        <span>Selecione o Arquivo...</span>
-        <input id="fileupload" type="file" name="file" multiple>
-    </span>
-        <br>
-        <div id="progress" class="progress active">
-            <div class="bar progress-bar-success"></div>
+        <div class="control-group">
+            <label for="fileupload" class="control-label">Principal</label>
+            <div class="controls">
+                <div id="dropzone" class="fade well dropzone span12">
+                    Arraste a imagem até aqui.
+                    <p>(ou clique)</p>
+                    <div class="progress">
+                        <div class="bar progress-bar-success"></div>
+                    </div>
+                </div>
+                <input id="fileupload" type="file" name="file" class="fileupload">
+            </div>
         </div>
+
+
+        <br>
         <div id="files" class="files"></div>
 
 
@@ -108,13 +115,7 @@
                 var url = 'https://{{$s3bucket}}.s3.amazonaws.com/';
                 $('#fileupload').fileupload({
                     url: url,
-                    formData: {
-                        key: "{{$uid}}",
-                        acl: "public-read",
-                        AWSAccessKeyId: "{{ $s3access }}",
-                        policy: "{{ $policy }}",
-                        signature: "{{ $signature }}"
-                    },
+                    dropZone: $('#dropzone'),
                     dataType: 'xml',
                     imageMaxWidth: 800,
                     imageMaxHeight: 800,
@@ -133,12 +134,39 @@
 
                         //alert(url);
                     },
+                    send: function (e, data) {
+                        alert($(this).attr('id'));
+                        var $progress = $(this).parent().find('div.progress');
+                        var $bar = $progress.find('div.bar');
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        $progress.css('width', progress + '%');
+                    },
                     progressall: function (e, data) {
+                        var $progress = $(this).parent().find('div.progress');
+                        var $bar = $progress.find('div.bar');
                         var progress = parseInt(data.loaded / data.total * 100, 10);
                         $progress.css('width', progress + '%');
                     }
                 }).on('fileuploadadd', function (e, data) {
-                    return console.log(data);
+                    $('#fileupload').fileupload(
+                        'option',
+                        {
+                            formData: {
+                                key: "temp/{{$uid}}_${filename}",
+                                acl: "public-read",
+                                AWSAccessKeyId: "{{ $s3access }}",
+                                policy: "{{ $policy }}",
+                                signature: "{{ $signature }}",
+                                'Content-type': data.files[0].type,
+                                'Cache-Control':'max-age=315360000',
+                                'Expires':'{{$expires}}'
+                            },
+                            sequentialUploads: true
+                        }
+                    );
+                    return console.log(data.files[0]);
+
+                    return false;
                     data.context = $('<div/>').appendTo('#files');
                     $.each(data.files, function (index, file) {
                         var node = $('<p/>')
@@ -151,6 +179,7 @@
                         node.appendTo(data.context);
                     });
                 }).on('fileuploadprocessalways', function (e, data) {
+                    return false;
                     return console.log(data);
                     var index = data.index,
                         file = data.files[index],
@@ -171,6 +200,7 @@
                             .prop('disabled', !!data.files.error);
                     }
                 }).on('fileuploadprogressall', function (e, data) {
+                    return false;
                     return console.log(data);
                     var progress = parseInt(data.loaded / data.total * 100, 10);
                     $('#progress .progress-bar').css(
@@ -178,6 +208,7 @@
                         progress + '%'
                     );
                 }).on('fileuploaddone', function (e, data) {
+                    return false;
                     return console.log(data);
                     $.each(data.result.files, function (index, file) {
                         if (file.url) {
@@ -194,6 +225,7 @@
                         }
                     });
                 }).on('fileuploadfail', function (e, data) {
+                    return false;
                     return console.log(data);
                     $.each(data.files, function (index, file) {
                         var error = $('<span class="text-danger"/>').text('File upload failed.');
