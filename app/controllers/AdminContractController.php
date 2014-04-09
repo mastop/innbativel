@@ -128,6 +128,29 @@ class AdminContractController extends BaseController {
 	 * @return Response
 	 */
 
+	public function getView($id)
+	{
+		$contract = $this->contract->with(['consultant', 'partner'])->find($id);
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
+
+		if (is_null($contract))
+		{
+			return Redirect::route('admin.contract');
+		}
+
+		/*
+		 * Layout / View
+		 */
+
+		$this->layout->content = View::make('admin.contract.view', compact('contract', 'contract_options'));
+	}
+
+	/**
+	 * Display contract Create Page.
+	 *
+	 * @return Response
+	 */
+
 	public function getCreate()
 	{
 		/*
@@ -183,6 +206,7 @@ class AdminContractController extends BaseController {
         	'bank_holder' => 'required',
         	'bank_agency' => 'required',
         	'bank_account' => 'required',
+        	'bank_cpf_cnpj' => 'required',
         	'initial_term' => 'required|date',
         	'final_term' => 'required|date',
 			'n_people' => 'required|integer',
@@ -287,6 +311,7 @@ class AdminContractController extends BaseController {
         	'bank_holder' => 'required',
         	'bank_agency' => 'required',
         	'bank_account' => 'required',
+        	'bank_cpf_cnpj' => 'required',
         	'initial_term' => 'required|date',
         	'final_term' => 'required|date',
 			'n_people' => 'required|integer',
@@ -335,50 +360,50 @@ class AdminContractController extends BaseController {
 			->withErrors($validation);
 	}
 
-	// /**
-	//  * Display contract Delete Page.
-	//  *
-	//  * @return Response
-	//  */
+	/**
+	 * Display contract Delete Page.
+	 *
+	 * @return Response
+	 */
 
-	// public function getDelete($id)
-	// {
-	// 	$contract = $this->contract->find($id);
+	public function getDelete($id)
+	{
+		$contract = $this->contract->find($id);
 
-	// 	if (is_null($contract))
-	// 	{
-	// 		return Redirect::route('admin.contract');
-	// 	}
+		if (is_null($contract))
+		{
+			return Redirect::route('admin.contract');
+		}
 
-	// 	Session::flash('error', 'Você tem certeza que deleja excluir este contrato? Esta operação não poderá ser desfeita.');
+		Session::flash('error', 'Você tem certeza que deleja excluir este contrato? Esta operação não poderá ser desfeita.');
 
-	// 	$data['contractData'] = $contract->toArray();
-	// 	$data['contractArray'] = null;
+		$data['contractData'] = $contract->toArray();
+		$data['contractArray'] = null;
 
-	// 	foreach ($data['contractData'] as $key => $value) {
-	// 		$data['contractArray'][Lang::get('contract.'. $key)] = $value;
-	// 	}
+		foreach ($data['contractData'] as $key => $value) {
+			$data['contractArray'][Lang::get('contract.'. $key)] = $value;
+		}
 
-	// 	/*
-	// 	 * Layout / View
-	// 	 */
+		/*
+		 * Layout / View
+		 */
 
-	// 	$this->layout->content = View::make('admin.contract.delete', $data);
-	// }
+		$this->layout->content = View::make('admin.contract.delete', $data);
+	}
 
-	// /**
-	//  * Delete contract.
-	//  *
-	//  * @return Response
-	//  */
+	/**
+	 * Delete contract.
+	 *
+	 * @return Response
+	 */
 
-	// public function postDelete($id)
-	// {
-	// 	$this->contract->find($id)->delete();
+	public function postDelete($id)
+	{
+		$this->contract->find($id)->delete();
 
-	// 	Session::flash('success', 'Contrato excluído com sucesso.');
+		Session::flash('success', 'Contrato excluído com sucesso.');
 
-	// 	return Redirect::route('admin.contract');
-	// }
+		return Redirect::route('admin.contract');
+	}
 
 }

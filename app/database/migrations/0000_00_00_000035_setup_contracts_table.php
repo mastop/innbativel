@@ -45,6 +45,7 @@ class SetupContractsTable extends Migration {
 		$table->string('bank_holder')->nullable();
 		$table->string('bank_agency')->nullable();
 		$table->string('bank_account')->nullable();
+		$table->string('bank_cnpj_cpf')->nullable();
 		$table->string('bank_financial_email')->nullable();
 		$table->boolean('is_signed')->default(false);
 		$table->boolean('is_sent')->default(false);

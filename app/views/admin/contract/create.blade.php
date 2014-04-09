@@ -12,6 +12,7 @@
         	'bank_holder' => 'required',
         	'bank_agency' => 'required',
         	'bank_account' => 'required',
+        	'bank_cpf_cnpj' => 'required',
         	'initial_term' => 'required|date',
         	'final_term' => 'required|date',
 			'n_people' => 'required|integer',
@@ -44,6 +45,7 @@
 		{{ Former::text('bank_holder', 'Ttular')->class('span12') }}
 		{{ Former::text('bank_agency', 'Agência')->class('span12') }}
 		{{ Former::text('bank_account', 'Conta')->class('span12') }}
+		{{ Former::text('bank_cpf_cnpj', 'CPF ou CNPJ')->class('span12') }}
 		{{ Former::text('bank_financial_email', 'E-mail do dpto financeiro')->class('span12') }}
 
 		<div class="control-group"><h1>Regras do cupom</h1></div>

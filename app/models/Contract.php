@@ -28,6 +28,12 @@ class Contract extends Eloquent {
   	'agent1_name' => 'required',
   	'agent1_cpf' => 'required',
   	'agent1_telephone' => 'required',
+    'bank_name' => 'required',
+    'bank_number' => 'required',
+    'bank_holder' => 'required',
+    'bank_agency' => 'required',
+    'bank_account' => 'required',
+    'bank_cpf_cnpj' => 'required',
     'consultant_id' => 'required',
     'partner_id' => 'required',
   	//consultant side
