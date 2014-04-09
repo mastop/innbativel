@@ -58,7 +58,7 @@ class AdminContractController extends BaseController {
 		 * Order filter
 		 */
 
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+    	$order = Input::get('order') === 'asc' ? 'asc' : 'desc';
 
 		/*
 		 * Search filters
