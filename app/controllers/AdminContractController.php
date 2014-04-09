@@ -151,6 +151,30 @@ class AdminContractController extends BaseController {
 	 * @return Response
 	 */
 
+	public function getPrint($id)
+	{
+		$contract = $this->contract->with(['consultant', 'partner'])->find($id);
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
+
+		if (is_null($contract))
+		{
+			return Redirect::route('admin.contract');
+		}
+
+		/*
+		 * Layout / View
+		 */
+
+		$this->layout = View::make('themes.floripa.backend.blank');
+		$this->layout->content = View::make('admin.contract.print', compact('contract', 'contract_options'));
+	}
+
+	/**
+	 * Display contract Create Page.
+	 *
+	 * @return Response
+	 */
+
 	public function getCreate()
 	{
 		/*

@@ -124,7 +124,7 @@
 						return DropdownButton::normal('Ações',
 							Navigation::links([
 								['Visualizar', route('admin.contract.view', $body['id'])],
-								['Imprimir', route('admin.contract.print', $body['id'])],
+								['Imprimir', route('admin.contract.print', $body['id']).'" target="about:blank'],
 								['Editar', route('admin.contract.edit', $body['id'])],
 								['Excluir', route('admin.contract.delete', $body['id'])],
 							])
