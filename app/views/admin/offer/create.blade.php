@@ -152,6 +152,10 @@
                         }
                     }).on('fileuploadadd', function (e, data) {
                         $(this).parent().find('div.dropzone').css("background-image", "none");
+                        if(!(data.files[0].type.indexOf('image/') == 0)) {
+                            alert('Formato de arquivo inválido! Envie apenas imagens.');
+                            return false;
+                        }
                         $(this).fileupload(
                             'option',
                             {

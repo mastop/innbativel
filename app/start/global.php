@@ -87,7 +87,7 @@ HTML::macro('ImageUpload', function($name, $label)
                         '.Button::danger('<span class="icon icon-remove"> Remover</span>', ['class'=>'btn-mini']).'
                     </div>
                 </div>
-                <input id="'.$name.'_file" type="file" name="file" class="fileupload">
+                <input id="'.$name.'_file" type="file" name="file" class="fileupload" accept="image/*">
                 <input id="'.$name.'_uploaded" type="hidden" name="'.$name.'" class="fileuploaded" value="">
             </div>
         </div>';
