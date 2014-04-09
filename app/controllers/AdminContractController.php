@@ -368,20 +368,36 @@ class AdminContractController extends BaseController {
 
 	public function getDelete($id)
 	{
-		$contract = $this->contract->find($id);
+		$contract = $this->contract->with(['partner', 'consultant'])->find($id);
 
 		if (is_null($contract))
 		{
 			return Redirect::route('admin.contract');
 		}
 
+		$contract_option = $this->contract_option->where('contract_id', $contract->id)->get();
+
 		Session::flash('error', 'Você tem certeza que deleja excluir este contrato? Esta operação não poderá ser desfeita.');
 
 		$data['contractData'] = $contract->toArray();
+		$data['contractOptionData'] = $contract_option->toArray();
 		$data['contractArray'] = null;
 
 		foreach ($data['contractData'] as $key => $value) {
-			$data['contractArray'][Lang::get('contract.'. $key)] = $value;
+			if(is_array($value)){
+				foreach ($value as $key2 => $value2) {
+					$data['contractArray'][Lang::get('contract.'. $key.'.'.$key2)] = (!empty($value2)?$value2:'--');
+				}
+			}
+			else{
+				$data['contractArray'][Lang::get('contract.'. $key)] = (!empty($value)?$value:'--');
+			}
+		}
+
+		foreach ($data['contractOptionData'] as $i => $contract_option) {
+			foreach ($contract_option as $key => $value) {
+				$data['contractArray'][Lang::get('contract_option.'.$key.'.'. $i)] = (!empty($value)?$value:'--');
+			}
 		}
 
 		/*
