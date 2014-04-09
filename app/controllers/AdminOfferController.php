@@ -143,7 +143,7 @@ class AdminOfferController extends BaseController {
 
         $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
 
-        $postObject = new Aws\S3\Model\PostObject($s3, $s3bucket, array('acl' => 'public-read', 'Cache-Control' => 'max-age=315360000', 'Content-Type' => '^', 'Expires' => $expires));
+        $postObject = new Aws\S3\Model\PostObject($s3, $s3bucket, array('acl' => 'public-read', 'Cache-Control' => 'max-age=315360000', 'Content-Type' => '^', 'Expires' => $expires, "success_action_status" => "200"));
         $form = $postObject->prepareData()->getFormInputs();
         $policy = $form['policy'];
         $signature = $form['signature'];

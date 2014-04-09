@@ -75,19 +75,13 @@
 
         {{ Former::legend('Fotos') }}
 
-        <div class="control-group">
-            <label for="fileupload" class="control-label">Principal</label>
-            <div class="controls">
-                <div id="dropzone" class="fade well dropzone span12">
-                    Arraste a imagem até aqui.
-                    <p>(ou clique)</p>
-                    <div class="progress">
-                        <div class="bar progress-bar-success"></div>
-                    </div>
-                </div>
-                <input id="fileupload" type="file" name="file" class="fileupload">
-            </div>
-        </div>
+
+        {{-- Macro ImageUpload() está definida em app/start/global.php --}}
+
+        {{HTML::ImageUpload('cover_img', 'Principal')}}
+        {{HTML::ImageUpload('offer_old_img', 'Pré-Reservas')}}
+        {{HTML::ImageUpload('newsletter_img', 'Newsletter')}}
+        {{HTML::ImageUpload('saveme_img', 'Saveme')}}
 
 
         <br>
@@ -111,130 +105,72 @@
         <script src="{{ asset('assets/themes/floripa/backend/js/offer.create.js') }}"></script>
         <script>
             $(function () {
-                var $progress = $('#progress').find('.bar');
+                var $progress = null;
+                var $bar = null;
                 var url = 'https://{{$s3bucket}}.s3.amazonaws.com/';
-                $('#fileupload').fileupload({
-                    url: url,
-                    dropZone: $('#dropzone'),
-                    dataType: 'xml',
-                    imageMaxWidth: 800,
-                    imageMaxHeight: 800,
-                    imageCrop: true,
-                    maxFileSize: 5000000,
-                    acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-                    done: function (e, data) {
-                        $.each(data.files, function (index, file) {
-                            console.log(file);
-                            $('<p/>').text(file.name).html(file.preview).appendTo('#files');
-                        });
-                    },
-                    success: function(e, data) {
-                        console.log(data);
-                        var url = $(data).find('Location').text()
-
-                        //alert(url);
-                    },
-                    send: function (e, data) {
-                        alert($(this).attr('id'));
-                        var $progress = $(this).parent().find('div.progress');
-                        var $bar = $progress.find('div.bar');
-                        var progress = parseInt(data.loaded / data.total * 100, 10);
-                        $progress.css('width', progress + '%');
-                    },
-                    progressall: function (e, data) {
-                        var $progress = $(this).parent().find('div.progress');
-                        var $bar = $progress.find('div.bar');
-                        var progress = parseInt(data.loaded / data.total * 100, 10);
-                        $progress.css('width', progress + '%');
-                    }
-                }).on('fileuploadadd', function (e, data) {
-                    $('#fileupload').fileupload(
-                        'option',
-                        {
-                            formData: {
-                                key: "temp/{{$uid}}_${filename}",
-                                acl: "public-read",
-                                AWSAccessKeyId: "{{ $s3access }}",
-                                policy: "{{ $policy }}",
-                                signature: "{{ $signature }}",
-                                'Content-type': data.files[0].type,
-                                'Cache-Control':'max-age=315360000',
-                                'Expires':'{{$expires}}'
-                            },
-                            sequentialUploads: true
+                var formWidth = $('div.dropzone').first().width();
+                $('.fileupload').each(function(){
+                    $(this).fileupload({
+                        url: url,
+                        dropZone: $(this).parent().find('div.dropzone'),
+                        dataType: 'xml',
+                        imageMaxWidth: 800,
+                        //disableImageResize: false,
+                        imageMaxHeight: 600,
+                        previewMaxWidth: formWidth,
+                        previewMaxHeight: 150,
+                        //previewMinWidth: 200,
+                        //imageCrop: true,
+                        previewCrop: true,
+                        maxFileSize: 5000000,
+                        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                        autoUpload: true,
+                        done: function (e, data) {
+                            $progress.removeClass('active').hide();
+                            var file = data.files[0];
+                            var fileName = '{{$uid}}_'+file.name;
+                            var fileURL = url + 'temp/'+fileName;
+                            //console.log(data.files);
+                            if(file.preview){
+                                $(this).parent().find('div.dropzone').css("background-image", "url("+file.preview.toDataURL("image/png")+")").css("background-position", "center center").css("background-repeat", "no-repeat");
+                            }else{
+                                $(this).parent().find('div.dropzone').css("background-image", "url("+fileURL+")").css("background-position", "center center").css("background-repeat", "no-repeat");
+                            }
+                            $bar.css('width', '0%');
+                            $(this).parent().find('input.fileuploaded').val(fileName);
+                            $(this).parent().find('div.fileremove').show();
+                        },
+                        send: function (e, data) {
+                            $progress = $(this).parent().find('div.progress');
+                            $(this).parent().find('div.dropinfo').hide();
+                            $progress.addClass('active').show();
+                        },
+                        progressall: function (e, data) {
+                            $bar = $progress.find('div.bar');
+                            var progress = parseInt(data.loaded / data.total * 100, 10);
+                            $bar.css('width', progress + '%');
                         }
-                    );
-                    return console.log(data.files[0]);
-
-                    return false;
-                    data.context = $('<div/>').appendTo('#files');
-                    $.each(data.files, function (index, file) {
-                        var node = $('<p/>')
-                            .append($('<span/>').text(file.name));
-                        if (!index) {
-                            node
-                                .append('<br>')
-                                .append(uploadButton.clone(true).data(data));
-                        }
-                        node.appendTo(data.context);
+                    }).on('fileuploadadd', function (e, data) {
+                        $(this).parent().find('div.dropzone').css("background-image", "none");
+                        $(this).fileupload(
+                            'option',
+                            {
+                                formData: {
+                                    key: "temp/{{$uid}}_${filename}",
+                                    acl: "public-read",
+                                    AWSAccessKeyId: "{{ $s3access }}",
+                                    policy: "{{ $policy }}",
+                                    signature: "{{ $signature }}",
+                                    'Content-type': data.files[0].type,
+                                    'Cache-Control':'max-age=315360000',
+                                    'Expires':'{{$expires}}',
+                                    success_action_status:200
+                                },
+                                sequentialUploads: true
+                            }
+                        );
                     });
-                }).on('fileuploadprocessalways', function (e, data) {
-                    return false;
-                    return console.log(data);
-                    var index = data.index,
-                        file = data.files[index],
-                        node = $(data.context.children()[index]);
-                    if (file.preview) {
-                        node
-                            .prepend('<br>')
-                            .prepend(file.preview);
-                    }
-                    if (file.error) {
-                        node
-                            .append('<br>')
-                            .append($('<span class="text-danger"/>').text(file.error));
-                    }
-                    if (index + 1 === data.files.length) {
-                        data.context.find('button')
-                            .text('Upload')
-                            .prop('disabled', !!data.files.error);
-                    }
-                }).on('fileuploadprogressall', function (e, data) {
-                    return false;
-                    return console.log(data);
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
-                    $('#progress .progress-bar').css(
-                        'width',
-                        progress + '%'
-                    );
-                }).on('fileuploaddone', function (e, data) {
-                    return false;
-                    return console.log(data);
-                    $.each(data.result.files, function (index, file) {
-                        if (file.url) {
-                            var link = $('<a>')
-                                .attr('target', '_blank')
-                                .prop('href', file.url);
-                            $(data.context.children()[index])
-                                .wrap(link);
-                        } else if (file.error) {
-                            var error = $('<span class="text-danger"/>').text(file.error);
-                            $(data.context.children()[index])
-                                .append('<br>')
-                                .append(error);
-                        }
-                    });
-                }).on('fileuploadfail', function (e, data) {
-                    return false;
-                    return console.log(data);
-                    $.each(data.files, function (index, file) {
-                        var error = $('<span class="text-danger"/>').text('File upload failed.');
-                        $(data.context.children()[index])
-                            .append('<br>')
-                            .append(error);
-                    });
-                }).prop('disabled', !$.support.fileInput)
-                    .parent().addClass($.support.fileInput ? undefined : 'disabled');
+                });
             });
         </script>
 

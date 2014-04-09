@@ -2507,8 +2507,14 @@ dl.listing dt { clear: left; width: 15%; text-align: right; }
     diplay:none;
     position: absolute;
     top: 55px;
+    width: 100%;
 }
 
 input.fileupload{
+    display:none;
+}
+
+div.fileremove{
+    text-align: center;
     display:none;
 }
