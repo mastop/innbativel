@@ -11,6 +11,5 @@ class PainelController extends BaseController {
     {
         $this->layout->content = View::make('painel.dash.index');
     }
-
 }
 
