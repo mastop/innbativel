@@ -151,6 +151,42 @@ class AdminContractController extends BaseController {
 	 * @return Response
 	 */
 
+	public function getSend($id)
+	{
+		$contract = $this->contract->with(['partner'])->find($id);
+
+		if (is_null($contract))
+		{
+			return Redirect::route('admin.contract');
+		}
+
+		$email = $contract->partner->email;
+		$nome = $contract->partner->first_name.(isset($contract->partner->last_name)?' '.$contract->partner->last_name:'');
+
+		$data = array('nome' => $nome, 'id' => $id);
+
+    	Mail::send('emails.contract.send', $data, function($message) use($email, $id){
+			$message->to($email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Contrato ID: '.$id.' | INNBatível');
+		});
+
+		$contract->is_sent = true;
+		$contract->save();
+
+		/*
+		 * Layout / View
+		 */	
+
+		Session::flash('success', 'Contrato (ID: '.$id.') disponibilizado e enviado para '.$nome.' com sucesso.');
+
+		return Redirect::back();
+	}
+
+	/**
+	 * Display contract Create Page.
+	 *
+	 * @return Response
+	 */
+
 	public function getPrint($id)
 	{
 		$contract = $this->contract->with(['consultant', 'partner'])->find($id);

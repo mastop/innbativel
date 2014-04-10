@@ -489,6 +489,9 @@ Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 
 	Route::any('ofertas/voucher/exportar', function(){ return Redirect::route('painel.order.offers'); });
 	Route::get('ofertas/voucher/exportar/{offer_option_id?}/{id?}', ['as' => 'painel.order.voucher_export', 'uses' => 'PainelOrderController@getVoucherExport']);
+
+	Route::get('contract/sign', ['as' => 'painel.contract.get_sign', 'uses' => 'PainelContractController@getSign']);
+	Route::post('contract/sign', ['as' => 'painel.contract.post_sign', 'uses' => 'PainelContractController@postSign']);
 });
 
 
