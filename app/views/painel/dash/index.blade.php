@@ -6,6 +6,7 @@
     </div>
 </header>
 
-{{ Typography::horizontal_dl($orderData) }}
+<h1>DASHBOARD</h1>
+
 
 @stop
