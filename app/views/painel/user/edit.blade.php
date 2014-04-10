@@ -1,5 +1,11 @@
 @section('content')
 
+<header id="top">
+    <div class="fixed">
+        @include('menu.painel')
+    </div>
+</header>
+
 <div class="well widget row-fluid">
 
     {{ Former::horizontal_open()->rules([
