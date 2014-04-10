@@ -238,7 +238,7 @@ class AdminUserController extends BaseController {
 	public function getEdit($id)
 	{
 		$user = $this->user->with(['profile', 'roles'])->find($id);
-
+        
 		if (is_null($user))
 		{
 			return Redirect::route('admin.user');
