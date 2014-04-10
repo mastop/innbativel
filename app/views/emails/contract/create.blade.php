@@ -21,16 +21,13 @@ a{
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-size:30px; font-family:Arial, Helvetica, sans-serif; font-weight:bold; color:#f0cf31; font-style:italic;">{{ $name }}</td>
-          </tr>
-          <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:#FFF;">Você tem um novo contrato (ID: {{ $id }}) disponível.</td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:#FFF;">Um novo contrato (ID: {{ $id }}) foi cadastrado por {{ $consultant_name }} (parceiro: {{ $partner_name }}).</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Você pode acessá-lo e assiná-lo {{ link_to_route('painel.contract.get_sign', 'aqui', ['id' => $id]) }}, através do painel de controle do anunciante parceiro da INNBatível.</td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Você pode acessá-lo e enviá-lo {{ link_to_route('admin.contract', 'aqui', ['id' => $id]) }}, através do painel administrativo da INNBatível.</td>
           </tr>
           <tr>
             <td>&nbsp;</td>

@@ -3,6 +3,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>INNBatível - Viaje mais por menos</title>
+<style type="text/css">
+a{
+  color: #fff;
+}
+</style>
 </head>
 <body>
 <center>
@@ -16,7 +21,7 @@
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-size:30px; font-family:Arial, Helvetica, sans-serif; font-weight:bold; color:#f0cf31; font-style:italic;">{{ $nome }}</td>
+            <td align="left" style="font-size:30px; font-family:Arial, Helvetica, sans-serif; font-weight:bold; color:#f0cf31; font-style:italic;">{{ $name }}</td>
           </tr>
           <tr>
             <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:#FFF;">É muito bom ter vocês conosco</td>

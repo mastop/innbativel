@@ -161,12 +161,15 @@ class AdminContractController extends BaseController {
 		}
 
 		$email = $contract->partner->email;
-		$nome = $contract->partner->first_name.(isset($contract->partner->last_name)?' '.$contract->partner->last_name:'');
+		$name = $contract->partner->first_name.(isset($contract->partner->last_name)?' '.$contract->partner->last_name:'');
 
-		$data = array('nome' => $nome, 'id' => $id);
+		$data = array('name' => $name, 'id' => $id);
 
     	Mail::send('emails.contract.send', $data, function($message) use($email, $id){
-			$message->to($email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Contrato ID: '.$id.' | INNBatível');
+			$message->to($email, 'INNBatível')
+					->addCc('contrato@innbativel.com.br', 'INNBatível')
+					->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
+					->setSubject('Contrato ID: '.$id.' | INNBatível');
 		});
 
 		$contract->is_sent = true;
@@ -176,7 +179,7 @@ class AdminContractController extends BaseController {
 		 * Layout / View
 		 */	
 
-		Session::flash('success', 'Contrato (ID: '.$id.') disponibilizado e enviado para '.$nome.' com sucesso.');
+		Session::flash('success', 'Contrato (ID: '.$id.') disponibilizado e enviado para '.$name.' com sucesso.');
 
 		return Redirect::back();
 	}
@@ -281,11 +284,12 @@ class AdminContractController extends BaseController {
 		{
 			$contract = $this->contract->create($inputs);
 
+			$id = $contract->id;
 			$n_options = count($options['title']);
 
 			for ($i=0; $i < $n_options; $i++) { 
 				$contract_option = [
-					'contract_id' 		  => $contract->id,
+					'contract_id' 		  => $id,
 					'title'		  		  => $options['title'][$i],
 					'price_original'	  => $options['price_original'][$i],
 					'price_with_discount' => $options['price_with_discount'][$i],
@@ -296,6 +300,26 @@ class AdminContractController extends BaseController {
 
 				$this->contract_option->create($contract_option);
 			}
+
+			// INÍCIO E-MAIL
+
+			$partner = Profile::where('user_id', $contract->partner_id)->first();
+			$consultant = Profile::where('user_id', $contract->consultant_id)->first();
+
+			$partner_name = $partner->first_name.(isset($partner->last_name)?' '.$partner->last_name:'');
+			$consultant_name = $consultant->first_name.(isset($consultant->last_name)?' '.$consultant->last_name:'');
+
+			$data = array('partner_name' => $partner_name, 'consultant_name' => $consultant_name, 'id' => $id);
+			
+	    	Mail::send('emails.contract.create', $data, function($message) use($partner_name, $id){
+				$message->to('contrato@innbativel.com.br', 'INNBatível')
+						->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
+						->setSubject('Contrato ID: '.$id.' cadastrado | Parceiro: '.$partner_name);
+			});
+
+			// FIM E-MAIL
+
+			Session::flash('success', 'Contrato (ID: '.$id.') cadastrado com sucesso.');
 
 			return Redirect::route('admin.contract');
 		}

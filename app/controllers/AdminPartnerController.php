@@ -222,17 +222,19 @@ class AdminPartnerController extends BaseController {
 
 			$token = Hash::make($inputs['email']);
 			$email = $inputs['email'];
-			$nome = $inputs['profile']['first_name'];
+			$name = $inputs['profile']['first_name'];
 
 			DB::insert('insert into password_reminders (email, token) values (?, ?)', array($email, $token));
 
-			$data = array('nome' => $nome, 'email' => $email, 'token' => $token);
+			$data = array('name' => $name, 'email' => $email, 'token' => $token);
 
-        	Mail::send('emails.partner.create', $data, function($message) use($email, $nome){
-				$message->to($email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Sejam bem vindos, '.$nome);
+        	Mail::send('emails.partner.create', $data, function($message) use($email, $name){
+				$message->to($email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Sejam bem vindos, '.$name);
 			});
 
         	// FIM E-MAIL DE BOAS VINDAS
+
+        	Session::flash('success', 'Empresa '.$name.' cadastrada com sucesso.');
 
 			return Redirect::route('admin.partner');
 		}
