@@ -469,7 +469,6 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('contract/delete', function(){ return Redirect::route('admin.contract'); });
 	Route::get('contract/delete/{id}', ['as' => 'admin.contract.delete', 'uses' => 'AdminContractController@getDelete']);
 	Route::post('contract/delete/{id}', ['as' => 'admin.contract.destroy', 'uses' => 'AdminContractController@postDelete']);
-
 });
 
 Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
@@ -493,5 +492,3 @@ Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 	Route::get('contract/sign', ['as' => 'painel.contract.get_sign', 'uses' => 'PainelContractController@getSign']);
 	Route::post('contract/sign', ['as' => 'painel.contract.post_sign', 'uses' => 'PainelContractController@postSign']);
 });
-
-
