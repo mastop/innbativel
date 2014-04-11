@@ -29,6 +29,7 @@ class SetupVouchersTable extends Migration {
 		$table->string('display_code')->nullable();
 		$table->string('name')->nullable();
 		$table->string('email')->nullable();
+        $table->string('tracking_code')->nullable();
 
         /*
          * Foreign Keys

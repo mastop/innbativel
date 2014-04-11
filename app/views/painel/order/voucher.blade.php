@@ -41,8 +41,8 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('Chave do cupom', 'Código', 'Agendado?', 'Nome', 'E-mail', 'Ações') }}
-{{ Table::body($vouchers)->ignore(['offer_option_id', 'order_id', 'name', 'email', 'used', 'order', 'offer_option', 'created_at', 'updated_at'])
+{{ Table::headers('Chave do cupom', 'Código', 'Agendado/utilizado?', 'Nome', 'E-mail', 'Código de rastreamento', 'Ações') }}
+{{ Table::body($vouchers)->ignore(['offer_option_id', 'order_id', 'name', 'email', 'tracking_code', 'used', 'order', 'offer_option', 'created_at', 'updated_at'])
 	->is_used(function($voucher) {
 		if(isset($voucher)) {
 			return ($voucher->used == 1)?'Sim':'Não';
@@ -61,20 +61,47 @@
 		}
 		return '?';
 	})
+	->tracking_codee(function($voucher) {
+		if(isset($voucher->tracking_code)) {
+			return $voucher->tracking_code;
+		}
+		return '-';
+	})
 	->acoes(function($voucher) {
         if($voucher->used == 1){
-	        return DropdownButton::normal('Ações',
-			  	Navigation::links([
-					['Desagendar', 'javascript: action(\''.route('painel.order.schedule', ['id' => $voucher->id, 'used' => 0]).'\', \'desagendar\', \''.$voucher->id.'\');'],
-			    ])
-			)->pull_right()->split();
+        	if($voucher->offer_option->offer->is_product){
+        		return DropdownButton::normal('Ações',
+				  	Navigation::links([
+						['Desagendar', 'javascript: action(\''.route('painel.order.schedule', ['id' => $voucher->id, 'used' => 0]).'\', \'desagendar\', \''.$voucher->id.'\');'],
+						['Atualizar código de rastreamento', 'javascript: update_track_code(\''.route('painel.order.update_track_code', ['id' => $voucher->id]).'\', \''.$voucher->id.'\');'],
+				    ])
+				)->pull_right()->split();
+        	}
+        	else{
+        		return DropdownButton::normal('Ações',
+				  	Navigation::links([
+						['Desagendar', 'javascript: action(\''.route('painel.order.schedule', ['id' => $voucher->id, 'used' => 0]).'\', \'desagendar\', \''.$voucher->id.'\');'],
+				    ])
+				)->pull_right()->split();
+        	}
         }
         else{
-        	return DropdownButton::normal('Ações',
-			  	Navigation::links([
-					['Agendar', 'javascript: action(\''.route('painel.order.schedule', ['id' => $voucher->id, 'used' => 1]).'\', \'agendar\', \''.$voucher->id.'\');'],
-			    ])
-			)->pull_right()->split();
+        	if($voucher->offer_option->offer->is_product){
+        		return DropdownButton::normal('Ações',
+				  	Navigation::links([
+						['Agendar', 'javascript: action(\''.route('painel.order.schedule', ['id' => $voucher->id, 'used' => 1]).'\', \'agendar\', \''.$voucher->id.'\');'],
+						['Atualizar código de rastreamento', 'javascript: update_track_code(\''.route('painel.order.update_track_code', ['id' => $voucher->id]).'\', \''.$voucher->id.'\');'],
+				    ])
+				)->pull_right()->split();
+        	}
+        	else{
+        		return DropdownButton::normal('Ações',
+				  	Navigation::links([
+						['Agendar', 'javascript: action(\''.route('painel.order.schedule', ['id' => $voucher->id, 'used' => 1]).'\', \'agendar\', \''.$voucher->id.'\');'],
+				    ])
+				)->pull_right()->split();
+        	}
+	        	
         }
 	})
 }}
@@ -101,6 +128,38 @@ function action(url, action, voucher_id){
 
 function submit_action(url){
 	window.location.href = url + '{{ $offer_option_id }}';
+}
+
+function update_track_code(url, voucher_id){
+	var href = url;
+	var message = 'Insira o código de rastreamento do produto com chave do voucher #'+voucher_id;
+	var title = 'Código de rastreamento';
+	var submit = 'javascript: document.getElementById(\'update-tracking-code\').submit()';
+
+	if (!$('#dataConfirmModal').length) {
+		var modal =  '<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">'
+			modal += '	<div class="modal-header">'
+			modal += '		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'
+			modal += '		<h3 id="dataConfirmLabel">'+title+'</h3>'
+			modal += '	</div>'
+			modal += '	<div class="modal-body">'
+			modal += '		<p id="modal-message">'+message+'</p>'
+			modal += '		<form action="'+url+'" method="post" id="update-tracking-code">'
+			modal += '			<input type="text" name="tracking_code" id="tracking_code" style="width: 100%;" autofocus="autofocus"/>'
+			modal += '		</form>'
+			modal += '	</div>'
+			modal += '	<div class="modal-footer">'
+			modal += '		<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Voltar</button>'
+			modal += '		<a class="btn btn-danger" id="dataConfirmOK" onclick="'+submit+'">Enviar</a>'
+			modal += '	</div>'
+			modal += ' </div>';
+	    $('body').append(modal);
+	}
+
+	$('#dataConfirmModal').find('.modal-message').text(message);
+	$('#dataConfirmModal').find('#dataConfirmLabel').text(title);
+	$('#dataConfirmOK').attr('href', submit);
+	$('#dataConfirmModal').modal({show:true});
 }
 
 function exportar(url){

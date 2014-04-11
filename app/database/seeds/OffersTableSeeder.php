@@ -67,6 +67,7 @@ class OffersTableSeeder extends DatabaseSeeder
 		'destiny_id' => 1,
 		'starts_on' => date('Y-m-d H:i:s',strtotime("-1 days")),
 		'ends_on' => date('Y-m-d H:i:s',strtotime("+30 days")),
+		'is_product' => true,
 	  ],
 	  [
 		'title' => 'Urubici - SC',

@@ -468,6 +468,9 @@ Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 
 	Route::any('ofertas/voucher/{offer_option_id?}', ['as' => 'painel.order.voucher', 'uses' => 'PainelOrderController@anyVouchers']);
 
+	Route::any('ofertas/voucher/update_track_code', function(){ return Redirect::route('painel.order.voucher'); });
+	Route::post('ofertas/voucher/update_track_code/{id}', ['as' => 'painel.order.update_track_code', 'uses' => 'PainelOrderController@postUpdateTrackCode']);
+
 	Route::any('ofertas/voucher/agendar', function(){ return Redirect::route('painel.order.offers'); });
 	Route::get('ofertas/voucher/agendar/{id}/{used}/{offer_option_id?}', ['as' => 'painel.order.schedule', 'uses' => 'PainelOrderController@getSchedule']);
 
