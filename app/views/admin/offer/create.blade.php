@@ -31,6 +31,7 @@
 
 
         {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12') }}
+        {{ Former::textarea('summary', 'Descrição Resumida')->rows(5)->columns(20)->class('span12') }}
         {{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12') }}
 
 
@@ -82,6 +83,10 @@
         {{HTML::ImageUpload('offer_old_img', 'Pré-Reservas')}}
         {{HTML::ImageUpload('newsletter_img', 'Newsletter')}}
         {{HTML::ImageUpload('saveme_img', 'Saveme')}}
+        {{HTML::ImageUpload('offers_images', 'Demais Imagens', true)}}
+
+
+        {{ Former::legend('Opções de Venda') }}
 
 
         <br>
@@ -111,6 +116,7 @@
                 var formWidth = $('div.dropzone').first().width();
                 $('.fileupload').each(function(){
                     $(this).fileupload({
+                        paramName: 'file',
                         url: url,
                         dropZone: $(this).parent().find('div.dropzone'),
                         dataType: 'xml',
@@ -128,17 +134,31 @@
                         done: function (e, data) {
                             $progress.removeClass('active').hide();
                             var file = data.files[0];
-                            var fileName = '{{$uid}}_'+file.name;
+                            var fileName = '{{$uid}}_'+$(this).next().attr('id')+'_'+file.name;
                             var fileURL = url + 'temp/'+fileName;
                             //console.log(data.files);
-                            if(file.preview){
-                                $(this).parent().find('div.dropzone').css("background-image", "url("+file.preview.toDataURL("image/png")+")").css("background-position", "center center").css("background-repeat", "no-repeat");
+                            if($(this).attr('multiple')){
+                                var multifiles = $(this).parent().find('div.multifiles');
+                                var multifile = multifiles.find('div.multifile').first();
+                                var multiclone = multifile.clone().sortable({connectWith: ".multifiles"}).insertAfter(multifile);
+                                if(file.preview){
+                                    multiclone.css("background-image", "url("+file.preview.toDataURL("image/png")+")").css("background-position", "center center").css("background-repeat", "no-repeat");
+                                }else{
+                                    multiclone.css("background-image", "url("+fileURL+")").css("background-position", "center center").css("background-repeat", "no-repeat");
+                                }
+                                multiclone.find('input.fileuploaded').val(fileName);
+                                multiclone.fadeIn();
+                                $(this).parent().find('div.dropinfo').show();
                             }else{
-                                $(this).parent().find('div.dropzone').css("background-image", "url("+fileURL+")").css("background-position", "center center").css("background-repeat", "no-repeat");
+                                if(file.preview){
+                                    $(this).parent().find('div.dropzone').css("background-image", "url("+file.preview.toDataURL("image/png")+")").css("background-position", "center center").css("background-repeat", "no-repeat");
+                                }else{
+                                    $(this).parent().find('div.dropzone').css("background-image", "url("+fileURL+")").css("background-position", "center center").css("background-repeat", "no-repeat");
+                                }
+                                $(this).parent().find('input.fileuploaded').val(fileName);
+                                $(this).parent().find('div.fileremove').show();
                             }
                             $bar.css('width', '0%');
-                            $(this).parent().find('input.fileuploaded').val(fileName);
-                            $(this).parent().find('div.fileremove').show();
                         },
                         send: function (e, data) {
                             $progress = $(this).parent().find('div.progress');
@@ -151,12 +171,17 @@
                             $bar.css('width', progress + '%');
                         }
                     }).on('fileuploadadd', function (e, data) {
+                        var filename = "temp/{{$uid}}_"+$(this).next().attr('id')+"_${filename}";
                         $(this).parent().find('div.dropzone').css("background-image", "none");
+                        if(!(data.files[0].type.indexOf('image/') == 0)) {
+                            alert('Formato de arquivo inválido! Envie apenas imagens.');
+                            return false;
+                        }
                         $(this).fileupload(
                             'option',
                             {
                                 formData: {
-                                    key: "temp/{{$uid}}_${filename}",
+                                    key: filename,
                                     acl: "public-read",
                                     AWSAccessKeyId: "{{ $s3access }}",
                                     policy: "{{ $policy }}",
