@@ -154,11 +154,11 @@ tr.grey {
 
 <h3>Outros dados</h3>
 
-<p><label>Contrato assinado? <b>{{ (($contract->assinado == true)?'Sim':'Não') }}</b></label></p>
+<p><label>Contrato assinado? <b>{{ (($contract->is_signed == true)?'Sim':'Não') }}</b></label></p>
 <p><label>IP do anunciante parceiro no momento da assinatura: {{ $contract->ip }}</label></p>
-<p><label>Contrato assinado em: {{ (($contract->assinado == true)?date("d/m/Y H:i:s", strtotime($contract->datahora_assinatura)):'-') }}</label></p>
-<p><label>Contrato criado em: {{ date("d/m/Y H:i:s", strtotime($contract->datahora_criacao)) }}</label></p>
-<p><label>Última atualização: {{ date("d/m/Y H:i:s", strtotime($contract->datahora)) }}</label></p>
+<p><label>Contrato assinado em: {{ (($contract->is_signed == true)?date("d/m/Y H:i:s", strtotime($contract->signed_at)):'-') }}</label></p>
+<p><label>Contrato criado em: {{ date("d/m/Y H:i:s", strtotime($contract->created_at)) }}</label></p>
+<p><label>Última atualização: {{ date("d/m/Y H:i:s", strtotime($contract->updated_at)) }}</label></p>
 
 </div>
 <script type="text/javascript">window.print();</script>

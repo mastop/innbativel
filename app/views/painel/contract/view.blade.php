@@ -210,6 +210,29 @@
             {{ $contract->clauses }}
         </div>
 
+        <div class="control-group"><h1>Outros dados</h1></div>
+
+        <div class="control-group required">
+            <label for="is_signed" class="control-label">Contrato assinado?</label>
+            <div class="controls">{{ (($contract->is_signed == true)?'Sim':'Não') }}</div>
+        </div>
+        <div class="control-group required">
+            <label for="ip" class="control-label">IP do anunciante parceiro no momento da assinatura</label>
+            <div class="controls">{{ $contract->ip }}</div>
+        </div>
+        <div class="control-group required">
+            <label for="signed_at" class="control-label">Contrato assinado em</label>
+            <div class="controls">{{ (($contract->is_signed == true)?date("d/m/Y H:i:s", strtotime($contract->signed_at)):'-') }}</div>
+        </div>
+        <div class="control-group required">
+            <label for="created_at" class="control-label">Contrato criado em</label>
+            <div class="controls">{{ date("d/m/Y H:i:s", strtotime($contract->created_at)) }}</div>
+        </div>
+        <div class="control-group required">
+            <label for="updated_at" class="control-label">Última atualização</label>
+            <div class="controls">{{ date("d/m/Y H:i:s", strtotime($contract->updated_at)) }}</div>
+        </div>
+
         {{ Former::close() }}
 
     </div>

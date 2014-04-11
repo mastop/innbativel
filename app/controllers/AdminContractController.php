@@ -253,13 +253,6 @@ class AdminContractController extends BaseController {
 		$inputs['consultant_id'] = Auth::user()->id;
 		
 		$inputs['clauses'] = Configuration::get('clauses');
-		
-		$inputs['ip'] = getenv('HTTP_CLIENT_IP')?:
-			            getenv('HTTP_X_FORWARDED_FOR')?:
-			            getenv('HTTP_X_FORWARDED')?:
-			            getenv('HTTP_FORWARDED_FOR')?:
-			            getenv('HTTP_FORWARDED')?:
-			            getenv('REMOTE_ADDR');
 
 		$options = $inputs['options'];
 		unset($inputs['options']);
