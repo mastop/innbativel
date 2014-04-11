@@ -49,6 +49,10 @@ class BaseController extends Controller {
            $this->type = 'backend';
         }
 
+        if (starts_with(Route::currentRouteAction(), 'Painel')) {
+           $this->type = 'backend';
+        }
+
         /**
          * Set type as frontend if null.
          */

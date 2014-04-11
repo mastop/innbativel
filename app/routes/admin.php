@@ -489,6 +489,13 @@ Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 	Route::any('ofertas/voucher/exportar', function(){ return Redirect::route('painel.order.offers'); });
 	Route::get('ofertas/voucher/exportar/{offer_option_id?}/{id?}', ['as' => 'painel.order.voucher_export', 'uses' => 'PainelOrderController@getVoucherExport']);
 
-	Route::get('contract/sign', ['as' => 'painel.contract.get_sign', 'uses' => 'PainelContractController@getSign']);
-	Route::post('contract/sign', ['as' => 'painel.contract.post_sign', 'uses' => 'PainelContractController@postSign']);
+	Route::any('contract', ['as' => 'painel.contract', 'uses' => 'PainelContractController@anyIndex']);
+
+	Route::get('contract/view/{id}', ['as' => 'painel.contract.view', 'uses' => 'PainelContractController@getView']);
+
+	Route::get('contract/print/{id}', ['as' => 'painel.contract.print', 'uses' => 'PainelContractController@getPrint']);
+
+	Route::any('contract/sign', function(){ return Redirect::route('painel.contract'); });
+	Route::get('contract/sign/{id}', ['as' => 'painel.contract.get_sign', 'uses' => 'PainelContractController@getSign']);
+	Route::post('contract/sign/{id}', ['as' => 'painel.contract.post_sign', 'uses' => 'PainelContractController@postSign']);
 });

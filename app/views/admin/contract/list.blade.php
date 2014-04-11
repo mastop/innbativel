@@ -54,7 +54,7 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('ID', 'Consultor INNBatível', 'Empresa', 'Nome fantasia', 'Representante legal', 'Assinado?', 'Enviado?', 'Criado em', 'Assinado em', 'Ações') }}
+	{{ Table::headers('ID', 'Consultor INNBatível', 'Empresa', 'Representante legal', 'Assinado?', 'Enviado?', 'Criado em', 'Assinado em', 'Ações') }}
 	{{ Table::body($contract)
 		->ignore(['partner_id', 'consultant_id', 'company_name', 'cnpj', 'trading_name', 'address', 'complement', 'neighborhood', 'zip', 'city', 'state', 'agent1_name', 'agent1_cpf', 'agent1_telephone', 'agent2_name', 'agent2_cpf', 'agent2_telephone', 'bank_name', 'bank_number', 'bank_holder', 'bank_agency', 'bank_account', 'bank_cpf_cnpj', 'bank_financial_email', 'is_signed', 'is_sent', 'initial_term', 'final_term', 'restriction', 'has_scheduling', 'sched_contact', 'sched_max_date', 'sched_dates', 'sched_min_antecedence', 'n_people', 'features', 'rules', 'clauses', 'ip', 'signed_at', 'created_at', 'updated_at', 'partner', 'consultant'])
 		->consultantt(function($body) {
@@ -71,9 +71,9 @@
 			}
 			return '--';
 		})
-		->trading_name(function($body) {
+		->cnpj(function($body) {
 			if(isset($body->trading_name)){
-				return $body->trading_name;
+				return $body->cnpj;
 			}
 			return '--';
 		})
@@ -113,7 +113,7 @@
 						return DropdownButton::normal('Ações',
 							Navigation::links([
 								['Visualizar', route('admin.contract.view', $body['id'])],
-								['Imprimir', route('admin.contract.print', $body['id'])],
+								['Imprimir', route('admin.contract.print', $body['id']).'" target="about:blank'],
 								['Enviar', route('admin.contract.send', $body['id'])],
 								['Editar', route('admin.contract.edit', $body['id'])],
 								['Excluir', route('admin.contract.delete', $body['id'])],
@@ -135,7 +135,7 @@
 					return DropdownButton::normal('Ações',
 						Navigation::links([
 							['Visualizar', route('admin.contract.view', $body['id'])],
-							['Imprimir', route('admin.contract.print', $body['id'])],
+							['Imprimir', route('admin.contract.print', $body['id']).'" target="about:blank'],
 						])
 					)->pull_right()->split();
 				}
