@@ -2518,3 +2518,30 @@ div.fileremove{
     text-align: center;
     display:none;
 }
+
+div.multifiles{
+    margin-top: 10px;
+    user-select: none;
+}
+div.multifile{
+    margin-top: 5px;
+    height: 50px;
+    display: none;
+    text-align: center;
+    user-select: none;
+}
+div.multifile.ui-sortable{
+    cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important;
+}
+div.multifile.ui-sortable-helper{
+    cursor: url(https://mail.google.com/mail/images/2/closedhand.cur), default !important;
+}
+div.multifile button{
+    margin-top: 10px;
+}
+.dropPlaceHolder{
+    height: 50px;
+    background-color: #FEFEFE;
+    margin-top: 3px;
+    border: 2px dashed #D5D5D5;
+}

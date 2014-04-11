@@ -61,4 +61,13 @@
         // Se esconde
         $(this).parent().hide();
     });
+    $( "div.multifiles" ).on( "click", "button", function() {
+        $(this).parent().fadeOut('slow').remove();
+    });
+    $( "div.multifiles" ).sortable({
+        placeholder: "dropPlaceHolder",
+        connectWith: ".multifiles",
+        revert: true
+    });
+    $( "div.multifiles, div.multifile, div.multifile button").disableSelection();
 })(jQuery);
