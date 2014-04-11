@@ -136,9 +136,8 @@
 419,66,"3 diÃ¡rias para 2 pessoas ",1380,669,55,501,0
 415,67,"02 diÃ¡rias para 02 pessoas (finais de semana)",798,399,50,320,0
 414,67,"02 diÃ¡rias para 02 pessoas (dias de semana)",678,339,50,260,0
-423,68,"5 diÃ¡rias para 2 pessoas",1600,749,53,561,0
-422,68,"3 diÃ¡rias para 2 pessoas",960,449,53,336,0
-421,68,"2 diÃ¡rias para 2 pessoas",640,299,53,224,0
+802,68,"3 diÃ¡rias para 2 pessoas",960,449,53,336,40
+801,68,"5 diÃ¡rias para 2 pessoas",1600,749,53,561,30
 425,56,"3 diÃ¡rias para 2 pessoas ",600,299,50,224,0
 426,56,"5 diÃ¡rias para 2 pessoas",1000,499,50,374,0
 434,69,"01 pessoa BÃ¡sico",400,189,53,132,0
@@ -173,7 +172,7 @@
 635,76,"03 diÃ¡rias para 02 pessoas (check in quinta). Primeiro de Maio ",1000,499,50,374,0
 634,76,"03 diÃ¡rias para 02 pessoas (check in quinta). Corpus Christi",1000,499,50,374,0
 633,76,"02 diÃ¡rias para 02 pessoas",320,159,50,119,0
-694,77,"02 diÃ¡rias para 02 pessoas",486,243,50,182,0
+762,77,"02 diÃ¡rias para 02 pessoas",486,243,50,182,0
 656,78,"03 diÃ¡rias para 02 pessoas (Primeiro de Maio) ",1200,469,58,351,0
 657,78,"03 diÃ¡rias para 02 pessoas Corpus Christi ",1200,469,58,351,0
 658,78,"02 diÃ¡rias para 02 pessoas (dias de semana)",680,289,58,216,0
@@ -186,11 +185,10 @@
 620,79,"2 diÃ¡rias durante a semana em julho",960,479,50,321,30
 624,80,"02 diÃ¡rias para 02 pessoas (finais de semana)",600,299,50,224,0
 623,80,"02 diÃ¡rias para 02 pessoas (dias de semana)",500,249,50,186,0
-625,81,"2 diÃ¡rias",700,199,67,149,60
-626,81,"3 diÃ¡rias",1050,299,67,224,25
-627,81,"5 diÃ¡rias",1750,499,67,374,15
-628,81,"Dia do trabalho ",2300,999,57,749,5
-629,81,"Corpus Christi",2300,999,57,749,5
+768,81,"Dia do trabalho ",2300,999,57,749,5
+767,81,"5 diÃ¡rias",1750,499,67,374,15
+766,81,"3 diÃ¡rias",1050,299,67,224,25
+765,81,"2 diÃ¡rias",700,199,67,149,60
 655,82,"Corpus Christi (19/06/2014 a 22/06/2014)",1800,899,50,672,20
 654,82,"Dia do trabalho (01/05/14 a 04/05/2014)",1800,899,50,655,20
 652,82,"3 diÃ¡rias ",1170,579,50,413,0
@@ -201,10 +199,26 @@
 692,83,"02 diÃ¡rias para 02 pessoas (finais de semana)",680,339,50,254,0
 691,83,"02 diÃ¡rias para 02 pessoas (dias de semana)",680,289,58,216,0
 709,84,"02 diÃ¡rias para 02 pessoas + 01 jantar + passeio de barco",1038,359,66,269,0
-708,85,"03 diÃ¡rias para 02 pessoas (Dia do Trabalho)",1347,499,62,359,0
-707,85,"02 diÃ¡rias para 02 pessoas em final de semana ",898,349,61,251,0
-706,85,"01 diÃ¡ria durante a semana",449,119,73,85,0
+741,85,"01 diÃ¡ria durante a semana",449,119,73,85,0
+739,85,"03 diÃ¡rias para 02 pessoas (Dia do Trabalho)",1347,499,62,359,0
+740,85,"02 diÃ¡rias para 02 pessoas no final de semana ou 3 diÃ¡rias durante a semana",1347,349,61,251,0
 736,86,"Corpus Christi (3 diÃ¡rias)",700,349,50,255,5
 737,86,"Dia do trabalho (3 diÃ¡rias)",700,349,50,255,5
 738,86,"3 diÃ¡rias",690,339,50,255,100
 735,86,"2 diÃ¡rias",460,229,50,170,100
+771,87," vÃ´o de balÃ£o de instruÃ§Ã£o para 1 pessoa",659,359,50,251,0
+770,87,"vÃ´o de balÃ£o de instruÃ§Ã£o para 2 pessoa",1440,719,50,503,0
+761,88,"02 diÃ¡rias para 02 pessoas (dias de semana)",440,219,50,164,0
+760,88,"02 diÃ¡rias para 02 pessoas (finais de semana)",510,249,50,186,0
+764,89,"87",87,87,87,8,787
+783,90,"01 sequÃªncia de fondue, para 01 pessoa, com vinho tinto seco ou suave liberado",84,42,50,32,300
+773,92,"Kit Viagem com Travesseiro + MÃ¡scara + Protetor Auricular",69,19,71,13,500
+805,93,"Kit Viagem com Travesseiro + MÃ¡scara + Protetor Auricular",69,19,71,13,600
+782,94,"02 diÃ¡rias para 02 pessoas (finais de semana)",520,259,50,194,0
+781,94,"02 diÃ¡rias para 02 pessoas (dias de semana)",440,219,50,164,0
+800,95,"5 diÃ¡rias ",1000,449,55,297,20
+797,95,"2 diÃ¡rias",399,179,55,119,40
+798,95,"3 diÃ¡rias ",600,269,55,178,30
+799,95,"2 diÃ¡rias + 2 passaportes para o Beto Carrero",660,299,54,257,20
+803,68,"2 diÃ¡rias para 2 pessoas",640,299,53,224,70
+809,91,"Sequencia de fondue para 2 pessoas",130,64,50,46,500

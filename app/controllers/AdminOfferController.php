@@ -73,10 +73,6 @@ class AdminOfferController extends BaseController {
 			$offer = $offer->where('genre_id', Input::get('genre_id'));
 		}
 
-		if (Input::has('in_pre_booking')) {
-			$offer = $offer->where('in_pre_booking', Input::get('in_pre_booking'));
-		}
-
 		if (Input::has('starts_on')) {
 			$offer = $offer->where('starts_on', '>=', Input::get('starts_on'));
 		}
@@ -90,7 +86,7 @@ class AdminOfferController extends BaseController {
 		 */
 		$offer = $offer
 			->with(['partner', 'destiny'])
-			->select(['id', 'title', 'destiny_id', 'starts_on', 'ends_on', 'in_pre_booking'])
+			->select(['id', 'title', 'destiny_id', 'starts_on', 'ends_on'])
 			->whereExists(function($query){
                 if (Input::has('destiny')) {
 					$query->select(DB::raw(1))
@@ -108,7 +104,6 @@ class AdminOfferController extends BaseController {
 				'destiny' => Input::get('destiny'),
 				'title' => Input::get('title'),
 				'genre_id' => Input::get('genre_id'),
-				'in_pre_booking' => Input::get('in_pre_booking'),
 				'starts_on' => Input::get('starts_on'),
 				'ends_on' => Input::get('ends_on'),
 				'pag' => Input::get('pag'),
@@ -277,70 +272,48 @@ class AdminOfferController extends BaseController {
 		$this->layout->content = View::make('admin.offer.delete', $data);
 	}
 
-	/**
-	 * Delete Offer.
-	 *
-	 * @return Response
-	 */
+	// /**
+	//  * Delete Offer.
+	//  *
+	//  * @return Response
+	//  */
 
-	public function postDelete($id)
-	{
-		$this->offer->find($id)->delete();
+	// public function postDelete($id)
+	// {
+	// 	$this->offer->find($id)->delete();
 
-		Session::flash('success', 'Papel de usuário excluído com sucesso.');
+	// 	Session::flash('success', 'Papel de usuário excluído com sucesso.');
 
-		return Redirect::route('admin.offer');
-	}
+	// 	return Redirect::route('admin.offer');
+	// }
 
-	public function getClearfield($id, $field)
-	{
-		$offer = $this->offer->find($id);
+	// public function getClearfield($id, $field)
+	// {
+	// 	$offer = $this->offer->find($id);
 
-		if (is_null($offer) || !isset($field))
-		{
-			return Redirect::route('admin.offer.edit', $id);
-		}
+	// 	if (is_null($offer) || !isset($field))
+	// 	{
+	// 		return Redirect::route('admin.offer.edit', $id);
+	// 	}
 
-		$toDelete = $offer->{$field};
+	// 	$toDelete = $offer->{$field};
 
-		if (is_array($toDelete)) {
-			foreach ($toDelete as $item) {
-				$path = public_path() . $item;
-				if (File::exists($path)) {
-					File::delete($path);
-				}
-			}
-		}
+	// 	if (is_array($toDelete)) {
+	// 		foreach ($toDelete as $item) {
+	// 			$path = public_path() . $item;
+	// 			if (File::exists($path)) {
+	// 				File::delete($path);
+	// 			}
+	// 		}
+	// 	}
 
-		$offer->{$field} = null;
-		$offer->save();
+	// 	$offer->{$field} = null;
+	// 	$offer->save();
 
-		Session::flash('success', 'O campo '. $field .' pode ser editado agora.');
+	// 	Session::flash('success', 'O campo '. $field .' pode ser editado agora.');
 
-		return Redirect::route('admin.offer.edit', $id);
-	}
-
-	/**
-	 * Update Offer.in_pre_booking.
-	 *
-	 * @return Response
-	 */
-
-	public function getInPreBooking($id, $in)
-	{
-		/*
-		 * Permuration
-		 */
-		$offer = $this->offer->find($id);
-
-		if ($offer)
-		{
-			$offer->in_pre_booking = $in;
-			$offer->save();
-		}
-
-		return Redirect::route('admin.offer');
-	}
+	// 	return Redirect::route('admin.offer.edit', $id);
+	// }
 
 	public function getSort(){
 		/*
@@ -371,37 +344,6 @@ class AdminOfferController extends BaseController {
 		}
 
 		return Redirect::route('admin.offer.sort');
-	}
-
-	public function getSortPreBooking(){
-		/*
-		 * Obj
-		 */
-		$offerObj = $this->offer;
-
-		/*
-		 * Finally Obj
-		 */
-		$offers = $offerObj->orderBy('pre_booking_order', 'asc')
-						   ->where('in_pre_booking', 1)
-						   ->get();
-
-		/*
-		 * Layout / View
-		 */
-		$this->layout->content = View::make('admin.offer.sort_pre_booking', compact('offers'));
-	}
-
-	public function postSortPreBooking(){
-		$offers = Input::get('offers');
-
-		foreach ($offers as $pre_booking_order => $id) {
-			$o = Offer::find($id);
-			$o->pre_booking_order = $pre_booking_order;
-			$o->save();
-		}
-
-		return Redirect::route('admin.offer.sort_pre_booking');
 	}
 
 	public function getSortComment($id){
