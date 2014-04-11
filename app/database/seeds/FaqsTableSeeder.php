@@ -20,7 +20,7 @@
 
 // 	$interpreter->addObserver(function(array $columns) use ($pdo) {
 // 	    $stmt = $pdo->prepare('INSERT INTO faqs (id, question, answer, group_title) VALUES (?, ?, ?, ?)');
-// 	    $stmt->execute($columns);
+// 	    if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 // 	});
 
 // 	$lexer->parse(app_path().'/database/seeds/assets/faqs.csv', $interpreter);

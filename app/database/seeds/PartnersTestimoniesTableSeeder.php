@@ -19,7 +19,7 @@
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //     	par.titulo AS name, par.subtitulo AS destiny, par.responsavel AS sponsor, par.cargo AS role, par.depoimento AS testimony, par.foto AS img, par.ordem AS display_order
 //         $stmt = $pdo->prepare('INSERT INTO partners_testimonies (name, destiny, sponsor, role, testimony, img, display_order) VALUES (?, ?, ?, ?, ?, ?, ?)');
-//         $stmt->execute($columns);
+//         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 
 //     $lexer->parse(app_path().'/database/seeds/assets/partners_testimonies.csv', $interpreter);

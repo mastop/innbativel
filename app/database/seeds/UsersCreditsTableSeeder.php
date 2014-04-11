@@ -18,7 +18,7 @@
 
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //         $stmt = $pdo->prepare('INSERT INTO users_credits (id, user_id, new_user_id, value, created_at) VALUES (?, ?, ?, ?, ?)');
-//         $stmt->execute($columns);
+//         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 
 //     $lexer->parse(app_path().'/database/seeds/assets/users_credits.csv', $interpreter);

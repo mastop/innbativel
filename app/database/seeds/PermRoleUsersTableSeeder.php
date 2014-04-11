@@ -4,11 +4,12 @@ class PermRoleUsersTableSeeder extends DatabaseSeeder
 {
 	public function run()
 	{
-		$users = ['cawecoy@gmail.com'];
+		$users = ['cawecoy@gmail.com', 'programacao@innbativel.com.br'];
 		$roles = Role::select('id')
 					 ->where('name', 'programador')
 					 ->orWhere('name', 'administrador')
-					 ->orWhere('name', 'parceiro') // Adicionado pois precisamos de ao menos um parceiro
+					 ->orWhere('name', 'parceiro')
+					 ->orWhere('name', 'comercial')
 					 ->get('id');
 
 		foreach ($roles as $key) {

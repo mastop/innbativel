@@ -25,7 +25,7 @@
 // 		$columns[5] = Hash::make(substr(str_shuffle($chars),0,$length));
 
 // 	    $stmt = $pdo->prepare('INSERT INTO users (id, salt, email, created_at, username, password, created_at) VALUES (?, ?, ?, ?, ?, ?)');
-// 	    $stmt->execute($columns);
+// 	    if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 // 	});
 
 // 	$lexer->parse(app_path().'/database/seeds/assets/users.csv', $interpreter);

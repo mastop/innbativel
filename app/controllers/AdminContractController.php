@@ -12,13 +12,14 @@ class AdminContractController extends BaseController {
 	/**
 	 * Constructor
 	 */
-	public function __construct(Contract $contract)
+	public function __construct(Contract $contract, ContractOption $contract_option)
 	{
 		/*
 		 * Set contract Instance
 		 */
 
 		$this->contract = $contract;
+		$this->contract_option = $contract_option;
 
 		/*
 		 * Set Sidebar Status
@@ -57,7 +58,7 @@ class AdminContractController extends BaseController {
 		 * Order filter
 		 */
 
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+    	$order = Input::get('order') === 'asc' ? 'asc' : 'desc';
 
 		/*
 		 * Search filters
@@ -70,8 +71,8 @@ class AdminContractController extends BaseController {
 			$contract = $contract->where('partner_id', Input::get('partner_id'));
 		}
 
-		if (Input::has('agent1_name')) {
-			$contract = $contract->where('agent1_name', 'like', '%'. Input::get('description') .'%');
+		if (Input::has('consultant_id')) {
+			$contract = $contract->where('consultant_id', Input::get('consultant_id'));
 		}
 
 		if (Input::has('is_signed')) {
@@ -101,12 +102,12 @@ class AdminContractController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$contract = $contract->with(['partner'])->orderBy($sort, $order)->paginate($pag)->appends([
+		$contract = $contract->with(['partner', 'consultant'])->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
 			'id' => Input::get('id'),
 			'partner_id' => Input::get('partner_id'),
-			'agent1_name' => Input::get('agent1_name'),
+			'consultant_id' => Input::get('consultant'),
 			'is_signed' => Input::get('is_signed'),
 			'is_sent' => Input::get('is_sent'),
 			'created_at_begin' => Input::get('created_at_begin'),
@@ -119,6 +120,97 @@ class AdminContractController extends BaseController {
 		 * Layout / View
 		 */
 		$this->layout->content = View::make('admin.contract.list', compact('sort', 'order', 'pag', 'contract'));
+	}
+
+	/**
+	 * Display contract Create Page.
+	 *
+	 * @return Response
+	 */
+
+	public function getView($id)
+	{
+		$contract = $this->contract->with(['consultant', 'partner'])->find($id);
+
+		if (is_null($contract))
+		{
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
+			return Redirect::route('admin.contract');
+		}
+
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
+
+		/*
+		 * Layout / View
+		 */
+
+		$this->layout->content = View::make('admin.contract.view', compact('contract', 'contract_options'));
+	}
+
+	/**
+	 * Display contract Create Page.
+	 *
+	 * @return Response
+	 */
+
+	public function getSend($id)
+	{
+		$contract = $this->contract->with(['partner'])->find($id);
+
+		if (is_null($contract))
+		{
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
+			return Redirect::route('admin.contract');
+		}
+
+		$email = $contract->partner->email;
+		$name = $contract->partner->first_name.(isset($contract->partner->last_name)?' '.$contract->partner->last_name:'');
+
+		$data = array('name' => $name, 'id' => $id);
+
+    	Mail::send('emails.contract.send', $data, function($message) use($email, $id){
+			$message->to($email, 'INNBatível')
+					->addCc('contrato@innbativel.com.br', 'INNBatível')
+					->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
+					->setSubject('Contrato ID: '.$id.' | INNBatível');
+		});
+
+		$contract->is_sent = true;
+		$contract->save();
+
+		/*
+		 * Layout / View
+		 */	
+
+		Session::flash('success', 'Contrato ID: '.$id.' disponibilizado e enviado para '.$name.' com sucesso.');
+
+		return Redirect::back();
+	}
+
+	/**
+	 * Display contract Create Page.
+	 *
+	 * @return Response
+	 */
+
+	public function getPrint($id)
+	{
+		$contract = $this->contract->with(['consultant', 'partner'])->find($id);
+
+		if (is_null($contract))
+		{
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
+			return Redirect::route('admin.contract');
+		}
+
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
+
+		/*
+		 * Layout / View
+		 */
+
+		$this->layout = View::make('themes.floripa.backend.blank');
+		$this->layout->content = View::make('admin.contract.print', compact('contract', 'contract_options'));
 	}
 
 	/**
@@ -146,21 +238,86 @@ class AdminContractController extends BaseController {
 	{
 		$inputs = Input::all();
 
-		print('<pre>');
-		print_r($inputs);
-		print('</pre>'); die();
+		$partner = Profile::where('user_id', $inputs['partner_id'])->first();
+
+		$inputs['company_name'] = $partner->company_name;
+		$inputs['trading_name'] = $partner->first_name.' '.$partner->last_name;
+		$inputs['cnpj'] = $partner->cnpj;
+		$inputs['address'] = $partner->address.(isset($partner->number)?(', '.$partner->number):'');
+		$inputs['complement'] = $partner->complement;
+		$inputs['neighborhood'] = $partner->neighborhood;
+		$inputs['zip'] = $partner->zip;
+		$inputs['city'] = $partner->city;
+		$inputs['state'] = $partner->state;
+
+		$inputs['consultant_id'] = Auth::user()->id;
+		
+		$inputs['clauses'] = Configuration::get('clauses');
+
+		$options = $inputs['options'];
+		unset($inputs['options']);
 
 		$rules = [
-        	'term' => 'required|date',
-			'restriction' => 'required',
+        	'partner_id' => 'required',
+        	'agent1_name' => 'required',
+        	'agent1_cpf' => 'required',
+        	'agent1_telephone' => 'required',
+        	'bank_name' => 'required',
+        	'bank_number' => 'required',
+        	'bank_holder' => 'required',
+        	'bank_agency' => 'required',
+        	'bank_account' => 'required',
+        	'bank_cpf_cnpj' => 'required',
+        	'initial_term' => 'required|date',
+        	'final_term' => 'required|date',
 			'n_people' => 'required|integer',
+			'restriction' => 'required',
+			'features' => 'required',
+			'rules' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
-			$this->contract->create($inputs);
+			$contract = $this->contract->create($inputs);
+
+			$id = $contract->id;
+			$n_options = count($options['title']);
+
+			for ($i=0; $i < $n_options; $i++) { 
+				$contract_option = [
+					'contract_id' 		  => $id,
+					'title'		  		  => $options['title'][$i],
+					'price_original'	  => $options['price_original'][$i],
+					'price_with_discount' => $options['price_with_discount'][$i],
+					'percent_off'		  => $options['percent_off'][$i],
+					'transfer'		  	  => $options['transfer'][$i],
+					'max_qty'		  	  => $options['max_qty'][$i],
+				];
+
+				$this->contract_option->create($contract_option);
+			}
+
+			// INÍCIO E-MAIL
+
+			$partner = Profile::where('user_id', $contract->partner_id)->first();
+			$consultant = Profile::where('user_id', $contract->consultant_id)->first();
+
+			$partner_name = $partner->first_name.(isset($partner->last_name)?' '.$partner->last_name:'');
+			$consultant_name = $consultant->first_name.(isset($consultant->last_name)?' '.$consultant->last_name:'');
+
+			$data = array('partner_name' => $partner_name, 'consultant_name' => $consultant_name, 'id' => $id);
+			
+	    	Mail::send('emails.contract.create', $data, function($message) use($partner_name, $id){
+				$message->to('contrato@innbativel.com.br', 'INNBatível')
+						->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
+						->setSubject('Contrato ID: '.$id.' cadastrado | Parceiro: '.$partner_name);
+			});
+
+			// FIM E-MAIL
+
+			Session::flash('success', 'Contrato ID: '.$id.' cadastrado com sucesso.');
 
 			return Redirect::route('admin.contract');
 		}
@@ -173,113 +330,181 @@ class AdminContractController extends BaseController {
 			->withErrors($validation);
 	}
 
-	// /**
-	//  * Display contract Create Page.
-	//  *
-	//  * @return Response
-	//  */
+	/**
+	 * Display contract Create Page.
+	 *
+	 * @return Response
+	 */
 
-	// public function getEdit($id)
-	// {
-	// 	$contract = $this->contract->find($id);
+	public function getEdit($id)
+	{
+		$contract = $this->contract->find($id);
 
-	// 	if (is_null($contract))
-	// 	{
-	// 		return Redirect::route('admin.contract');
-	// 	}
+		if (is_null($contract))
+		{
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
+			return Redirect::route('admin.contract');
+		}
 
-	// 	/*
-	// 	 * Layout / View
-	// 	 */
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
 
-	// 	$this->layout->content = View::make('admin.contract.edit', compact('contract'));
-	// }
+		/*
+		 * Layout / View
+		 */
 
-	// /**
-	//  * Update contract.
-	//  *
-	//  * @return Response
-	//  */
+		$this->layout->content = View::make('admin.contract.edit', compact('contract', 'contract_options'));
+	}
 
-	// public function postEdit($id)
-	// {
-	// 	/*
-	// 	 * Permuration
-	// 	 */
-	// 	$inputs = Input::all();
+	/**
+	 * Update contract.
+	 *
+	 * @return Response
+	 */
 
-	// 	$rules = [
- //        	'term' => 'required|date',
-	// 		'restriction' => 'required',
-	// 		'n_people' => 'required|integer',
-	// 	];
+	public function postEdit($id)
+	{
+		$inputs = Input::all();
 
-	//     $validation = Validator::make($inputs, $rules);
+		// $partner = Profile::where('user_id', $inputs['partner_id'])->first();
 
-	// 	if ($validation->passes())
-	// 	{
-	// 		$contract = $this->contract->find($id);
+		// $inputs['company_name'] = $partner->company_name;
+		// $inputs['trading_name'] = $partner->first_name.' '.$partner->last_name;
+		// $inputs['cnpj'] = $partner->cnpj;
+		// $inputs['address'] = $partner->address.(isset($partner->number)?(', '.$partner->number):'');
+		// $inputs['complement'] = $partner->complement;
+		// $inputs['neighborhood'] = $partner->neighborhood;
+		// $inputs['zip'] = $partner->zip;
+		// $inputs['city'] = $partner->city;
+		// $inputs['state'] = $partner->state;
 
-	// 		if ($contract)
-	// 		{
-	// 			$contract->update($inputs);
-	// 		}
+		// $inputs['consultant_id'] = Auth::user()->id;
+		
+		// $inputs['clauses'] = Configuration::get('clauses');
 
-	// 		return Redirect::route('admin.contract');
-	// 	}
+		$options = $inputs['options'];
+		unset($inputs['options']);
+		unset($inputs['_token']);
 
-	// 	/*
-	// 	 * Return and display Errors
-	// 	 */
-	// 	return Redirect::route('admin.contract.edit', $id)
-	// 		->withInput()
-	// 		->withErrors($validation);
-	// }
+		$rules = [
+        	'partner_id' => 'required',
+        	'agent1_name' => 'required',
+        	'agent1_cpf' => 'required',
+        	'agent1_telephone' => 'required',
+        	'bank_name' => 'required',
+        	'bank_number' => 'required',
+        	'bank_holder' => 'required',
+        	'bank_agency' => 'required',
+        	'bank_account' => 'required',
+        	'bank_cpf_cnpj' => 'required',
+        	'initial_term' => 'required|date',
+        	'final_term' => 'required|date',
+			'n_people' => 'required|integer',
+			'restriction' => 'required',
+			'features' => 'required',
+			'rules' => 'required',
+		];
 
-	// /**
-	//  * Display contract Delete Page.
-	//  *
-	//  * @return Response
-	//  */
+	    $validation = Validator::make($inputs, $rules);
 
-	// public function getDelete($id)
-	// {
-	// 	$contract = $this->contract->find($id);
+		if ($validation->passes())
+		{
+			$contract = $this->contract->find($id);
 
-	// 	if (is_null($contract))
-	// 	{
-	// 		return Redirect::route('admin.contract');
-	// 	}
+			if($contract)
+			{
+				$contract->update($inputs);
 
-	// 	Session::flash('error', 'Você tem certeza que deleja excluir este contrato? Esta operação não poderá ser desfeita.');
+				$this->contract_option->where('contract_id', $contract->id)->delete();
 
-	// 	$data['contractData'] = $contract->toArray();
-	// 	$data['contractArray'] = null;
+				$n_options = count($options['title']);
 
-	// 	foreach ($data['contractData'] as $key => $value) {
-	// 		$data['contractArray'][Lang::get('contract.'. $key)] = $value;
-	// 	}
+				for ($i=0; $i < $n_options; $i++) { 
+					$contract_option = [
+						'contract_id' 		  => $contract->id,
+						'title'		  		  => $options['title'][$i],
+						'price_original'	  => $options['price_original'][$i],
+						'price_with_discount' => $options['price_with_discount'][$i],
+						'percent_off'		  => $options['percent_off'][$i],
+						'transfer'		  	  => $options['transfer'][$i],
+						'max_qty'		  	  => $options['max_qty'][$i],
+					];
 
-	// 	/*
-	// 	 * Layout / View
-	// 	 */
+					$this->contract_option->create($contract_option);
+				}
+			}
 
-	// 	$this->layout->content = View::make('admin.contract.delete', $data);
-	// }
+			return Redirect::route('admin.contract');
+		}
 
-	// /**
-	//  * Delete contract.
-	//  *
-	//  * @return Response
-	//  */
+		/*
+		 * Return and display Errors
+		 */
+		return Redirect::route('admin.contract.create')
+			->withInput()
+			->withErrors($validation);
+	}
 
-	// public function postDelete($id)
-	// {
-	// 	$this->contract->find($id)->delete();
+	/**
+	 * Display contract Delete Page.
+	 *
+	 * @return Response
+	 */
 
-	// 	Session::flash('success', 'Contrato excluído com sucesso.');
+	public function getDelete($id)
+	{
+		$contract = $this->contract->with(['partner', 'consultant'])->find($id);
 
-	// 	return Redirect::route('admin.contract');
-	// }
+		if (is_null($contract))
+		{
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
+			return Redirect::route('admin.contract');
+		}
+
+		$contract_option = $this->contract_option->where('contract_id', $contract->id)->get();
+
+		Session::flash('error', 'Você tem certeza que deleja excluir este contrato? Esta operação não poderá ser desfeita.');
+
+		$data['contractData'] = $contract->toArray();
+		$data['contractOptionData'] = $contract_option->toArray();
+		$data['contractArray'] = null;
+
+		foreach ($data['contractData'] as $key => $value) {
+			if(is_array($value)){
+				foreach ($value as $key2 => $value2) {
+					$data['contractArray'][Lang::get('contract.'. $key.'.'.$key2)] = (!empty($value2)?$value2:'--');
+				}
+			}
+			else{
+				$data['contractArray'][Lang::get('contract.'. $key)] = (!empty($value)?$value:'--');
+			}
+		}
+
+		foreach ($data['contractOptionData'] as $i => $contract_option) {
+			foreach ($contract_option as $key => $value) {
+				$data['contractArray'][Lang::get('contract_option.'.$key.'.'. $i)] = (!empty($value)?$value:'--');
+			}
+		}
+
+		/*
+		 * Layout / View
+		 */
+
+		$this->layout->content = View::make('admin.contract.delete', $data);
+	}
+
+	/**
+	 * Delete contract.
+	 *
+	 * @return Response
+	 */
+
+	public function postDelete($id)
+	{
+		$this->contract->find($id)->delete();
+
+		Session::flash('success', 'Contrato excluído com sucesso.');
+
+		return Redirect::route('admin.contract');
+	}
 
 }

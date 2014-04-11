@@ -471,3 +471,31 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::post('contract/delete/{id}', ['as' => 'admin.contract.destroy', 'uses' => 'AdminContractController@postDelete']);
 });
 
+Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
+
+	/*
+	 * Painel/Orders
+	 */
+	Route::any('ofertas', ['as' => 'painel.order.offers', 'uses' => 'PainelOrderController@anyListByOffer']);
+
+	Route::any('ofertas/exportar', function(){ return Redirect::route('painel.order.offers'); });
+	Route::get('ofertas/exportar/{offer_id?}/{starts_on?}/{ends_on?}', ['as' => 'painel.order.list_offers_export', 'uses' => 'PainelOrderController@getListOffersExport']);
+
+	Route::any('ofertas/voucher/{offer_option_id?}', ['as' => 'painel.order.voucher', 'uses' => 'PainelOrderController@anyVouchers']);
+
+	Route::any('ofertas/voucher/agendar', function(){ return Redirect::route('painel.order.offers'); });
+	Route::get('ofertas/voucher/agendar/{id}/{used}/{offer_option_id?}', ['as' => 'painel.order.schedule', 'uses' => 'PainelOrderController@getSchedule']);
+
+	Route::any('ofertas/voucher/exportar', function(){ return Redirect::route('painel.order.offers'); });
+	Route::get('ofertas/voucher/exportar/{offer_option_id?}/{id?}', ['as' => 'painel.order.voucher_export', 'uses' => 'PainelOrderController@getVoucherExport']);
+
+	Route::any('contract', ['as' => 'painel.contract', 'uses' => 'PainelContractController@anyIndex']);
+
+	Route::get('contract/view/{id}', ['as' => 'painel.contract.view', 'uses' => 'PainelContractController@getView']);
+
+	Route::get('contract/print/{id}', ['as' => 'painel.contract.print', 'uses' => 'PainelContractController@getPrint']);
+
+	Route::any('contract/sign', function(){ return Redirect::route('painel.contract'); });
+	Route::get('contract/sign/{id}', ['as' => 'painel.contract.get_sign', 'uses' => 'PainelContractController@getSign']);
+	Route::post('contract/sign/{id}', ['as' => 'painel.contract.post_sign', 'uses' => 'PainelContractController@postSign']);
+});

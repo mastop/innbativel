@@ -18,7 +18,7 @@
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //     	oi.id_oferta AS offer_id, oi.imagem AS url
 //         $stmt = $pdo->prepare('INSERT INTO offers_images (offer_id, url) VALUES (?, ?)');
-//         $stmt->execute($columns);
+//         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 
 //     $lexer->parse(app_path().'/database/seeds/assets/offers_images.csv', $interpreter);

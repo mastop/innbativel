@@ -19,7 +19,7 @@
 
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //         $stmt = $pdo->prepare('INSERT INTO offers_saveme (offer_id, saveme_id, priority) VALUES (?, ?, ?)');
-//         $stmt->execute($columns);
+//         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 
 //     $lexer->parse(app_path().'/database/seeds/assets/offers_saveme.csv', $interpreter);

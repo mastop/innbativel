@@ -1,2 +1,210 @@
-1;1;"1 diaria";1000;500;50;100;50
-2;1;"2 diarias";2000;1000;50;200;25
+31,12,"2 diÃ¡rias para 2 pessoas",440,199,55,149,0
+24,2,"4 diÃ¡rias para 2 pessoas (check in segunda-feira)",600,299,50,209,0
+23,2,"3 diÃ¡rias para 2 pessoas (check in segunda a terÃ§a)",450,219,51,153,0
+22,2,"2 diÃ¡rias para 2 pessoas (check in segunda  a quarta",300,149,50,104,0
+21,2,"2 diÃ¡rias para 2 pessoas",500,199,60,149,0
+11,3,"2 diÃ¡rias para 2 pessoas",640,319,50,239,0
+10,3,"3 diÃ¡rias para 2 pessoas",960,479,50,359,0
+12,4,"02 diÃ¡rias para 02 pessoas",450,199,56,149,0
+18,5,"02 diÃ¡rias para 02 pessoas em fevereiro",0,0,52,0,0
+17,5,"02 diÃ¡rias para 02 pessoas de marÃ§o a maio",0,0,57,293,0
+20,6,"2 diÃ¡rias para 2 pessoas",942,469,50,375,0
+30,11,"2 diÃ¡rias para 2 pessoas",640,299,50,224,0
+32,13,"Cgf",34,45,45,566,55
+289,14,"03 diÃ¡rias em dias de semana e 02 diÃ¡rias em final de semana para 02 pessoas",440,219,50,153,0
+217,15,"02 diÃ¡rias para 02 pessoas + 01 jantar + passeio de barco",1038,499,52,390,0
+216,15,"02 diÃ¡rias para 02 pessoas + drink cortesia de marÃ§o a maio",790,379,52,299,0
+215,15,"02 diÃ¡rias para 02 pessoas + drink cortesia de abril a outubro",690,319,54,239,0
+38,16,"01 diÃ¡ria para 02 pessoas",499,249,50,207,0
+52,17,"02 diÃ¡rias para 02 pessoas por R$399 nos finais de semana",820,399,55,311,0
+51,17,"02 diÃ¡rias para 02 pessoas por R$359 nos dias da semana",770,359,53,280,0
+49,18,"2 diÃ¡rias para 2 pessoas (dias da semana)",900,359,55,280,0
+50,18,"2 diÃ¡rias para 2 pessoas (finais de semana)",900,449,50,370,0
+56,19,"4 diÃ¡rias para 2 pessoas (dias de semana)",0,0,55,0,0
+55,19,"3 diÃ¡rias para 2 pessoas (FDS)",0,0,55,0,0
+60,20,"4 diÃ¡rias para 2 pessoas (dias de semana)",790,349,55,270,0
+59,20,"3 diÃ¡rias para 2 pessoas (FDS)",790,349,55,270,0
+61,21,"2 diÃ¡rias para 2 pessoas ",640,319,50,235,0
+62,21,"3 diÃ¡rias para 2 pessoas",960,449,50,352,0
+66,22,"02 diÃ¡rias para qualquer dia da semana nos meses de Maio/Junho/Julho por R$189;",420,189,52,141,0
+65,22,"02 diÃ¡rias para qualquer dia da semana nos meses de marÃ§o/abril por R$199;",450,199,54,149,30
+150,23,"5 diÃ¡rias para 3 pessoas",900,349,61,261,0
+149,23,"4 diÃ¡rias para 3 pessoas ",720,299,58,224,0
+148,23,"3 diÃ¡rias para 3 pessoas",540,229,57,171,0
+147,23,"2 diÃ¡rias para 3 pessoas",360,179,50,134,0
+80,24,"3 diÃ¡rias para 2 pessoas (FDS)",660,299,55,209,0
+79,24,"4 diÃ¡rias para 2 pessoas (dias de semana)",660,299,55,209,0
+155,25,"3 diÃ¡rias para 2 pessoas",690,329,53,250,0
+154,25,"2 diÃ¡rias para 2 pessoas",460,219,53,167,0
+86,26,"05 diÃ¡rias para 02 pessoas por R$ 549",1098,549,50,384,0
+85,26,"03 diÃ¡rias para 02 pessoas por R$ 339",678,339,50,237,0
+84,26,"02 diÃ¡rias para 02 pessoas por R$ 229",465,229,50,160,0
+182,27,"02 diÃ¡rias para 02 pessoas",750,299,50,224,0
+181,27,"03 diÃ¡rias para 02 pessoas",1050,399,50,299,0
+180,27,"07 diÃ¡rias para 02 pessoas",2450,695,50,521,0
+218,42,"2 diÃ¡rias para 2 pessoas",280,139,50,104,0
+112,28,"02 diÃ¡rias para 02 pessoas para finais de semana (checkin nas 6Âªfeira) + garrafa de vinho por R$269",600,269,55,201,0
+111,28,"03 diÃ¡rias para 02 pessoas nos dias da semana (checkin de domingo a 4Âª) + garrafa de vinho por R$329",750,329,56,246,0
+113,29,"1 diÃ¡rias para 2 pessoas ",300,119,60,85,0
+303,30,"03 diÃ¡rias para 02 pessoas ",1050,525,50,393,0
+116,31,"02 diÃ¡rias por R$ 249 para dias da semana e finais de semana ",500,249,50,186,0
+117,32,"01 diÃ¡ria em marÃ§o durante a semana para 02 pessoas + drink cortesia",250,99,60,74,0
+118,32,"01 diÃ¡ria em abril durante a semana para 02 pessoas + drink cortesia",250,99,60,74,0
+119,32,"02 diÃ¡rias para 02 pessoas em finais de semana de abril a novembro para 02 pessoas + drink cortesia",500,199,60,149,0
+120,32,"02 diÃ¡rias para 02 pessoas em dezembro + drink cortesia",500,249,50,187,0
+121,32,"03 diÃ¡rias para 02 pessoas no feriado do dia do trabalho",750,299,60,224,0
+122,32,"04 diÃ¡rias para 02 pessoas no feriado do dia do trabalho",1000,399,60,299,0
+302,30,"02 diÃ¡rias para 02 pessoas",440,219,50,164,0
+133,33,"02 diÃ¡rias para 02 pessoas com cafÃ© da manhÃ£ por R$219",440,219,50,164,0
+134,33,"03 diÃ¡rias para 02 pessoas com cafÃ© da manhÃ£ por R$319",660,319,53,239,0
+146,34,"2 diÃ¡rias para 2 pessoas em Maio  e Agosto",800,379,52,290,0
+145,34,"2 diÃ¡rias para 2 pessoas em Abril , Setembro , outubro, novembro e dezembro",800,349,56,261,0
+144,34,"2 diÃ¡rias para 2 pessoas em MarÃ§o ",800,319,60,239,0
+320,35,"3 diÃ¡rias para 2 pessoas ",450,219,50,144,0
+319,35,"5 diÃ¡rias para 2 pessoas",750,369,50,240,0
+162,36,"3 diÃ¡rias para 2 pessoas",1500,639,57,536,0
+161,36,"2 diÃ¡rias para 2 pessoas ",1000,449,55,364,0
+160,36,"1 diÃ¡rias para 2 pessoas (check out atÃ© sÃ¡bado) ",500,249,50,182,0
+163,36,"5 diÃ¡rias para 2 pessoas",2500,999,60,879,0
+209,37,"5 diÃ¡rias para 2 pessoas",2500,999,60,879,0
+210,37,"2 diÃ¡rias para 2 pessoas (check out atÃ© sexta-feira)",1000,449,53,364,0
+208,37,"1 diÃ¡rias para 2 pessoas (check out atÃ© sexta-feira) ",500,249,50,182,0
+207,37,"3 diÃ¡rias para 2 pessoas",1500,639,57,536,0
+222,38,"02 diÃ¡rias para 02 pessoas",330,159,50,119,0
+272,39,"OpÃ§Ã£o 3: 2 diÃ¡rias para 02 pessoas durante a semana de 01/06/14 a 31/08/14 (alta temporada).",530,249,53,186,0
+273,39,"OpÃ§Ã£o 4: 2 diÃ¡rias para 02 pessoas em final de semana de 01/06/14 a 31/08/14 (alta temporada).",900,429,52,321,0
+373,40,"Ingresso para 01 adulto final de semana",194,59,69,47,150
+374,40,"Ingresso para 01 crianÃ§a final de semana",174,44,74,35,40
+214,41,"03 diÃ¡rias para 02 pessoas com cafÃ© da manhÃ£ por R$299",640,299,53,224,0
+213,41,"02 diÃ¡rias para 02 pessoas com cafÃ© da manhÃ£ por R$209",440,209,52,156,0
+219,43,"01 diÃ¡ria para 02 pessoas em marÃ§o ou abril ",525,239,54,180,0
+220,43,"02 diÃ¡rias para 02 pessoas de maio a dezembro",1050,489,53,400,0
+223,44,"2 diÃ¡rias para 2 pessoas",330,159,50,119,0
+274,39,"OpÃ§Ã£o 6: 04 diÃ¡rias para 02 pessoas no Feriado Dia do Trabalho ",1980,989,50,741,6
+271,39,"OpÃ§Ã£o 7: 04 diÃ¡rias para 02 pessoas no Feriado Dia de Corpus Christi.",2400,1199,50,899,6
+269,39,"OpÃ§Ã£o 5: 04 diÃ¡rias para 02 pessoas no Feriado de PÃ¡scoa",1980,989,50,741,6
+270,39,"OpÃ§Ã£o 1: 02 diÃ¡rias para 02 pessoas durante a semana na baixa temporada",360,149,58,111,0
+268,39,"OpÃ§Ã£o 2: 02 diÃ¡rias para 02 pessoas nos finais de semana na baixa temporada.",540,269,50,201,0
+286,45,"02 diÃ¡rias para 02, 03 ou 04 pessoas nos finais de semana (check-in na 6Âªfeira)",556,239,57,179,0
+287,45,"02 diÃ¡rias para 02, 03 ou 04 pessoas nos dias da semana (check-in de domingo a 4Âªfeira)",556,219,60,164,0
+329,46,"5 diÃ¡rias para 2 pessoas",1000,499,50,400,0
+328,46,"3 diÃ¡rias para 2 pessoas",600,299,50,240,0
+327,46,"2 diÃ¡rias para 2 pessoas",400,199,50,160,0
+295,47,"s na suÃ­te casa da fazenda ",600,299,50,224,0
+294,47,"2s na suÃ­te resort das araucÃ¡rias ",800,399,50,299,0
+299,48,"2 diÃ¡rias para 2 pessoas na suÃ­te casa da fazenda ",600,299,50,224,0
+298,48,"2 diÃ¡rias para 2 pessoas na suÃ­te resort das araucÃ¡rias ",800,399,50,299,0
+322,49,"2 diÃ¡rias para 2 pessoas na suÃ­te casa da fazenda ",600,299,50,224,0
+321,49,"2 diÃ¡rias para 2 pessoas na suÃ­te resort das araucÃ¡rias ",800,399,50,299,0
+307,50,"02 diÃ¡rias para 02 pessoas",440,219,50,164,0
+306,50,"03 diÃ¡rias para 02 pessoas ",1050,525,50,393,0
+318,35,"2 diÃ¡rias para 2 pessoas",300,149,50,96,0
+326,51,"02 diÃ¡rias para 02 pessoas",708,349,51,280,0
+330,52,"02 diÃ¡rias para 02 pessoas nos finais de semana (6Âª a domingo) e feriados",664,249,62,174,0
+331,52,"02 diÃ¡rias para 02 pessoas em dias de semana",664,199,70,139,0
+332,52,"03 diÃ¡rias para 02 pessoas em finais de semana (5Âª a domingo) e feriados",996,359,63,251,0
+338,53,"05 diÃ¡rias para 02 pessoas",1700,759,50,573,0
+337,53,"03 diÃ¡rias para 02 pessoas",1020,459,50,345,0
+336,53,"02 diÃ¡rias para 02 pessoas",680,339,50,255,0
+350,55,"4 diÃ¡rias para 2 pessoas ",1200,599,50,441,0
+347,54,"03 diÃ¡rias para 02 pessoas",540,299,50,224,0
+346,54,"02 diÃ¡rias para 02 pessoas",360,199,50,149,0
+424,56,"2 diÃ¡rias para 2 pessoas",400,199,50,149,0
+391,57,"02 diÃ¡rias para 02 pessoas",708,349,51,280,0
+354,58,"87979",87878,78,78787,877,87
+368,59,"5 diÃ¡rias para 2 pessoas (Suite Presidencial)",2550,799,69,599,0
+367,59,"4 diÃ¡rias para 2 pessoas (Suite Presidencial)",2100,639,70,479,0
+366,59,"3 diÃ¡rias para 2 pessoas (Suite Presidencial)",1650,479,71,561,0
+365,59,"5 diÃ¡rias para 2 pessoas (Suite Super Luxo)",1550,499,68,374,0
+364,59,"4 diÃ¡rias para 2 pessoas (Suite Super Luxo)",1300,399,70,299,0
+363,59,"3 diÃ¡rias para 2 pessoas (Suite Super Luxo)",1050,299,73,224,0
+369,60,"2 diÃ¡rias para 2 pessoas",520,259,50,200,0
+403,61,"02 diÃ¡rias para 02 pessoas durante a semana",474,199,58,149,76
+404,61,"04 diÃ¡rias para 02 pessoas com final de semana",948,459,51,344,10
+375,62,"01 infresso para 02 pessoas",20,10,50,7,0
+376,62,"01 ingresso para 02 pessoas + AlmoÃ§o para 2",150,75,50,52,0
+385,63,"3 diÃ¡rias para 2 pessoas (exceto feriados)",690,329,53,240,0
+384,63,"2 diÃ¡rias para 2 pessoas (exceto feriados)",460,219,53,160,0
+383,63,"4 diÃ¡rias para 2 pessoas (feriados)",960,479,50,355,0
+382,63,"3 diÃ¡rias para 2 pessoas (Feriados)",720,359,50,261,0
+386,63,"5 diÃ¡rias para 2 pessoas (exceto feriados)",1150,549,53,400,0
+390,64,"Rapel de cachoeira",120,59,50,41,0
+389,64,"Arvorismo",70,35,50,24,0
+392,65,"LOL",2300.39,900.21,123,0.99,2147483647
+402,61,"03 diÃ¡rias para 02 pessoas durante a semana",711,259,63,194,76
+420,66,"2 diÃ¡rias para 2 pessoas ",920,449,55,336,0
+419,66,"3 diÃ¡rias para 2 pessoas ",1380,669,55,501,0
+415,67,"02 diÃ¡rias para 02 pessoas (finais de semana)",798,399,50,320,0
+414,67,"02 diÃ¡rias para 02 pessoas (dias de semana)",678,339,50,260,0
+423,68,"5 diÃ¡rias para 2 pessoas",1600,749,53,561,0
+422,68,"3 diÃ¡rias para 2 pessoas",960,449,53,336,0
+421,68,"2 diÃ¡rias para 2 pessoas",640,299,53,224,0
+425,56,"3 diÃ¡rias para 2 pessoas ",600,299,50,224,0
+426,56,"5 diÃ¡rias para 2 pessoas",1000,499,50,374,0
+434,69,"01 pessoa BÃ¡sico",400,189,53,132,0
+433,69,"01 pessoa AvanÃ§ado",460,209,53,146,0
+435,70,"01 diÃ¡ria para 02 pessoas durante a semana de abril  a agosto",300,149,50,104,0
+436,70,"02 diÃ¡rias para 02 pessoas em final de semana de maio a agosto",800,389,51,272,0
+437,70,"01 diÃ¡ria para 02 pessoas durante a semana em julho",350,169,51,118,0
+438,70,"02 diÃ¡rias para 02 pessoas em final de semana em julho",900,449,61,314,0
+544,71,"02 diÃ¡rias para 02 pessoas + fondue de chocolate",738,329,55,230,0
+543,71,"02 diÃ¡rias para 02 pessoas + 01 garrafa de espumante Moscatel + morangos + bombom",738,329,55,230,0
+448,72,"5 diÃ¡rias para 2 pessoas",1250,599,50,450,0
+447,72,"3 diÃ¡rias para 2 pessoas ",750,375,50,285,0
+446,72,"2 diÃ¡rias para 2 pessoas",500,249,50,190,0
+454,73,"Pacote Emagrecimento (7 diÃ¡rias)",3350,1675,50,1256,0
+453,73,"Pacote Colore (2 diÃ¡rias)",1150,575,50,431,0
+452,73,"Day Use",350,175,50,131,0
+700,75,"5 diÃ¡rias",1500,699,50,524,100
+699,75,"Pascoa (4 diÃ¡rias)",1700,849,50,594,10
+550,74,"junho - 02 noites durante a semana",800,399,50,279,30
+553,74,"julho/AGOSTO 03/07 A 03/08 03 noites final de semana e ou feriado",2800,899,67,674,20
+552,74,"julho - 02 noites dias da semana domingo a quarta",1000,499,50,349,40
+551,74,"junho  - 03 noites dias dos namorados e ou ultimo final de semana",2800,899,67,674,20
+549,74,"junho - 02 noites jogos da copa e ou primeiro final de final de semana",1100,599,50,419,40
+548,74,"maio/AGOSTO  - 02 noites  dias da semana",700,299,57,209,60
+547,74,"maio/ AGOSTO - 02 noites  final de semana",1000,499,50,349,16
+545,74,"abril - 02 noites  final de semana",800,399,50,279,15
+546,74,"abril - 02 noites  dias da semana",600,269,55,188,30
+698,75,"Corpus Christi (3 diÃ¡rias)",1300,649,50,454,10
+697,75,"Dia do trabalho (3 diÃ¡rias)",1300,649,50,454,10
+695,75,"2 diÃ¡rias ",600,299,50,224,100
+696,75,"3 diarias ",900,449,50,336,100
+635,76,"03 diÃ¡rias para 02 pessoas (check in quinta). Primeiro de Maio ",1000,499,50,374,0
+634,76,"03 diÃ¡rias para 02 pessoas (check in quinta). Corpus Christi",1000,499,50,374,0
+633,76,"02 diÃ¡rias para 02 pessoas",320,159,50,119,0
+694,77,"02 diÃ¡rias para 02 pessoas",486,243,50,182,0
+656,78,"03 diÃ¡rias para 02 pessoas (Primeiro de Maio) ",1200,469,58,351,0
+657,78,"03 diÃ¡rias para 02 pessoas Corpus Christi ",1200,469,58,351,0
+658,78,"02 diÃ¡rias para 02 pessoas (dias de semana)",680,289,58,216,0
+659,78,"02 diÃ¡rias para 02 pessoas (finais de semana)",1020,429,58,321,0
+619,79,"2 diÃ¡rias para FDS em julho",1520,759,50,509,15
+618,79,"2 diarias durante a semana em junho ou agosto",480,239,50,160,40
+617,79,"2 diÃ¡rias para FDS em junho ou agosto",980,489,50,328,15
+616,79,"2 diÃ¡rias para FDS de 01/09/14 a 15/12/14",720,299,50,207,0
+615,79,"2 diÃ¡rias durante a semana de 04/04/14 a 15/12/14, exceto junho, julho e agosto",350,149,62,99,0
+620,79,"2 diÃ¡rias durante a semana em julho",960,479,50,321,30
+624,80,"02 diÃ¡rias para 02 pessoas (finais de semana)",600,299,50,224,0
+623,80,"02 diÃ¡rias para 02 pessoas (dias de semana)",500,249,50,186,0
+625,81,"2 diÃ¡rias",700,199,67,149,60
+626,81,"3 diÃ¡rias",1050,299,67,224,25
+627,81,"5 diÃ¡rias",1750,499,67,374,15
+628,81,"Dia do trabalho ",2300,999,57,749,5
+629,81,"Corpus Christi",2300,999,57,749,5
+655,82,"Corpus Christi (19/06/2014 a 22/06/2014)",1800,899,50,672,20
+654,82,"Dia do trabalho (01/05/14 a 04/05/2014)",1800,899,50,655,20
+652,82,"3 diÃ¡rias ",1170,579,50,413,0
+653,82,"5 diÃ¡rias ",1900,969,50,689,0
+651,82,"2 diÃ¡rias ",780,392,50,275,0
+710,84,"02 diÃ¡rias para 02 pessoas + drink cortesia de abril a outubro",690,249,63,164,0
+693,83,"03 diÃ¡rias para 02 pessoas (Primeiro de Maio)",1200,469,58,351,0
+692,83,"02 diÃ¡rias para 02 pessoas (finais de semana)",680,339,50,254,0
+691,83,"02 diÃ¡rias para 02 pessoas (dias de semana)",680,289,58,216,0
+709,84,"02 diÃ¡rias para 02 pessoas + 01 jantar + passeio de barco",1038,359,66,269,0
+708,85,"03 diÃ¡rias para 02 pessoas (Dia do Trabalho)",1347,499,62,359,0
+707,85,"02 diÃ¡rias para 02 pessoas em final de semana ",898,349,61,251,0
+706,85,"01 diÃ¡ria durante a semana",449,119,73,85,0
+736,86,"Corpus Christi (3 diÃ¡rias)",700,349,50,255,5
+737,86,"Dia do trabalho (3 diÃ¡rias)",700,349,50,255,5
+738,86,"3 diÃ¡rias",690,339,50,255,100
+735,86,"2 diÃ¡rias",460,229,50,170,100

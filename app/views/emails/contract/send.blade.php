@@ -24,22 +24,13 @@ a{
             <td align="left" style="font-size:30px; font-family:Arial, Helvetica, sans-serif; font-weight:bold; color:#f0cf31; font-style:italic;">{{ $name }}</td>
           </tr>
           <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:#FFF;">É muito bom ter vocês conosco</td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:#FFF;">Você tem um novo contrato (ID: {{ $id }}) disponível.</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Foi criada uma conta para vocês no <a href="https://www.innbativel.com.br/painel">painel administrativo do INNBatível</a>, onde podem realizar ações como assinar contratos digitais, validar cupons e acompanhar suas vendas.</td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:19px; color:#FFF; font-style:italic; color:#f0cf31;"><a href="http://innbativel.com.br/recuperar/senha/{{ $token }}" style="font-family:Arial, Helvetica, sans-serif; font-size:20px; color:#FFF; font-style:italic; color:#f0cf31;">Antes de mais nada, clique aqui para criar uma senha para o e-mail {{ $email }}</a></td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Você pode acessá-lo e assiná-lo {{ link_to_route('painel.contract.get_sign', 'aqui', ['id' => $id]) }}, através do painel de controle do anunciante parceiro da INNBatível.</td>
           </tr>
           <tr>
             <td>&nbsp;</td>

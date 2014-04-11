@@ -19,7 +19,7 @@
 
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //         $stmt = $pdo->prepare('INSERT INTO saveme (id, title, geocode) VALUES (?, ?, ?)');
-//         $stmt->execute($columns);
+//         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 
 //     $lexer->parse(app_path().'/database/seeds/assets/saveme.csv', $interpreter);

@@ -18,7 +18,7 @@
 
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //         $stmt = $pdo->prepare('INSERT INTO users_indications (id, user_id, name, email, created_at) VALUES (?, ?, ?, ?, ?)');
-//         $stmt->execute($columns);
+//         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 
 //     $lexer->parse(app_path().'/database/seeds/assets/users_indications.csv', $interpreter);
