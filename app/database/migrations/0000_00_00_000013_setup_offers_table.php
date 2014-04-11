@@ -50,6 +50,7 @@ class SetupOffersTable extends Migration {
 		$table->boolean('in_pre_booking')->default(false);
 		$table->integer('display_order')->default(99); // ordem das ofertas na home, em categorias e em qualquer outro lugar
 		$table->boolean('is_available')->default(false);
+		$table->boolean('is_product')->default(false);
 		$table->integer('pre_booking_order')->default(99);
 
 		/*
