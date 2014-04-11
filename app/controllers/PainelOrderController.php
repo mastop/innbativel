@@ -107,7 +107,7 @@ class PainelOrderController extends BaseController {
 		if($offers->count() < 1){
 			// nenhuma oferta
 			$error = 'Nenhum voucher (nenhuma venda) para a oferta.';
-			return Redirect::route('paienl.order.offers')
+			return Redirect::route('painel.order.offers')
 						   ->withErrors($error);
 		}
 
@@ -151,7 +151,10 @@ class PainelOrderController extends BaseController {
 			$vouchers = $vouchers->where('id', Input::get('id'));
 		}
 
-		$vouchers = $vouchers->with(['order'])
+		$vouchers = $vouchers->with(['order', 
+									 'offer_option' => function($query){
+									 	$query->with(['offer']);
+									 }])
 							 ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('offers')
@@ -335,6 +338,27 @@ class PainelOrderController extends BaseController {
 		// $exporter = new Exporter($config);
 
 		// $exporter->export('php://output', $spreadsheet);
+	}
+
+	public function postUpdateTrackCode($id){
+		$voucher = Voucher::find($id);
+
+		if (is_null($voucher))
+		{
+			return Redirect::back();
+		}
+
+		// Ideia para quando o usuário comprar uma quantidade N maior que 1 do mesmo item, e que vai gerar N vouchers
+		// (e será entregue com o mesmo código de rastreamente para todos): no modal, colocar checkbox: 
+		// inserir codigo de rastreamento nos demais vouchers da mesma compra?
+		// se estiver checado, basta carregar todos os vouchers da mesma compra do produto com mesmo order_id e offer_option_id
+
+		$tracking_code = Input::get('tracking_code');
+		$voucher->tracking_code = $tracking_code;
+		$voucher->save();
+
+		Session::flash('success', 'Voucher com código #'.$id.' teve o código de reastreamento atualizado para '.$tracking_code.' com sucesso.');
+		return Redirect::back();
 	}
 
 }
