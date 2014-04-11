@@ -103,13 +103,15 @@ class PainelContractController extends BaseController {
 
 	public function getView($id)
 	{
-		$contract = $this->contract->with(['consultant', 'partner'])->find($id);
-		$contract_options = $this->contract_option->where('contract_id',$id)->get();
+		$contract = $this->contract->with(['consultant', 'partner'])->where('partner_id', Auth::user()->id)->find($id);
 
 		if (is_null($contract))
 		{
+			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
 			return Redirect::route('painel.contract');
 		}
+
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
 
 		/*
 		 * Layout / View
@@ -126,13 +128,15 @@ class PainelContractController extends BaseController {
 
 	public function getPrint($id)
 	{
-		$contract = $this->contract->with(['consultant', 'partner'])->find($id);
-		$contract_options = $this->contract_option->where('contract_id',$id)->get();
+		$contract = $this->contract->with(['consultant', 'partner'])->where('partner_id', Auth::user()->id)->find($id);
 
 		if (is_null($contract))
 		{
+			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
 			return Redirect::route('painel.contract');
 		}
+
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
 
 		/*
 		 * Layout / View

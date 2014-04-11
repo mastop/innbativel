@@ -131,12 +131,14 @@ class AdminContractController extends BaseController {
 	public function getView($id)
 	{
 		$contract = $this->contract->with(['consultant', 'partner'])->find($id);
-		$contract_options = $this->contract_option->where('contract_id',$id)->get();
 
 		if (is_null($contract))
 		{
+			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
 			return Redirect::route('admin.contract');
 		}
+
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
 
 		/*
 		 * Layout / View
@@ -157,6 +159,7 @@ class AdminContractController extends BaseController {
 
 		if (is_null($contract))
 		{
+			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
 			return Redirect::route('admin.contract');
 		}
 
@@ -193,12 +196,14 @@ class AdminContractController extends BaseController {
 	public function getPrint($id)
 	{
 		$contract = $this->contract->with(['consultant', 'partner'])->find($id);
-		$contract_options = $this->contract_option->where('contract_id',$id)->get();
 
 		if (is_null($contract))
 		{
+			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
 			return Redirect::route('admin.contract');
 		}
+
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
 
 		/*
 		 * Layout / View
@@ -341,12 +346,14 @@ class AdminContractController extends BaseController {
 	public function getEdit($id)
 	{
 		$contract = $this->contract->find($id);
-		$contract_options = $this->contract_option->where('contract_id',$id)->get();
 
 		if (is_null($contract))
 		{
+			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
 			return Redirect::route('admin.contract');
 		}
+
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
 
 		/*
 		 * Layout / View
@@ -456,6 +463,7 @@ class AdminContractController extends BaseController {
 
 		if (is_null($contract))
 		{
+			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
 			return Redirect::route('admin.contract');
 		}
 
