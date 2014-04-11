@@ -70,14 +70,23 @@ foreach ($required_paths as $required_path) {
 
 // Macro para adicionar o campo de imagem com upload
 
-HTML::macro('ImageUpload', function($name, $label)
+HTML::macro('ImageUpload', function($name, $label, $multiple = false)
 {
+    $filefield = ($multiple) ? '<input id="'.$name.'_file" type="file" name="'.$name.'_file[]" class="fileupload" accept="image/*" multiple>' : '<input id="'.$name.'_file" type="file" name="'.$name.'_file" class="fileupload" accept="image/*">';
+    $hiddenfield = ($multiple) ? '<input id="'.$name.'" type="hidden" name="'.$name.'[]" class="fileuploaded" value="">' : '<input id="'.$name.'" type="hidden" name="'.$name.'" class="fileuploaded" value="">';
+    $text = ($multiple) ? 'Arraste as imagens até aqui' : 'Arraste a imagem até aqui';
+    $multipleDiv = '<div class="clearfix"></div><div class="multifiles">
+                         <div class="multifile">
+                            '.Button::danger('<span class="icon icon-remove"> Remover</span>', ['class'=>'btn-mini']).'
+                            '.$hiddenfield.'
+                         </div>
+                    </div>';
     return '<div class="control-group">
             <label for="'.$name.'_file" class="control-label">'.$label.'</label>
             <div class="controls">
                 <div class="fade well dropzone span12">
                     <div class="dropinfo">
-                        Arraste a imagem até aqui.
+                        '.$text.'
                         <p>(ou clique)</p>
                     </div>
                     <div class="progress" style="display: none">
@@ -87,8 +96,8 @@ HTML::macro('ImageUpload', function($name, $label)
                         '.Button::danger('<span class="icon icon-remove"> Remover</span>', ['class'=>'btn-mini']).'
                     </div>
                 </div>
-                <input id="'.$name.'_file" type="file" name="file" class="fileupload" accept="image/*">
-                <input id="'.$name.'_uploaded" type="hidden" name="'.$name.'" class="fileuploaded" value="">
+                '.$filefield.$hiddenfield.'
+                '.(($multiple) ? $multipleDiv : '').'
             </div>
         </div>';
 });
