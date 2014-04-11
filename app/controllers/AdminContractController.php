@@ -134,7 +134,7 @@ class AdminContractController extends BaseController {
 
 		if (is_null($contract))
 		{
-			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
 			return Redirect::route('admin.contract');
 		}
 
@@ -159,7 +159,7 @@ class AdminContractController extends BaseController {
 
 		if (is_null($contract))
 		{
-			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
 			return Redirect::route('admin.contract');
 		}
 
@@ -182,7 +182,7 @@ class AdminContractController extends BaseController {
 		 * Layout / View
 		 */	
 
-		Session::flash('success', 'Contrato (ID: '.$id.') disponibilizado e enviado para '.$name.' com sucesso.');
+		Session::flash('success', 'Contrato ID: '.$id.' disponibilizado e enviado para '.$name.' com sucesso.');
 
 		return Redirect::back();
 	}
@@ -199,7 +199,7 @@ class AdminContractController extends BaseController {
 
 		if (is_null($contract))
 		{
-			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
 			return Redirect::route('admin.contract');
 		}
 
@@ -317,7 +317,7 @@ class AdminContractController extends BaseController {
 
 			// FIM E-MAIL
 
-			Session::flash('success', 'Contrato (ID: '.$id.') cadastrado com sucesso.');
+			Session::flash('success', 'Contrato ID: '.$id.' cadastrado com sucesso.');
 
 			return Redirect::route('admin.contract');
 		}
@@ -342,7 +342,7 @@ class AdminContractController extends BaseController {
 
 		if (is_null($contract))
 		{
-			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
 			return Redirect::route('admin.contract');
 		}
 
@@ -456,7 +456,7 @@ class AdminContractController extends BaseController {
 
 		if (is_null($contract))
 		{
-			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
 			return Redirect::route('admin.contract');
 		}
 

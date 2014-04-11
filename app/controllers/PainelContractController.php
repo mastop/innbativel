@@ -107,7 +107,7 @@ class PainelContractController extends BaseController {
 
 		if (is_null($contract))
 		{
-			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
 			return Redirect::route('painel.contract');
 		}
 
@@ -132,7 +132,7 @@ class PainelContractController extends BaseController {
 
 		if (is_null($contract))
 		{
-			Session::flash('error', 'Contrato (ID: '.$id.') inválido.');
+			Session::flash('error', 'Contrato ID: '.$id.' inválido.');
 			return Redirect::route('painel.contract');
 		}
 
@@ -154,7 +154,28 @@ class PainelContractController extends BaseController {
 
 	public function getSign($id)
 	{
-		
+		$contract = $this->contract->with(['consultant', 'partner'])->where('partner_id', Auth::user()->id)->where('is_signed', false)->find($id);
+
+		if (is_null($contract))
+		{
+			Session::flash('error', 'Contrato ID: '.$id.' inválido ou já assinado.');
+			return Redirect::route('painel.contract');
+		}
+
+		$contract_options = $this->contract_option->where('contract_id',$id)->get();
+
+		$ip = getenv('HTTP_CLIENT_IP')?:
+              getenv('HTTP_X_FORWARDED_FOR')?:
+              getenv('HTTP_X_FORWARDED')?:
+              getenv('HTTP_FORWARDED_FOR')?:
+              getenv('HTTP_FORWARDED')?:
+              getenv('REMOTE_ADDR');
+
+		/*
+		 * Layout / View
+		 */
+
+		$this->layout->content = View::make('painel.contract.sign', compact('contract', 'contract_options', 'ip'));
 	}
 
 	/**
@@ -165,7 +186,44 @@ class PainelContractController extends BaseController {
 
 	public function postSign($id)
 	{
-		
+		$agreed = Input::get('agreed');
+
+		$ip = getenv('HTTP_CLIENT_IP')?:
+              getenv('HTTP_X_FORWARDED_FOR')?:
+              getenv('HTTP_X_FORWARDED')?:
+              getenv('HTTP_FORWARDED_FOR')?:
+              getenv('HTTP_FORWARDED')?:
+              getenv('REMOTE_ADDR');
+
+		if($agreed)
+		{
+			$contract = $this->contract->find($id);
+
+			$contract->ip = $ip;
+			$contract->is_signed = true;
+			$contract->signed_at = date('Y-m-d H:i:s');
+
+			$contract->save();
+
+			// INÍCIO E-MAIL
+
+			$partner = Profile::where('user_id', $contract->partner_id)->first();
+
+			$partner_name = $partner->first_name.(isset($partner->last_name)?' '.$partner->last_name:'');
+
+			$data = array('partner_name' => $partner_name, 'id' => $id);
+			
+	    	Mail::send('emails.contract.sign', $data, function($message) use($partner_name, $id){
+				$message->to('contrato@innbativel.com.br', 'INNBatível')
+						->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
+						->setSubject('O contrato ID: '.$id.' foi assinado | Parceiro: '.$partner_name);
+			});
+
+			// FIM E-MAIL
+
+			Session::flash('success', 'Contrato assinado com sucesso.');
+			return Redirect::route('painel.contract.view', $id);
+		}
 	}
 
 }
