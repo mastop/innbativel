@@ -41,7 +41,6 @@ class DatabaseSeeder extends Seeder {
 		$this->call('VouchersTableSeeder');
 		$this->call('ConfigurationsTableSeeder');
 		$this->call('FaqsTableSeeder');
-		$this->call('PreBookingsTableSeeder');
 		$this->call('TellUsTableSeeder');
 		$this->call('PartnersTestimoniesTableSeeder');
 		$this->call('SuggestATripTableSeeder');

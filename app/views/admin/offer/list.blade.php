@@ -7,7 +7,6 @@
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.offer.create') }}" title="Criar Oferta" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
 	            <a href="{{ route('admin.offer.sort') }}" title="Ordenar Ofertas" class="dropdown-toggle navbar-icon"><i class="icon-random"></i></a>
-				<a href="{{ route('admin.offer.sort_pre_booking') }}" title="Ordenar Ofertas em Pré-reservas" class="dropdown-toggle navbar-icon"><i class="icon-random"></i></a>
 				<a href="{{ route('admin.offer.newsletter') }}" title="Gerar Newsletter" class="dropdown-toggle navbar-icon"><i class="icon-envelope"></i></a>
 	        </div>
 		</div>
@@ -23,11 +22,6 @@
 			{{ Former::select('genre_id', 'Gênero')
 	        	->addOption('', null)
 				->fromQuery(DB::table('genres')->get(['title', 'id']), 'title', 'id')
-	        }}
-			{{ Former::select('in_pre_booking', 'Em pré-reservas?')
-	        	->addOption('', null)
-	        	->addOption('Sim', 1)
-	        	->addOption('Não', 0)
 	        }}
 			{{ Former::date('starts_on')->class('input-medium')->placeholder('Data início')->label('Data início') }}
 			{{ Former::date('ends_on')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
@@ -50,15 +44,12 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('ID', 'Título', 'Destino', 'Início', 'Fim', 'Em pré-reservas?', 'Ações') }}
+	{{ Table::headers('ID', 'Título', 'Destino', 'Início', 'Fim', 'Ações') }}
 	{{ Table::body($offer)
 		->ignore(['destiny', 'partner'])
         ->destiny_id__noreplace__(function($body) {
             return $body->getFullDestinnyAttribute();
         })
-        ->in_pre_booking__noreplace__(function($body) {
-			return ($body->in_pre_booking == 0)?'Não':'Sim';
-		})
         ->starts_on__noreplace__(function($body) {
             $phpdate = strtotime( $body->starts_on );
             return date( 'd/m/Y H:i:s', $phpdate );
@@ -68,26 +59,13 @@
             return date( 'd/m/Y H:i:s', $phpdate );
 		})
 		->acoes(function($body) {
-			if($body->in_pre_booking == 0){
-				return DropdownButton::normal('Ações',
-					Navigation::links([
-						['Editar', route('admin.offer.edit', $body['id'])],
-						['Excluir', route('admin.offer.delete', $body['id'])],
-						['Aparecer em pré-reservas', route('admin.offer.in_pre_booking', ['id'=>$body['id'], 'in'=>1])],
-						['Ordenar comentários', route('admin.offer.sort_comment', $body['id'])],
-					])
-				)->pull_right()->split();
-			}
-			else{
-				return DropdownButton::normal('Ações',
-					Navigation::links([
-						['Editar', route('admin.offer.edit', $body['id'])],
-						['Excluir', route('admin.offer.delete', $body['id'])],
-						['Não aparecer em pré-reservas', route('admin.offer.in_pre_booking', ['id'=>$body['id'], 'in'=>0])],
-						['Ordenar comentários', route('admin.offer.sort_comment', $body['id'])],
-					])
-				)->pull_right()->split();
-			}
+			return DropdownButton::normal('Ações',
+				Navigation::links([
+					['Editar', route('admin.offer.edit', $body['id'])],
+					// ['Excluir', route('admin.offer.delete', $body['id'])],
+					['Ordenar comentários', route('admin.offer.sort_comment', $body['id'])],
+				])
+			)->pull_right()->split();
 		})
 	}}
 	{{ Table::close() }}

@@ -122,23 +122,17 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::get('offer/edit/{id}', ['as' => 'admin.offer.edit', 'uses' => 'AdminOfferController@getEdit']);
 	Route::post('offer/edit/{id}', ['as' => 'admin.offer.update', 'uses' => 'AdminOfferController@postEdit']);
 
-	Route::any('offer/delete', function(){ return Redirect::route('admin.offer'); });
-	Route::get('offer/delete/{id}', ['as' => 'admin.offer.delete', 'uses' => 'AdminOfferController@getDelete']);
-	Route::post('offer/delete/{id}', ['as' => 'admin.offer.destroy', 'uses' => 'AdminOfferController@postDelete']);
+	// Route::any('offer/delete', function(){ return Redirect::route('admin.offer'); });
+	// Route::get('offer/delete/{id}', ['as' => 'admin.offer.delete', 'uses' => 'AdminOfferController@getDelete']);
+	// Route::post('offer/delete/{id}', ['as' => 'admin.offer.destroy', 'uses' => 'AdminOfferController@postDelete']);
 
 	Route::get('offer/clearfield/{id}/{field}', ['as' => 'admin.offer.clearfield', 'uses' => 'AdminOfferController@getClearfield']);
 
 	Route::get('offer/sort', ['as' => 'admin.offer.sort', 'uses' => 'AdminOfferController@getSort']);
 	Route::post('offer/sort', ['as' => 'admin.offer.save_sort', 'uses' => 'AdminOfferController@postSort']);
 
-	Route::get('offer/sort_pre_booking', ['as' => 'admin.offer.sort_pre_booking', 'uses' => 'AdminOfferController@getSortPreBooking']);
-	Route::post('offer/sort_pre_booking', ['as' => 'admin.offer.save_sort_pre_booking', 'uses' => 'AdminOfferController@postSortPreBooking']);
-
 	Route::get('offer/sort_comment/{id}', ['as' => 'admin.offer.sort_comment', 'uses' => 'AdminOfferController@getSortComment']);
 	Route::post('offer/sort_comment/{offer_id}', ['as' => 'admin.offer.save_sort_comment', 'uses' => 'AdminOfferController@postSortComment']);
-
-	Route::any('offer/in_pre_booking', function(){ return Redirect::route('admin.offer'); });
-	Route::get('offer/in_pre_booking/{id}/{in}', ['as' => 'admin.offer.in_pre_booking', 'uses' => 'AdminOfferController@getInPreBooking']);
 
 	Route::get('offer/newsletter', ['as' => 'admin.offer.newsletter', 'uses' => 'AdminOfferController@getNewsletter']);
 	Route::post('offer/newsletter', ['as' => 'admin.offer.generate_newsletter', 'uses' => 'AdminOfferController@postNewsletter']);
@@ -371,15 +365,6 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('suggest/delete', function(){ return Redirect::route('admin.suggest'); });
 	Route::get('suggest/delete/{id}', ['as' => 'admin.suggest.delete', 'uses' => 'AdminSuggestATripController@getDelete']);
 	Route::post('suggest/delete/{id}', ['as' => 'admin.suggest.destroy', 'uses' => 'AdminSuggestATripController@postDelete']);
-
-	/*
-	 * Pre Bookings
-	 */
-
-	Route::any('prebooking', ['as' => 'admin.prebooking', 'uses' => 'AdminPreBookingController@anyIndex']);
-
-	Route::any('prebooking/export', function(){ return Redirect::route('admin.prebooking'); });
-	Route::get('prebooking/export/{offer_id?}/{destiny?}/{name?}/{email?}', ['as' => 'admin.prebooking.export', 'uses' => 'AdminPreBookingController@getExport']);
 
 	/*
 	 * User Indication

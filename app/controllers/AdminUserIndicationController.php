@@ -229,31 +229,6 @@ class AdminUserIndicationController extends BaseController {
 	//  * @return Response
 	//  */
 
-	// public function getDelete($id)
-	// {
-	// 	$indication = $this->indication->find($id);
-
-	// 	if (is_null($indication))
-	// 	{
-	// 		return Redirect::route('admin.indication');
-	// 	}
-
-	// 	Session::flash('error', 'Você tem certeza que deleja excluir esta pré reserva? Esta operação não poderá ser desfeita.');
-
-	// 	$data['prebookingData'] = $indication->toArray();
-	// 	$data['prebookingArray'] = null;
-
-	// 	foreach ($data['prebookingData'] as $key => $value) {
-	// 		$data['prebookingArray'][Lang::get('prebooking.'. $key)] = $value;
-	// 	}
-
-	// 	/*
-	// 	 * Layout / View
-	// 	 */
-
-	// 	$this->layout->content = View::make('admin.indication.delete', $data);
-	// }
-
 	// /**
 	//  * Delete User Indication.
 	//  *

@@ -35,10 +35,6 @@ class Offer extends Eloquent {
 		return $this->hasMany('Order');
 	}
 
-	public function pre_booking(){
-		return $this->hasMany('PreBooking');
-	}
-
 	public function comment(){
 		return $this->hasMany('Comment')->orderBy('display_order', 'asc');
 	}
