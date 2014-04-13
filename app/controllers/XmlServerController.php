@@ -31,10 +31,10 @@ class XmlServerController extends BaseController {
 		$data['offers'] =
 		DB::select('SELECT 	o.id, d.name AS destiny, o.saveme_title, o.slug, o.starts_on, o.ends_on, o.cover_img, op.price_original, op.price_with_discount, op.percent_off, op.max_qty, op.voucher_validity_end, p.first_name, p.last_name,
 						(
-						SELECT SUM( orop.qty )
-						FROM orders_offers_options AS orop
-						LEFT JOIN orders AS ord ON orop.order_id = ord.id
-						WHERE orop.offer_option_id = op.id AND (ord.status =  "aprovado"OR ord.status =  "pago")
+						SELECT COUNT( v.id )
+						FROM vouchers AS v
+						LEFT JOIN orders AS ord ON v.order_id = ord.id
+						WHERE v.offer_option_id = op.id AND v.status =  "pago" AND ord.status =  "pago"
 						) AS sold_qty
 					FROM offers AS o
 					LEFT JOIN offers_options AS op ON o.id = op.offer_id
@@ -150,8 +150,8 @@ class XmlServerController extends BaseController {
 			return Response::make(View::make('xml.snowland_valida', $data), 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
 		}
 
-		if(!in_array($voucher[0]['order']['status'], ['aprovado', 'pago'])){
-			if(in_array($voucher[0]['order']['status'], ['iniciado', 'revisao', 'pendente', 'nao_finalizado'])){
+		if($voucher[0]['order']['status'] != 'pago'){
+			if(in_array($voucher[0]['order']['status'], ['revisao', 'pendente'])){
 				$data['result'] = [
 					'valido' => 'false',
 					'erro' => 6,
@@ -298,7 +298,7 @@ class XmlServerController extends BaseController {
 			return Response::make(View::make('xml.snowland_utiliza', $data), 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
 		}
 
-		if(!in_array($voucher[0]['order']['status'], ['aprovado', 'pago'])){
+		if($voucher[0]['order']['status'] != 'pago'){
 			if(in_array($voucher[0]['order']['status'], ['iniciado', 'revisao', 'pendente', 'nao_finalizado'])){
 				$data['result'] = [
 					'utilizado' => 'false',

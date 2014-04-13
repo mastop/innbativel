@@ -23,8 +23,10 @@ class SetupVouchersTable extends Migration {
          * Fields
          */
 		$table->increments('id');
-		$table->integer('offer_option_id')->unsigned()->index();
 		$table->integer('order_id')->unsigned()->index();
+        $table->integer('offer_option_id')->unsigned()->index();
+        $table->integer('subtotal')->nullable();
+        $table->enum('status', array('pendente', 'pago', 'cancelado'))->default('pendente');
 		$table->boolean('used')->default(false);
 		$table->string('display_code')->nullable();
 		$table->string('name')->nullable();

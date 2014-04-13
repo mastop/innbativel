@@ -17,17 +17,10 @@
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::select('status', 'Status')
 	        	->addOption('', '')
-	        	->addOption('Iniciado', 'iniciado')
-	        	->addOption('Aprovado', 'aprovado')
-	        	->addOption('Rejeitado', 'rejeitado')
 	        	->addOption('Revisão', 'revisao')
 	        	->addOption('Pendente', 'pendente')
-	        	->addOption('Não finalizado', 'nao_finalizado')
-	        	->addOption('Abortado', 'abortado')
-	        	->addOption('Estornado', 'estornado')
 	        	->addOption('Cancelado', 'cancelado')
 	        	->addOption('Pago', 'pago')
-	        	->addOption('Não pago', 'nao_pago')
 	        }}
 	        {{ Former::select('terms', 'Meio de pagamento')
 	        	->addOption('', '')
@@ -88,7 +81,7 @@
 			    ])
 			)->pull_right()->split();
 		}
-	    else if($order['status'] == 'aprovado' && date('d/m/Y') == date('d/m/Y',strtotime($order['capture_date']))){
+	    else if($order['status'] == 'pago' && strpos($order['payment_terms'], 'Cartão') !== false && date('d/m/Y') == date('d/m/Y',strtotime($order['capture_date']))){
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
 					['Cancelar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'cancelar\', \''.$order['braspag_order_id_string'].'\');'],
@@ -96,7 +89,7 @@
 			    ])
 			)->pull_right()->split();
 	    }
-	    else if($order['status'] == 'aprovado' && date('d/m/Y') != date('d/m/Y',strtotime($order['capture_date']))){
+	    else if($order['status'] == 'pago' && strpos($order['payment_terms'], 'Cartão') !== false && date('d/m/Y') != date('d/m/Y',strtotime($order['capture_date']))){
 	        return DropdownButton::normal('Ações',
 			  	Navigation::links([
 					['Estornar', 'javascript: action(\''.route('admin.order.void', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'estornar\', \''.$order['braspag_order_id_string'].'\');'],

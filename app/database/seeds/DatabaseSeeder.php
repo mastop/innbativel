@@ -37,7 +37,6 @@ class DatabaseSeeder extends Seeder {
 		$this->call('CommentsTableSeeder');
 		$this->call('DiscountsCouponsTableSeeder');
 		$this->call('OrdersTableSeeder');
-		$this->call('OrdersOffersOptionsTableSeeder');
 		$this->call('VouchersTableSeeder');
 		$this->call('ConfigurationsTableSeeder');
 		$this->call('FaqsTableSeeder');
@@ -45,7 +44,10 @@ class DatabaseSeeder extends Seeder {
 		$this->call('PartnersTestimoniesTableSeeder');
 		$this->call('SuggestATripTableSeeder');
 		$this->call('ContractsTableSeeder');
-		$this->call('ContractOptionsTableSeeder');
+		$this->call('ContractsOptionsTableSeeder');
+		$this->call('PaymentsTableSeeder');
+		$this->call('PaymentsPartnersTableSeeder');
+		$this->call('PaymentsPartnersVouchersTableSeeder');
 	}
 
 }

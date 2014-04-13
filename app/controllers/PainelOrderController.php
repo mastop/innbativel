@@ -66,7 +66,7 @@ class PainelOrderController extends BaseController {
     		$offersOptions = $offersOptions->where('offer_id', Input::get('offer_id'));
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'offer', 'used_vouchers'])
+		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'offer'])
 									   ->whereExists(function($query){
 							                if (Input::has('starts_on') || Input::has('ends_on')) {
 												$query->select(DB::raw(1))
@@ -104,6 +104,9 @@ class PainelOrderController extends BaseController {
 
 		$offers = Offer::with(['offer_option'])->where('partner_id', Auth::user()->id)->get();
 
+		// Exibe somente vouchers pagos
+		$vouchers = $vouchers->where('status', 'pago');
+
 		if($offers->count() < 1){
 			// nenhuma oferta
 			$error = 'Nenhum voucher (nenhuma venda) para a oferta.';
@@ -114,7 +117,7 @@ class PainelOrderController extends BaseController {
 		// $offersOptions irá preencher o <select> da opção da qual estamos visualizando os vouchers/cupons
 		foreach ($offers as $offer) {
 			foreach ($offer['offer_option'] as $offer_option) {
-				$t = $offer->id.' | '.$offer['destiny']->name.' | '.$offer_option->title;
+				$t = $offer->id.' | '.$offer->title.' | '.$offer_option->title;
 				$offersOptions[$offer_option->id] = $t;
 			}
 		}
@@ -151,10 +154,7 @@ class PainelOrderController extends BaseController {
 			$vouchers = $vouchers->where('id', Input::get('id'));
 		}
 
-		$vouchers = $vouchers->with(['order', 
-									 'offer_option' => function($query){
-									 	$query->with(['offer']);
-									 }])
+		$vouchers = $vouchers->with(['order', 'offer_option'])
 							 ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('offers')
@@ -165,7 +165,7 @@ class PainelOrderController extends BaseController {
 							 ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('orders')
-				 		                  ->whereRaw('orders.status IN ("aprovado", "pago")')
+				 		                  ->whereRaw('orders.status = "pago"')
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
 							 ->orderBy($sort, $order)
@@ -185,18 +185,20 @@ class PainelOrderController extends BaseController {
 		$this->layout->content = View::make('painel.order.voucher', compact('sort', 'order', 'pag', 'offer_option_id', 'vouchers', 'offersOptions'));
 	}
 
-	public function getSchedule($id, $used, $offer_option_id = null){
+	public function getSchedule($id, $used){
 		$voucher = Voucher::find($id);
 
 		if (is_null($voucher))
 		{
-			return Redirect::route('painel.order.voucher', ['offer_option_id' => $offer_option_id]);
+			Session::flash('error', 'Voucher com código #'.$id.' invlido.');
+			return Redirect::back();
 		}
 
-		$voucher->used = ($used == 0)?0:1;
+		$voucher->used = ($used == 0)?false:true;
 		$voucher->save();
 
-		return Redirect::route('painel.order.voucher', ['offer_option_id' => $offer_option_id]);
+		Session::flash('success', 'Voucher com código #'.$id.' foi '.(($used == 0)?'desagendado':'agendado').' com sucesso.');
+		return Redirect::back();
 	}
 
 	public function getVoucherExport($offer_option_id = null, $id = null){
@@ -204,6 +206,8 @@ class PainelOrderController extends BaseController {
 		$offer_option_id = ($offer_option_id == 'null')?null:$offer_option_id;
 
 		$vouchers = new Voucher;
+
+		$vouchers = $vouchers->where('status', 'pago');
 
 		if(isset($offer_option_id)){
 			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
@@ -224,22 +228,22 @@ class PainelOrderController extends BaseController {
 	               	   	     ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('orders')
-				 		                  ->whereRaw('orders.status IN ("aprovado", "pago")')
+				 		                  ->whereRaw('orders.status = "pago"')
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
 		 					 ->orderBy('id', 'asc')
 		 					 ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Cupom', 'Agendado?', 'Nome', 'E-mail');
+		$spreadsheet[] = array('ID da oferta', 'Cupom', 'Agendado?', 'Nome', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
 			$ss[] = $voucher['offer_option']->offer_id;
-			$ss[] = $voucher->id.'-'.$voucher->display_code;
+			$ss[] = $voucher->id.'-'.$voucher->display_code.'-'.$voucher['offer_option']->offer_id;
 			$ss[] = ($voucher->used == 1)?'Sim':'Não';
 			$ss[] = $voucher['order']->first_name.' '.$voucher['order']->last_name;
-			$ss[] = $voucher['order']->email;
+			$ss[] = $voucher->tracking_code;
 
 			$spreadsheet[] = $ss;
 		}
@@ -264,11 +268,11 @@ class PainelOrderController extends BaseController {
 		/*
 		 * Search filter
 		 */
-    	if(Input::has('offer_id')){
-    		$offersOptions = $offersOptions->where('offer_id', Input::get('offer_id'));
+    	if($offer_id){
+    		$offersOptions = $offersOptions->where('offer_id', $offer_id);
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'offer', 'used_vouchers'])
+		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'offer'])
 									   ->whereExists(function($query) use($starts_on, $ends_on){
 							                if (isset($starts_on) || isset($ends_on)) {
 												$query->select(DB::raw(1))
@@ -303,24 +307,11 @@ class PainelOrderController extends BaseController {
 			$ss[] = $offerOption['offer']->starts_on;
 			$ss[] = $offerOption['offer']->ends_on;
 			$ss[] = $offerOption->price_with_discount;
-			$ss[] = isset($offerOption['used_vouchers']{0})?$offerOption['used_vouchers']{0}->qty:'0';
 			$ss[] = $offerOption->max_qty;
 
-			$approved = 0;
-			$pending = 0;
-			$cancelled = 0;
-
-			foreach ($offerOption['qty_sold'] as $qty_sold) {
-				if(in_array($qty_sold->status, array('aprovado', 'pago'))){
-					$approved += $qty_sold['pivot']->qty;
-				}
-				else if(in_array($qty_sold->status, array('iniciado', 'revisao', 'pendente'))){
-					$pending += $qty_sold['pivot']->qty;
-				}
-				else{
-					$cancelled += $qty_sold['pivot']->qty;
-				}
-			}
+			$approved = isset($offerOption['qty_sold']{0})?$offerOption['qty_sold']{0}->qty:0;
+			$pending = isset($offerOption['qty_pending']{0})?$offerOption['qty_pending']{0}->qty:0;
+			$cancelled = isset($offerOption['qty_cancelled']{0})?$offerOption['qty_cancelled']{0}->qty:0;
 
 			$ss[] = $approved;
 			$ss[] = $pending;
@@ -332,7 +323,7 @@ class PainelOrderController extends BaseController {
 
 		print('<pre>');
 		print_r($spreadsheet);
-		print('</pre>');
+		print('</pre>'); die();
 
 		// $config = new ExporterConfig();
 		// $exporter = new Exporter($config);
@@ -340,7 +331,7 @@ class PainelOrderController extends BaseController {
 		// $exporter->export('php://output', $spreadsheet);
 	}
 
-	public function postUpdateTrackCode($id){
+	public function postUpdateTrackingCode($id){
 		$voucher = Voucher::find($id);
 
 		if (is_null($voucher))

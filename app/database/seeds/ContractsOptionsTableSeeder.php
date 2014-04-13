@@ -4,7 +4,7 @@ use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\Interpreter;
 use Goodby\CSV\Import\Standard\LexerConfig;
 
-class ContractOptionsTableSeeder extends DatabaseSeeder
+class ContractsOptionsTableSeeder extends DatabaseSeeder
 {
   public function run()
   {

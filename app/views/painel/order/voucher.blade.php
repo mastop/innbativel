@@ -41,8 +41,14 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('Chave do cupom', 'Código', 'Agendado/utilizado?', 'Nome', 'E-mail', 'Código de rastreamento', 'Ações') }}
-{{ Table::body($vouchers)->ignore(['offer_option_id', 'order_id', 'name', 'email', 'tracking_code', 'used', 'order', 'offer_option', 'created_at', 'updated_at'])
+{{ Table::headers('Chave do cupom', 'Código', 'ID da Oferta', 'Agendado/utilizado?', 'Nome', 'E-mail', 'Código de rastreamento', 'Ações') }}
+{{ Table::body($vouchers)->ignore(['offer_option_id', 'order_id', 'name', 'email', 'status', 'tracking_code', 'subtotal', 'used', 'order', 'offer_option', 'created_at', 'updated_at'])
+	->offer_id(function($voucher) {
+		if(isset($voucher->offer_option)) {
+			return $voucher->offer_option->offer_id;
+		}
+		return '?';
+	})
 	->is_used(function($voucher) {
 		if(isset($voucher)) {
 			return ($voucher->used == 1)?'Sim':'Não';
@@ -50,14 +56,14 @@
 		return '?';
 	})
 	->namee(function($voucher) {
-		if(isset($voucher['order'])) {
-			return $voucher['order']->first_name.' '.$voucher['order']->last_name;
+		if(isset($voucher)) {
+			return $voucher->name;
 		}
 		return '?';
 	})
 	->emaill(function($voucher) {
-		if(isset($voucher['order'])) {
-			return $voucher['order']->email;
+		if(isset($voucher)) {
+			return $voucher->email;
 		}
 		return '?';
 	})
@@ -69,11 +75,11 @@
 	})
 	->acoes(function($voucher) {
         if($voucher->used == 1){
-        	if($voucher->offer_option->offer->is_product){
+        	if($voucher->offer_option->is_product){
         		return DropdownButton::normal('Ações',
 				  	Navigation::links([
 						['Desagendar', 'javascript: action(\''.route('painel.order.schedule', ['id' => $voucher->id, 'used' => 0]).'\', \'desagendar\', \''.$voucher->id.'\');'],
-						['Atualizar código de rastreamento', 'javascript: update_track_code(\''.route('painel.order.update_track_code', ['id' => $voucher->id]).'\', \''.$voucher->id.'\');'],
+						['Atualizar código de rastreamento', 'javascript: update_tracking_code(\''.route('painel.order.update_tracking_code', ['id' => $voucher->id]).'\', \''.$voucher->id.'\');'],
 				    ])
 				)->pull_right()->split();
         	}
@@ -86,11 +92,11 @@
         	}
         }
         else{
-        	if($voucher->offer_option->offer->is_product){
+        	if($voucher->offer_option->is_product){
         		return DropdownButton::normal('Ações',
 				  	Navigation::links([
 						['Agendar', 'javascript: action(\''.route('painel.order.schedule', ['id' => $voucher->id, 'used' => 1]).'\', \'agendar\', \''.$voucher->id.'\');'],
-						['Atualizar código de rastreamento', 'javascript: update_track_code(\''.route('painel.order.update_track_code', ['id' => $voucher->id]).'\', \''.$voucher->id.'\');'],
+						['Atualizar código de rastreamento', 'javascript: update_tracking_code(\''.route('painel.order.update_tracking_code', ['id' => $voucher->id]).'\', \''.$voucher->id.'\');'],
 				    ])
 				)->pull_right()->split();
         	}
@@ -101,7 +107,6 @@
 				    ])
 				)->pull_right()->split();
         	}
-	        	
         }
 	})
 }}
@@ -127,10 +132,10 @@ function action(url, action, voucher_id){
 }
 
 function submit_action(url){
-	window.location.href = url + '{{ $offer_option_id }}';
+	window.location.href = url;
 }
 
-function update_track_code(url, voucher_id){
+function update_tracking_code(url, voucher_id){
 	var href = url;
 	var message = 'Insira o código de rastreamento do produto com chave do voucher #'+voucher_id;
 	var title = 'Código de rastreamento';

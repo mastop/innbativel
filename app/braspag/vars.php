@@ -151,11 +151,12 @@ function validateInstallment($installment, $total, $donation){
 function antifraud_status_code_2_string($status_code){
   switch ($status_code) {
     case 500:
-      return 'iniciado';
+    case 504:
+      return 'pendente';
       break;
 
     case 501:
-      return 'aprovado';
+      return 'pago';
       break;
 
     case 502:
@@ -163,23 +164,10 @@ function antifraud_status_code_2_string($status_code){
       break;
 
     case 503:
-      return 'rejeitado';
-      break;
-
-    case 504:
-      return 'pendente';
-      break;
-
     case 505:
-      return 'nao_finalizado';
-      break;
-
     case 506:
-      return 'abortado';
-      break;
-
     default:
-      return 'abortado';
+      return 'cancelado';
       break;
   }
 }
