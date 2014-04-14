@@ -10,7 +10,7 @@
 //   {
 //     public function run()
 //   {
-//     $pdo = new PDO('mysql:host=innbativel.ctypvw54pblq.us-east-1.rds.amazonaws.com;dbname=innbativel', 'innbativel', 'aWdh2kHAF6A3');
+//     $pdo = new PDO('mysql:host='.Config::get('database.connections.mysql.host').';dbname='.Config::get('database.connections.mysql.database'), Config::get('database.connections.mysql.username'), Config::get('database.connections.mysql.password'));
 
 //     $config = new LexerConfig();
 //     $config->setToCharset('UTF-8');
