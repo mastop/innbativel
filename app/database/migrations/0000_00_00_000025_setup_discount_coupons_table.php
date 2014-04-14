@@ -29,7 +29,7 @@ if offer_id is not null then it can be used only for an specific offer (offer_id
 		$table->integer('user_id')->unsigned()->index()->nullable();
 		$table->integer('offer_id')->unsigned()->index()->nullable();
 		$table->string('display_code')->nullable();
-		$table->integer('value')->nullable();
+		$table->decimal('value', 7, 2)->nullable();
 		$table->integer('qty')->nullable();
 		$table->integer('qty_used')->nullable();
 		$table->dateTime('starts_on')->nullable();

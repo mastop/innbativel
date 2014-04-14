@@ -32,7 +32,7 @@ class SetupProfilesTable extends Migration {
         $table->string('telephone')->nullable();
         $table->string('telephone2')->nullable();
         $table->string('img')->nullable();
-        $table->string('credit')->nullable();
+        $table->decimal('credit', 7, 2)->nullable();
         $table->string('city')->index()->nullable();
         $table->string('state')->index()->nullable();
         $table->string('country')->nullable();
