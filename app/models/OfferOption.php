@@ -37,7 +37,7 @@ class OfferOption extends Eloquent {
 	}
 
 	public function order(){
-		return $this->hasMany('OrderOfferOption', 'orders_offers_options', 'offer_option_id');
+		return $this->hasMany('Voucher', 'vouchers', 'offer_option_id', 'order_id');
 	}
 
 	public function offer_additional(){
