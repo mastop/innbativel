@@ -27,7 +27,8 @@ class SetupOffersOptionsTable extends Migration {
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
 		$table->integer('price_original')->nullable();
-		$table->integer('price_with_discount')->nullable();
+        $table->integer('price_with_discount')->nullable();
+		$table->integer('transfer')->nullable();
 		$table->integer('min_qty')->nullable();
 		$table->integer('max_qty')->nullable();
 		$table->integer('max_qty_per_buyer')->nullable();
