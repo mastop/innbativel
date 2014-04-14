@@ -32,7 +32,9 @@ class SetupOrdersTable extends Migration {
 		$table->integer('first_digits_card')->nullable();
 		$table->integer('holder_card')->nullable();
 		$table->integer('donation')->nullable();
-		$table->integer('total')->nullable();
+        $table->integer('total')->nullable();
+		$table->integer('card_boletus_value')->default(0);
+        $table->integer('antecipation_value')->default(0);
 		$table->integer('credit_discount')->nullable();
 		$table->string('cpf')->nullable();
 		$table->string('telephone')->nullable();
