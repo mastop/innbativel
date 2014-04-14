@@ -45,11 +45,31 @@ class OfferOption extends Eloquent {
 	}
 
 	public function qty_sold(){
-		return $this->belongsToMany('Order', 'orders_offers_options', 'offer_option_id', 'order_id')->withPivot('qty');
+		return $this->hasMany('Voucher', 'offer_option_id')
+					->where('vouchers.status', 'pago')
+					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
+					->groupBy('vouchers.offer_option_id');
+	}
+
+	public function qty_pending(){
+		return $this->hasMany('Voucher', 'offer_option_id')
+					->whereIn('vouchers.status', ['pendente', 'revisao'])
+					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
+					->groupBy('vouchers.offer_option_id');
+	}
+
+	public function qty_cancelled(){
+		return $this->hasMany('Voucher', 'offer_option_id')
+					->where('vouchers.status', 'cancelado')
+					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
+					->groupBy('vouchers.offer_option_id');
 	}
 
 	public function used_vouchers(){
-		return $this->belongsToMany('Order', 'vouchers', 'offer_option_id', 'order_id')->where('used', 1)->select(DB::raw('count(vouchers.offer_option_id) as qty'))->groupBy('vouchers.offer_option_id');
+		return $this->hasMany('Voucher', 'offer_option_id')
+					->where('vouchers.used', 1)
+					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
+					->groupBy('vouchers.offer_option_id');
 	}
 
 	public function departure_city(){

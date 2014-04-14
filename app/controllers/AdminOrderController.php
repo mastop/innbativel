@@ -96,9 +96,9 @@ class AdminOrderController extends BaseController {
 								->whereExists(function($query){
 					                if (Input::has('offer_id')) {
 										$query->select(DB::raw(1))
-						                      ->from('orders_offers_options')
-											  ->join('offers_options', 'offers_options.id', '=', 'orders_offers_options.offer_option_id')
-						                      ->whereRaw('orders_offers_options.order_id = orders.id')
+						                      ->from('vouchers')
+											  ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
+						                      ->whereRaw('vouchers.order_id = orders.id')
 						                      ->whereRaw('offers_options.offer_id = '.Input::get('offer_id'));
 									}
 
@@ -180,7 +180,7 @@ class AdminOrderController extends BaseController {
     		$offersOptions = $offersOptions->where('offer_id', Input::get('offer_id'));
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'offer', 'used_vouchers'])
+		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'offer'])
 									   ->whereExists(function($query){
 							                if (Input::has('starts_on') || Input::has('ends_on')) {
 												$query->select(DB::raw(1))
@@ -218,11 +218,11 @@ class AdminOrderController extends BaseController {
 		/*
 		 * Search filter
 		 */
-    	if(Input::has('offer_id')){
-    		$offersOptions = $offersOptions->where('offer_id', Input::get('offer_id'));
+    	if($offer_id){
+    		$offersOptions = $offersOptions->where('offer_id', $offer_id);
     	}
 
-		$offersOptions = OfferOption::with(['qty_sold', 'offer'])
+		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'offer'])
 											->whereExists(function($query) use($starts_on, $ends_on){
 								                if (isset($starts_on) || isset($ends_on)) {
 													$query->select(DB::raw(1))
@@ -253,21 +253,9 @@ class AdminOrderController extends BaseController {
 			$ss[] = $offerOption->price_with_discount;
 			$ss[] = $offerOption->max_qty;
 
-			$approved = 0;
-			$pending = 0;
-			$cancelled = 0;
-
-			foreach ($offerOption['qty_sold'] as $qty_sold) {
-				if(in_array($qty_sold->status, array('aprovado', 'pago'))){
-					$approved += $qty_sold['pivot']->qty;
-				}
-				else if(in_array($qty_sold->status, array('iniciado', 'revisao', 'pendente'))){
-					$pending += $qty_sold['pivot']->qty;
-				}
-				else{
-					$cancelled += $qty_sold['pivot']->qty;
-				}
-			}
+			$approved = isset($offerOption['qty_sold']{0})?$offerOption['qty_sold']{0}->qty:0;
+			$pending = isset($offerOption['qty_pending']{0})?$offerOption['qty_pending']{0}->qty:0;
+			$cancelled = isset($offerOption['qty_cancelled']{0})?$offerOption['qty_cancelled']{0}->qty:0;
 
 			$ss[] = $approved;
 			$ss[] = $pending;
@@ -277,14 +265,14 @@ class AdminOrderController extends BaseController {
 			$spreadsheet[] = $ss;
 		}
 
-		// print('<pre>');
-		// print_r($spreadsheet);
-		// print('</pre>');
+		print('<pre>');
+		print_r($spreadsheet);
+		print('</pre>'); die();
 
-		$config = new ExporterConfig();
-		$exporter = new Exporter($config);
+		// $config = new ExporterConfig();
+		// $exporter = new Exporter($config);
 
-		$exporter->export('php://output', $spreadsheet);
+		// $exporter->export('php://output', $spreadsheet);
 	}
 
 	public function getListPaymExport($status, $terms, $name, $email, $braspag_order_id, $offer_id, $date_start, $date_end){
@@ -307,7 +295,7 @@ class AdminOrderController extends BaseController {
 		 * Search filters
 		 */
 		if ($status) {
-			$orderData = $orderData->where('status', '=', $status);
+			$orderData = $orderData->where('status', $status);
 		}
 
 		if ($terms) {
@@ -326,13 +314,13 @@ class AdminOrderController extends BaseController {
 			$orderData = $orderData->where('created_at', '<=', $date_end);
 		}
 
-		$orderArray = $orderData->with(['user', 'offer'])
+		$orderArray = $orderData->with(['user', 'voucher_offer'])
 								->whereExists(function($query) use($offer_id){
 					                if ($offer_id) {
 										$query->select(DB::raw(1))
-						                      ->from('orders_offers_options')
-											  ->join('offers_options', 'offers_options.id', '=', 'orders_offers_options.offer_option_id')
-						                      ->whereRaw('orders_offers_options.order_id = orders.id')
+						                      ->from('vouchers')
+											  ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
+						                      ->whereRaw('vouchers.order_id = orders.id')
 						                      ->whereRaw('offers_options.offer_id = '.$offer_id);
 									}
 
@@ -358,23 +346,29 @@ class AdminOrderController extends BaseController {
 								->orderBy('id', 'desc')
 								->get();
 
+		// print('<pre>');
+		// print_r($orderArray->toArray());
+		// print('</pre>'); die();
+
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID', 'Status', 'Valor', 'Forma de pagamento', 'Data e hora', 'ID das Ofertas', 'Cliente');
+		$spreadsheet[] = array('ID', 'Status', 'Valor pago', 'Itens comprados', 'Forma de pagamento', 'Data e hora', 'Cliente');
 
 		foreach ($orderArray as $order) {
 			$ss = null;
 			$ss[] = $order->id;
 			$ss[] = $order->status;
 			$ss[] = $order->total;
-			$ss[] = $order->payment_terms;
-			$ss[] = $order->created_at;
 
-			$ids = '| ';
-			foreach ($order['offer'] as $offer) {
-				$ids .= $offer->offer_id.' | ';
+			$itens = '';
+
+			foreach ($order->voucher_offer as $voucher) {
+				$itens .= 'R$ '.$voucher->subtotal.' ('.$voucher->status.') | #'.$voucher->offer_option->offer_id.' '.$voucher->offer_option->offer_title.' ('.$voucher->offer_option->title.')'."\n";
 			}
 
-			$ss[] = $ids;
+			$ss[] = substr($itens, 0, -1);
+
+			$ss[] = $order->payment_terms;
+			$ss[] = $order->created_at;
 			$ss[] = $order['user']->first_name.' '.$order['user']->last_name.' | '.$order['user']->email;
 
 			$spreadsheet[] = $ss;
@@ -394,15 +388,7 @@ class AdminOrderController extends BaseController {
 		$offer_option_id = $offer_option_id;
 		$ordersObj = $this->order;
 
-		if($status == 'approved'){
-			$ordersObj = $ordersObj->whereIn('status', array('aprovado', 'pago'));
-		}
-		else if($status == 'pending'){
-			$ordersObj = $ordersObj->whereIn('status', array('iniciado', 'revisao', 'pendente'));
-		}
-		else if($status == 'cancelled'){
-			$ordersObj = $ordersObj->whereIn('status', array('rejeitado', 'nao_finalizado', 'abortado', 'estornado', 'cancelado', 'nao_pago'));
-		}
+		$ordersObj = $ordersObj->where('status', $status);
 
 		$ordersData = $ordersObj->with([
 										'user',
@@ -410,39 +396,44 @@ class AdminOrderController extends BaseController {
 										'offer' => function($query) use($offer_option_id){
 												   $query->where('offers_options.id', $offer_option_id);
 											  	},
-										'order_offer_option' => function($query) use($offer_option_id){
-													$query->where('orders_offers_options.offer_option_id', $offer_option_id);
+										'voucher' => function($query) use($offer_option_id, $status){
+													$query->where('vouchers.offer_option_id', $offer_option_id)->where('vouchers.status', $status);
 												},
 									   ])
+								->whereExists(function($query) use($offer_option_id, $status){
+									$query->select(DB::raw(1))
+					                      ->from('vouchers')
+										  ->whereRaw('vouchers.order_id = orders.id')
+										  ->whereRaw('vouchers.offer_option_id = "'.$offer_option_id.'"')
+										  ->whereRaw('vouchers.status = "'.$status.'"');
+					            })
 								->get();
 
 		$spreadsheet = array();
 		$spreadsheet[] = array('Número do pedido', 'status', 'ID da oferta', 'Oferta', 'Opção', 'Preço', 'Quantidade', 'Total', 'Usuário INN', 'E-mail', 'Forma de pagamento', 'Titular do cartão', 'Telefone', 'Desconto via cupom', 'Desconto via créditos', 'Data de início', 'Data da captura da transação', 'Última atualização');
 
 		foreach ($ordersData as $order) {
-			if(isset($order['order_offer_option']{0})){
-				$ss = null;
-				$ss[] = $order->braspag_order_id;
-				$ss[] = $order->status;
-				$ss[] = $order['offer']{0}->offer_id;
-				$ss[] = $order['offer']{0}->offer_title;
-				$ss[] = $order['offer']{0}->title;
-				$ss[] = $order['offer']{0}->price_with_discount;
-				$ss[] = $order['order_offer_option']{0}->qty;
-				$ss[] = $order->total;
-				$ss[] = $order['user']->first_name.' '.$order['user']->last_name;
-				$ss[] = $order['user']->email;
-				$ss[] = $order->payment_terms;
-				$ss[] = $order->holder_card;
-				$ss[] = $order->telephone;
-				$ss[] = isset($order['discount_coupon'])?$order['discount_coupon']->value:'--';
-				$ss[] = $order->credit_discount;
-				$ss[] = $order->created_at;
-				$ss[] = $order->updated_at;
-				$ss[] = $order->capture_date;
+			$ss = null;
+			$ss[] = $order->braspag_order_id;
+			$ss[] = $order->status;
+			$ss[] = $order['offer']{0}->offer_id;
+			$ss[] = $order['offer']{0}->offer_title;
+			$ss[] = $order['offer']{0}->title;
+			$ss[] = $order['offer']{0}->price_with_discount;
+			$ss[] = count($order['voucher']);
+			$ss[] = $order->total;
+			$ss[] = $order['user']->first_name.' '.$order['user']->last_name;
+			$ss[] = $order['user']->email;
+			$ss[] = $order->payment_terms;
+			$ss[] = $order->holder_card;
+			$ss[] = $order->telephone;
+			$ss[] = isset($order['discount_coupon'])?$order['discount_coupon']->value:'--';
+			$ss[] = $order->credit_discount;
+			$ss[] = $order->created_at;
+			$ss[] = $order->updated_at;
+			$ss[] = $order->capture_date;
 
-				$spreadsheet[] = $ss;
-			}
+			$spreadsheet[] = $ss;
 		}
 
 		print('<pre>');
@@ -458,12 +449,15 @@ class AdminOrderController extends BaseController {
 	public function anyVouchers($offer_option_id = null){
 		$vouchers = new Voucher;
 
-		$offers = Offer::with(['offer_option', 'destiny'])->get();
+		// Exibe somente vouchers pagos
+		$vouchers = $vouchers->where('status', 'pago');
+
+		$offers = Offer::with(['offer_option'])->get();
 
 		// $offersOptions irá preencher o <select> da opção da qual estamos visualizando os vouchers/cupons
 		foreach ($offers as $offer) {
 			foreach ($offer['offer_option'] as $offer_option) {
-				$t = $offer->id.' | '.$offer['destiny']->name.' | '.$offer_option->title;
+				$t = $offer->id.' | '.$offer->title.' | '.$offer_option->title;
 				$offersOptions[$offer_option->id] = $t;
 			}
 		}
@@ -500,11 +494,11 @@ class AdminOrderController extends BaseController {
 			$vouchers = $vouchers->where('id', Input::get('id'));
 		}
 
-		$vouchers = $vouchers->with(['order'])
+		$vouchers = $vouchers->with(['order', 'offer_option'])
 							 ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('orders')
-				 		                  ->whereRaw('orders.status IN ("aprovado", "pago")')
+				 		                  ->whereRaw('orders.status = "pago"')
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
 							 ->orderBy($sort, $order)
@@ -530,6 +524,8 @@ class AdminOrderController extends BaseController {
 
 		$vouchers = new Voucher;
 
+		$vouchers = $vouchers->where('status', 'pago');
+
 		if(isset($offer_option_id)){
 			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
 		}
@@ -542,22 +538,23 @@ class AdminOrderController extends BaseController {
 	               	   	     ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('orders')
-				 		                  ->whereRaw('orders.status IN ("aprovado", "pago")')
+				 		                  ->whereRaw('orders.status = "pago"')
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
 		 					 ->orderBy('id', 'asc')
 		 					 ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Cupom', 'Agendado?', 'Nome', 'E-mail');
+		$spreadsheet[] = array('ID da oferta', 'Cupom', 'Agendado?', 'Nome', 'E-mail', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
 			$ss[] = $voucher['offer_option']->offer_id;
-			$ss[] = $voucher->id.'-'.$voucher->display_code;
+			$ss[] = $voucher->id.'-'.$voucher->display_code.'-'.$voucher['offer_option']->offer_id;
 			$ss[] = ($voucher->used == 1)?'Sim':'Não';
 			$ss[] = $voucher['order']->first_name.' '.$voucher['order']->last_name;
 			$ss[] = $voucher['order']->email;
+			$ss[] = $voucher->tracking_code;
 
 			$spreadsheet[] = $ss;
 		}
@@ -580,10 +577,13 @@ class AdminOrderController extends BaseController {
 						'user',
 						'offer',
 						'discount_coupon',
-						'order_offer_option',
 					])
+					->where('id', $id)
 					->first()
 					->toArray();
+		// print('<pre>');
+		// print_r($order);
+		// print('</pre>'); die();
 
 		$data['orderData'] = [
 			'ID Compra' => $order['braspag_order_id'],
@@ -591,35 +591,19 @@ class AdminOrderController extends BaseController {
 			'Antifraud ID' => $order['antifraud_id'],
 		];
 
-		$ordered_offers = array();
-		$vouchers = '';
+		$ordered_offers = [ 'Quantidade comprada' => count($order['offer']) ];
 
-
-		$i = 0;
-		foreach ($order['order_offer_option'] as $ord) {
-			$offer = $order['offer'][$i];
+		foreach ($order['offer'] as $ord) {
 			$ordered_offers = array_merge($ordered_offers,
 			[
-				'Item '.($i+1) => $ord['qty'].' x '.$offer['price_with_discount'].' #'.$offer['offer_id'].' '.$offer['offer_title'].' | '.$offer['title']
+				'Voucher #'.$ord['pivot']['id'] => 'Código: '.$ord['pivot']['id'].'-'.$ord['pivot']['display_code'].'-'.$ord['offer_id'].(($ord['is_product'] == true)?' | Código de rastreamento: '.(isset($ord['pivot']['tracking_code'])?$ord['pivot']['tracking_code']:'--'):'').' | '.$ord['pivot']['status'].' | Valor pago: R$ '.$ord['pivot']['subtotal'].' | Oferta: #'.$ord['offer_id'].' '.$ord['offer_title'].'  ('.$ord['title'].' R$ '.$ord['price_with_discount'].')'
 			]);
-
-			$voucs = Voucher::where('order_id', '=', $ord['id'])->get()->toArray();
-			foreach ($voucs as $vouc) {
-				$vouchers .= $vouc['id'].'-'.$vouc['display_code'].' ('.($vouc['used']?'Usado':'Não usado').') | ';
-			}
-
-			$ordered_offers = array_merge($ordered_offers,
-			[
-				'Vouchers' => $vouchers
-			]);
-
-			$i++;
 		}
 
 		$data['orderData'] = array_merge($data['orderData'], $ordered_offers);
 		$data['orderData'] = array_merge($data['orderData'],
 		[
-			'Total' => $order['total'],
+			'Total pago' => $order['total'],
 			'Cupom de desconto' => isset($order['discount_coupon'])?($order['discount_coupon']['value'].' | '. $order['discount_coupon']['display_code']) : '--',
 			'Crédito do usuário' => $order['credit_discount'],
 			'Meio de pagamento' => $order['payment_terms'],
@@ -639,41 +623,37 @@ class AdminOrderController extends BaseController {
 			return (is_null($v)||empty($v)) ? "--" : $v;
 		}, $data['orderData']);
 
+		// print('<pre>');
+		// print_r($data);
+		// print('</pre>'); die();
+
 		$this->layout->content = View::make('admin.order.view', $data);
 	}
 
 	private function sendTransactionalEmail($order, $new_status){
 		$ids = array();
 		$qties = array();
-		$$products_email = '';
+		$products_email = '';
 
-		$order_offers_options = OrderOfferOption::where('order_id', '=', $order->id);
+		$vouchers = Voucher::with(['offer_option'])->get();
 
-		foreach ($order_offers_options as $ooo) {
-			$ids[] = $ooo->offer_option_id;
-			$qties[] = $ooo->qty;
+		foreach ($vouchers as $voucher) {
+			$products_email .= '<a href="' . route('oferta', $voucher->offer_option->slug) . '">' . $voucher->offer_option->offer_title . ' | ' . $voucher->offer_option->title . '</a><br/>';
 		}
 
-		$offers_options = OfferOption::whereIn('id', $ids)->with(['offer', 'qty_sold'])->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle']);
-
-		// save the items the user ordered and calculate total
-		foreach ($offers_options as $offer_option) {
-			$qty_ordered = array_shift($qties); // pega o primeiro elemento de $qties e joga no final do próprio array $qties, além de obter o valor manipulado em si, claro
-			$products_email .= '<a href="https://www.innbativel.com.br/oferta/' . $offer_option['offer']->slug . '">' . $qty_ordered . ' x ' . $offer_option['offer']['destiny']->name . ' | ' . $offer_option->title . '</a><br/>';
-		}
-
+		// Removendo o último </br>
 		$products_email = substr($products_email, 0, -5);
 
 		$user = User::find($order->user_id)->with('profile');
 
         $data = array('name' => $user->profile->first_name, 'products' => $products_email);
 
-        if($new_status == 'aprovado'){
+        if($new_status == 'pago'){
         	Mail::send('emails.order.order_approved', $data, function($message){
 				$message->to($user->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra aprovada');
 			});
         }
-        else{ // $new_status = 'rejeitado'
+        else{ // $new_status = 'cancelado'
         	Mail::send('emails.order.order_rejected', $data, function($message){
 				$message->to($user->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Pagamento não aprovado');
 			});
@@ -682,9 +662,12 @@ class AdminOrderController extends BaseController {
 	}
 
 	private function updateOrder($order, $new_status, $comment){
+		$old_status = $order->status;
 		$order->status = $new_status;
 		$order->history .= "<br/>" . date('d/m/Y H:i:s') . " - Status alterado para " . $new_status . " (" . $comment . " por " . Auth::user()->email . ")";
 		$order->save();
+
+		Voucher::where('order_id', $order->id)->where('status', $old_status)->update(['status' => $new_status]);
 
 		// inserir creditos por indicação
 		$credit_ind_user = UserCredit::where('new_user_id', '=', $order->user_id);
@@ -762,7 +745,7 @@ class AdminOrderController extends BaseController {
 	        // print_r($result);
 	        // print("</pre>");
 	        if($result['RefundCreditCardTransactionResult']['Success'] == true){
-	        	$new_status = 'estronado';
+	        	$new_status = 'cancelado';
 	        	$this->updateOrder($order, $new_status, $comment);
 	        }
 	        else{
@@ -915,7 +898,7 @@ class AdminOrderController extends BaseController {
 	        // print("</pre>");
 
 	        if($result['UpdateStatusResult']['Success'] == true){
-	        	$new_status = 'rejeitado';
+	        	$new_status = 'cancelado';
 	        	$this->updateOrder($order, $new_status, $comment);
 	        	$this->sendTransactionalEmail($order, $new_status);
 	        }
@@ -1080,7 +1063,7 @@ class AdminOrderController extends BaseController {
 	        // print_r($result);
 	        // print("</pre>");
 	        if($result['CaptureCreditCardTransactionResult']['Success'] == true){
-	        	$new_status = 'aprovado';
+	        	$new_status = 'pago';
 	        	$this->updateOrder($order, $new_status, $comment);
 	        	$this->sendTransactionalEmail($order, $new_status);
 	        }
@@ -1112,7 +1095,7 @@ class AdminOrderController extends BaseController {
 		$profile->credit += $total;
 		$profile->save();
 
-		return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' convertido em créditos ao usuário com sucesso.');
+		return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' convertido em créditos ao usuário com sucesso.');
 	}
 
 	public function getCancelBoletus($id, $braspag_order_id, $comment){
@@ -1163,14 +1146,7 @@ class AdminOrderController extends BaseController {
 		$braspag_order_id = $_POST['NumPedido'];
 		$codpagamento = $_POST['CODPAGAMENTO'];
 
-		// BOLETO
-		if($codpagamento == '06' || $codpagamento == '6'){
-		  $status = ($_POST['Status'] == '0')?'pago':'nao_pago';
-		}
-		// CARTÃO DE CRÉDITO
-		else{
-		  $status = ($_POST['Status'] == '0')?'aprovado':'abortado';
-		}
+		$status = ($_POST['Status'] == '0')?'pago':'cancelado';
 
 		$order = $this->order->where('braspag_order_id', $braspag_order_id)->get();
 
@@ -1222,6 +1198,16 @@ class AdminOrderController extends BaseController {
 		return isset($discount_coupons)?$discount_coupons:NULL;
 	}
 
+	public function teste(){
+		$offers_options = OfferOption::with(['offer', 'used_vouchers'])
+									->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty', 'max_qty_per_buyer'])
+									->toArray();
+		
+		print('<pre>');
+		print_r($offers_options);
+		print('</pre>'); die();
+	}
+
 	public function doOrder(){
 		// INPUTs:
 
@@ -1254,7 +1240,7 @@ class AdminOrderController extends BaseController {
 			$total = 0;
 			$qty_total = 0;
 			$history = date('d/m/Y h:i:s').' - Transação iniciada.';
-			$status = 'iniciado';
+			$status = 'pendente';
 
 			$order = New Order;
 
@@ -1283,7 +1269,8 @@ class AdminOrderController extends BaseController {
 			// save the items the user ordered and calculate total
 			foreach ($offers_options as $offer_option) {
 				$qty_ordered = array_shift($qties); // pega o primeiro elemento de $qties e joga no final do próprio array $qties, além de obter o valor manipulado em si, claro
-				$max_qty_allowed = min($offer_option['max_qty_per_buyer'], ($offer_option['max_qty'] - $offer_option['min_qty'] - $offer_option['qty_sold']));
+				$qty_sold = isset($offer_option['qty_sold'][0])?$offer_option['qty_sold']['0']['qty']:0;
+				$max_qty_allowed = min($offer_option['max_qty_per_buyer'], ($offer_option['max_qty'] - $offer_option['min_qty'] - $qty_sold));
 
 				if($qty_ordered > $max_qty_allowed){
 					// ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
@@ -1293,18 +1280,13 @@ class AdminOrderController extends BaseController {
 							->withErrors($error);
 				}
 				else{
-					$order_offer_option['order_id'] = $order_id;
-					$order_offer_option['offer_option_id'] = $offer_option['id'];
-					$order_offer_option['qty'] = $qty_ordered;
-					$products[] = '<a href="https://www.innbativel.com.br/oferta/' . $order_offer_option['offer']->slug . '">' . $qty_ordered . ' x ' . $order_offer_option['offer']['destiny']->name . ' | ' . $order_offer_option->title . '</a>';
-
-					OrderOfferOption::create($order_offer_option);
+					$products[] = '<a href="' . route('oferta', $offer_option['offer']->slug) . '">' . $qty_ordered . ' x ' . $offer_option['offer']->title . ' | ' . $offer_option->title . '</a>';
 
 					// save each ordered item now to create vouchers later (case the order go successfully)
 					for ($i=0; $i < $qty_ordered; $i++) {
-						$voucher['offer_option_id'] = $order_offer_option_id;
+						$voucher['offer_option_id'] = $offer_option['id'];
 						$voucher['order_id'] = $order_id;
-						$voucher['display_code'] = $braspag_order_id . $offer_option['offer_id'];
+						$voucher['display_code'] = $braspag_order_id . $offer_option->offer_id;
 						$vouchers[] = $voucher;
 					}
 
@@ -1347,7 +1329,7 @@ class AdminOrderController extends BaseController {
 			// paying via user credits and/or discount coupon
 			////////////////////////////////////////////////////////////////////////////
 			if($total_left <= 0){
-				$order->status = 'aprovado';
+				$order->status = 'pago';
 				$order->coupon_id = $discount_coupon_id;
 				$order->total = $total;
 				$order->credit_discount = $total - $discount_coupon_value;
@@ -1620,7 +1602,7 @@ class AdminOrderController extends BaseController {
 
 	            if ($pagador === 'n') {
 					// As vezes ocorreu algum erro, mas o antifraud retornou "aprovado" (ACCEPT). Nesse caso, salva no BD como "abortado".
-					$status = ($status === 'aprovado') ? 'abortado' : $status;
+					$status = ($status === 'pago') ? 'cancelado' : $status;
 
 					$order->status = $status;
 					$order->antifraud_id = $AntiFraudResponse->FraudAnalysisResult->AntiFraudTransactionId;
@@ -1632,7 +1614,7 @@ class AdminOrderController extends BaseController {
 							->withErrors($return);
 	            }
 	            else{
-					// $order->status = 'aprovado';
+					// $order->status = 'pago';
 					// $order->status = 'pendente';
 					$order->history .= date('d/m/Y H:i:s') . " - Antifraud: ".$returnBD." (".$status.")";
 
@@ -1865,7 +1847,7 @@ class AdminOrderController extends BaseController {
 		                break;
 		            }
 
-		            $order->status = $status = 'abortado';
+		            $order->status = $status = 'cancelado';
 		            $order->history .= $history = date('d/m/Y H:i:s') . " - Pagador: " . $returnBD . " (ReturnCode = " . $response->PaymentDataCollection->PaymentDataResponse->ReturnCode . " e Status =  " . $response->PaymentDataCollection->PaymentDataResponse->Status . ")";
 		            $order->braspag_id = $response->PaymentDataCollection->PaymentDataResponse->BraspagTransactionId;
 
@@ -1884,7 +1866,7 @@ class AdminOrderController extends BaseController {
 		            	$order->save();
 		            }
 		            else{
-		                $order->status = 'aprovado';
+		                $order->status = 'pago';
 		                $order->history .= date('d/m/Y H:i:s') . " - Pagador: Transação capturada";
 
 		                $order->save();
@@ -1988,7 +1970,7 @@ class AdminOrderController extends BaseController {
 			}
 
 			// caso a venda tenha sido concretizada
-			if($status == 'aprovado'){
+			if($status == 'pago'){
 				foreach ($products as $product) {
 		        	$products_email .= $product . '<br/>';
 		        }
@@ -2003,7 +1985,7 @@ class AdminOrderController extends BaseController {
 
 				return Redirect::route('public.success', array('status' => $status));
 			}
-			else if($status == 'iniciado' AND isset($boletus_url)){
+			else if($status == 'pendente' AND isset($boletus_url)){
 				foreach ($products as $product) {
 		        	$products_email .= $product . '<br/>';
 		        }

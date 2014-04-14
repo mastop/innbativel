@@ -30,13 +30,108 @@ class VouchersTableSeeder extends DatabaseSeeder
 {
   public function run()
   {
+    
     $vouchers = [
       [
         'order_id' => 1,
         'offer_option_id' => 2,
+        'subtotal' => 100,
         'display_code' => '1234-1234-1234-4321',
         'name' => 'Lindonilda, a Onipresente',
         'email' => 'lindo@nil.da',
+        'status' => 'pago',
+      ],
+      [
+        'order_id' => 1,
+        'offer_option_id' => 2,
+        'subtotal' => 100,
+        'display_code' => '1234-1234-1234-4321',
+        'name' => 'Lindonilda, a Onipresente',
+        'email' => 'lindo@nil.da',
+        'status' => 'pago',
+      ],
+      [
+        'order_id' => 1,
+        'offer_option_id' => 2,
+        'subtotal' => 100,
+        'display_code' => '1234-1234-1234-4321',
+        'name' => 'Lindonilda, a Onipresente',
+        'email' => 'lindo@nil.da',
+        'status' => 'cancelado',
+      ],
+      [
+        'order_id' => 1,
+        'offer_option_id' => 3,
+        'subtotal' => 100,
+        'display_code' => '1234-1234-1234-4321',
+        'name' => 'Lindonilda, a Onipresente',
+        'email' => 'lindo@nil.da',
+        'status' => 'pago',
+      ],
+      ////////////////////////////////////////////
+      [
+        'order_id' => 2,
+        'offer_option_id' => 2,
+        'subtotal' => 100,
+        'display_code' => '1234-1234-1234-4321',
+        'name' => 'Lindonilda, a Onipresente',
+        'email' => 'lindo@nil.da',
+        'status' => 'cancelado',
+      ],
+      [
+        'order_id' => 2,
+        'offer_option_id' => 4,
+        'subtotal' => 100,
+        'display_code' => '1234-1234-1234-4321',
+        'name' => 'Lindonilda, a Onipresente',
+        'email' => 'lindo@nil.da',
+        'status' => 'pago',
+      ],
+      [
+        'order_id' => 2,
+        'offer_option_id' => 4,
+        'subtotal' => 100,
+        'display_code' => '1234-1234-1234-4321',
+        'name' => 'Lindonilda, a Onipresente',
+        'email' => 'lindo@nil.da',
+        'status' => 'pago',
+      ],
+      ////////////////////////////////////////////
+      [
+        'order_id' => 3,
+        'offer_option_id' => 5,
+        'subtotal' => 100,
+        'display_code' => '1234-1234-1234-4321',
+        'name' => 'Lindonilda, a Onipresente',
+        'email' => 'lindo@nil.da',
+        'status' => 'cancelado',
+      ],
+      [
+        'order_id' => 3,
+        'offer_option_id' => 6,
+        'subtotal' => 100,
+        'display_code' => '1234-1234-1234-4321',
+        'name' => 'Lindonilda, a Onipresente',
+        'email' => 'lindo@nil.da',
+        'status' => 'cancelado',
+      ],
+      [
+        'order_id' => 3,
+        'offer_option_id' => 6,
+        'subtotal' => 100,
+        'display_code' => '1234-1234-1234-4321',
+        'name' => 'Lindonilda, a Onipresente',
+        'email' => 'lindo@nil.da',
+        'status' => 'cancelado',
+      ],
+      [
+        'order_id' => 3,
+        'offer_option_id' => 6,
+        'subtotal' => 100,
+        'display_code' => '1234-1234-1234-4321',
+        'name' => 'Lindonilda, a Onipresente',
+        'email' => 'lindo@nil.da',
+        'status' => 'cancelado',
       ],
     ];
 

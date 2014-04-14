@@ -31,11 +31,22 @@ class Order extends Eloquent {
   }
 
   public function order_offer_option(){
-  	return $this->hasMany('OrderOfferOption', 'order_id');
+    return $this->hasMany('OrderOfferOption', 'order_id');
+  }
+
+  public function voucher(){
+    return $this->hasMany('Voucher', 'order_id');
+  }
+
+  public function voucher_offer(){
+    return $this->hasMany('Voucher', 'order_id')->with(['offer_option']);
   }
 
   public function offer(){
-  	return $this->belongsToMany('OfferOption', 'orders_offers_options', 'order_id', 'offer_option_id')->leftJoin('offers', 'offers_options.offer_id', '=', 'offers.id')->select(['offers.id','offers.title AS offer_title']);
+  	return $this->belongsToMany('OfferOption', 'vouchers', 'order_id', 'offer_option_id')
+                ->leftJoin('offers', 'offers_options.offer_id', '=', 'offers.id')
+                ->select(['offers.id','offers.title AS offer_title', 'is_product'])
+                ->withPivot('id', 'subtotal', 'status', 'used', 'display_code', 'name', 'email', 'tracking_code');
   }
 
   public function optional_item(){

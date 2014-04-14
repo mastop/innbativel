@@ -179,6 +179,8 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('order/view', function(){ return Redirect::route('admin.order'); });
 	Route::get('order/view/{id}', ['as' => 'admin.order.view', 'uses' => 'AdminOrderController@getView']);
 
+	Route::get('order/teste', ['as' => 'admin.order.teste', 'uses' => 'AdminOrderController@teste']);
+
 	Route::any('order/offers', ['as' => 'admin.order.offers', 'uses' => 'AdminOrderController@anyListByOffer']);
 
 	Route::any('order/offers_export', function(){ return Redirect::route('admin.order'); });
@@ -468,11 +470,11 @@ Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 
 	Route::any('ofertas/voucher/{offer_option_id?}', ['as' => 'painel.order.voucher', 'uses' => 'PainelOrderController@anyVouchers']);
 
-	Route::any('ofertas/voucher/update_track_code', function(){ return Redirect::route('painel.order.voucher'); });
-	Route::post('ofertas/voucher/update_track_code/{id}', ['as' => 'painel.order.update_track_code', 'uses' => 'PainelOrderController@postUpdateTrackCode']);
+	Route::any('ofertas/voucher/update_tracking_code', function(){ return Redirect::route('painel.order.voucher'); });
+	Route::post('ofertas/voucher/update_tracking_code/{id}', ['as' => 'painel.order.update_tracking_code', 'uses' => 'PainelOrderController@postUpdateTrackingCode']);
 
 	Route::any('ofertas/voucher/agendar', function(){ return Redirect::route('painel.order.offers'); });
-	Route::get('ofertas/voucher/agendar/{id}/{used}/{offer_option_id?}', ['as' => 'painel.order.schedule', 'uses' => 'PainelOrderController@getSchedule']);
+	Route::get('ofertas/voucher/agendar/{id}/{used}', ['as' => 'painel.order.schedule', 'uses' => 'PainelOrderController@getSchedule']);
 
 	Route::any('ofertas/voucher/exportar', function(){ return Redirect::route('painel.order.offers'); });
 	Route::get('ofertas/voucher/exportar/{offer_option_id?}/{id?}', ['as' => 'painel.order.voucher_export', 'uses' => 'PainelOrderController@getVoucherExport']);

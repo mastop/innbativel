@@ -28,7 +28,7 @@ class SetupOrdersTable extends Migration {
 		$table->string('antifraud_id')->nullable();
 		$table->string('braspag_id')->nullable();
 		$table->integer('coupon_id')->unsigned()->index()->nullable();
-		$table->enum('status', array('iniciado','aprovado','revisao', 'rejeitado', 'pendente', 'nao_finalizado', 'abortado', 'estornado', 'cancelado', 'pago', 'nao_pago'))->default('iniciado');
+		$table->enum('status', array('pendente', 'pago', 'cancelado', 'revisao'))->default('pendente');
 		$table->integer('first_digits_card')->nullable();
 		$table->integer('holder_card')->nullable();
 		$table->integer('donation')->nullable();

@@ -36,8 +36,14 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('Chave do cupom', 'Código', 'Agendado?', 'Nome', 'E-mail') }}
-{{ Table::body($vouchers)->ignore(['offer_option_id', 'order_id', 'name', 'email', 'used', 'order', 'offer_option', 'created_at', 'updated_at'])
+{{ Table::headers('Chave do cupom', 'Código', 'ID da Oferta', 'Agendado?', 'Nome', 'E-mail', 'Código de rastreamento') }}
+{{ Table::body($vouchers)->ignore(['offer_option_id', 'order_id', 'status', 'tracking_code', 'subtotal', 'name', 'email', 'used', 'order', 'offer_option', 'created_at', 'updated_at'])
+	->offer_id(function($voucher) {
+		if(isset($voucher->offer_option)) {
+			return $voucher->offer_option->offer_id;
+		}
+		return '?';
+	})
 	->is_used(function($voucher) {
 		if(isset($voucher)) {
 			return ($voucher->used == 1)?'Sim':'Não';
@@ -45,16 +51,22 @@
 		return '?';
 	})
 	->namee(function($voucher) {
-		if(isset($voucher['order'])) {
-			return $voucher['order']->first_name.' '.$voucher['order']->last_name;
+		if(isset($voucher)) {
+			return $voucher->name;
 		}
 		return '?';
 	})
 	->emaill(function($voucher) {
-		if(isset($voucher['order'])) {
-			return $voucher['order']->email;
+		if(isset($voucher)) {
+			return $voucher->email;
 		}
 		return '?';
+	})
+	->tracking_codee(function($voucher) {
+		if(isset($voucher->tracking_code)) {
+			return $voucher->tracking_code;
+		}
+		return '-';
 	})
 }}
 {{ Table::close() }}
