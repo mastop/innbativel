@@ -1,6 +1,4 @@
 <?php
-// 'orders' e 'order_offer_option'
-
 // use Goodby\CSV\Import\Standard\Lexer;
 // use Goodby\CSV\Import\Standard\Interpreter;
 // use Goodby\CSV\Import\Standard\LexerConfig;

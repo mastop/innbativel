@@ -30,10 +30,6 @@ class Order extends Eloquent {
   	return $this->belongsTo('DiscountCoupon');
   }
 
-  public function order_offer_option(){
-    return $this->hasMany('OrderOfferOption', 'order_id');
-  }
-
   public function voucher(){
     return $this->hasMany('Voucher', 'order_id');
   }
