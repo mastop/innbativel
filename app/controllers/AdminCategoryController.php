@@ -252,13 +252,14 @@ class AdminCategoryController extends BaseController {
 
 	public function postSort(){
 		$categories = Input::get('categories');
-
 		foreach ($categories as $display_order => $id) {
 			$c = Category::find($id);
-			$c->display_order = $display_order;
-			$c->save();
+            if (!is_null($c))
+            {
+			    $c->display_order = $display_order;
+			    $c->save();
+            }
 		}
-
 		return Redirect::route('admin.category.sort');
 	}
 }

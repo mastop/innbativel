@@ -16,7 +16,7 @@
 				@foreach ($categories as $category)
 				<li>
 					{{ $category->title }}
-					{{ Former::hidden('categories[]', $category->id) }}
+                    {{ Form::hidden('categories[]', "$category->id") }}
 				</li>
 				@endforeach
 			</ul>

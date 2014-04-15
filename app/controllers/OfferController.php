@@ -17,5 +17,4 @@ class OfferController extends BaseController {
 
 		$this->layout->content = View::make('offer.offer', compact('offer'));
 	}
-
 }
