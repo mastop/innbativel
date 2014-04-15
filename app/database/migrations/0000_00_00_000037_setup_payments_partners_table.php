@@ -25,7 +25,7 @@ class SetupPaymentsPartnersTable extends Migration {
 		$table->increments('id');
         $table->integer('partner_id')->unsigned()->index();
         $table->integer('payment_id')->unsigned()->index();
-        $table->integer('total')->nullable();
+        $table->decimal('total', 8, 2)->nullable();
         $table->dateTime('paid_on')->nullable();
 
         /*

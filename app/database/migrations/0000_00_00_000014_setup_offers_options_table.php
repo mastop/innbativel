@@ -26,12 +26,13 @@ class SetupOffersOptionsTable extends Migration {
         $table->integer('offer_id')->unsigned()->index();
 		$table->string('title')->nullable();
 		$table->string('subtitle')->nullable();
-		$table->integer('price_original')->nullable();
-		$table->integer('price_with_discount')->nullable();
+		$table->decimal('price_original', 7, 2)->nullable();
+        $table->decimal('price_with_discount', 7, 2)->nullable();
+		$table->decimal('transfer', 7, 2)->nullable();
 		$table->integer('min_qty')->nullable();
 		$table->integer('max_qty')->nullable();
 		$table->integer('max_qty_per_buyer')->nullable();
-		$table->integer('percent_off')->nullable();
+		$table->decimal('percent_off', 3, 2)->nullable();
 		$table->dateTime('voucher_validity_start')->nullable();
 		$table->dateTime('voucher_validity_end')->nullable();
 		$table->integer('display_order')->default(99); // ordem da opções na página da oferta

@@ -25,7 +25,7 @@ class SetupUsersCreditsTable extends Migration {
 		$table->increments('id');
         $table->integer('user_id')->unsigned()->index();
 		$table->integer('new_user_id')->unsigned()->index();
-		$table->string('value')->index();
+		$table->decimal('value', 7, 2)->index();
 
         /*
          * Foreign Keys

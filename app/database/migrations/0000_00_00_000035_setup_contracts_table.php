@@ -87,10 +87,10 @@ class SetupContractsTable extends Migration {
 		$table->increments('id');
 		$table->integer('contract_id')->unsigned()->index();
 		$table->string('title')->nullable();
-		$table->integer('price_original')->nullable();
-		$table->integer('price_with_discount')->nullable();
-		$table->integer('percent_off')->nullable();
-		$table->integer('transfer')->nullable();
+		$table->decimal('price_original', 7, 2)->nullable();
+		$table->decimal('price_with_discount', 7, 2)->nullable();
+		$table->decimal('percent_off', 3, 2)->nullable();
+		$table->decimal('transfer', 7, 2)->nullable();
 		$table->integer('max_qty')->nullable();
 
 		$table->foreign('contract_id')->references('id')->on('contracts')->onDelete('cascade');
