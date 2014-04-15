@@ -1,3 +1,3 @@
 @section('content')
-		@include('pages.home.offers')
+    @include('pages.home.offers')
 @stop

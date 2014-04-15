@@ -103,13 +103,7 @@
 						</button>
 					</div>
 					<div class="collapse navbar-collapse navMenuCollapse">
-						<ul class="navbar-nav nav">
-							<li><a href="hoteis-e-pousadas">Hot&eacute;is &amp; Pousadas</a></li>
-							<li><a href="pacotes-nacionais">Pacotes Nacionais</a></li>
-							<li><a href="pacotes-internacionais">Pacotes Internacionais</a></li>
-							<li><a href="feriados" class="single-line"><span>Feriados</span></a></li>
-							<li><a href="passeios-gastronomia">Passeios &amp; Gatronomia</a></li>
-						</ul>
+                        @include('menu.main')
 					</div>
 				</div>
 			</nav>

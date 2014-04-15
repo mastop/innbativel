@@ -128,6 +128,7 @@ class AuthController extends BaseController {
 			}
 		}
 
+
 		if($auth){
 
 			$destination = Session::get('destination');
