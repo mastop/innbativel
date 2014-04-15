@@ -329,6 +329,8 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 
 	Route::get('tellus/clearfield/{id}/{field}', ['as' => 'admin.tellus.clearfield', 'uses' => 'AdminTellusController@getClearfield']);
 
+	Route::get('tellus/approve/{id}/{approved}', ['as' => 'admin.tellus.approve', 'uses' => 'AdminTellusController@getApprove']);
+
 	/*
 	 * PartnerTestimony
 	 */
@@ -456,6 +458,13 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('contract/delete', function(){ return Redirect::route('admin.contract'); });
 	Route::get('contract/delete/{id}', ['as' => 'admin.contract.delete', 'uses' => 'AdminContractController@getDelete']);
 	Route::post('contract/delete/{id}', ['as' => 'admin.contract.destroy', 'uses' => 'AdminContractController@postDelete']);
+
+	/*
+	 * Payments
+	 */
+
+	Route::any('payment', ['as' => 'admin.payment', 'uses' => 'AdminPaymentController@anyIndex']);
+
 });
 
 Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){

@@ -29,6 +29,7 @@ class SetupTellUsTable extends Migration {
 		$table->dateTime('travel_date')->nullable();
 		$table->string('depoiment')->nullable();
 		$table->string('img')->nullable();
+        $table->boolean('approved')->default(true);
 		$table->integer('display_order')->default(99);
 
         /*
