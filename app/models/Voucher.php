@@ -23,14 +23,20 @@ class Voucher extends Eloquent {
   );
 
   public function order(){
-  	return $this->belongsTo('Order')
+  	return $this->belongsTo('Order', 'order_id')
                 ->leftJoin('users', 'users.id', '=', 'orders.user_id')
                 ->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
+  }
+
+  public function order_customer(){
+    return $this->belongsTo('Order', 'order_id')
+                ->with(['user']);
   }
 
   public function offer_option(){
   	return $this->belongsTo('OfferOption', 'offer_option_id')
                 ->leftJoin('offers', 'offers_options.offer_id', '=', 'offers.id')
-                ->select(['offers.id', 'offers_options.offer_id', 'offers.title AS offer_title', 'offers_options.title', 'slug', 'is_product']);
+                ->select(['offers.id', 'offers_options.offer_id', 'offers.title AS offer_title', 'offers_options.title', 'slug', 'is_product', 'offers_options.price_with_discount']);
   }
+
 }

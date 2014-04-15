@@ -47,7 +47,8 @@ class DatabaseSeeder extends Seeder {
 		$this->call('ContractsOptionsTableSeeder');
 		$this->call('PaymentsTableSeeder');
 		$this->call('PaymentsPartnersTableSeeder');
-		$this->call('PaymentsPartnersVouchersTableSeeder');
+		$this->call('TransactionsTableSeeder');
+		$this->call('TransactionsVouchersTableSeeder');
 	}
 
 }

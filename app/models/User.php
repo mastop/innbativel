@@ -44,7 +44,7 @@ class User extends BaseUser {
 
 	public function profile()
 	{
-		return $this->hasOne('Profile');
+		return $this->hasOne('Profile', 'user_id');
 	}
 
     public function facebook()

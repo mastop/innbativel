@@ -17,8 +17,8 @@ class Payment extends Eloquent {
 
   public static $rules = array(
   	'sales_from' => 'required|date',
-    'sales_to' => 'required|date'
-  	'date' => 'required|date'
+    'sales_to' => 'required|date',
+  	'date' => 'required|date',
   );
 
   public function partner_payment(){
