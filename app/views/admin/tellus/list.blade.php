@@ -38,22 +38,37 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('Nome', 'Destino', 'Parceiro', 'Data da viagem', 'Depoimento', 'Ordem de exibição', 'Imagem', 'Ações') }}
+	{{ Table::headers('Nome', 'Destino', 'Parceiro', 'Data da viagem', 'Depoimento', 'Ordem de exibição', 'Imagem', 'Aprovado?', 'Ações') }}
 	{{ Table::body($tellus)
-		->ignore(['id', 'img', 'created_at', 'updated_at'])
+		->ignore(['id', 'img', 'approved', 'created_at', 'updated_at'])
 		->image(function($body) {
 			if(isset($body->img)){
 				return '<a href="'.$body->img.'">Link para a imagem</a>';
 			}
 			return '--';
 		})
+		->approvedd(function($body) {
+			return ($body['approved'] == true)?'Sim':'Não';
+		})
 		->acoes(function($body) {
-			return DropdownButton::normal('Ações',
-				Navigation::links([
-					['Editar', route('admin.tellus.edit', $body['id'])],
-					['Excluir', route('admin.tellus.delete', $body['id'])],
-				])
-			)->pull_right()->split();
+			if($body['approved'] == true){
+				return DropdownButton::normal('Ações',
+					Navigation::links([
+						['Desaprovar', route('admin.tellus.approve', ['id' => $body['id'], 'approved' => 0])],
+						['Editar', route('admin.tellus.edit', $body['id'])],
+						['Excluir', route('admin.tellus.delete', $body['id'])],
+					])
+				)->pull_right()->split();
+			}
+			else{
+				return DropdownButton::normal('Ações',
+					Navigation::links([
+						['Aprovar', route('admin.tellus.approve', ['id' => $body['id'], 'approved' => 1])],
+						['Editar', route('admin.tellus.edit', $body['id'])],
+						['Excluir', route('admin.tellus.delete', $body['id'])],
+					])
+				)->pull_right()->split();
+			}
 		})
 	}}
 	{{ Table::close() }}
