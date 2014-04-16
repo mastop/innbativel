@@ -115,9 +115,18 @@ class AdminPaymentController extends BaseController {
 															'name' => Input::get('name'),
 															'email' => Input::get('email'),
 													  ]);
-		// 											  ->get();
+
+		$totals = [];
+		$totals['transfer'] = 0;
+		$totals['voucher_price'] = 0;
+
+		foreach ($transactionVoucherData as $transactionVoucher) {
+			$totals['transfer'] += ($transactionVoucher->voucher->offer_option->transfer * ($transactionVoucher->status == 'pagamento'?1:-1));
+			$totals['voucher_price'] += ($transactionVoucher->voucher->offer_option->price_with_discount * ($transactionVoucher->status == 'pagamento'?1:-1));
+		}
+
 		// print('<pre>');
-		// print_r($transactionVoucherData->toArray());
+		// print_r($total);
 		// print('</pre>'); die();
 
 		$ps = Payment::orderBy('id', 'asc')->get();
@@ -127,7 +136,7 @@ class AdminPaymentController extends BaseController {
 			$paymData[$p->id] = date("d/m/Y H:i:s", strtotime($p->sales_from)).' - '.date("d/m/Y H:i:s", strtotime($p->sales_to)).' (dia a pagar: '.date("d/m/Y", strtotime($p->date)).')';
 		}
 
-		$this->layout->content = View::make('admin.payment.list', compact('sort', 'order', 'pag', 'transactionVoucherData', 'paymData'));
+		$this->layout->content = View::make('admin.payment.list', compact('sort', 'order', 'pag', 'transactionVoucherData', 'paymData', 'totals'));
 	}
 
 	/**

@@ -41,8 +41,26 @@
 			{{ Former::close() }}
 		</div>
 	</div>
+
+	<style type="text/css">
+	.column-transfer, .column-price, .header-transfer, .header-price{
+		text-align: right;
+	}
+	</style>
+
 	{{ Table::open() }}
-	{{ Table::headers('Data', 'ID da Compra', 'Cliente', 'Código do Cupom', 'Oferta e opção escolhida', 'Status', 'Valor do Cupom', 'Valor Parceiro') }}
+	<thead>
+		<tr>
+			<th>Data</th>
+			<th>ID da Compra</th>
+			<th>Cliente</th>
+			<th>Código do Cupom</th>
+			<th>Oferta e opção escolhida</th>
+			<th>Status</th>
+			<th style="text-align: right;">Valor do Cupom (R$)</th>
+			<th style="text-align: right;">Valor Parceiro (R$)</th>
+		</tr>
+	</thead>
 	{{ Table::body($transactionVoucherData)
 			->ignore(['id', 'transaction_id', 'voucher_id', 'payment_partner_id', 'status', 'transaction', 'voucher'])
 			->date(function($data) {
@@ -77,28 +95,50 @@
 			})
 			->statuss(function($data) {
 				if(isset($data['status'])){
-					return $data['status'];
+					if($data['status'] == 'pagamento'){
+						return '<span class="text-info">'.$data['status'].'</span>';
+					}
+					else{
+						return '<span class="text-error">'.$data['status'].'</span>';
+					}
 				}
 				return '--';
 			})
 			->price(function($data) {
 				if(isset($data['voucher']['offer_option']['price_with_discount'])){
-					return $data['voucher']['offer_option']['price_with_discount'];
+					if($data['status'] == 'pagamento'){
+						return number_format($data['voucher']['offer_option']['price_with_discount'], 2, ',', '.');
+					}
+					else{
+						return number_format(($data['voucher']['offer_option']['price_with_discount'] * -1), 2, ',', '.');
+					}
 				}
 				return '--';
 			})
 			->transfer(function($data) {
 				if(isset($data['voucher']['offer_option']['transfer'])){
 					if($data['status'] == 'pagamento'){
-						return $data['voucher']['offer_option']['transfer'];
+						return number_format($data['voucher']['offer_option']['transfer'], 2, ',', '.');
 					}
 					else{
-						return $data['voucher']['offer_option']['transfer']*(-1);
+						return number_format(($data['voucher']['offer_option']['transfer'] * -1), 2, ',', '.');
 					}
 				}
 				return '--';
 			})
 	}}
+	<thead>
+		<tr>
+		<th>Total</th>
+		<th></th>
+		<th></th>
+		<th></th>
+		<th></th>
+		<th></th>
+		<th style="text-align: right;">{{ number_format($totals['voucher_price'], 2, ',', '.') }}</th>
+		<th style="text-align: right;">{{ number_format($totals['transfer'], 2, ',', '.') }}</th>
+		</tr>
+	</thead>
 	{{ Table::close() }}
 	<div class="table-footer">
 		<div class="dataTables_info">Exibindo <strong>{{ $transactionVoucherData->getFrom() }}</strong> a <strong>{{ $transactionVoucherData->getTo() }}</strong> registros do total de <strong>{{ $transactionVoucherData->getTotal() }}</strong></div>
