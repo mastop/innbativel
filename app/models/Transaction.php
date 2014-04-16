@@ -23,7 +23,8 @@ class Transaction extends Eloquent {
   }
 
   public function voucher(){
-    return $this->belongsToMany('Voucher', 'transactions_vouchers', 'transaction_id', 'voucher_id')->with(['offer_option']);
+    return $this->belongsToMany('Voucher', 'transactions_vouchers', 'transaction_id', 'voucher_id')
+                ->with(['offer_option']);
   }
 
   public function order(){

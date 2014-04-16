@@ -30,13 +30,13 @@ class OrdersTableSeeder extends DatabaseSeeder
   {
     $orders = [
       [
-        'user_id' => 1,
-        'braspag_order_id' => '1234-1234-1234-1234',
+        'user_id' => 2,
+        'braspag_order_id' => '9080-CDS8-DSA9-8967',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
         'status' => 'pago',
         'donation' => 1,
-        'total' => 10000,
+        'total' => 3000.00,
         'card_boletus_value' => 6.65,
         'antecipation_value' => 3.63,
         'cpf' => '1231231233',
@@ -44,15 +44,16 @@ class OrdersTableSeeder extends DatabaseSeeder
         'payment_terms' => '1x no cartão Mastercard',
         'history' => 'Transação iniciada em 25/10/2013 11:09',
         'capture_date' => '2013-11-04 11:27:49',
+        'created_at' => date('Y-m-d H:i:s',strtotime("-10 days"))
       ],
       [
         'user_id' => 1,
-        'braspag_order_id' => '1234-1234-1234-1234',
+        'braspag_order_id' => 'LOS9-8SDA-HASD-O9U8',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
         'status' => 'pago',
         'donation' => 1,
-        'total' => 10000,
+        'total' => 1500.00,
         'card_boletus_value' => 6.65,
         'antecipation_value' => 3.63,
         'cpf' => '1231231233',
@@ -60,15 +61,16 @@ class OrdersTableSeeder extends DatabaseSeeder
         'payment_terms' => '1x no cartão Mastercard',
         'history' => 'Transação iniciada em 25/10/2013 11:09',
         'capture_date' => '2013-11-04 11:27:49',
+        'created_at' => date('Y-m-d H:i:s',strtotime("-11 days"))
       ],
       [
         'user_id' => 1,
-        'braspag_order_id' => '1234-1234-1234-1234',
+        'braspag_order_id' => 'SD78-NHD0-SD81-ZCY5',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
         'status' => 'pago',
         'donation' => 1,
-        'total' => 10000,
+        'total' => 2000.00,
         'card_boletus_value' => 6.65,
         'antecipation_value' => 3.63,
         'cpf' => '1231231233',
@@ -76,6 +78,7 @@ class OrdersTableSeeder extends DatabaseSeeder
         'payment_terms' => '1x no cartão Mastercard',
         'history' => 'Transação iniciada em 25/10/2013 11:09',
         'capture_date' => '2013-11-04 11:27:49',
+        'created_at' => date('Y-m-d H:i:s',strtotime("-13 days"))
       ],
     ];
 
