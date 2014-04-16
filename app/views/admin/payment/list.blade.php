@@ -13,6 +13,7 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('admin.payment')) }}
 			{{ Former::label('Pesquisar: ') }}
+			{{ Former::text('id')->class('input-medium')->placeholder('ID')->label('ID') }}
 			{{ Former::select('partner_id', 'Parceiro')
 	        	->addOption('', null)
 				->fromQuery(DB::table('profiles')->select('profiles.first_name AS name', 'profiles.user_id AS id')->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')->where('roles.id', 9), 'name', 'id')
@@ -50,15 +51,23 @@
 	{{ Table::open() }}
 	<thead>
 		<tr>
+			<th>ID</th>
 			<th>Parceiro</th>
 			<th>Período</th>
 			<th>Data a ser pago</th>
 			<th>Data do pagamento</th>
 			<th style="text-align: right;">Valor Parceiro (R$)</th>
+			<th>Ação</th>
 		</tr>
 	</thead>
 	{{ Table::body($paymentPartnerData)
 			->ignore(['id', 'partner_id', 'payment_id', 'total', 'paid_on', 'payment', 'partner'])
+			->idd(function($data) {
+				if(isset($data['id'])){
+					return '<a href="'.route('admin.payment.voucher', ['partner_id' => $data['partner_id'], 'payment_id' => $data['payment_id']]).'">'.$data['id'].'</a>';
+				}
+				return '--';
+			})
 			->partnerr(function($data) {
 				if(isset($data['partner']['first_name'])){
 					return $data['partner']['first_name'].' '.$data['partner']['last_name'];
@@ -86,6 +95,27 @@
 				}
 				return '--';
 			})
+			->acoes(function($data) {
+				if(isset($data['paid_on'])){
+					return DropdownButton::normal('Ações',
+					  	Navigation::links([
+							['Marcar como não pago', route('admin.payment.update_status', $data['id'])],
+					    ])
+					)->pull_right()->split();
+				}
+				else{
+					return DropdownButton::normal('Ações',
+					  	Navigation::links([
+					  		
+					  		///////////////////////////////////////////////////
+					  		// FAZER COM JS, COM MODAL PEDINDO A DATA E HORA //
+					  		///////////////////////////////////////////////////
+
+							['Marcar como pago', route('admin.payment.update_status', $data['id'])],
+					    ])
+					)->pull_right()->split();
+				}
+			})
 	}}
 	<thead>
 		<tr>
@@ -93,7 +123,9 @@
 		<th></th>
 		<th></th>
 		<th></th>
+		<th></th>
 		<th style="text-align: right;">{{ number_format($totals['transfer'], 2, ',', '.') }}</th>
+		<th></th>
 		</tr>
 	</thead>
 	{{ Table::close() }}

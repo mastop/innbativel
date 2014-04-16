@@ -78,6 +78,10 @@ class AdminPaymentController extends BaseController {
 			$payment_partner = $payment_partner->where('partner_id', Input::get('partner_id'));
 		}
 
+		if (Input::has('id')) {
+			$payment_partner = $payment_partner->where('id', Input::get('id'));
+		}
+
 		if (Input::has('payment_id')) {
 			$payment_partner = $payment_partner->where('payment_id', Input::get('payment_id'));
 		}
@@ -89,6 +93,7 @@ class AdminPaymentController extends BaseController {
 													'sort' => $sort,
 													'order' => $order,
 													'pag' => $pag,
+													'id' => Input::get('id'),
 													'partner_id' => Input::get('partner_id'),
 													'payment_id' => Input::get('payment_id'),
 											  ]);
@@ -205,6 +210,218 @@ class AdminPaymentController extends BaseController {
 		}
 
 		$this->layout->content = View::make('admin.payment.voucher', compact('sort', 'order', 'pag', 'transactionVoucherData', 'paymData', 'totals'));
+	}
+
+	/**
+	 * Display all Users.
+	 *
+	 * @return Response
+	 */
+	public function anyPeriod()
+	{
+		/*
+		 * Obj
+		 */
+		$payment = $this->payment;
+
+		/*
+		 * Paginate
+		 */
+
+    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100', '1000', '10000']) ? Input::get('pag') : '100';
+
+		/*
+		 * Sort filter
+		 */
+		$sort = in_array(Input::get('sort'), ['user_id']) ? Input::get('sort') : 'id';
+
+		/*
+		 * Order filter
+		 */
+    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+
+    	/*
+		 * Search filters
+		 */
+
+    	if (Input::has('id')) {
+			$payment = $payment->where('id', Input::get('id'));
+		}
+		
+		$paymentData = $payment->orderBy($sort, $order)
+							   ->paginate($pag)
+							   ->appends([
+									'sort' => $sort,
+									'order' => $order,
+									'pag' => $pag,
+									'id' => Input::get('id'),
+							   ]);
+
+		// print('<pre>');
+		// print_r($paymentData->toArray());
+		// print('</pre>'); die();
+
+		$ps = Payment::orderBy('id', 'asc')->get();
+		$paymData = array();
+
+		foreach ($ps as $p) {
+			$paymData[$p->id] = date("d/m/Y H:i:s", strtotime($p->sales_from)).' - '.date("d/m/Y H:i:s", strtotime($p->sales_to)).' (dia a pagar: '.date("d/m/Y", strtotime($p->date)).')';
+		}
+
+		$this->layout->content = View::make('admin.payment.period', compact('sort', 'order', 'pag', 'paymentData', 'paymData'));
+	}
+
+	public function getCreate()
+	{
+		$this->layout->content = View::make('admin.payment.create');
+	}
+
+	public function postCreate()
+	{
+		$inputs = Input::all();
+
+		$rules = [
+			'sales_from' => 'required|date_format:d/m/Y H:i:s',
+			'sales_to' => 'required|date_format:d/m/Y H:i:s',
+			'date' => 'required|date_format:d/m/Y|after:'.date('d-m-Y'),
+		];
+
+	    $validation = Validator::make($inputs, $rules);
+
+		if ($validation->passes())
+		{
+			$inputs['sales_from'] = date('Y-m-d H:i:s', strtotime($inputs['sales_from']));
+			$inputs['sales_to'] = date('Y-m-d H:i:s', strtotime($inputs['sales_to']));
+			$inputs['date'] = date('Y-m-d', strtotime($inputs['date']));
+
+			$this->payment->create($inputs);
+
+			return Redirect::route('admin.payment.period');
+		}
+
+		/*
+		 * Return and display Errors
+		 */
+		return Redirect::route('admin.payment.create')
+			->withInput()
+			->withErrors($validation);
+	}
+
+	public function getEdit($id)
+	{
+		$payment = $this->payment->find($id);
+
+		if (is_null($payment))
+		{
+			Session::flash('error', 'Período inválido para edição.');
+			return Redirect::route('admin.payment.period');
+		}
+
+		$this->layout->content = View::make('admin.payment.edit', compact('payment'));
+	}
+
+	public function postEdit($id)
+	{
+		/*
+		 * Faq
+		 */
+		$inputs = Input::all();
+
+		$rules = [
+			'sales_from' => 'required|date_format:d/m/Y H:i:s',
+			'sales_to' => 'required|date_format:d/m/Y H:i:s',
+			'date' => 'required|date_format:d/m/Y|after:'.date('d-m-Y'),
+		];
+
+	    $validation = Validator::make($inputs, $rules);
+
+		if ($validation->passes())
+		{
+			$payment = $this->payment->find($id);
+
+			if ($payment)
+			{
+				$inputs['sales_from'] = date('Y-m-d H:i:s', strtotime($inputs['sales_from']));
+				$inputs['sales_to'] = date('Y-m-d H:i:s', strtotime($inputs['sales_to']));
+				$inputs['date'] = date('Y-m-d', strtotime($inputs['date']));
+
+				$payment->update($inputs);
+			}
+
+			return Redirect::route('admin.payment.period');
+		}
+
+		/*
+		 * Return and display Errors
+		 */
+		return Redirect::route('admin.payment.edit', $id)
+			->withInput()
+			->withErrors($validation);
+	}
+
+	public function getDelete($id)
+	{
+		$payment = $this->payment->find($id);
+
+		if (is_null($payment))
+		{
+			Session::flash('error', 'Período que deseja excluir não existe.');
+			return Redirect::route('admin.payment.period');
+		}
+
+		$rules = [
+			'date' => 'required|after:'.date('Y-m-d'),
+		];
+
+	    $validation = Validator::make($payment->toArray(), $rules);
+
+		if (!$validation->passes())
+		{
+			Session::flash('error', 'Período inválido para exclusão.');
+			return Redirect::route('admin.payment.period');
+		}
+
+		Session::flash('error', 'Você tem certeza que deleja excluir este período de pagamento? Esta operação não poderá ser desfeita.');
+
+		$data['paymentData'] = $payment->toArray();
+		$data['paymentArray'] = null;
+
+		foreach ($data['paymentData'] as $key => $value) {
+			$data['paymentArray'][Lang::get('payment'. $key)] = $value;
+		}
+
+		$this->layout->content = View::make('admin.payment.delete', $data);
+	}
+
+	public function postDelete($id)
+	{
+		$this->payment->find($id)->delete();
+
+		Session::flash('success', 'Período de pagamento excluída com sucesso.');
+
+		return Redirect::route('admin.payment.period');
+	}
+
+	/**
+	 * Update approved attribute of comment.
+	 *
+	 * @return Response
+	 */
+	public function getUpdateStatus($id, $date = NULL){
+		$payment_partner = $this->payment_partner->find($id);
+		
+		if(isset($payment_partner->paid_on)){
+			$payment_partner->paid_on == NULL;
+			$payment_partner->save();
+			Session::flash('success', 'Pagamento de parceiro #'.$id.' alterado para "não pago" com sucesso.');
+		}
+		else{
+			$payment_partner->paid_on = date('Y-m-d H:i:s', strtotime($date));
+			$payment_partner->save();
+			Session::flash('success', 'Pagamento de parceiro #'.$id.' alterado para "pago em '.$date.'" com sucesso.');
+		}
+
+		return Redirect::route('admin.payment', $id);
 	}
 
 	public function getVoucherExport($partner_id, $transaction_id){

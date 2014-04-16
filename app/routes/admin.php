@@ -465,11 +465,25 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 
 	Route::any('payment', ['as' => 'admin.payment', 'uses' => 'AdminPaymentController@anyIndex']);
 
+	Route::get('payment/update_status/{id}/{date?}', ['as' => 'admin.payment.update_status', 'uses' => 'AdminPaymentController@getUpdateStatus']);
+
 	Route::any('payment/vouchers', ['as' => 'admin.payment.voucher', 'uses' => 'AdminPaymentController@anyVoucher']);
 
 	Route::any('payment/vouchers_export', function(){ return Redirect::route('admin.payment.voucher'); });
 	Route::get('payment/vouchers_export/{partner_id?}/{transaction_id?}', ['as' => 'admin.payment.voucher_export', 'uses' => 'AdminPaymentController@getVoucherExport']);
 
+	Route::any('payment/periodos', ['as' => 'admin.payment.period', 'uses' => 'AdminPaymentController@anyPeriod']);
+
+	Route::get('payment/periodos/create', ['as' => 'admin.payment.create', 'uses' => 'AdminPaymentController@getCreate']);
+	Route::post('payment/periodos/create', ['as' => 'admin.payment.save', 'uses' => 'AdminPaymentController@postCreate']);
+
+	Route::any('payment/periodos/edit', function(){ return Redirect::route('admin.payment.period'); });
+	Route::get('payment/periodos/edit/{id}', ['as' => 'admin.payment.edit', 'uses' => 'AdminPaymentController@getEdit']);
+	Route::post('payment/periodos/edit/{id}', ['as' => 'admin.payment.update', 'uses' => 'AdminPaymentController@postEdit']);
+
+	Route::any('payment/periodos/delete', function(){ return Redirect::route('admin.payment.period'); });
+	Route::get('payment/periodos/delete/{id}', ['as' => 'admin.payment.delete', 'uses' => 'AdminPaymentController@getDelete']);
+	Route::post('payment/periodos/delete/{id}', ['as' => 'admin.payment.destroy', 'uses' => 'AdminPaymentController@postDelete']);
 });
 
 Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
