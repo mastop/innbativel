@@ -19,22 +19,21 @@
 	        }}
 	        {{ Former::select('payment_id', 'Período de venda')
 	        	->addOption('Todos', null)
-				->options($pData['options'], $pData['selected'])
+				->options($paymData)
 	        }}
-	        {{ Former::checkbox('is_paid', '')
-  				->text('Exibir somente pagos?')
-	    	}}
 			{{ Former::submit() }}
 			{{ Former::link('Limpar Filtros', route('admin.payment')) }}
-			{{ Former::link('Exportar pesquisa acima para excel', 'javascript: exportar(\''.route('admin.order.list_paym_export', ['status'=>'status', 'terms'=>'terms', 'name'=>'name', 'email'=>'email', 'braspag_order_id'=>'braspag_order_id', 'offer_id'=>'offer_id', 'date_start'=>'date_start', 'date_end'=>'date_end']).'\');') }}
+			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('admin.order.list_paym_export', ['status'=>'status', 'terms'=>'terms', 'name'=>'name', 'email'=>'email', 'braspag_order_id'=>'braspag_order_id', 'offer_id'=>'offer_id', 'date_start'=>'date_start', 'date_end'=>'date_end']).'\');') }}
 			<div class="dataTables_length">
-			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
 	        	->addOption('5', '5')
 	        	->addOption('10', '10')
 	        	->addOption('25', '25')
 	        	->addOption('50', '50')
 	        	->addOption('100', '100')
+	        	->addOption('1000', '1000')
+	        	->addOption('10000', '10000')
+	        	->select($pag)
 	        }}
 	        </div>
 			{{ Former::hidden('sort', $sort) }}
@@ -42,94 +41,69 @@
 			{{ Former::close() }}
 		</div>
 	</div>
-{{ Table::open() }}
-{{ Table::headers('Data', 'Cliente', 'Código do Cupom', 'Oferta', 'Opção escolhida', 'Valor do Cupom', 'Forma de pagamento', 'Valor pago pelo cliente', 'Taxas Cartão/Boleto*', 'Taxa de Antecipação**', 'Valor Parceiro***', 'Pago?', 'Faturamento') }}
-{{ Table::body($orderData)
-		->ignore(['id', 'user_id', 'braspag_order_id', 'antifraud_id', 'braspag_id', 'coupon_id', 'status', 'first_digits_card', 'holder_card', 'donation', 'total', 'credit_discount', 'card_boletus_value', 'antecipation_value', 'cpf', 'telephone', 'is_gift', 'payment_terms', 'boleto', 'capture_date', 'history', 'created_at', 'updated_at', 'user', 'payment'])
-		->date(function($order) {
-			if(isset($order['created_at'])){
-				return date("d/m/Y H:i:s", strtotime($order['created_at']));
-			}
-			return '--';
-		})
-		->customer(function($order) {
-			if(isset($order['user'])){
-				return $order['user']['first_name'].' '.$order['user']['last_name'];
-			}
-			return '--';
-		})
-		->vouchers(function($order) {
-			$vouchers = '';
-			foreach($order['payment'] AS $voucher){
-				$vouchers .= 
-			}
-			if(isset($order['payment'])){
-				return $order['payment']['id'].'-'.$order['payment']['display_code'].'-'.$order['payment']['offer_option']['offer_id'];
-			}
-			return '--';
-		})
-		->offer(function($order) {
-			if(isset($order['voucher_offer_order'])){
-				return $order['voucher_offer_order']['offer_option']['offer_id'].' | '.$order['voucher_offer_order']['offer_option']['offer_title'];
-			}
-			return '--';
-		})
-		->offer_option(function($order) {
-			if(isset($order['voucher_offer_order'])){
-				return $order['voucher_offer_order']['offer_option']['title'];
-			}
-			return '--';
-		})
-		->price(function($order) {
-			if(isset($order['voucher_offer_order'])){
-				return $order['voucher_offer_order']['offer_option']['price_with_discount'];
-			}
-			return '--';
-		})
-		->payment_terms(function($order) {
-			if(isset($order['voucher_offer_order'])){
-				return $order['voucher_offer_order']['order_customer']['payment_terms'];
-			}
-			return '--';
-		})
-		->paid_price(function($order) {
-			if(isset($order['voucher_offer_order'])){
-				return $order['voucher_offer_order']['subtotal'];
-			}
-			return '--';
-		})
-		->card_tax(function($order) {
-			if(isset($order['voucher_offer_order'])){
-				return $order['voucher_offer_order']['subtotal'];
-			}
-			return '--';
-		})
-		->installment_tax(function($order) {
-			if(isset($order['voucher_offer_order'])){
-				return $order['voucher_offer_order']['subtotal'];
-			}
-			return '--';
-		})
-		->partner_tax(function($order) {
-			if(isset($order['voucher_offer_order'])){
-				return $order['voucher_offer_order']['offer_option']['price_with_discount'];
-			}
-			return '--';
-		})
-		->is_paid(function($order) {
-			if(isset($order['payment_partner'])){
-				return is_null($order['payment_partner']['paid_on'])?'Não':'Sim';
-			}
-			return '--';
-		})
-		->gain(function($order) {
-			if(isset($order['voucher_offer_order'])){
-				return $order['voucher_offer_order']['offer_option']['price_with_discount'];
-			}
-			return '--';
-		})
+	{{ Table::open() }}
+	{{ Table::headers('Data', 'ID da Compra', 'Cliente', 'Código do Cupom', 'Oferta e opção escolhida', 'Status', 'Valor do Cupom', 'Valor Parceiro') }}
+	{{ Table::body($transactionVoucherData)
+			->ignore(['id', 'transaction_id', 'voucher_id', 'payment_partner_id', 'status', 'transaction', 'voucher'])
+			->date(function($data) {
+				if(isset($data['transaction']['created_at'])){
+					return date("d/m/Y H:i:s", strtotime($data['transaction']['created_at']));
+				}
+				return '--';
+			})
+			->order_id(function($data) {
+				if(isset($data['transaction']['order']['braspag_order_id'])){
+					return $data['transaction']['order']['braspag_order_id'];
+				}
+				return '--';
+			})
+			->customer(function($data) {
+				if(isset($data['transaction']['order']['user']['first_name'])){
+					return $data['transaction']['order']['user']['first_name'].' '.$data['transaction']['order']['user']['last_name'];
+				}
+				return '--';
+			})
+			->voucherr(function($data) {
+				if(isset($data['voucher'])){
+					return $data['voucher']['id'].'-'.$data['voucher']['display_code'].'-'.$data['voucher']['offer_option']['offer_id'];
+				}
+				return '--';
+			})
+			->offer(function($data) {
+				if(isset($data['voucher']['offer_option']['offer_id'])){
+					return $data['voucher']['offer_option']['offer_id'].' | '.$data['voucher']['offer_option']['offer_title'].' ('.$data['voucher']['offer_option']['title'].')';
+				}
+				return '--';
+			})
+			->statuss(function($data) {
+				if(isset($data['status'])){
+					return $data['status'];
+				}
+				return '--';
+			})
+			->price(function($data) {
+				if(isset($data['voucher']['offer_option']['price_with_discount'])){
+					return $data['voucher']['offer_option']['price_with_discount'];
+				}
+				return '--';
+			})
+			->transfer(function($data) {
+				if(isset($data['voucher']['offer_option']['transfer'])){
+					if($data['status'] == 'pagamento'){
+						return $data['voucher']['offer_option']['transfer'];
+					}
+					else{
+						return $data['voucher']['offer_option']['transfer']*(-1);
+					}
+				}
+				return '--';
+			})
 	}}
-{{ Table::close() }}
+	{{ Table::close() }}
+	<div class="table-footer">
+		<div class="dataTables_info">Exibindo <strong>{{ $transactionVoucherData->getFrom() }}</strong> a <strong>{{ $transactionVoucherData->getTo() }}</strong> registros do total de <strong>{{ $transactionVoucherData->getTotal() }}</strong></div>
+		{{ $transactionVoucherData->links() }}
+	</div>
 </div>
 
 

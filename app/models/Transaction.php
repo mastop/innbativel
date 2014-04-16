@@ -13,21 +13,25 @@ class Transaction extends Eloquent {
   protected $fillable = [];
 
   protected $softDelete = false;
-  public $timestamps = false;
+  public $timestamps = true;
 
   public static $rules = array(
   );
 
   public function payment_partner(){
-    return $this->belongsTo('PaymentPartner', 'payment_partner_id')->with(['payment', 'partner']);
+    return $this->belongsToMany('PaymentPartner', 'transactions_vouchers', 'transaction_id', 'payment_partner_id');
   }
 
-  public function transaction_voucher(){
-    return $this->hasMany('TransactionVoucher', 'transaction_voucher_id');
+  public function voucher(){
+    return $this->belongsToMany('Voucher', 'transactions_vouchers', 'transaction_id', 'voucher_id')->with(['offer_option']);
   }
 
   public function order(){
     return $this->belongsTo('Order', 'order_id');
+  }
+
+  public function changer(){
+    return $this->belongsTo('User', 'changer_id')->leftJoin('profiles', 'users.id', '=', 'profiles.user_id');
   }
 
 }

@@ -18,8 +18,12 @@ class TransactionVoucher extends Eloquent {
   public static $rules = array(
   );
 
+  public function payment_partner(){
+    return $this->belongsTo('PaymentPartner', 'payment_partner_id');
+  }
+
   public function voucher(){
-    return $this->belongsTo('Voucher', 'voucher_id')->with(['offer_option']);
+    return $this->belongsTo('Voucher', 'voucher_id');
   }
 
   public function transaction(){

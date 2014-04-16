@@ -25,6 +25,7 @@ class SetupTransactionsVouchersTable extends Migration {
 		$table->increments('id');
         $table->integer('transaction_id')->unsigned()->index();
         $table->integer('voucher_id')->unsigned()->index();
+        $table->integer('payment_partner_id')->unsigned()->index()->nullable();
         $table->enum('status', array('pagamento', 'cancelamento'))->default('pagamento');
 
         /*
@@ -32,6 +33,7 @@ class SetupTransactionsVouchersTable extends Migration {
          */
         $table->foreign('transaction_id')->references('id')->on('transactions'); // COM OU SEM "ON DELETE CASCATE"?
         $table->foreign('voucher_id')->references('id')->on('vouchers'); // COM OU SEM "ON DELETE CASCATE"?
+        $table->foreign('payment_partner_id')->references('id')->on('payments_partners'); // COM OU SEM "ON DELETE CASCATE"?
 
       });
     }

@@ -12,7 +12,7 @@ class PaymentsPartnersTableSeeder extends DatabaseSeeder
     		'total' => 2000,
     	],
     	[
-    		'payment_id' => 1,
+    		'payment_id' => 2,
     		'partner_id' => 2,
     		'total' => 2000,
     	],

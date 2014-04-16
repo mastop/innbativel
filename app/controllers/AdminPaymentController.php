@@ -19,7 +19,7 @@ class AdminPaymentController extends BaseController {
 	/**
 	 * Construct Instance
 	 */
-	public function __construct(Payment $payment, PaymentPartnerVoucher $ppvoucher, Order $order)
+	public function __construct(Payment $payment, Transaction $transaction, TransactionVoucher $transaction_voucher)
 	{
 		/*
 		 * Enable Sidebar
@@ -38,8 +38,7 @@ class AdminPaymentController extends BaseController {
 		 */
 
 		$this->payment = $payment;
-		$this->ppvoucher = $ppvoucher;
-		$this->order = $order;
+		$this->transaction_voucher = $transaction_voucher;
 	}
 
 	/**
@@ -52,7 +51,96 @@ class AdminPaymentController extends BaseController {
 		/*
 		 * Obj
 		 */
-		$orderObj = $this->order;
+		$transaction_voucher = $this->transaction_voucher;
+
+		/*
+		 * Paginate
+		 */
+
+    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100', '1000', '10000']) ? Input::get('pag') : '100';
+
+		/*
+		 * Sort filter
+		 */
+		$sort = in_array(Input::get('sort'), ['user_id']) ? Input::get('sort') : 'id';
+
+		/*
+		 * Order filter
+		 */
+    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+
+
+		$transactionVoucherData = $transaction_voucher->with(['transaction.order.user',
+															  'voucher' => function($query){ 
+																	$query->with(['offer_option'])
+																		  ->whereExists(function($query){ 
+																			if (Input::has('partner_id')) {
+																				$query->select(DB::raw(1))
+																                      ->from('offers_options')
+																                      ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+																					  ->whereRaw('offers_options.id = vouchers.offer_option_id')
+																					  ->whereRaw('offers.partner_id = '.Input::get('partner_id'));
+																			}
+												 					}); 
+															  }])
+													  ->whereExists(function($query){
+											                if (Input::has('partner_id')) {
+																$query->select(DB::raw(1))
+												                      ->from('vouchers')
+												                      ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
+												                      ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+																	  ->whereRaw('vouchers.id = transactions_vouchers.voucher_id')
+																	  ->whereRaw('offers.partner_id = '.Input::get('partner_id'));
+															}
+										              })
+										              ->whereExists(function($query){
+											                if (Input::has('payment_id')) {
+																$query->select(DB::raw(1))
+												                      ->from('payments_partners')
+																	  ->whereRaw('payments_partners.id = transactions_vouchers.payment_partner_id')
+																	  ->whereRaw('payments_partners.payment_id = '.Input::get('payment_id'));
+															}
+										              })
+													  ->orderBy($sort, $order)
+													  ->paginate($pag)
+													  ->appends([
+															'sort' => $sort,
+															'order' => $order,
+															'pag' => $pag,
+															'status' => Input::get('status'),
+															'terms' => Input::get('terms'),
+															'date_start' => Input::get('date_start'),
+															'date_end' => Input::get('date_end'),
+															'offer_id' => Input::get('offer_id'),
+															'name' => Input::get('name'),
+															'email' => Input::get('email'),
+													  ]);
+		// 											  ->get();
+		// print('<pre>');
+		// print_r($transactionVoucherData->toArray());
+		// print('</pre>'); die();
+
+		$ps = Payment::orderBy('id', 'asc')->get();
+		$paymData = array();
+
+		foreach ($ps as $p) {
+			$paymData[$p->id] = date("d/m/Y H:i:s", strtotime($p->sales_from)).' - '.date("d/m/Y H:i:s", strtotime($p->sales_to)).' (dia a pagar: '.date("d/m/Y", strtotime($p->date)).')';
+		}
+
+		$this->layout->content = View::make('admin.payment.list', compact('sort', 'order', 'pag', 'transactionVoucherData', 'paymData'));
+	}
+
+	/**
+	 * Display all Users.
+	 *
+	 * @return Response
+	 */
+	public function anyIndexTRANSACTIONS()
+	{
+		/*
+		 * Obj
+		 */
+		$transactionObj = $this->transaction;
 
 		/*
 		 * Paginate
@@ -94,104 +182,105 @@ class AdminPaymentController extends BaseController {
 			$ppvoucher = $ppvoucher->where('created_at', '<=', Input::get('date_end'));
 		}
 
-		$orderData = $orderObj->with(['user', 'payment' => function($query){ 
-													$query->with(['payment_partner_voucher' => function($query){
-							                    	  	$query->with(['payment_partner' => function($query){
-							                    	  		if (Input::has('payment_id')) {
-							                    	  			$query->where('payment_id', Input::get('payment_id'));
-							                    	  		}
-							                    	  		if (Input::has('partner_id')) {
-							                    	  			$query->where('partner_id', Input::get('partner_id'));
-							                    	  		}
-							                    	  		if (Input::has('id_paid')) {
-							                    	  			$query->whereNotNull('paid_on');
-							                    	  		}
-							                    	  	}]);
-							                    	}]);
-											  	}])
-					            ->whereExists(function($query){
-					                if (Input::has('payment_id')) {
-										$query->select(DB::raw(1))
-						                      ->from('vouchers')
-						                      ->join('payments_partners_vouchers', 'payments_partners_vouchers.voucher_id', '=', 'vouchers.id')
-						                      ->join('payments_partners', 'payments_partners.id', '=', 'payments_partners_vouchers.payment_partner_id')
-											  ->whereRaw('vouchers.order_id = orders.id')
-											  ->whereRaw('payments_partners.payment_id = '.Input::get('payment_id'));
-									}
-					            })
-					            ->whereExists(function($query){
-					                if (Input::has('partner_id')) {
-										$query->select(DB::raw(1))
-						                      ->from('vouchers')
-						                      ->join('payments_partners_vouchers', 'payments_partners_vouchers.voucher_id', '=', 'vouchers.id')
-						                      ->join('payments_partners', 'payments_partners.id', '=', 'payments_partners_vouchers.payment_partner_id')
-											  ->whereRaw('vouchers.order_id = orders.id')
-											  ->whereRaw('payments_partners.partner_id = '.Input::get('partner_id'));
-									}
-					            })
-					            ->whereExists(function($query){
-					                if (Input::has('is_paid')) {
-										$query->select(DB::raw(1))
-						                      ->from('vouchers')
-						                      ->join('payments_partners_vouchers', 'payments_partners_vouchers.voucher_id', '=', 'vouchers.id')
-						                      ->join('payments_partners', 'payments_partners.id', '=', 'payments_partners_vouchers.payment_partner_id')
-											  ->whereRaw('vouchers.order_id = orders.id')
-											  ->whereRaw('payments_partners.paid_on IS NOT NULL ');
-									}
-					            })
-								// ->orderBy($sort, $payment)
-								// ->paginate($pag)
-								// ->appends([
-								// 	'sort' => $sort,
-								// 	'order' => $order,
-								// 	'status' => Input::get('status'),
-								// 	'terms' => Input::get('terms'),
-								// 	'date_start' => Input::get('date_start'),
-								// 	'date_end' => Input::get('date_end'),
-								// 	'offer_id' => Input::get('offer_id'),
-								// 	'name' => Input::get('name'),
-								// 	'email' => Input::get('email'),
-								// ]);
-								->get();
-
-		foreach ($orderData as $key => &$order) {
-			$v = '';
-			foreach ($order->payment as $key2 => &$voucher) {
-				$v_valido = false;
-				$in_period = false;
-				foreach ($voucher->payment_partner_voucher as $key3 => $paym) {
-					if(isset($paym->payment_partner)){
-						$v_valido = true;
-						if(check_in_period($order->created_at, $paym->payment_partner->payment->sales_from, $paym->payment_partner->payment->sales_to)){
-							$in_period = true;
-						}
-					}
-				}
-
-				if($v_valido == true){
-					$v .= $voucher->id."\n";
-				}
-			}
-			$order->vouchers = ($v != '')?substr($v, 0, -1):'';
-		}
-
+		$transactionData = $transactionObj->with(['changer', 
+												  'order',
+												  'voucher' => function($query){ 
+														$query->with(['offer_option'])
+															  ->whereExists(function($query){ 
+																if (Input::has('partner_id')) {
+																	$query->select(DB::raw(1))
+													                      ->from('offers_options')
+													                      ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+																		  ->whereRaw('offers_options.id = vouchers.offer_option_id')
+																		  ->whereRaw('offers.partner_id = '.Input::get('partner_id'));
+																}
+									 					}); 
+												  }])
+										  ->whereExists(function($query){
+								                if (Input::has('partner_id')) {
+													$query->select(DB::raw(1))
+									                      ->from('transactions_vouchers')
+									                      ->join('vouchers', 'vouchers.id', '=', 'transactions_vouchers.voucher_id')
+									                      ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
+									                      ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+														  ->whereRaw('transactions_vouchers.transaction_id = transactions.id')
+														  ->whereRaw('offers.partner_id = '.Input::get('partner_id'));
+												}
+							              })
+							              ->whereExists(function($query){
+								                if (Input::has('payment_id')) {
+													$query->select(DB::raw(1))
+									                      ->from('transactions_vouchers')
+									                      ->join('payments_partners', 'payments_partners.id', '=', 'transactions_vouchers.payment_partner_id')
+														  ->whereRaw('transactions.id = transactions_vouchers.transaction_id')
+														  ->whereRaw('payments_partners.payment_id = '.Input::get('payment_id'));
+												}
+							              })
+							              ->whereExists(function($query){
+								                if (Input::has('is_paid')) {
+													$$query->select(DB::raw(1))
+									                      ->from('transactions_vouchers')
+									                      ->join('payments_partners', 'payments_partners.id', '=', 'transactions_vouchers.payment_partner_id')
+														  ->whereRaw('transactions.id = transactions_vouchers.transaction_id')
+														  ->whereRaw('payments_partners.paid_on IS NOT NULL ');
+												}
+							              })
+										  // ->orderBy($sort, $order)
+										  // ->paginate($pag)
+										  // ->appends([
+												// 'sort' => $sort,
+												// 'order' => $order,
+												// 'status' => Input::get('status'),
+												// 'terms' => Input::get('terms'),
+												// 'date_start' => Input::get('date_start'),
+												// 'date_end' => Input::get('date_end'),
+												// 'offer_id' => Input::get('offer_id'),
+												// 'name' => Input::get('name'),
+												// 'email' => Input::get('email'),
+										  // ]);
+										  ->get();
 		print('<pre>');
-		print_r($orderData->toArray());
+		print_r($transactionData->toArray());
 		print('</pre>'); die();
 
+		// foreach ($orderData as $key => &$order) {
+		// 	$v = '';
+		// 	foreach ($order->payment as $key2 => &$voucher) {
+		// 		$v_valido = false;
+		// 		$in_period = false;
+		// 		foreach ($voucher->payment_partner_voucher as $key3 => $paym) {
+		// 			if(isset($paym->payment_partner)){
+		// 				$v_valido = true;
+		// 				if(check_in_period($order->created_at, $paym->payment_partner->payment->sales_from, $paym->payment_partner->payment->sales_to)){
+		// 					$in_period = true;
+		// 				}
+		// 			}
+		// 		}
+
+		// 		if($v_valido == true){
+		// 			$v .= $voucher->id."\n";
+		// 		}
+		// 	}
+		// 	$order->vouchers = ($v != '')?substr($v, 0, -1):'';
+		// }
+
+		// print('<pre>');
+		// print_r($orderData->toArray());
+		// print('</pre>'); die();
+
 		$ps = Payment::orderBy('id', 'desc')->get();
-		$pData['options'] = array();
+		$paymData['options'] = array();
 		$selected = false;
 
 		foreach ($ps as $p) {
 			if(!$selected && $p->date >= date("Y-m-d")){
 				$selected == true;
-				$pData['selected'] = $p->id;
+				$paymData['selected'] = $p->id;
 			}
-			$pData['options'][$p->id] = date("d/m/Y H:i:s", strtotime($p->sales_from)).' - '.date("d/m/Y H:i:s", strtotime($p->sales_to)).' (dia a pagar: '.date("d/m/Y", strtotime($p->date)).')';
+			$paymData['options'][$p->id] = date("d/m/Y H:i:s", strtotime($p->sales_from)).' - '.date("d/m/Y H:i:s", strtotime($p->sales_to)).' (dia a pagar: '.date("d/m/Y", strtotime($p->date)).')';
 		}
 
-		$this->layout->content = View::make('admin.payment.list', compact('sort', 'order', 'pag', 'orderData', 'pData'));
+		$this->layout->content = View::make('admin.payment.list', compact('sort', 'order', 'pag', 'transactionData', 'paymData'));
 	}
 
 	private function check_in_period($order_date, $start_date, $end_date)
