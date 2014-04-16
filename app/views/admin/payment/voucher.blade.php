@@ -5,13 +5,13 @@
 		<div class="navbar-inner">
 			<h6>Lista de Pagamentos aos Parceiros</h6>
 	        <div class="nav pull-right">
-	            <a href="{{ route('admin.payment') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
+	            <a href="{{ route('admin.payment.voucher') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
 	        </div>
 		</div>
 	</div>
 	<div class="datatable-header">
 		<div class="dataTables_filter">
-			{{ Former::inline_open(route('admin.payment')) }}
+			{{ Former::inline_open(route('admin.payment.voucher')) }}
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::select('partner_id', 'Parceiro')
 	        	->addOption('', null)
@@ -22,7 +22,8 @@
 				->options($paymData)
 	        }}
 			{{ Former::submit() }}
-			{{ Former::link('Limpar Filtros', route('admin.payment')) }}
+			{{ Former::link('Limpar Filtros', route('admin.payment.voucher')) }}
+			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('admin.payment.voucher_export', ['status'=>'status', 'terms'=>'terms', 'name'=>'name', 'email'=>'email', 'braspag_order_id'=>'braspag_order_id', 'offer_id'=>'offer_id', 'date_start'=>'date_start', 'date_end'=>'date_end']).'\');') }}
 			<div class="dataTables_length">
 	        {{ Former::select('pag', 'Exibir')
 	        	->addOption('5', '5')
@@ -42,7 +43,7 @@
 	</div>
 
 	<style type="text/css">
-	.column-totall{
+	.column-transfer, .column-price{
 		text-align: right;
 	}
 	</style>
@@ -50,39 +51,78 @@
 	{{ Table::open() }}
 	<thead>
 		<tr>
-			<th>Parceiro</th>
-			<th>Período</th>
-			<th>Data a ser pago</th>
-			<th>Data do pagamento</th>
+			<th>Data</th>
+			<th>ID da Compra</th>
+			<th>Cliente</th>
+			<th>Código do Cupom</th>
+			<th>Oferta e opção escolhida</th>
+			<th>Status</th>
+			<th style="text-align: right;">Valor do Cupom (R$)</th>
 			<th style="text-align: right;">Valor Parceiro (R$)</th>
 		</tr>
 	</thead>
-	{{ Table::body($paymentPartnerData)
-			->ignore(['id', 'partner_id', 'payment_id', 'total', 'paid_on', 'payment', 'partner'])
-			->partnerr(function($data) {
-				if(isset($data['partner']['first_name'])){
-					return $data['partner']['first_name'].' '.$data['partner']['last_name'];
-				}
-				return '--';
-			})
-			->period(function($data) {
-				if(isset($data['payment']['sales_from'])){
-					return date("d/m/Y H:i:s", strtotime($data['payment']['sales_from'])).' - '.date("d/m/Y H:i:s", strtotime($data['payment']['sales_to']));
-				}
-				return '--';
-			})
+	{{ Table::body($transactionVoucherData)
+			->ignore(['id', 'transaction_id', 'voucher_id', 'payment_partner_id', 'status', 'transaction', 'voucher'])
 			->date(function($data) {
-				if(isset($data['payment']['date'])){
-					return date("d/m/Y", strtotime($data['payment']['date']));
+				if(isset($data['transaction']['created_at'])){
+					return date("d/m/Y H:i:s", strtotime($data['transaction']['created_at']));
 				}
 				return '--';
 			})
-			->paid_onn(function($data) {
-				return isset($data['paid_on'])?date("d/m/Y H:i:s", strtotime($data['paid_on'])):'<span class="text-error">Não pago</span>';
+			->order_id(function($data) {
+				if(isset($data['transaction']['order']['braspag_order_id'])){
+					return $data['transaction']['order']['braspag_order_id'];
+				}
+				return '--';
 			})
-			->totall(function($data) {
-				if(isset($data['total'])){
-					return number_format($data['total'], 2, ',', '.');
+			->customer(function($data) {
+				if(isset($data['transaction']['order']['user']['first_name'])){
+					return $data['transaction']['order']['user']['first_name'].' '.$data['transaction']['order']['user']['last_name'];
+				}
+				return '--';
+			})
+			->voucherr(function($data) {
+				if(isset($data['voucher'])){
+					return $data['voucher']['id'].'-'.$data['voucher']['display_code'].'-'.$data['voucher']['offer_option']['offer_id'];
+				}
+				return '--';
+			})
+			->offer(function($data) {
+				if(isset($data['voucher']['offer_option']['offer_id'])){
+					return $data['voucher']['offer_option']['offer_id'].' | '.$data['voucher']['offer_option']['offer_title'].' ('.$data['voucher']['offer_option']['title'].')';
+				}
+				return '--';
+			})
+			->statuss(function($data) {
+				if(isset($data['status'])){
+					if($data['status'] == 'pagamento'){
+						return '<span class="text-info">'.$data['status'].'</span>';
+					}
+					else{
+						return '<span class="text-error">'.$data['status'].'</span>';
+					}
+				}
+				return '--';
+			})
+			->price(function($data) {
+				if(isset($data['voucher']['offer_option']['price_with_discount'])){
+					if($data['status'] == 'pagamento'){
+						return number_format($data['voucher']['offer_option']['price_with_discount'], 2, ',', '.');
+					}
+					else{
+						return number_format(($data['voucher']['offer_option']['price_with_discount'] * -1), 2, ',', '.');
+					}
+				}
+				return '--';
+			})
+			->transfer(function($data) {
+				if(isset($data['voucher']['offer_option']['transfer'])){
+					if($data['status'] == 'pagamento'){
+						return number_format($data['voucher']['offer_option']['transfer'], 2, ',', '.');
+					}
+					else{
+						return number_format(($data['voucher']['offer_option']['transfer'] * -1), 2, ',', '.');
+					}
 				}
 				return '--';
 			})
@@ -93,13 +133,16 @@
 		<th></th>
 		<th></th>
 		<th></th>
+		<th></th>
+		<th></th>
+		<th style="text-align: right;">{{ number_format($totals['voucher_price'], 2, ',', '.') }}</th>
 		<th style="text-align: right;">{{ number_format($totals['transfer'], 2, ',', '.') }}</th>
 		</tr>
 	</thead>
 	{{ Table::close() }}
 	<div class="table-footer">
-		<div class="dataTables_info">Exibindo <strong>{{ $paymentPartnerData->getFrom() }}</strong> a <strong>{{ $paymentPartnerData->getTo() }}</strong> registros do total de <strong>{{ $paymentPartnerData->getTotal() }}</strong></div>
-		{{ $paymentPartnerData->links() }}
+		<div class="dataTables_info">Exibindo <strong>{{ $transactionVoucherData->getFrom() }}</strong> a <strong>{{ $transactionVoucherData->getTo() }}</strong> registros do total de <strong>{{ $transactionVoucherData->getTotal() }}</strong></div>
+		{{ $transactionVoucherData->links() }}
 	</div>
 </div>
 

@@ -465,6 +465,11 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 
 	Route::any('payment', ['as' => 'admin.payment', 'uses' => 'AdminPaymentController@anyIndex']);
 
+	Route::any('payment/vouchers', ['as' => 'admin.payment.voucher', 'uses' => 'AdminPaymentController@anyVoucher']);
+
+	Route::any('payment/vouchers_export', function(){ return Redirect::route('admin.payment.voucher'); });
+	Route::get('payment/vouchers_export/{partner_id?}/{transaction_id?}', ['as' => 'admin.payment.voucher_export', 'uses' => 'AdminPaymentController@getVoucherExport']);
+
 });
 
 Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
