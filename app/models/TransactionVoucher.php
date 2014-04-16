@@ -1,13 +1,13 @@
 <?php
 
-class PaymentPartnerVoucher extends Eloquent {
+class TransactionVoucher extends Eloquent {
 
   /**
    * The name of the table associated with the model.
    *
    * @var string
    */
-  protected $table = 'payments_partners_vouchers';
+  protected $table = 'transactions_vouchers';
 
   protected $guarded = [];
   protected $fillable = [];
@@ -23,7 +23,11 @@ class PaymentPartnerVoucher extends Eloquent {
   }
 
   public function voucher(){
-    return $this->hasMany('Voucher', 'voucher_id');
+    return $this->belongsTo('Voucher', 'voucher_id');
+  }
+
+  public function transaction(){
+    return $this->belongsTo('Transaction', 'transaction_id')->with(['order']);
   }
 
 }

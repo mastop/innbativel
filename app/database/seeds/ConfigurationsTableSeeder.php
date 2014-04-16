@@ -6,6 +6,33 @@ class ConfigurationsTableSeeder extends DatabaseSeeder
   {
     $configurations = [
       [
+        'name' => 'boletus-value', 'value' => '1.6',
+      ],
+      [
+        'name' => 'card-tax-1x', 'value' => '2.66',
+      ],
+      [
+        'name' => 'card-tax-3x', 'value' => '3.41',
+      ],
+      [
+        'name' => 'card-tax-6x', 'value' => '3.66',
+      ],
+      [
+        'name' => 'card-tax-10x', 'value' => '4.16',
+      ],
+      [
+        'name' => 'antecipation-tax-1x', 'value' => '1.49',
+      ],
+      [
+        'name' => 'antecipation-tax-3x', 'value' => '2.98',
+      ],
+      [
+        'name' => 'antecipation-tax-6x', 'value' => '5.215',
+      ],
+      [
+        'name' => 'antecipation-tax-10x', 'value' => '8.195',
+      ],
+      [
         'name' => 'merchant_id', 'value' => '1234',
       ],
       [

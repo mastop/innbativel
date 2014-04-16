@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class SetupPaymentsPartnersVouchersTable extends Migration {
+class SetupTransactionsVouchersTable extends Migration {
 
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class SetupPaymentsPartnersVouchersTable extends Migration {
     public function up()
     {
       // Creates the users table
-      Schema::create('payments_partners_vouchers', function($table)
+      Schema::create('transactions_vouchers', function($table)
       {
         /*
          * Storage Engines
@@ -23,20 +23,17 @@ class SetupPaymentsPartnersVouchersTable extends Migration {
          * Fields
          */
 		$table->increments('id');
-        $table->integer('payment_partner_id')->unsigned()->index();
+        $table->integer('transaction_id')->unsigned()->index();
         $table->integer('voucher_id')->unsigned()->index();
+        $table->integer('payment_partner_id')->unsigned()->index()->nullable();
         $table->enum('status', array('pagamento', 'cancelamento'))->default('pagamento');
 
         /*
          * Foreign Keys
          */
-        $table->foreign('payment_partner_id')->references('id')->on('payments_partners'); // COM OU SEM "ON DELETE CASCATE"?
+        $table->foreign('transaction_id')->references('id')->on('transactions'); // COM OU SEM "ON DELETE CASCATE"?
         $table->foreign('voucher_id')->references('id')->on('vouchers'); // COM OU SEM "ON DELETE CASCATE"?
-
-        /*
-         * Time Stamps
-         */
-        $table->timestamps();
+        $table->foreign('payment_partner_id')->references('id')->on('payments_partners'); // COM OU SEM "ON DELETE CASCATE"?
 
       });
     }
@@ -51,7 +48,7 @@ class SetupPaymentsPartnersVouchersTable extends Migration {
 		DB::statement('SET foreign_key_checks = 0');
 		DB::statement('SET UNIQUE_CHECKS=0');
 
-		Schema::drop('payments_partners_vouchers');
+		Schema::drop('transactions_vouchers');
 
 		DB::statement('SET foreign_key_checks = 1');
 		DB::statement('SET UNIQUE_CHECKS=1');

@@ -239,7 +239,8 @@ class AdminTellusController extends BaseController {
 
 		if (is_null($tellus))
 		{
-			return Redirect::route('admin.tellus');
+			Session::flash('error', 'Depoimento inválido.');
+			return Redirect::back();
 		}
 
 		Session::flash('error', 'Você tem certeza que deleja excluir este depoimento do Conte pra Gente? Esta operação não poderá ser desfeita.');
@@ -279,7 +280,8 @@ class AdminTellusController extends BaseController {
 
 		if (is_null($tellus) || !isset($tellus))
 		{
-			return Redirect::route('admin.tellus.edit', $id);
+			Session::flash('error', 'Depoimento inválido.');
+			return Redirect::back();
 		}
 
 		$toDelete = $tellus->{$field};
@@ -325,6 +327,21 @@ class AdminTellusController extends BaseController {
 		}
 
 		return Redirect::route('admin.tellus.sort');
+	}
+
+	public function getApprove($id, $approved){
+		$tellus = $this->tellus->find($id);
+		if (is_null($tellus) || !isset($tellus))
+		{
+			Session::flash('error', 'Depoimento inválido.');
+			return Redirect::back();
+		}
+		$tellus->approved = $approved;
+		$tellus->save();
+		
+		Session::flash('success', 'Depoimento '.(($approved == 1)?'aprovado':'desaprovado').' com sucesso.');
+
+		return Redirect::back();
 	}
 
 }

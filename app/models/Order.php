@@ -23,7 +23,7 @@ class Order extends Eloquent {
   );
 
   public function user(){
-  	return $this->belongsTo('User')->leftJoin('profiles', 'users.id', '=', 'profiles.user_id');
+    return $this->belongsTo('User', 'user_id')->leftJoin('profiles', 'users.id', '=', 'profiles.user_id');
   }
 
   public function discount_coupon(){
@@ -32,6 +32,10 @@ class Order extends Eloquent {
 
   public function voucher(){
     return $this->hasMany('Voucher', 'order_id');
+  }
+
+  public function payment(){
+    return $this->hasMany('Voucher', 'order_id')->with(['offer_option']);
   }
 
   public function voucher_offer(){

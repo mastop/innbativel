@@ -131,7 +131,7 @@ class VouchersTableSeeder extends DatabaseSeeder
         'display_code' => '1234-1234-1234-4321',
         'name' => 'Lindonilda, a Onipresente',
         'email' => 'lindo@nil.da',
-        'status' => 'cancelado',
+        'status' => 'pago',
       ],
     ];
 
