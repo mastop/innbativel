@@ -10,8 +10,6 @@
 
     Innbativel.load = function(){
 
-        //$('#register').modal('show'); //excluir em produção
-
         $('#printEULA .control.print').click(function () {
             $('#log').prepend( "daora <br />");
             var printContents = document.getElementById('printEULA').innerHTML;

@@ -6,8 +6,6 @@
 
     Innbativel.ready = function(){
 
-        // $('#faq').modal('show'); //excluir em produção
-
         $('#parceiroForm').validate({
             rules:{
                 parceiroFullName:{
