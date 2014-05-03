@@ -142,19 +142,19 @@
 		</div>
 	</div>
 
-    @include('partials.modals.parceiro')
-    @include('partials.modals.conte-pra-gente')
-    @include('partials.modals.trabalhe-conosco')
-    @include('partials.modals.quem-somos')
-    @include('partials.modals.acao-social')
-    @include('partials.modals.termos')
-    @include('partials.modals.politica')
-    @include('partials.modals.sugira')
-    @include('partials.modals.contato')
-    @include('partials.modals.login')
-    @include('partials.modals.pass-recover')
-    @include('partials.modals.register')
-    @include('partials.modals.newsletter')
+    @include('partials.modal.parceiro')
+    @include('partials.modal.conte-pra-gente')
+    @include('partials.modal.trabalhe-conosco')
+    @include('partials.modal.quem-somos')
+    @include('partials.modal.acao-social')
+    @include('partials.modal.termos')
+    @include('partials.modal.politica')
+    @include('partials.modal.sugira')
+    @include('partials.modal.contato')
+    @include('partials.modal.login')
+    @include('partials.modal.pass-recover')
+    @include('partials.modal.register')
+    @include('partials.modal.newsletter')
 
     <footer id="footer" class="clearfix">
         <div class="container">
