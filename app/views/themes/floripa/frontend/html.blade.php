@@ -136,24 +136,25 @@
 
 	<div id="pre-footer" class="clearfix">
 		<div class="container">
-            @include('partials.widget-selos')
-            @include('partials.widget-facebook')
-            @include('partials.widget-twitter')
+            @include('partials.widget.selos')
+            @include('partials.widget.facebook')
+            @include('partials.widget.twitter')
 		</div>
 	</div>
 
-    @include('partials.parceiro')
-    @include('partials.conte-pra-gente')
-    @include('partials.trabalhe-conosco')
-    @include('partials.quem-somos')
-    @include('partials.acao-social')
-    @include('partials.termos')
-    @include('partials.politica')
-    @include('partials.sugira')
-    @include('partials.contato')
-    @include('partials.login')
-    @include('partials.pass-recover')
-    @include('partials.newsletter')
+    @include('partials.modals.parceiro')
+    @include('partials.modals.conte-pra-gente')
+    @include('partials.modals.trabalhe-conosco')
+    @include('partials.modals.quem-somos')
+    @include('partials.modals.acao-social')
+    @include('partials.modals.termos')
+    @include('partials.modals.politica')
+    @include('partials.modals.sugira')
+    @include('partials.modals.contato')
+    @include('partials.modals.login')
+    @include('partials.modals.pass-recover')
+    @include('partials.modals.register')
+    @include('partials.modals.newsletter')
 
     <footer id="footer" class="clearfix">
         <div class="container">
