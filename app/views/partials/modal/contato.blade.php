@@ -5,42 +5,50 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title"><span class="entypo chat"></span>Fale conosco</h4>
             </div>
-            <form id="contactForm" class="form-horizontal" name="contactForm" method="post" action="send_form_contact.php" novalidate="novalidate">
+            {{ Former::horizontal_open(route('contact.send'))
+                ->rules([
+                    'contactName' => 'required', 'contactEmail' => 'required','contactMessage' => 'required'
+                ])
+                ->id('contactForm')
+                ->name('contactForm')
+            }}
                 <div class="modal-body">
                     <p>
                         Envie sua mensagem preenchendo os campos abaixo.<br>
                         Muito em breve vamos entrar em contato com você.
                     </p>
                     <div class="form-group">
-                        <label class="control-label col-md-4" for="contactName">Nome</label>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" id="contactName" name="contactName" placeholder="Seu nome">
+                        <label class="control-label col-md-4" for="contactEmail">Nome</label>
+                        <div class="col-md-8 input-group">
+                            {{ Former::text('contactName')->label('')->class('form-control')->placeholder('Seu nome')->autofocus(); }}
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-4" for="contactEmail">Email</label>
                         <div class="col-md-8 input-group">
-                            <!-- <span class="input-group-addon">@</span> -->
-                            <input type="email" class="form-control" id="contactEmail" name="contactEmail" placeholder="Seu email">
+                            {{ Former::email('contactEmail')->label('')->class('form-control')->placeholder('Seu email'); }}
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-4" for="contactPhone">Telefone</label>
                         <div class="col-md-8">
-                            <input type="text" maxlength="11" class="form-control" id="contactPhone" name="contactPhone" placeholder="Seu telefone (com DDD)">
+                            {{ Former::text('contactPhone')->label('')->maxlength(11)->class('form-control')->placeholder('Seu telefone (com DDD)'); }}
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-4" for="contactCelular">Celular</label>
                         <div class="col-md-8">
-                            <input type="text" maxlength="11" class="form-control" id="contactCelular" name="contactCelular" placeholder="Seu celular (com DDD)">
+                            {{ Former::text('contactCelular')->label('')->maxlength(11)->class('form-control')->placeholder('Seu celular (com DDD)'); }}
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-4" for="contactMessage">Sua mensagem</label>
                         <div class="col-md-8">
-                            <textarea rows="6" class="form-control" id="contactMessage" name="contactMessage" placeholder="Digite suas dúvidas, sugestões ou críticas"></textarea>
+                            {{ Former::textarea('contactMessage')->label('')->class('form-control')
+                                ->placeholder('Digite suas dúvidas, sugestões ou críticas')
+                                ->rows(10)->columns(20); }}
                         </div>
+
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-4 col-md-8">
@@ -48,7 +56,7 @@
                         </div>
                     </div>
                 </div>
-            </form>
+            {{ Former::close() }}
         </div>
     </div>
 </div>
