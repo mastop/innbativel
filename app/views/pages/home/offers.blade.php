@@ -6,7 +6,7 @@
 
 	<div class="row">
 
-	  <div itemscope class="offer-grid-item col-8 col-sm-8 col-lg-8 clearfix">
+	  <div itemscope class="offer-spotlight offer-grid-item col-7 col-sm-7 col-lg-7 clearfix">
 		<a href="oferta/{{ $offer['slug'] }}" class="offer-grid-inner clearfix">
 		  @if(isset($offer['genre']))
 		  <div class="offer-label">{{ $offer['genre']['icon'] . $offer['genre']['title'] }}</div>
@@ -39,49 +39,60 @@
 		</a>
 	  </div>
 
-	  <div class="col-4 col-sm-4 col-lg-4">
+	  <div class="col-5 col-sm-5 col-lg-5">
 
-		<div class="banner-grid-item clearfix">
-		  <a href="{{ $banners[0]['link'] }}" class="banner-grid-inner clearfix">
-			<figure>
-			  <img src="{{ $banners[0]['img'] }}" alt="{{ $banners[0]['subtitle'] }}">
-			</figure>
-			@if(isset($banners[0]['title']))
-			<header class="tooltip" data-tip="{{ $banners[0]['subtitle'] }}">
-			  <h2>{{ $banners[0]['title'] }}</h2>
-			</header>
-			@endif
-		  </a>
+		<div id="banner-carousel" class="carousel slide banner-grid-item clearfix" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#banner-carousel" data-slide-to="0" class="active"></li>
+                <li data-target="#banner-carousel" data-slide-to="1" class=""></li>
+                <li data-target="#banner-carousel" data-slide-to="2" class=""></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <a href="{{ $banners[0]['link'] }}" class="banner-grid-inner clearfix">
+                        <img src="{{ $banners[0]['img'] }}" alt="{{ $banners[0]['subtitle'] }}">
+                        @if(isset($banners[0]['title']))
+                        <header class="tooltip" data-tip="{{ $banners[0]['subtitle'] }}">
+                            <h2>{{ $banners[0]['title'] }}</h2>
+                        </header>
+                        @endif
+                    </a>
+                </div>
+                <div class="item">
+                    <a href="{{ $banners[1]['link'] }}" class="banner-grid-inner clearfix">
+                        <img src="{{ $banners[1]['img'] }}" alt="{{ $banners[1]['subtitle'] }}">
+                        @if(isset($banners[0]['title']))
+                        <header class="tooltip" data-tip="{{ $banners[1]['subtitle'] }}">
+                            <h2>{{ $banners[0]['title'] }}</h2>
+                        </header>
+                        @endif
+                    </a>
+                </div>
+
+                <div class="item">
+                    <a href="{{ $banners[2]['link'] }}" class="banner-grid-inner clearfix">
+                        <img src="{{ $banners[2]['img'] }}" alt="{{ $banners[2]['subtitle'] }}">
+                        @if(isset($banners[0]['title']))
+                        <header class="tooltip" data-tip="{{ $banners[2]['subtitle'] }}">
+                            <h2>{{ $banners[0]['title'] }}</h2>
+                        </header>
+                        @endif
+                    </a>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#banner-carousel" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </a>
+            <a class="right carousel-control" href="#banner-carousel" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
 		</div>
-
-		<div class="banner-grid-item clearfix">
-		  <a href="{{ $banners[1]['link'] }}" class="banner-grid-inner clearfix">
-			<figure>
-			  <img src="{{ $banners[1]['img'] }}" alt="{{ $banners[1]['subtitle'] }}">
-			</figure>
-			@if(isset($banners[1]['title']))
-			<header class="tooltip" data-tip="{{ $banners[1]['subtitle'] }}">
-			  <h2>{{ $banners[1]['title'] }}</h2>
-			</header>
-			@endif
-		  </a>
-		</div>
-
-		<div class="banner-grid-item clearfix">
-		  <a href="{{ $banners[2]['link'] }}" class="banner-grid-inner clearfix">
-			<figure>
-			  <img src="{{ $banners[2]['img'] }}" alt="{{ $banners[2]['subtitle'] }}">
-			</figure>
-			@if(isset($banners[2]['title']))
-			<header class="tooltip" data-tip="{{ $banners[1]['subtitle'] }}">
-			  <h2>{{ $banners[2]['title'] }}</h2>
-			</header>
-			@endif
-		  </a>
-		</div>
-
 	  </div>
-
 	</div>
 
 	@foreach ($groups as $group)
