@@ -62,22 +62,23 @@
 		</tr>
 	</thead>
 	{{ Table::body($transactionVoucherData)
-			->ignore(['id', 'transaction_id', 'voucher_id', 'payment_partner_id', 'status', 'transaction', 'voucher'])
+			->ignore(['id', 'transaction_id', 'voucher_id', 'payment_partner_id', 'status', 'voucher'])
 			->date(function($data) {
-				if(isset($data['transaction']['created_at'])){
-					return date("d/m/Y H:i:s", strtotime($data['transaction']['created_at']));
+				if(isset($data['created_at'])){
+					return date("d/m/Y H:i:s", strtotime($data['created_at']));
 				}
 				return '--';
 			})
 			->order_id(function($data) {
-				if(isset($data['transaction']['order']['braspag_order_id'])){
-					return $data['transaction']['order']['braspag_order_id'];
+				if(isset($data['voucher']['order_customer']['braspag_order_id'])){
+					$braspag_order_id = $data['voucher']['order_customer']['braspag_order_id'];
+					return link_to_route('admin.order', $braspag_order_id, ['braspag_order_id' => $braspag_order_id]);
 				}
 				return '--';
 			})
 			->customer(function($data) {
-				if(isset($data['transaction']['order']['user']['first_name'])){
-					return $data['transaction']['order']['user']['first_name'].' '.$data['transaction']['order']['user']['last_name'];
+				if(isset($data['voucher']['order']['user']['first_name'])){
+					return $data['voucher']['order']['user']['first_name'].' '.$data['voucher']['order']['user']['last_name'];
 				}
 				return '--';
 			})
@@ -89,7 +90,7 @@
 			})
 			->offer(function($data) {
 				if(isset($data['voucher']['offer_option']['offer_id'])){
-					return $data['voucher']['offer_option']['offer_id'].' | '.$data['voucher']['offer_option']['offer_title'].' ('.$data['voucher']['offer_option']['title'].')';
+					return link_to_route('offer', $data['voucher']['offer_option']['offer_id'].' | '.$data['voucher']['offer_option']['offer_title'], ['slug' => $data['voucher']['offer_option']['slug']]).' ('.$data['voucher']['offer_option']['title'].')';
 				}
 				return '--';
 			})

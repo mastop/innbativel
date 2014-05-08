@@ -14,7 +14,7 @@ class AdminPaymentController extends BaseController {
 	 *
 	 * @var Order
 	 */
-	protected $payment;
+	protected $payment, $payment_partner, $transaction_voucher, $cron_command;
 
 	/**
 	 * Construct Instance
@@ -40,6 +40,7 @@ class AdminPaymentController extends BaseController {
 		$this->payment = $payment;
 		$this->payment_partner = $payment_partner;
 		$this->transaction_voucher = $transaction_voucher;
+		$this->cron_command = $cronjob = ' php /var/www/innbativel/artisan fechamento '; // exemplo de uso: 00 00 16 05 * php /Applications/MAMP/htdocs/innbativel/artisan fechamento 1
 	}
 
 	/**
@@ -148,9 +149,8 @@ class AdminPaymentController extends BaseController {
     	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
 
 
-		$transactionVoucherData = $transaction_voucher->with(['transaction.order.user',
-															  'voucher' => function($query){ 
-																	$query->with(['offer_option'])
+		$transactionVoucherData = $transaction_voucher->with(['voucher' => function($query){ 
+																	$query->with(['offer_option', 'order_customer'])
 																		  ->whereExists(function($query){ 
 																			if (Input::has('partner_id')) {
 																				$query->select(DB::raw(1))
@@ -271,6 +271,19 @@ class AdminPaymentController extends BaseController {
 		$this->layout->content = View::make('admin.payment.period', compact('sort', 'order', 'pag', 'paymentData', 'paymData'));
 	}
 
+	// convert from d/m/Y H:i:s to Y-m-d H:i:s
+	private function convertDatetime($datetime){
+		$dt = explode($datetime, ' ');
+		$d = explode($dt[0], '/');
+		return $d[2].'-'.$d[1].'-'.$d[0].' '.$dt[1];
+	}
+
+	// convert from d/m/Y to Y-m-d
+	private function convertDate($date){
+		$d = explode($date, '/');
+		return $d[2].'-'.$d[1].'-'.$d[0];
+	}
+
 	public function getCreate()
 	{
 		$this->layout->content = View::make('admin.payment.create');
@@ -281,20 +294,24 @@ class AdminPaymentController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-			'sales_from' => 'required|date_format:d/m/Y H:i:s',
-			'sales_to' => 'required|date_format:d/m/Y H:i:s',
-			'date' => 'required|date_format:d/m/Y|after:'.date('d-m-Y'),
+			'sales_from' => 'required|date_format:Y-m-d H:i:s',
+			'sales_to' => 'required|date_format:Y-m-d H:i:s',
+			'date' => 'required|date_format:Y-m-d|after:'.date('Y-m-d'),
 		];
 
 	    $validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
-			$inputs['sales_from'] = date('Y-m-d H:i:s', strtotime($inputs['sales_from']));
-			$inputs['sales_to'] = date('Y-m-d H:i:s', strtotime($inputs['sales_to']));
-			$inputs['date'] = date('Y-m-d', strtotime($inputs['date']));
+			$id = $this->payment->create($inputs)->id;
 
-			$this->payment->create($inputs);
+			$script_date = date('Y-m-d H:i:s', strtotime($inputs['sales_to'])+1);
+			$cron_date = Crontab::date2cron($script_date);
+			$cronjob = $cron_date . $this->cron_command . $id;
+
+			Crontab::addJob($cronjob);
+
+			$this->payment->where('id', $id)->update(['cronjob' => $cronjob]);
 
 			return Redirect::route('admin.payment.period');
 		}
@@ -328,9 +345,9 @@ class AdminPaymentController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-			'sales_from' => 'required|date_format:d/m/Y H:i:s',
-			'sales_to' => 'required|date_format:d/m/Y H:i:s',
-			'date' => 'required|date_format:d/m/Y|after:'.date('d-m-Y'),
+			'sales_from' => 'required|date_format:Y-m-d H:i:s',
+			'sales_to' => 'required|date_format:Y-m-d H:i:s',
+			'date' => 'required|date_format:Y-m-d|after:'.date('Y-m-d'),
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -341,9 +358,14 @@ class AdminPaymentController extends BaseController {
 
 			if ($payment)
 			{
-				$inputs['sales_from'] = date('Y-m-d H:i:s', strtotime($inputs['sales_from']));
-				$inputs['sales_to'] = date('Y-m-d H:i:s', strtotime($inputs['sales_to']));
-				$inputs['date'] = date('Y-m-d', strtotime($inputs['date']));
+				$script_date = date('Y-m-d H:i:s', strtotime($inputs['sales_to'])+1);
+				$cron_date = Crontab::date2cron($script_date);
+				$cronjob = $cron_date . $this->cron_command . $id;
+
+				Crontab::removeJob($payment->cronjob); //remove atual cron job do crontab
+				Crontab::addJob($cronjob); // insere novo cron job (com data atualizada) no crontab
+
+				$inputs['cronjob'] = $cronjob;
 
 				$payment->update($inputs);
 			}
@@ -395,7 +417,10 @@ class AdminPaymentController extends BaseController {
 
 	public function postDelete($id)
 	{
-		$this->payment->find($id)->delete();
+		$payment = $this->payment->find($id);
+		$payment->delete();
+
+		Crontab::removeJob($payment->cronjob); //remove cron job do crontab
 
 		Session::flash('success', 'Período de pagamento excluída com sucesso.');
 

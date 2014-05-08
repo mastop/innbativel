@@ -26,6 +26,7 @@ class SetupPaymentsTable extends Migration {
         $table->dateTime('sales_from');
         $table->dateTime('sales_to');
         $table->date('date');
+        $table->string('cronjob')->nullable();
         
       });
     }

@@ -39,7 +39,7 @@ class TransactionsTableSeeder extends DatabaseSeeder
         [
             'order_id' => 2,
             'changer_id' => 1,
-            'status' => 'convercao_credito',
+            'status' => 'convercao_creditos',
             'total' => 1000,
             'created_at' => date('Y-m-d H:i:s',strtotime("-7 days")),
         ],
