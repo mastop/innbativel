@@ -18,7 +18,7 @@ class Fechamento extends Command {
 	 *
 	 * @var string
 	 */
-	protected $description = 'Fechamento quinzenal e calculo do total das vendas dos parceiros.';
+	protected $description = 'Fechamento quinzenal e calculo do total das vendas dos parceiros. Calcula todas as transações de vouchers (transactions_vouchers) em aberto, fechando-as, atribuindo uma data de pagamento (payments_partners e payments).';
 
 	/**
 	 * Create a new command instance.
