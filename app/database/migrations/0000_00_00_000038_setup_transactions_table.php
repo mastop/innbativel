@@ -24,11 +24,9 @@ class SetupTransactionsTable extends Migration {
          */
 		$table->increments('id');
         $table->integer('order_id')->unsigned()->index();
-    
-        $table->integer('changer_id')->unsigned()->index();
 
         //convercao_creditos = houve cancelamento, mas só do cupom no sistema, o pagamento não foi cancelado na Cielo, foi convertido para crédito ao usuario INN
-        $table->enum('status', array('pagamento', 'cancelamento', 'convercao_creditos'))->default('pagamento');
+        $table->enum('status', array('pagamento', 'cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial'))->default('pagamento');
         
         $table->decimal('total', 7, 2)->nullable();
         $table->decimal('credit_discount', 7, 2)->nullable();
@@ -38,7 +36,6 @@ class SetupTransactionsTable extends Migration {
          * Foreign Keys
          */
         $table->foreign('order_id')->references('id')->on('orders'); // COM OU SEM "ON DELETE CASCATE"?
-        $table->foreign('changer_id')->references('id')->on('users')->onDelete('cascade');
 
         /*
          * Time Stamps
