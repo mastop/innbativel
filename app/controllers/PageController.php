@@ -106,7 +106,7 @@ class PageController extends BaseController {
             // ENVIO DE EMAIL PARA A EQUIPE DO INNBatível
             Mail::send('emails.contact.send', $data,
                 function($message) use($name, $email){
-                    $message->to("saulolimajf@gmail.com", 'INNBatível')
+                    $message->to("faleconosco@innbativel.com.br", 'INNBatível')
                         ->setReplyTo($email, 'INNBatível')
                         ->setSubject('[INNBatível] Contato de '.$name. ''
                         );
