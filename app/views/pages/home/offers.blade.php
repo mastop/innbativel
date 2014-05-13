@@ -1,10 +1,13 @@
 <?php
 $first_group = array_shift($groups);
-$offer = $first_group['offer'][0];
-$offer_option = $offer['offer_option_home'][0];
 ?>
-
 <div class="row">
+  <?php
+  if (sizeof($first_group['offer']) > 0)
+  {
+    $offer =  $first_group['offer'][0];
+    $offer_option = $offer['offer_option_home'][0];
+  ?>
   <div itemscope class="offer-spotlight offer-grid-item col-7 col-sm-7 col-lg-7 clearfix">
     <a href="oferta/{{ $offer['slug'] }}" class="offer-grid-inner clearfix">
       @if(isset($offer['genre']))
@@ -37,7 +40,7 @@ $offer_option = $offer['offer_option_home'][0];
       </div>
     </a>
   </div>
-
+  <?php } ?>
   <div class="col-5 col-sm-5 col-lg-5">
 
     <div id="banner-carousel" class="carousel slide banner-grid-item clearfix" data-ride="carousel">
