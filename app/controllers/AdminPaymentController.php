@@ -40,7 +40,7 @@ class AdminPaymentController extends BaseController {
 		$this->payment = $payment;
 		$this->payment_partner = $payment_partner;
 		$this->transaction_voucher = $transaction_voucher;
-		$this->cron_command = $cronjob = ' php /var/www/innbativel/artisan fechamento '; // exemplo de uso: 00 00 16 05 * php /Applications/MAMP/htdocs/innbativel/artisan fechamento 1
+		$this->cron_command = $cronjob = ' php /var/app/current/artisan fechamento '; // exemplo de uso: 00 00 16 05 * php /Applications/MAMP/htdocs/innbativel/artisan fechamento 1
 	}
 
 	/**

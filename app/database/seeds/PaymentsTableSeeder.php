@@ -71,7 +71,7 @@ class PaymentsTableSeeder extends DatabaseSeeder
 
       $script_date = date('Y-m-d H:i:s', strtotime($payment['sales_to'])+1);
       $cron_date = Crontab::date2cron($script_date);
-      $cronjob = $cron_date.' php /Applications/MAMP/htdocs/innbativel/artisan fechamento '.$id.' --env=local';
+      $cronjob = $cron_date.' php /var/app/current/artisan fechamento '.$id.' --env=local';
       Crontab::addJob($cronjob);
 
       Payment::where('id', $id)->update(['cronjob' => $cronjob]);

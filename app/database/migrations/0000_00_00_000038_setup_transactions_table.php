@@ -28,9 +28,9 @@ class SetupTransactionsTable extends Migration {
         //convercao_creditos = houve cancelamento, mas só do cupom no sistema, o pagamento não foi cancelado na Cielo, foi convertido para crédito ao usuario INN
         $table->enum('status', array('pagamento', 'cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial'))->default('pagamento');
         
-        $table->decimal('total', 7, 2)->nullable();
-        $table->decimal('credit_discount', 7, 2)->nullable();
-        $table->decimal('coupon_discount', 7, 2)->nullable();
+        $table->decimal('total', 9, 2)->nullable();
+        $table->decimal('credit_discount', 9, 2)->default(0)->nullable();
+        $table->decimal('coupon_discount', 9, 2)->default(0)->nullable();
 
         /*
          * Foreign Keys
