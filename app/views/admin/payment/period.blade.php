@@ -40,7 +40,7 @@
 	{{ Table::open() }}
 	{{ Table::headers('Vendas de', 'Vendas até', 'Data a pagar', 'Ação') }}
 	{{ Table::body($paymentData)
-			->ignore(['id', 'sales_from', 'sales_to', 'date'])
+			->ignore(['id', 'sales_from', 'sales_to', 'date', 'cronjob'])
 			->from(function($data) {
 				if(isset($data['sales_from'])){
 					return date("d/m/Y H:i:s", strtotime($data['sales_from']));

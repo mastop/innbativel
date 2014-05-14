@@ -18,10 +18,6 @@ class Transaction extends Eloquent {
   public static $rules = array(
   );
 
-  public function payment_partner(){
-    return $this->belongsToMany('PaymentPartner', 'transactions_vouchers', 'transaction_id', 'payment_partner_id');
-  }
-
   public function voucher(){
     return $this->belongsToMany('Voucher', 'transactions_vouchers', 'transaction_id', 'voucher_id')
                 ->with(['offer_option']);

@@ -16,3 +16,4 @@ Artisan::add(new StructureCommand);
 Artisan::add(new AdjustPermsCommand);
 Artisan::add(new AdjustAssetsCommand);
 Artisan::add(new AdjustVendorsCommand);
+Artisan::add(new Fechamento);

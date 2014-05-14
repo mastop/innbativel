@@ -33,6 +33,15 @@ class ConfigurationsTableSeeder extends DatabaseSeeder
         'name' => 'antecipation-tax-10x', 'value' => '8.195',
       ],
       [
+        'name' => 'interest-rate-3x', 'value' => '0.035202404',
+      ],
+      [
+        'name' => 'interest-rate-6x', 'value' => '0.062135342',
+      ],
+      [
+        'name' => 'interest-rate-10x', 'value' => '0.09875344',
+      ],
+      [
         'name' => 'merchant_id', 'value' => '1234',
       ],
       [
