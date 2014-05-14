@@ -516,4 +516,11 @@ Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 	Route::any('contract/sign', function(){ return Redirect::route('painel.contract'); });
 	Route::get('contract/sign/{id}', ['as' => 'painel.contract.get_sign', 'uses' => 'PainelContractController@getSign']);
 	Route::post('contract/sign/{id}', ['as' => 'painel.contract.post_sign', 'uses' => 'PainelContractController@postSign']);
+
+	Route::any('pagamentos', ['as' => 'painel.payment', 'uses' => 'PainelPaymentController@anyIndex']);
+
+	Route::any('pagamentos/vouchers', ['as' => 'painel.payment.voucher', 'uses' => 'PainelPaymentController@anyVoucher']);
+
+	Route::any('pagamentos/vouchers_export', function(){ return Redirect::route('painel.payment.voucher'); });
+	Route::get('pagamentos/vouchers_export/{partner_id?}/{transaction_id?}', ['as' => 'painel.payment.voucher_export', 'uses' => 'PainelPaymentController@getVoucherExport']);
 });
