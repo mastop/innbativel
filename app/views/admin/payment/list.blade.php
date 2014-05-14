@@ -14,10 +14,7 @@
 			{{ Former::inline_open(route('admin.payment')) }}
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('id')->class('input-medium')->placeholder('ID')->label('ID') }}
-			{{ Former::select('partner_id', 'Parceiro')
-	        	->addOption('', null)
-				->fromQuery(DB::table('profiles')->select('profiles.first_name AS name', 'profiles.user_id AS id')->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')->where('roles.id', 9), 'name', 'id')
-	        }}
+			{{ Former::text('partner_name')->class('input-medium')->placeholder('Parceiro')->label('Parceiro') }}
 	        {{ Former::select('payment_id', 'Período de venda')
 	        	->addOption('Todos', null)
 				->options($paymData)
@@ -187,6 +184,25 @@ function exportar(url){
 
 	window.location.href = url;
 };
+
+$(function() {
+  var availableTags = [
+  	<?php
+  		$partners = DB::table('profiles')
+  					 ->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')
+  					 ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
+  					 ->where('roles.id', 9)
+  					 ->get(['profiles.first_name']);
+
+  		foreach ($partners as $partner) {
+  			echo '"'.$partner->first_name.'", ';
+  		}
+  	?>
+  ];
+  $("#partner_name").autocomplete({
+    source: availableTags
+  });
+});
 
 </script>
 <script src="{{ asset('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>

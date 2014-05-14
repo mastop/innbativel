@@ -13,10 +13,7 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('admin.payment.voucher')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::select('partner_id', 'Parceiro')
-	        	->addOption('', null)
-				->fromQuery(DB::table('profiles')->select('profiles.first_name AS name', 'profiles.user_id AS id')->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')->where('roles.id', 9), 'name', 'id')
-	        }}
+	        {{ Former::text('partner_name')->class('input-medium')->placeholder('Parceiro')->label('Parceiro') }}
 	        {{ Former::select('payment_id', 'Período de venda')
 	        	->addOption('Todos', null)
 				->options($paymData)
@@ -62,7 +59,7 @@
 		</tr>
 	</thead>
 	{{ Table::body($transactionVoucherData)
-			->ignore(['id', 'transaction_id', 'voucher_id', 'payment_partner_id', 'status', 'voucher'])
+			->ignore(['id', 'transaction_id', 'voucher_id', 'payment_partner_id', 'status', 'created_at', 'updated_at', 'voucher'])
 			->date(function($data) {
 				if(isset($data['created_at'])){
 					return date("d/m/Y H:i:s", strtotime($data['created_at']));
@@ -146,5 +143,26 @@
 		{{ $transactionVoucherData->links() }}
 	</div>
 </div>
+
+<script type="text/javascript">
+$(function() {
+  var availableTags = [
+  	<?php
+  		$partners = DB::table('profiles')
+  					 ->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')
+  					 ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
+  					 ->where('roles.id', 9)
+  					 ->get(['profiles.first_name']);
+
+  		foreach ($partners as $partner) {
+  			echo '"'.$partner->first_name.'", ';
+  		}
+  	?>
+  ];
+  $("#partner_name").autocomplete({
+    source: availableTags
+  });
+});
+</script>
 
 @stop
