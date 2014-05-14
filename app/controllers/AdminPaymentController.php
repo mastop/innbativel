@@ -273,14 +273,14 @@ class AdminPaymentController extends BaseController {
 
 	// convert from d/m/Y H:i:s to Y-m-d H:i:s
 	private function convertDatetime($datetime){
-		$dt = explode($datetime, ' ');
-		$d = explode($dt[0], '/');
+		$dt = explode(' ', $datetime);
+		$d = explode('/', $dt[0]);
 		return $d[2].'-'.$d[1].'-'.$d[0].' '.$dt[1];
 	}
 
 	// convert from d/m/Y to Y-m-d
 	private function convertDate($date){
-		$d = explode($date, '/');
+		$d = explode('/', $date);
 		return $d[2].'-'.$d[1].'-'.$d[0];
 	}
 
@@ -435,18 +435,19 @@ class AdminPaymentController extends BaseController {
 	public function getUpdateStatus($id, $date = NULL){
 		$payment_partner = $this->payment_partner->find($id);
 		
-		if(isset($payment_partner->paid_on)){
-			$payment_partner->paid_on == NULL;
+		if($date == NULL){
+			$payment_partner->paid_on = NULL;
 			$payment_partner->save();
-			Session::flash('success', 'Pagamento de parceiro #'.$id.' alterado para "não pago" com sucesso.');
+			Session::flash('success', 'Pagamento #'.$id.' alterado para "não pago" com sucesso.');
 		}
 		else{
-			$payment_partner->paid_on = date('Y-m-d H:i:s', strtotime($date));
+			$date = str_replace('-', '/', $date);
+			$payment_partner->paid_on = $this->convertDate($date);
 			$payment_partner->save();
-			Session::flash('success', 'Pagamento de parceiro #'.$id.' alterado para "pago em '.$date.'" com sucesso.');
+			Session::flash('success', 'Pagamento #'.$id.' alterado para "pago em '.$date.'" com sucesso.');
 		}
 
-		return Redirect::route('admin.payment', $id);
+		return Redirect::back();
 	}
 
 	public function getVoucherExport($partner_id, $transaction_id){
@@ -940,7 +941,7 @@ class AdminPaymentController extends BaseController {
 	// 		$itens = '';
 
 	// 		foreach ($payment->voucher_offer as $voucher) {
-	// 			$itens .= 'R$ '.$voucher->subtotal.' ('.$voucher->status.') | #'.$voucher->offer_option->offer_id.' '.$voucher->offer_option->offer_title.' ('.$voucher->offer_option->title.')'."\n";
+	// 			$itens .= 'R$ '.$voucher->offer_option->price_with_discount.' ('.$voucher->status.') | #'.$voucher->offer_option->offer_id.' '.$voucher->offer_option->offer_title.' ('.$voucher->offer_option->title.')'."\n";
 	// 		}
 
 	// 		$ss[] = substr($itens, 0, -1);
@@ -1174,7 +1175,7 @@ class AdminPaymentController extends BaseController {
 	// 	foreach ($payment['offer'] as $ord) {
 	// 		$paymented_offers = array_merge($paymented_offers,
 	// 		[
-	// 			'Voucher #'.$ord['pivot']['id'] => 'Código: '.$ord['pivot']['id'].'-'.$ord['pivot']['display_code'].'-'.$ord['offer_id'].(($ord['is_product'] == true)?' | Código de rastreamento: '.(isset($ord['pivot']['tracking_code'])?$ord['pivot']['tracking_code']:'--'):'').' | '.$ord['pivot']['status'].' | Valor pago: R$ '.$ord['pivot']['subtotal'].' | Oferta: #'.$ord['offer_id'].' '.$ord['offer_title'].'  ('.$ord['title'].' R$ '.$ord['price_with_discount'].')'
+	// 			'Voucher #'.$ord['pivot']['id'] => 'Código: '.$ord['pivot']['id'].'-'.$ord['pivot']['display_code'].'-'.$ord['offer_id'].(($ord['is_product'] == true)?' | Código de rastreamento: '.(isset($ord['pivot']['tracking_code'])?$ord['pivot']['tracking_code']:'--'):'').' | '.$ord['pivot']['status'].' | Oferta: #'.$ord['offer_id'].' '.$ord['offer_title'].'  ('.$ord['title'].' R$ '.$ord['price_with_discount'].')'
 	// 		]);
 	// 	}
 

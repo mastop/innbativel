@@ -87,7 +87,7 @@
 				return '--';
 			})
 			->paid_onn(function($data) {
-				return isset($data['paid_on'])?date("d/m/Y H:i:s", strtotime($data['paid_on'])):'<span class="text-error">Não pago</span>';
+				return isset($data['paid_on'])?date("d/m/Y", strtotime($data['paid_on'])):'<span class="text-error">Não pago</span>';
 			})
 			->totall(function($data) {
 				if(isset($data['total'])){
@@ -106,12 +106,7 @@
 				else{
 					return DropdownButton::normal('Ações',
 					  	Navigation::links([
-					  		
-					  		///////////////////////////////////////////////////
-					  		// FAZER COM JS, COM MODAL PEDINDO A DATA E HORA //
-					  		///////////////////////////////////////////////////
-
-							['Marcar como pago', route('admin.payment.update_status', $data['id'])],
+					  		['Marcar como pago', 'javascript: marcar_pago(\''.route('admin.payment.update_status', ['id' => $data['id']]).'\','.$data['id'].');'],
 					    ])
 					)->pull_right()->split();
 				}
@@ -137,13 +132,28 @@
 
 
 <script type="text/javascript">
-function action(url, action, braspag_order_id){
+function marcar_pago(url, id){
 	var href = url;
-	var message = 'Realmente deseja '+action+' a compra '+braspag_order_id+'? Se sim, comente abaixo o motivo da ação.';
-	var title = 'Atenção: '+action;
+	var message = 'Informe a data do pagamento #'+id;
+	var title = 'Marcar pagamento #'+id+' como pago';
 
 	if (!$('#dataConfirmModal').length) {
-	    $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">'+title+'</h3></div><div class="modal-body"><p id="modal-message">'+message+'</p><input type="text" id="comment-on-action" style="width: 100%;" autofocus="autofocus"/></div><div class="modal-footer"><button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Não, voltar</button><a class="btn btn-danger" id="dataConfirmOK">Sim</a></div></div>');
+		var modal = '<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">'
+	    				+'<div class="modal-header">'
+								+'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'
+								+'<h3 id="dataConfirmLabel">'+title+'</h3></div><div class="modal-body">'
+								+'<p id="modal-message">'+message+'</p>'
+								+'<input type="text" id="date" style="width: 100%;" autofocus="autofocus" value="{{ date('d/m/Y') }}"/>'
+							+'</div>'
+							+'<div class="modal-footer">'
+								+'<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Voltar</button>'
+								+'<a class="btn btn-danger" id="dataConfirmOK">Enviar</a>'
+							+'</div>'
+						+'</div>';
+
+	    $('body').append(modal);
+
+	    $('#date').mask('00/00/0000');
 	}
 
 	$('#dataConfirmModal').find('.modal-message').text(message);
@@ -153,7 +163,7 @@ function action(url, action, braspag_order_id){
 }
 
 function submit_action(url){
-	window.location.href = url + $('#comment-on-action').val();
+	window.location.href = url + '/' + $('#date').val().replace('/', '-').replace('/', '-');
 }
 
 function exportar(url){
@@ -179,6 +189,6 @@ function exportar(url){
 };
 
 </script>
-</script>
+<script src="{{ asset('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
 
 @stop

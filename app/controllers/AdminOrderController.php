@@ -362,7 +362,7 @@ class AdminOrderController extends BaseController {
 			$itens = '';
 
 			foreach ($order->voucher_offer as $voucher) {
-				$itens .= 'R$ '.$voucher->subtotal.' ('.$voucher->status.') | #'.$voucher->offer_option->offer_id.' '.$voucher->offer_option->offer_title.' ('.$voucher->offer_option->title.')'."\n";
+				$itens .= 'R$ '.$voucher->offer_option->price_with_discount.' ('.$voucher->status.') | #'.$voucher->offer_option->offer_id.' '.$voucher->offer_option->offer_title.' ('.$voucher->offer_option->title.')'."\n";
 			}
 
 			$ss[] = substr($itens, 0, -1);
@@ -596,7 +596,7 @@ class AdminOrderController extends BaseController {
 		foreach ($order['offer'] as $ord) {
 			$ordered_offers = array_merge($ordered_offers,
 			[
-				'Voucher #'.$ord['pivot']['id'] => 'Código: '.$ord['pivot']['id'].'-'.$ord['pivot']['display_code'].'-'.$ord['offer_id'].(($ord['is_product'] == true)?' | Código de rastreamento: '.(isset($ord['pivot']['tracking_code'])?$ord['pivot']['tracking_code']:'--'):'').' | '.$ord['pivot']['status'].' | Valor pago: R$ '.$ord['pivot']['subtotal'].' | Oferta: #'.$ord['offer_id'].' '.$ord['offer_title'].'  ('.$ord['title'].' R$ '.$ord['price_with_discount'].')'
+				'Voucher #'.$ord['pivot']['id'] => 'Código: '.$ord['pivot']['id'].'-'.$ord['pivot']['display_code'].'-'.$ord['offer_id'].(($ord['is_product'] == true)?' | Código de rastreamento: '.(isset($ord['pivot']['tracking_code'])?$ord['pivot']['tracking_code']:'--'):'').' | '.$ord['pivot']['status'].' | Oferta: #'.$ord['offer_id'].' '.$ord['offer_title'].'  ('.$ord['title'].' R$ '.$ord['price_with_discount'].')'
 			]);
 		}
 

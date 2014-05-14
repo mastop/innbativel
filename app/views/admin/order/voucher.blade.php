@@ -37,7 +37,7 @@
 	</div>
 {{ Table::open() }}
 {{ Table::headers('Chave do cupom', 'Código', 'ID da Oferta', 'Agendado?', 'Nome', 'E-mail', 'Código de rastreamento') }}
-{{ Table::body($vouchers)->ignore(['offer_option_id', 'order_id', 'status', 'tracking_code', 'subtotal', 'name', 'email', 'used', 'order', 'offer_option', 'created_at', 'updated_at'])
+{{ Table::body($vouchers)->ignore(['offer_option_id', 'order_id', 'status', 'tracking_code', 'name', 'email', 'used', 'order', 'offer_option', 'created_at', 'updated_at'])
 	->offer_id(function($voucher) {
 		if(isset($voucher->offer_option)) {
 			return $voucher->offer_option->offer_id;
