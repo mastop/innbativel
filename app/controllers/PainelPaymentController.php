@@ -143,7 +143,7 @@ class PainelPaymentController extends BaseController {
 		 * Order filter
 		 */
     	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
-
+    	
 
 		$transactionVoucherData = $transaction_voucher->with(['voucher' => function($query){ 
 																	$query->with(['offer_option', 'order_customer'])
@@ -171,6 +171,18 @@ class PainelPaymentController extends BaseController {
 																	  ->whereRaw('payments_partners.payment_id = '.Input::get('payment_id'));
 															}
 										              })
+										              ->whereRaw('transactions_vouchers.voucher_id NOT IN (
+													  				SELECT tv1.voucher_id 
+													  				FROM transactions_vouchers tv1 
+													  				WHERE tv1.status = \'cancelamento\' 
+													  				AND tv1.voucher_id IN ( 
+													  					SELECT tv2.voucher_id 
+													  					FROM transactions_vouchers tv2 
+													  					WHERE tv2.status = \'pagamento\' AND 
+													  						(tv2.payment_partner_id = tv1.payment_partner_id OR 
+													  						(tv2.payment_partner_id IS NULL AND tv1.payment_partner_id IS NULL))
+													  				)
+													  )')
 													  ->orderBy($sort, $order)
 													  ->paginate($pag)
 													  ->appends([
