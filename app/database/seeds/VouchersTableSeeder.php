@@ -117,7 +117,7 @@ class VouchersTableSeeder extends DatabaseSeeder
       [
         'order_id' => 3,
         'offer_option_id' => 6,
-        'display_code' => '1234-1234-1234-4321',
+        'display_code' => 'a123-sda4-sad4-h7nh',
         'name' => 'Lindonilda, a Onipresente',
         'email' => 'lindo@nil.da',
         'status' => 'pago',
@@ -125,7 +125,7 @@ class VouchersTableSeeder extends DatabaseSeeder
       [
         'order_id' => 4,
         'offer_option_id' => 10,
-        'display_code' => '1234-1234-1234-4321',
+        'display_code' => 'fvt7-vfdv-nb65-4fdf3',
         'name' => 'Lindonilda, a Onipresente',
         'email' => 'lindo@nil.da',
         'status' => 'pago',
@@ -133,7 +133,7 @@ class VouchersTableSeeder extends DatabaseSeeder
       [
         'order_id' => 4,
         'offer_option_id' => 10,
-        'display_code' => '1234-1234-1234-4321',
+        'display_code' => 'nbn7-76nb-vcfg-hyl8',
         'name' => 'Lindonilda, a Onipresente',
         'email' => 'lindo@nil.da',
         'status' => 'pago',
@@ -141,7 +141,7 @@ class VouchersTableSeeder extends DatabaseSeeder
       [
         'order_id' => 4,
         'offer_option_id' => 11,
-        'display_code' => '1234-1234-1234-4321',
+        'display_code' => 'sdfg-45vf-nn6h-az49',
         'name' => 'Lindonilda, a Onipresente',
         'email' => 'lindo@nil.da',
         'status' => 'pago',

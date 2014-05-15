@@ -39,7 +39,7 @@ class Order extends Eloquent {
   }
 
   public function voucher_offer(){
-    return $this->hasMany('Voucher', 'order_id')->with(['offer_option']);
+    return $this->hasMany('Voucher', 'order_id')->with(['offer_option_offer']);
   }
 
   public function offer(){

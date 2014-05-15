@@ -4,9 +4,6 @@
 // use SebastianBerBRLgmann\Money\Money;
 // use SebastianBergmann\BRLMoney\IntlFormatter;
 
-use Goodby\CSV\Export\Standard\Exporter;
-use Goodby\CSV\Export\Standard\ExporterConfig;
-
 class PainelOrderController extends BaseController {
 
 	/**
@@ -14,12 +11,12 @@ class PainelOrderController extends BaseController {
 	 *
 	 * @var Order
 	 */
-	protected $order;
+	protected $order, $voucher;
 
 	/**
 	 * Construct Instance
 	 */
-	public function __construct(Order $order)
+	public function __construct(Order $order, Voucher $voucher)
 	{
 		/*
 		 * Enable Sidebar
@@ -38,6 +35,7 @@ class PainelOrderController extends BaseController {
 		 */
 
 		$this->order = $order;
+		$this->voucher = $voucher;
 	}
 
 	public function anyListByOffer(){
@@ -57,7 +55,7 @@ class PainelOrderController extends BaseController {
 		/*
 		 * Order filter
 		 */
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+    	$order = Input::get('order') === 'asc' ? 'asc' : 'desc';
 
     	/*
 		 * Search filter
@@ -100,7 +98,7 @@ class PainelOrderController extends BaseController {
 	}
 
 	public function anyVouchers($offer_option_id = null){
-		$vouchers = new Voucher;
+		$vouchers = $this->voucher;
 
 		$offers = Offer::with(['offer_option'])->where('partner_id', Auth::user()->id)->get();
 
@@ -136,7 +134,7 @@ class PainelOrderController extends BaseController {
 		/*
 		 * Order filter
 		 */
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+    	$order = Input::get('order') === 'asc' ? 'asc' : 'desc';
 
 
 		/*
@@ -154,7 +152,7 @@ class PainelOrderController extends BaseController {
 			$vouchers = $vouchers->where('id', Input::get('id'));
 		}
 
-		$vouchers = $vouchers->with(['order', 'offer_option'])
+		$vouchers = $vouchers->with(['offer_option_offer'])
 							 ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('offers')
@@ -205,7 +203,7 @@ class PainelOrderController extends BaseController {
 		$id = ($id == 'null')?null:$id;
 		$offer_option_id = ($offer_option_id == 'null')?null:$offer_option_id;
 
-		$vouchers = new Voucher;
+		$vouchers = $this->voucher;
 
 		$vouchers = $vouchers->where('status', 'pago');
 
@@ -217,7 +215,7 @@ class PainelOrderController extends BaseController {
 			$vouchers = $vouchers->where('id', $id);
 		}
 
-		$vouchers = $vouchers->with(['order', 'offer_option'])
+		$vouchers = $vouchers->with(['offer_option_offer'])
 							 ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('offers')
@@ -231,31 +229,31 @@ class PainelOrderController extends BaseController {
 				 		                  ->whereRaw('orders.status = "pago"')
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
-		 					 ->orderBy('id', 'asc')
-		 					 ->get();
+		 					 ->orderBy('id', 'desc')
+		 					 ->get()->toArray();
+
+		// print('<pre>');
+		// print_r($vouchers);
+		// print('</pre>'); die();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Cupom', 'Agendado?', 'Nome', 'Código de rastreamento');
+		$spreadsheet[] = array('Cupom', 'ID da oferta', 'Validado?', 'Nome', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
-			$ss[] = $voucher['offer_option']->offer_id;
-			$ss[] = $voucher->id.'-'.$voucher->display_code.'-'.$voucher['offer_option']->offer_id;
-			$ss[] = ($voucher->used == 1)?'Sim':'Não';
-			$ss[] = $voucher['order']->first_name.' '.$voucher['order']->last_name;
-			$ss[] = $voucher->tracking_code;
+			$ss[] = $voucher['id'].'-'.$voucher['display_code'].'-'.$voucher['offer_option_offer']['offer_id'];
+			$ss[] = $voucher['offer_option_offer']['id'];
+			$ss[] = ($voucher['used'] == 1)?'Sim':'Não';
+			$ss[] = $voucher['name'];
+			$ss[] = $voucher['tracking_code'];
 
 			$spreadsheet[] = $ss;
 		}
 
-		print('<pre>');
-		print_r($spreadsheet);
-		print('</pre>');
-
-		// $config = new ExporterConfig();
-		// $exporter = new Exporter($config);
-
-		// $exporter->export('php://output', $spreadsheet);
+		Excel::create('CuponsINNBativel')
+	         ->sheet('CuponsINNBativel')
+	            ->with($spreadsheet)
+	         ->export('xls');
 	}
 
 	public function getListOffersExport($offer_id, $starts_on, $ends_on){
@@ -321,14 +319,10 @@ class PainelOrderController extends BaseController {
 			$spreadsheet[] = $ss;
 		}
 
-		print('<pre>');
-		print_r($spreadsheet);
-		print('</pre>'); die();
-
-		// $config = new ExporterConfig();
-		// $exporter = new Exporter($config);
-
-		// $exporter->export('php://output', $spreadsheet);
+		Excel::create('OfertasINNBativel')
+	         ->sheet('OfertasINNBativel')
+	            ->with($spreadsheet)
+	         ->export('xls');
 	}
 
 	public function postUpdateTrackingCode($id){

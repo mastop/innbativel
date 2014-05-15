@@ -4,9 +4,6 @@
 // use SebastianBerBRLgmann\Money\Money;
 // use SebastianBergmann\BRLMoney\IntlFormatter;
 
-// use Goodby\CSV\Export\Standard\Exporter;
-// use Goodby\CSV\Export\Standard\ExporterConfig;‏
-
 class AdminPaymentController extends BaseController {
 
 	/**
@@ -79,7 +76,7 @@ class AdminPaymentController extends BaseController {
 			$payment_partner = $payment_partner->where('id', Input::get('id'));
 		}
 
-		if (Input::has('payment_id') AND Input::get('payment_id') == 'null') {
+		if (Input::has('payment_id') AND Input::get('payment_id') == 'atual') {
 			$payment_partner = $payment_partner->where('payment_id', Input::get('payment_id'));
 		}
 
@@ -136,7 +133,7 @@ class AdminPaymentController extends BaseController {
 		 */
 		$transaction_voucher = $this->transaction_voucher;
 
-		if (Input::has('payment_id') AND Input::get('payment_id') == 'null') {
+		if (Input::has('payment_id') AND Input::get('payment_id') == 'atual') {
 			$transaction_voucher = $transaction_voucher->whereNull('payment_partner_id');
 		}
 
@@ -183,7 +180,7 @@ class AdminPaymentController extends BaseController {
 										              })
 										              ->whereExists(function($query){
 											                if (Input::has('payment_id')) {
-											                	if (Input::get('payment_id') != 'null') {
+											                	if (Input::get('payment_id') != 'atual') {
 																	$query->select(DB::raw(1))
 													                      ->from('payments_partners')
 																		  ->whereRaw('payments_partners.id = transactions_vouchers.payment_partner_id')
@@ -233,7 +230,7 @@ class AdminPaymentController extends BaseController {
 			$paymData[$p->id] = date("d/m/Y H:i:s", strtotime($p->sales_from)).' - '.date("d/m/Y H:i:s", strtotime($p->sales_to)).' (dia a pagar: '.date("d/m/Y", strtotime($p->date)).')';
 		}
 
-		$paymData['null'] = 'Atual';
+		$paymData['atual'] = 'Atual';
 
 		$this->layout->content = View::make('admin.payment.voucher', compact('sort', 'order', 'pag', 'transactionVoucherData', 'paymData', 'totals'));
 	}
@@ -306,6 +303,10 @@ class AdminPaymentController extends BaseController {
 		 */
 		$transaction_voucher = $this->transaction_voucher;
 
+		if ($payment_id == 'atual') {
+			$transaction_voucher = $transaction_voucher->whereNull('payment_partner_id');
+		}
+
 		/*
 		 * Sort filter
 		 */
@@ -343,10 +344,12 @@ class AdminPaymentController extends BaseController {
 										              })
 										              ->whereExists(function($query) use ($payment_id){
 											                if (isset($payment_id)) {
-																$query->select(DB::raw(1))
-												                      ->from('payments_partners')
-																	  ->whereRaw('payments_partners.id = transactions_vouchers.payment_partner_id')
-																	  ->whereRaw('payments_partners.payment_id = '.$payment_id);
+											                	if ($payment_id != 'atual') {
+																	$query->select(DB::raw(1))
+													                      ->from('payments_partners')
+																		  ->whereRaw('payments_partners.id = transactions_vouchers.payment_partner_id')
+																		  ->whereRaw('payments_partners.payment_id = '.$payment_id);
+																}
 															}
 										              })
 										              ->whereRaw('transactions_vouchers.voucher_id NOT IN (
@@ -392,14 +395,10 @@ class AdminPaymentController extends BaseController {
 
 		$spreadsheet[] = array('Total', '', '', '', '', '', number_format($voucher_price, 2, ',', '.'), number_format($transfer, 2, ',', '.'));
 
-		print('<pre>');
-		print_r($spreadsheet);
-		print('</pre>'); die();
-
-		// $config = new ExporterConfig();
-		// $exporter = new Exporter($config);
-
-		// $exporter->export('php://output', $spreadsheet);
+		Excel::create('TransacoesDeVouchers')
+	         ->sheet('TransacoesDeVouchers')
+	            ->with($spreadsheet)
+	         ->export('xls');
 	}
 
 	// convert from d/m/Y H:i:s to Y-m-d H:i:s

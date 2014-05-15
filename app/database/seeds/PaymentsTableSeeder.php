@@ -55,7 +55,7 @@ class PaymentsTableSeeder extends DatabaseSeeder
         ],
         [
             'sales_from' => '2014-04-01 00:00:00',
-            'sales_to' => '2014-05-15 23:59:59',
+            'sales_to' => '2014-04-15 23:59:59',
             'date' => '2014-04-30',
         ],
         [

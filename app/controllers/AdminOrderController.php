@@ -4,9 +4,6 @@
 // use SebastianBerBRLgmann\Money\Money;
 // use SebastianBergmann\BRLMoney\IntlFormatter;
 
-// use Goodby\CSV\Export\Standard\Exporter;
-// use Goodby\CSV\Export\Standard\ExporterConfig;‏
-
 class AdminOrderController extends BaseController {
 
 	/**
@@ -265,14 +262,10 @@ class AdminOrderController extends BaseController {
 			$spreadsheet[] = $ss;
 		}
 
-		print('<pre>');
-		print_r($spreadsheet);
-		print('</pre>'); die();
-
-		// $config = new ExporterConfig();
-		// $exporter = new Exporter($config);
-
-		// $exporter->export('php://output', $spreadsheet);
+		Excel::create('PagamentosOfertas')
+	         ->sheet('PagamentosOfertas')
+	            ->with($spreadsheet)
+	         ->export('xls');
 	}
 
 	public function getListPaymExport($status, $terms, $name, $email, $braspag_order_id, $offer_id, $date_start, $date_end){
@@ -362,26 +355,22 @@ class AdminOrderController extends BaseController {
 			$itens = '';
 
 			foreach ($order->voucher_offer as $voucher) {
-				$itens .= 'R$ '.$voucher->offer_option->price_with_discount.' ('.$voucher->status.') | #'.$voucher->offer_option->offer_id.' '.$voucher->offer_option->offer_title.' ('.$voucher->offer_option->title.')'."\n";
+				if(isset($voucher->offer_option_offer)) $itens .= 'R$ '.number_format($voucher->offer_option_offer->price_with_discount, '2', ',', '.').' ('.$voucher->status.') #'.$voucher->offer_option_offer->offer->id.' '.$voucher->offer_option_offer->offer->title.' ('.$voucher->offer_option_offer->title.') | ';
 			}
 
-			$ss[] = substr($itens, 0, -1);
+			$ss[] = substr($itens, 0, -3);
 
 			$ss[] = $order->payment_terms;
-			$ss[] = $order->created_at;
+			$ss[] = date('d/m/Y H:i:s', strtotime($order->created_at));
 			$ss[] = $order['user']->first_name.' '.$order['user']->last_name.' | '.$order['user']->email;
 
 			$spreadsheet[] = $ss;
 		}
 
-		print('<pre>');
-		print_r($spreadsheet);
-		print('</pre>');
-
-		// $config = new ExporterConfig();
-		// $exporter = new Exporter($config);
-
-		// $exporter->export('php://output', $spreadsheet);
+		Excel::create('Pagamentos')
+	         ->sheet('Pagamentos')
+	            ->with($spreadsheet)
+	         ->export('xls');
 	}
 
 	public function getOffersExport($offer_option_id, $status){
@@ -429,21 +418,14 @@ class AdminOrderController extends BaseController {
 			$ss[] = $order->telephone;
 			$ss[] = isset($order['discount_coupon'])?$order['discount_coupon']->value:'--';
 			$ss[] = $order->credit_discount;
-			$ss[] = $order->created_at;
-			$ss[] = $order->updated_at;
-			$ss[] = $order->capture_date;
 
 			$spreadsheet[] = $ss;
 		}
 
-		print('<pre>');
-		print_r($spreadsheet);
-		print('</pre>');
-
-		// $config = new ExporterConfig();
-		// $exporter = new Exporter($config);
-
-		// $exporter->export('php://output', $spreadsheet);
+		Excel::create('Ofertas')
+	         ->sheet('Ofertas')
+	            ->with($spreadsheet)
+	         ->export('xls');
 	}
 
 	public function anyVouchers($offer_option_id = null){
@@ -494,7 +476,7 @@ class AdminOrderController extends BaseController {
 			$vouchers = $vouchers->where('id', Input::get('id'));
 		}
 
-		$vouchers = $vouchers->with(['order', 'offer_option'])
+		$vouchers = $vouchers->with(['offer_option_offer'])
 							 ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('orders')
@@ -534,7 +516,7 @@ class AdminOrderController extends BaseController {
 			$vouchers = $vouchers->where('id', $id);
 		}
 
-		$vouchers = $vouchers->with(['order', 'offer_option'])
+		$vouchers = $vouchers->with(['order_customer', 'offer_option_offer'])
 	               	   	     ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('orders')
@@ -545,28 +527,24 @@ class AdminOrderController extends BaseController {
 		 					 ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Cupom', 'Agendado?', 'Nome', 'E-mail', 'Código de rastreamento');
+		$spreadsheet[] = array('ID da oferta', 'Cupom', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
-			$ss[] = $voucher['offer_option']->offer_id;
-			$ss[] = $voucher->id.'-'.$voucher->display_code.'-'.$voucher['offer_option']->offer_id;
+			$ss[] = $voucher->offer_option_offer->offer->id;
+			$ss[] = $voucher->id.'-'.$voucher->display_code.'-'.$voucher->offer_option_offer->offer->id;
 			$ss[] = ($voucher->used == 1)?'Sim':'Não';
-			$ss[] = $voucher['order']->first_name.' '.$voucher['order']->last_name;
-			$ss[] = $voucher['order']->email;
+			$ss[] = $voucher->order_customer->user['first_name'].' '.$voucher->order_customer->user['last_name'];
+			$ss[] = $voucher->order_customer->user['email'];
 			$ss[] = $voucher->tracking_code;
 
 			$spreadsheet[] = $ss;
 		}
 
-		print('<pre>');
-		print_r($spreadsheet);
-		print('</pre>');
-
-		// $config = new ExporterConfig();
-		// $exporter = new Exporter($config);
-
-		// $exporter->export('php://output', $spreadsheet);
+		Excel::create('Vouchers')
+	         ->sheet('Vouchers')
+	            ->with($spreadsheet)
+	         ->export('xls');
 	}
 
 	public function getView($id)
