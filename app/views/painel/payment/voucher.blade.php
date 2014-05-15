@@ -19,7 +19,7 @@
 	        }}
 			{{ Former::submit() }}
 			{{ Former::link('Limpar Filtros', route('painel.payment.voucher')) }}
-			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('painel.payment.voucher_export', ['status'=>'status', 'terms'=>'terms', 'name'=>'name', 'email'=>'email', 'braspag_order_id'=>'braspag_order_id', 'offer_id'=>'offer_id', 'date_start'=>'date_start', 'date_end'=>'date_end']).'\');') }}
+			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('painel.payment.voucher_export', ['payment_id'=>'payment_id']).'\');') }}
 			<div class="dataTables_length">
 	        {{ Former::select('pag', 'Exibir')
 	        	->addOption('5', '5')
@@ -134,5 +134,15 @@
 		{{ $transactionVoucherData->links() }}
 	</div>
 </div>
+
+<script type="text/javascript">
+function exportar(url){
+	var payment_id = ($('#payment_id').val() == '')?'null':$('#payment_id').val();
+
+	url = url.replace('/payment_id', '/'+payment_id);
+
+	window.location.href = url;
+};
+</script>
 
 @stop

@@ -20,7 +20,7 @@
 	        }}
 			{{ Former::submit() }}
 			{{ Former::link('Limpar Filtros', route('admin.payment.voucher')) }}
-			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('admin.payment.voucher_export', ['status'=>'status', 'terms'=>'terms', 'name'=>'name', 'email'=>'email', 'braspag_order_id'=>'braspag_order_id', 'offer_id'=>'offer_id', 'date_start'=>'date_start', 'date_end'=>'date_end']).'\');') }}
+			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('admin.payment.voucher_export', ['partner_name'=>'partner_name', 'payment_id'=>'payment_id']).'\');') }}
 			<div class="dataTables_length">
 	        {{ Former::select('pag', 'Exibir')
 	        	->addOption('5', '5')
@@ -145,6 +145,16 @@
 </div>
 
 <script type="text/javascript">
+function exportar(url){
+	var partner_name = ($('#partner_name').val() == '')?'null':$('#partner_name').val();
+	var payment_id = ($('#payment_id').val() == '')?'null':$('#payment_id').val();
+
+	url = url.replace('/partner_name', '/'+partner_name);
+	url = url.replace('/payment_id', '/'+payment_id);
+
+	window.location.href = url;
+};
+
 $(function() {
   var availableTags = [
   	<?php

@@ -79,7 +79,7 @@ class AdminPaymentController extends BaseController {
 			$payment_partner = $payment_partner->where('id', Input::get('id'));
 		}
 
-		if (Input::has('payment_id')) {
+		if (Input::has('payment_id') AND Input::get('payment_id') == 'null') {
 			$payment_partner = $payment_partner->where('payment_id', Input::get('payment_id'));
 		}
 
@@ -114,7 +114,7 @@ class AdminPaymentController extends BaseController {
 		// print_r($paymentPartnerData->toArray());
 		// print('</pre>'); die();
 
-		$ps = Payment::orderBy('id', 'asc')->get();
+		$ps = Payment::where('sales_to', '<', date('Y-m-d H:i:s'))->orderBy('id', 'asc')->get();
 		$paymData = array();
 
 		foreach ($ps as $p) {
@@ -135,6 +135,10 @@ class AdminPaymentController extends BaseController {
 		 * Obj
 		 */
 		$transaction_voucher = $this->transaction_voucher;
+
+		if (Input::has('payment_id') AND Input::get('payment_id') == 'null') {
+			$transaction_voucher = $transaction_voucher->whereNull('payment_partner_id');
+		}
 
 		/*
 		 * Paginate
@@ -179,10 +183,12 @@ class AdminPaymentController extends BaseController {
 										              })
 										              ->whereExists(function($query){
 											                if (Input::has('payment_id')) {
-																$query->select(DB::raw(1))
-												                      ->from('payments_partners')
-																	  ->whereRaw('payments_partners.id = transactions_vouchers.payment_partner_id')
-																	  ->whereRaw('payments_partners.payment_id = '.Input::get('payment_id'));
+											                	if (Input::get('payment_id') != 'null') {
+																	$query->select(DB::raw(1))
+													                      ->from('payments_partners')
+																		  ->whereRaw('payments_partners.id = transactions_vouchers.payment_partner_id')
+																		  ->whereRaw('payments_partners.payment_id = '.Input::get('payment_id'));
+																}
 															}
 										              })
 										              ->whereRaw('transactions_vouchers.voucher_id NOT IN (
@@ -220,12 +226,14 @@ class AdminPaymentController extends BaseController {
 		// print_r($total);
 		// print('</pre>'); die();
 
-		$ps = Payment::orderBy('id', 'asc')->get();
+		$ps = Payment::where('sales_to', '<', date('Y-m-d H:i:s'))->orderBy('id', 'asc')->get();
 		$paymData = array();
 
 		foreach ($ps as $p) {
 			$paymData[$p->id] = date("d/m/Y H:i:s", strtotime($p->sales_from)).' - '.date("d/m/Y H:i:s", strtotime($p->sales_to)).' (dia a pagar: '.date("d/m/Y", strtotime($p->date)).')';
 		}
+
+		$paymData['null'] = 'Atual';
 
 		$this->layout->content = View::make('admin.payment.voucher', compact('sort', 'order', 'pag', 'transactionVoucherData', 'paymData', 'totals'));
 	}
@@ -287,6 +295,111 @@ class AdminPaymentController extends BaseController {
 		}
 
 		$this->layout->content = View::make('admin.payment.period', compact('sort', 'order', 'pag', 'paymentData', 'paymData'));
+	}
+
+	public function getVoucherExport($partner_name, $payment_id){
+		$partner_name = ($partner_name == 'null')?null:$partner_name;
+		$payment_id = ($payment_id == 'null')?null:$payment_id;
+
+		/*
+		 * Obj
+		 */
+		$transaction_voucher = $this->transaction_voucher;
+
+		/*
+		 * Sort filter
+		 */
+		$sort = in_array(Input::get('sort'), ['user_id']) ? Input::get('sort') : 'id';
+
+		/*
+		 * Order filter
+		 */
+    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+
+
+		$transactionVoucherData = $transaction_voucher->with(['voucher' => function($query) use ($partner_name){ 
+																	$query->with(['offer_option', 'order_customer'])
+																		  ->whereExists(function($query) use ($partner_name){ 
+																			if (isset($partner_name)) {
+																				$query->select(DB::raw(1))
+																                      ->from('offers_options')
+																                      ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+																                      ->join('profiles', 'profiles.user_id', '=', 'offers.partner_id')
+																					  ->whereRaw('offers_options.id = vouchers.offer_option_id')
+																					  ->whereRaw('profiles.first_name LIKE \'%'.$partner_name.'%\'');
+																			}
+												 					}); 
+															  }])
+													  ->whereExists(function($query) use ($partner_name){
+											                if (isset($partner_name)) {
+																$query->select(DB::raw(1))
+												                      ->from('vouchers')
+												                      ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
+												                      ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+												                      ->join('profiles', 'profiles.user_id', '=', 'offers.partner_id')
+																	  ->whereRaw('vouchers.id = transactions_vouchers.voucher_id')
+																	  ->whereRaw('profiles.first_name LIKE \'%'.$partner_name.'%\'');
+															}
+										              })
+										              ->whereExists(function($query) use ($payment_id){
+											                if (isset($payment_id)) {
+																$query->select(DB::raw(1))
+												                      ->from('payments_partners')
+																	  ->whereRaw('payments_partners.id = transactions_vouchers.payment_partner_id')
+																	  ->whereRaw('payments_partners.payment_id = '.$payment_id);
+															}
+										              })
+										              ->whereRaw('transactions_vouchers.voucher_id NOT IN (
+													  				SELECT tv1.voucher_id 
+													  				FROM transactions_vouchers tv1 
+													  				WHERE tv1.status = \'cancelamento\' 
+													  				AND tv1.voucher_id IN ( 
+													  					SELECT tv2.voucher_id 
+													  					FROM transactions_vouchers tv2 
+													  					WHERE tv2.status = \'pagamento\' AND 
+													  						(tv2.payment_partner_id = tv1.payment_partner_id OR 
+													  						(tv2.payment_partner_id IS NULL AND tv1.payment_partner_id IS NULL))
+													  				)
+													  )')
+													  ->orderBy($sort, $order)
+													  ->get();
+
+		$spreadsheet = array();
+		$spreadsheet[] = array('Data', 'ID Compra', 'Cliente', 'Código do Cupom', 'Oferta e Opção Escolhida', 'Status', 'Valor do Cupom (R$)', 'Valor Parceiro (R$)');
+
+		$voucher_price = 0;
+		$transfer = 0;
+
+		foreach ($transactionVoucherData as $transactionVoucher) {
+			$ss = null;
+
+			$coefficient = ( $transactionVoucher->status == 'pagamento' ? 1 : -1 );
+
+			$ss[] = date("d/m/Y H:i:s", strtotime($transactionVoucher->created_at));
+			$ss[] = $transactionVoucher->voucher->order_customer->braspag_order_id;
+			$ss[] = $transactionVoucher->voucher->order->user->first_name.' '.$transactionVoucher->voucher->order->user->last_name;
+			$ss[] = $transactionVoucher->voucher->id.'-'.$transactionVoucher->voucher->display_code.'-'.$transactionVoucher->voucher->offer_option->offer_id;
+			$ss[] = $transactionVoucher->voucher->offer_option->offer_id.' | '.$transactionVoucher->voucher->offer_option->offer_title.' ('.$transactionVoucher->voucher->offer_option->title.')';
+			$ss[] = $transactionVoucher->status;
+			$ss[] = number_format($transactionVoucher->voucher->offer_option->price_with_discount * $coefficient, 2, ',', '.');
+			$ss[] = number_format($transactionVoucher->voucher->offer_option->transfer * $coefficient, 2, ',', '.');
+
+			$spreadsheet[] = $ss;
+
+			$voucher_price += ($transactionVoucher->voucher->offer_option->price_with_discount * $coefficient);
+			$transfer += ($transactionVoucher->voucher->offer_option->transfer * $coefficient);
+		}
+
+		$spreadsheet[] = array('Total', '', '', '', '', '', number_format($voucher_price, 2, ',', '.'), number_format($transfer, 2, ',', '.'));
+
+		print('<pre>');
+		print_r($spreadsheet);
+		print('</pre>'); die();
+
+		// $config = new ExporterConfig();
+		// $exporter = new Exporter($config);
+
+		// $exporter->export('php://output', $spreadsheet);
 	}
 
 	// convert from d/m/Y H:i:s to Y-m-d H:i:s
@@ -484,10 +597,6 @@ class AdminPaymentController extends BaseController {
 		}
 
 		return Redirect::back();
-	}
-
-	public function getVoucherExport($partner_id, $transaction_id){
-
 	}
 
 	/**

@@ -143,8 +143,8 @@ function marcar_pago(url, id){
 								+'<input type="text" id="date" style="width: 100%;" autofocus="autofocus" value="{{ date('d/m/Y') }}"/>'
 							+'</div>'
 							+'<div class="modal-footer">'
-								+'<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Voltar</button>'
-								+'<a class="btn btn-danger" id="dataConfirmOK">Enviar</a>'
+								+'<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Voltar</button>'
+								+'<a class="btn btn-success" id="dataConfirmOK">Enviar</a>'
 							+'</div>'
 						+'</div>';
 
@@ -162,28 +162,6 @@ function marcar_pago(url, id){
 function submit_action(url){
 	window.location.href = url + '/' + $('#date').val().replace('/', '-').replace('/', '-');
 }
-
-function exportar(url){
-	var status = ($('#status').val() == '')?'null':$('#status').val();
-	var terms = ($('#terms').val() == '')?'null':$('#terms').val();
-	var name = ($('#name').val() == '')?'null':$('#name').val()
-	var email = ($('#email').val() == '')?'null':$('#email').val()
-	var braspag_order_id = ($('#braspag_order_id').val() == '')?'null':$('#braspag_order_id').val()
-	var offer_id = ($('#offer_id').val() == '')?'null':$('#offer_id').val()
-	var date_start = ($('#date_start').val() == '')?'null':$('#date_start').val()
-	var date_end = ($('#date_end').val() == '')?'null':$('#date_end').val()
-
-	url = url.replace('/status', '/'+status);
-	url = url.replace('/terms', '/'+terms);
-	url = url.replace('/name', '/'+name);
-	url = url.replace('/email', '/'+email);
-	url = url.replace('/braspag_order_id', '/'+braspag_order_id);
-	url = url.replace('/offer_id', '/'+offer_id);
-	url = url.replace('/date_start', '/'+date_start);
-	url = url.replace('/date_end', '/'+date_end);
-
-	window.location.href = url;
-};
 
 $(function() {
   var availableTags = [
