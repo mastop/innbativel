@@ -462,6 +462,24 @@ class AdminPaymentController extends BaseController {
 			$date = str_replace('-', '/', $date);
 			$payment_partner->paid_on = $this->convertDate($date);
 			$payment_partner->save();
+
+			$partner = User::where('id', $payment_partner->partner_id)->with('profile')->first();
+			$payment = Payment::where('id', $payment_partner->payment_id)->first();
+
+			$data = array(
+				'name' => $partner->profile->first_name, 
+				'sales_from' => date('d/m/Y', strtotime($payment->sales_from)), 
+				'sales_to' => date('d/m/Y', strtotime($payment->sales_to)), 
+				'total' => number_format($payment_partner->total, 2, ',', '.'), 
+				'url' => route('painel.payment', ['id' => $payment_partner->id])
+			);
+
+			$email = $partner->email;
+
+        	Mail::send('emails.payment.paid', $data, function($message) use($email){
+				$message->to($email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Pagamento efetuado');
+			});
+
 			Session::flash('success', 'Pagamento #'.$id.' alterado para "pago em '.$date.'" com sucesso.');
 		}
 
