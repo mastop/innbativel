@@ -79,13 +79,13 @@
 		return '--';
 	})
 	->pago(function($offer_option) {
-		return isset($offer_option['qty_sold']{0})?$offer_option['qty_sold']{0}->qty:0;
+		return link_to_route('admin.order.offers_export', (isset($offer_option['qty_sold']{0})?$offer_option['qty_sold']{0}->qty:0), ['offer_option_id' => $offer_option['id'], 'status' => 'pago']);
 	})
 	->pendente(function($offer_option) {
-		return isset($offer_option['qty_pending']{0})?$offer_option['qty_pending']{0}->qty:0;
+		return link_to_route('admin.order.offers_export', (isset($offer_option['qty_pending']{0})?$offer_option['qty_pending']{0}->qty:0), ['offer_option_id' => $offer_option['id'], 'status' => 'pendente']);
 	})
 	->cancelado(function($offer_option) {
-		return isset($offer_option['qty_cancelled']{0})?$offer_option['qty_cancelled']{0}->qty:0;
+		return link_to_route('admin.order.offers_export', (isset($offer_option['qty_cancelled']{0})?$offer_option['qty_cancelled']{0}->qty:0), ['offer_option_id' => $offer_option['id'], 'status' => 'cancelado']);
 	})
 	->total(function($offer_option) {
 		$approved = isset($offer_option['qty_sold']{0})?$offer_option['qty_sold']{0}->qty:0;
@@ -93,7 +93,7 @@
 		$cancelled = isset($offer_option['qty_cancelled']{0})?$offer_option['qty_cancelled']{0}->qty:0;
 
 		$total = $approved + $pending + $cancelled;
-		return $total;
+		return link_to_route('admin.order.offers_export', $total, ['offer_option_id' => $offer_option['id']]);
 	})
 	->actions(function($offer_option) {
 		return DropdownButton::normal('Ações',

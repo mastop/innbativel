@@ -184,7 +184,7 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('order/offers', ['as' => 'admin.order.offers', 'uses' => 'AdminOrderController@anyListByOffer']);
 
 	Route::any('order/offers_export', function(){ return Redirect::route('admin.order'); });
-	Route::get('order/offers_export/{offer_option_id}/{status}', ['as' => 'admin.order.offers_export', 'uses' => 'AdminOrderController@getOffersExport']);
+	Route::get('order/offers_export/{offer_option_id}/{status?}', ['as' => 'admin.order.offers_export', 'uses' => 'AdminOrderController@getOffersExport']);
 	Route::any('order/list_offers_export', function(){ return Redirect::route('admin.order.offers'); });
 	Route::get('order/list_offers_export/{offer_id?}/{starts_on?}/{ends_on?}', ['as' => 'admin.order.list_offers_export', 'uses' => 'AdminOrderController@getListOffersExport']);
 	Route::any('order/list_paym_export', function(){ return Redirect::route('admin.order'); });

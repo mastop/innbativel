@@ -373,12 +373,18 @@ class AdminOrderController extends BaseController {
 	         ->export('xls');
 	}
 
-	public function getOffersExport($offer_option_id, $status){
-		$offer_option_id = $offer_option_id;
+	public function getOffersExport($offer_option_id, $status = NULL){
 		$ordersObj = $this->order;
 
-		$ordersObj = $ordersObj->where('status', $status);
-
+		if(isset($status)){
+			if($status == 'pendente'){
+				$ordersObj = $ordersObj->whereIn('status', ['pendente', 'revisao']);
+			}
+			else{
+				$ordersObj = $ordersObj->where('status', $status);
+			}
+		}
+		
 		$ordersData = $ordersObj->with([
 										'user',
 										'discount_coupon',
@@ -386,20 +392,47 @@ class AdminOrderController extends BaseController {
 												   $query->where('offers_options.id', $offer_option_id);
 											  	},
 										'voucher' => function($query) use($offer_option_id, $status){
-													$query->where('vouchers.offer_option_id', $offer_option_id)->where('vouchers.status', $status);
+													if(isset($status)){
+														if($status == 'pendente'){
+															$query->where('vouchers.offer_option_id', $offer_option_id)->whereIn('vouchers.status', ['pendente', 'revisao']);
+														}
+														else{
+															$query->where('vouchers.offer_option_id', $offer_option_id)->where('vouchers.status', $status);
+														}
+													}
+													else{
+														$query->where('vouchers.offer_option_id', $offer_option_id);
+													}
 												},
 									   ])
 								->whereExists(function($query) use($offer_option_id, $status){
-									$query->select(DB::raw(1))
-					                      ->from('vouchers')
-										  ->whereRaw('vouchers.order_id = orders.id')
-										  ->whereRaw('vouchers.offer_option_id = "'.$offer_option_id.'"')
-										  ->whereRaw('vouchers.status = "'.$status.'"');
+									if(isset($status)){
+										if($status == 'pendente'){
+											$query->select(DB::raw(1))
+							                      ->from('vouchers')
+												  ->whereRaw('vouchers.order_id = orders.id')
+												  ->whereRaw('vouchers.offer_option_id = "'.$offer_option_id.'"')
+												  ->whereRaw('vouchers.status IN ("pendente", "revisao")');
+										}
+										else{
+											$query->select(DB::raw(1))
+							                      ->from('vouchers')
+												  ->whereRaw('vouchers.order_id = orders.id')
+												  ->whereRaw('vouchers.offer_option_id = "'.$offer_option_id.'"')
+												  ->whereRaw('vouchers.status = "'.$status.'"');
+										}
+									}
+									else{
+										$query->select(DB::raw(1))
+						                      ->from('vouchers')
+											  ->whereRaw('vouchers.order_id = orders.id')
+											  ->whereRaw('vouchers.offer_option_id = "'.$offer_option_id.'"');
+									}
 					            })
 								->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('Número do pedido', 'status', 'ID da oferta', 'Oferta', 'Opção', 'Preço', 'Quantidade', 'Total', 'Usuário INN', 'E-mail', 'Forma de pagamento', 'Titular do cartão', 'Telefone', 'Desconto via cupom', 'Desconto via créditos', 'Data de início', 'Data da captura da transação', 'Última atualização');
+		$spreadsheet[] = array('Número do pedido', 'status', 'ID da oferta', 'Oferta', 'Opção', 'Preço', 'Quantidade', 'Usuário INN', 'E-mail', 'Forma de pagamento', 'Titular do cartão', 'Telefone', 'Desconto via cupom', 'Desconto via créditos', 'Data de início', 'Data da captura da transação', 'Última atualização');
 
 		foreach ($ordersData as $order) {
 			$ss = null;
@@ -410,7 +443,6 @@ class AdminOrderController extends BaseController {
 			$ss[] = $order['offer']{0}->title;
 			$ss[] = $order['offer']{0}->price_with_discount;
 			$ss[] = count($order['voucher']);
-			$ss[] = $order->total;
 			$ss[] = $order['user']->first_name.' '.$order['user']->last_name;
 			$ss[] = $order['user']->email;
 			$ss[] = $order->payment_terms;
@@ -418,6 +450,9 @@ class AdminOrderController extends BaseController {
 			$ss[] = $order->telephone;
 			$ss[] = isset($order['discount_coupon'])?$order['discount_coupon']->value:'--';
 			$ss[] = $order->credit_discount;
+			$ss[] = date('d/m/Y H:i:s', strtotime($order->created_at));
+			$ss[] = date('d/m/Y H:i:s', strtotime($order->updated_at));
+			$ss[] = date('d/m/Y H:i:s', strtotime($order->capture_date));
 
 			$spreadsheet[] = $ss;
 		}
