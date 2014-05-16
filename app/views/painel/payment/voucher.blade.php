@@ -5,22 +5,21 @@
 		<div class="navbar-inner">
 			<h6>Lista de Transações de Vouchers</h6>
 	        <div class="nav pull-right">
-	            <a href="{{ route('admin.payment.voucher') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
+	            <a href="{{ route('painel.payment.voucher') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
 	        </div>
 		</div>
 	</div>
 	<div class="datatable-header">
 		<div class="dataTables_filter">
-			{{ Former::inline_open(route('admin.payment.voucher')) }}
+			{{ Former::inline_open(route('painel.payment.voucher')) }}
 			{{ Former::label('Pesquisar: ') }}
-	        {{ Former::text('partner_name')->class('input-medium')->placeholder('Parceiro')->label('Parceiro') }}
 	        {{ Former::select('payment_id', 'Período de venda')
 	        	->addOption('Todos', null)
 				->options($paymData)
 	        }}
 			{{ Former::submit() }}
-			{{ Former::link('Limpar Filtros', route('admin.payment.voucher')) }}
-			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('admin.payment.voucher_export', ['partner_name'=>'partner_name', 'payment_id'=>'payment_id']).'\');') }}
+			{{ Former::link('Limpar Filtros', route('painel.payment.voucher')) }}
+			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('painel.payment.voucher_export', ['payment_id'=>'payment_id']).'\');') }}
 			<div class="dataTables_length">
 	        {{ Former::select('pag', 'Exibir')
 	        	->addOption('5', '5')
@@ -49,7 +48,6 @@
 	<thead>
 		<tr>
 			<th>Data</th>
-			<th>ID da Compra</th>
 			<th>Cliente</th>
 			<th>Código do Cupom</th>
 			<th>Oferta e opção escolhida</th>
@@ -66,13 +64,7 @@
 				}
 				return '--';
 			})
-			->order_id(function($data) {
-				if(isset($data['voucher']['order_customer']['braspag_order_id'])){
-					$braspag_order_id = $data['voucher']['order_customer']['braspag_order_id'];
-					return link_to_route('admin.order', $braspag_order_id, ['braspag_order_id' => $braspag_order_id]);
-				}
-				return '--';
-			})
+			
 			->customer(function($data) {
 				if(isset($data['voucher']['order']['user']['first_name'])){
 					return $data['voucher']['order']['user']['first_name'].' '.$data['voucher']['order']['user']['last_name'];
@@ -132,7 +124,6 @@
 		<th></th>
 		<th></th>
 		<th></th>
-		<th></th>
 		<th style="text-align: right;">{{ number_format($totals['voucher_price'], 2, ',', '.') }}</th>
 		<th style="text-align: right;">{{ number_format($totals['transfer'], 2, ',', '.') }}</th>
 		</tr>
@@ -146,33 +137,12 @@
 
 <script type="text/javascript">
 function exportar(url){
-	var partner_name = ($('#partner_name').val() == '')?'null':$('#partner_name').val();
 	var payment_id = ($('#payment_id').val() == '')?'null':$('#payment_id').val();
 
-	url = url.replace('/partner_name', '/'+partner_name);
 	url = url.replace('/payment_id', '/'+payment_id);
 
 	window.location.href = url;
 };
-
-$(function() {
-  var availableTags = [
-  	<?php
-  		$partners = DB::table('profiles')
-  					 ->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')
-  					 ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
-  					 ->where('roles.id', 9)
-  					 ->get(['profiles.first_name']);
-
-  		foreach ($partners as $partner) {
-  			echo '"'.$partner->first_name.'", ';
-  		}
-  	?>
-  ];
-  $("#partner_name").autocomplete({
-    source: availableTags
-  });
-});
 </script>
 
 @stop

@@ -184,7 +184,7 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('order/offers', ['as' => 'admin.order.offers', 'uses' => 'AdminOrderController@anyListByOffer']);
 
 	Route::any('order/offers_export', function(){ return Redirect::route('admin.order'); });
-	Route::get('order/offers_export/{offer_option_id}/{status}', ['as' => 'admin.order.offers_export', 'uses' => 'AdminOrderController@getOffersExport']);
+	Route::get('order/offers_export/{offer_option_id}/{status?}', ['as' => 'admin.order.offers_export', 'uses' => 'AdminOrderController@getOffersExport']);
 	Route::any('order/list_offers_export', function(){ return Redirect::route('admin.order.offers'); });
 	Route::get('order/list_offers_export/{offer_id?}/{starts_on?}/{ends_on?}', ['as' => 'admin.order.list_offers_export', 'uses' => 'AdminOrderController@getListOffersExport']);
 	Route::any('order/list_paym_export', function(){ return Redirect::route('admin.order'); });
@@ -470,7 +470,7 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('payment/vouchers', ['as' => 'admin.payment.voucher', 'uses' => 'AdminPaymentController@anyVoucher']);
 
 	Route::any('payment/vouchers_export', function(){ return Redirect::route('admin.payment.voucher'); });
-	Route::get('payment/vouchers_export/{partner_id?}/{transaction_id?}', ['as' => 'admin.payment.voucher_export', 'uses' => 'AdminPaymentController@getVoucherExport']);
+	Route::get('payment/vouchers_export/{partner_name?}/{payment_id?}', ['as' => 'admin.payment.voucher_export', 'uses' => 'AdminPaymentController@getVoucherExport']);
 
 	Route::any('payment/periodos', ['as' => 'admin.payment.period', 'uses' => 'AdminPaymentController@anyPeriod']);
 
@@ -516,4 +516,11 @@ Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 	Route::any('contract/sign', function(){ return Redirect::route('painel.contract'); });
 	Route::get('contract/sign/{id}', ['as' => 'painel.contract.get_sign', 'uses' => 'PainelContractController@getSign']);
 	Route::post('contract/sign/{id}', ['as' => 'painel.contract.post_sign', 'uses' => 'PainelContractController@postSign']);
+
+	Route::any('pagamentos', ['as' => 'painel.payment', 'uses' => 'PainelPaymentController@anyIndex']);
+
+	Route::any('pagamentos/vouchers', ['as' => 'painel.payment.voucher', 'uses' => 'PainelPaymentController@anyVoucher']);
+
+	Route::any('pagamentos/vouchers_export', function(){ return Redirect::route('painel.payment.voucher'); });
+	Route::get('pagamentos/vouchers_export/{payment_id?}', ['as' => 'painel.payment.voucher_export', 'uses' => 'PainelPaymentController@getVoucherExport']);
 });

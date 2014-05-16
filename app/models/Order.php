@@ -39,14 +39,14 @@ class Order extends Eloquent {
   }
 
   public function voucher_offer(){
-    return $this->hasMany('Voucher', 'order_id')->with(['offer_option']);
+    return $this->hasMany('Voucher', 'order_id')->with(['offer_option_offer']);
   }
 
   public function offer(){
   	return $this->belongsToMany('OfferOption', 'vouchers', 'order_id', 'offer_option_id')
                 ->leftJoin('offers', 'offers_options.offer_id', '=', 'offers.id')
                 ->select(['offers.id','offers.title AS offer_title', 'is_product'])
-                ->withPivot('id', 'subtotal', 'status', 'used', 'display_code', 'name', 'email', 'tracking_code');
+                ->withPivot('id', 'status', 'used', 'display_code', 'name', 'email', 'tracking_code');
   }
 
   public function optional_item(){

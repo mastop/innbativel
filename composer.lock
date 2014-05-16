@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1f0ee3f78a8f347a44b3ccdcb217afd0",
+    "hash": "826415e6b803ec613cab9d56fc6ea315",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -1620,6 +1620,54 @@
             "time": "2013-02-28 11:59:46"
         },
         {
+            "name": "maatwebsite/excel",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Maatwebsite/laravel4-PHPExcel.git",
+                "reference": "64f9cf1853ca0cc1e7e99751907becbdd1d32f72"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Maatwebsite/laravel4-PHPExcel/zipball/64f9cf1853ca0cc1e7e99751907becbdd1d32f72",
+                "reference": "64f9cf1853ca0cc1e7e99751907becbdd1d32f72",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/config": "4.x",
+                "illuminate/filesystem": "4.x",
+                "illuminate/support": "4.x",
+                "php": ">=5.3.0",
+                "phpoffice/phpexcel": "1.8.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/Maatwebsite/Excel/Readers"
+                ],
+                "psr-0": {
+                    "Maatwebsite\\Excel": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Maatwebsite.nl",
+                    "email": "info@maatwebsite.nl"
+                }
+            ],
+            "description": "Laravel wrapper for PHP Excel",
+            "keywords": [
+                "PHPExcel",
+                "excel",
+                "laravel"
+            ],
+            "time": "2014-04-16 13:42:56"
+        },
+        {
             "name": "maximebf/debugbar",
             "version": "1.9.4",
             "source": {
@@ -2024,6 +2072,63 @@
                 "laravel"
             ],
             "time": "2014-03-30 16:14:20"
+        },
+        {
+            "name": "phpoffice/phpexcel",
+            "version": "1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHPOffice/PHPExcel.git",
+                "reference": "e69a5e4d0ffa7fb6f171859e0a04346e580df30b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHPOffice/PHPExcel/zipball/e69a5e4d0ffa7fb6f171859e0a04346e580df30b",
+                "reference": "e69a5e4d0ffa7fb6f171859e0a04346e580df30b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xml": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHPExcel": "Classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Maarten Balliauw",
+                    "homepage": "http://blog.maartenballiauw.be"
+                },
+                {
+                    "name": "Mark Baker"
+                },
+                {
+                    "name": "Franck Lefevre",
+                    "homepage": "http://blog.rootslabs.net"
+                },
+                {
+                    "name": "Erik Tilt"
+                }
+            ],
+            "description": "PHPExcel - OpenXML - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",
+            "homepage": "http://phpexcel.codeplex.com",
+            "keywords": [
+                "OpenXML",
+                "excel",
+                "php",
+                "spreadsheet",
+                "xls",
+                "xlsx"
+            ],
+            "time": "2014-03-02 15:22:49"
         },
         {
             "name": "predis/predis",
@@ -3255,7 +3360,8 @@
         "patricktalmadge/bootstrapper": 20,
         "kennedytedesco/validation": 20,
         "tijsverkoyen/css-to-inline-styles": 20,
-        "facebook/php-sdk": 20
+        "facebook/php-sdk": 20,
+        "maatwebsite/excel": 20
     },
     "platform": [
 
