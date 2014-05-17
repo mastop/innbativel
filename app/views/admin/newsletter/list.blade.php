@@ -5,7 +5,7 @@
 		<div class="navbar-inner">
 			<h6>Lista de Usuários cadastrados na newsletter</h6>
 	        <div class="nav pull-right">
-	            <a href="{{ route('admin.newsletter') }}" title="Adicionar à Newsletter" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
+	            <a href="{{ route('admin.newsletter.export') }}" title="Exportar E-mails" class="dropdown-toggle navbar-icon"><i class="icon-download"></i></a>
 	        </div>
 		</div>
 	</div>
@@ -33,17 +33,9 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('Nome', 'E-mail', 'Ações') }}
+	{{ Table::headers('Nome', 'E-mail') }}
 	{{ Table::body($newsletter)
 		->ignore(['id', 'created_at', 'updated_at'])
-		->acoes(function($body) {
-			return DropdownButton::normal('Ações',
-				Navigation::links([
-					['Editar', route('admin.category.edit', $body['id'])],
-					['Excluir', route('admin.category.delete', $body['id'])],
-				])
-			)->pull_right()->split();
-		})
 	}}
 	{{ Table::close() }}
 	<div class="table-footer">

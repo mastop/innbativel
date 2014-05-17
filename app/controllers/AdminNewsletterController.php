@@ -81,4 +81,18 @@ class AdminNewsletterController extends BaseController {
 		 */
 		$this->layout->content = View::make('admin.newsletter.list', compact('sort', 'order', 'pag', 'newsletter'));
 	}
+
+    public function getExport(){
+        $newsletters = Newsletter::all();
+        $output = "";
+        foreach ($newsletters as $row) {
+            $output .= implode(",",$row->toArray())."\n";
+        }
+        $headers = array(
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="innbativel-newsletter.csv"',
+        );
+
+        return Response::make(rtrim($output, "\n"), 200, $headers);
+    }
 }

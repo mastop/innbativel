@@ -490,7 +490,7 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	 * Newsletter
 	 */
     Route::any('newsletter', ['as' => 'admin.newsletter', 'uses' => 'AdminNewsletterController@anyIndex']);
-
+    Route::get('newsletter/export', ['as' => 'admin.newsletter.export', 'uses' => 'AdminNewsletterController@getExport']);
 });
 
 Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
