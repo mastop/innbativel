@@ -35,7 +35,7 @@
 	{{ Table::open() }}
 	{{ Table::headers('Nome', 'E-mail', 'Ações') }}
 	{{ Table::body($newsletter)
-		->ignore(['id', 'updated_at'])
+		->ignore(['id', 'created_at', 'updated_at'])
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 				Navigation::links([

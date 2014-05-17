@@ -18,7 +18,7 @@
                         Muito em breve vamos entrar em contato com você.
                     </p>
                     <div class="form-group">
-                        <label class="control-label col-md-4" for="contactEmail">Nome</label>
+                        <label class="control-label col-md-4" for="contactName">Nome</label>
                         <div class="col-md-8 input-group">
                             {{ Former::text('contactName')->label('')->class('form-control')->placeholder('Seu nome')->autofocus(); }}
                         </div>

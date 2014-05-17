@@ -5,30 +5,37 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title"><span class="entypo mail"></span>Receba ofertas por Email</h4>
             </div>
-            <form id="newsletterForm" class="form-horizontal" name="newsletterForm" method="post" action="send_form_newsletter.php" novalidate="novalidate">
+            {{ Former::horizontal_open(route('newsletter.save'))
+                ->rules([
+                    'name' => 'Required|Max:255',
+                    'email' => 'Required|Max:255|Email'
+                ])
+                ->id('newsletterForm')
+                ->name('newsletterForm')
+            }}
                 <div class="modal-body">
                     <p>
                         Preencha os campos abaixo para receber ofertas INNBatíveis.
                     </p>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="newsletterName">Seu nome</label>
+                        <label class="control-label col-md-3" for="name">Seu nome</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="newsletterName" name="newsletterName" placeholder="Seu nome">
+                            {{ Former::text('name')->label('')->class('form-control')->placeholder('Seu nome')->autofocus(); }}
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="newsletterEmail">Seu email</label>
+                        <label class="control-label col-md-3" for="email">Seu email</label>
                         <div class="col-md-8 input-group">
-                            <input type="email" class="form-control" id="newsletterEmail" name="newsletterEmail" placeholder="Seu email">
+                            {{ Former::email('email')->label('')->class('form-control')->placeholder('Seu email'); }}
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-3 col-md-8">
-                            <button type="submit" class="btn btn-primary">Cadastrar</button>
+                            <button type="submit" class="btn btn-primary" data-token="{{ csrf_token() }}">Cadastrar</button>
                         </div>
                     </div>
                 </div>
-            </form>
+            {{ Former::close() }}
         </div>
     </div>
 </div>
@@ -51,3 +58,29 @@
         </div>
     </div>
 </div>
+
+<script>
+jQuery( document ).ready( function( $ ) {
+    $('#newsletterForm').on('submit', function() {
+        $.post(
+            $( this ).prop('action'),
+            {
+                "_token": $( this ).find( 'input[name=_token]' ).val(),
+                "name": $('#name').val(),
+                "email": $('#email').val()
+            },
+            function( data ) {
+               if(data.status=="error"){
+                   alert(data.msg);
+               }else{
+                   $('#newsletterForm').get(0).reset();
+                   $("#newsletter").modal('hide');
+                   $('#newsletterResponse').modal('show');
+               }
+            },
+            'json'
+        );
+        return false;
+    });
+});
+</script>

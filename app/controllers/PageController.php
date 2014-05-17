@@ -62,7 +62,7 @@ class PageController extends BaseController {
     }
 
     /**
-     * Show Imprensa
+     * Show Fale Conosco
      */
     public function anyFaleConosco()
     {
@@ -127,3 +127,4 @@ class PageController extends BaseController {
             ->withErrors($validation);
     }
 }
+
