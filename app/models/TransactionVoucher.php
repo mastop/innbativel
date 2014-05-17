@@ -13,7 +13,7 @@ class TransactionVoucher extends Eloquent {
   protected $fillable = [];
 
   protected $softDelete = false;
-  public $timestamps = false;
+  public $timestamps = true;
 
   public static $rules = array(
   );
@@ -26,8 +26,8 @@ class TransactionVoucher extends Eloquent {
     return $this->belongsTo('Voucher', 'voucher_id');
   }
 
-  public function transaction(){
-    return $this->belongsTo('Transaction', 'transaction_id')->with(['order']);
+  public function order(){
+    return $this->belongsTo('Voucher', 'voucher_id')->with(['order']);
   }
 
 }

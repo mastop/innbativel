@@ -3,7 +3,7 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Lista de Pagamentos aos Parceiros</h6>
+			<h6>Lista de Transações de Vouchers</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.payment.voucher') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
 	        </div>
@@ -13,17 +13,14 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('admin.payment.voucher')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::select('partner_id', 'Parceiro')
-	        	->addOption('', null)
-				->fromQuery(DB::table('profiles')->select('profiles.first_name AS name', 'profiles.user_id AS id')->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')->where('roles.id', 9), 'name', 'id')
-	        }}
+	        {{ Former::text('partner_name')->class('input-medium')->placeholder('Parceiro')->label('Parceiro') }}
 	        {{ Former::select('payment_id', 'Período de venda')
 	        	->addOption('Todos', null)
 				->options($paymData)
 	        }}
 			{{ Former::submit() }}
 			{{ Former::link('Limpar Filtros', route('admin.payment.voucher')) }}
-			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('admin.payment.voucher_export', ['status'=>'status', 'terms'=>'terms', 'name'=>'name', 'email'=>'email', 'braspag_order_id'=>'braspag_order_id', 'offer_id'=>'offer_id', 'date_start'=>'date_start', 'date_end'=>'date_end']).'\');') }}
+			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('admin.payment.voucher_export', ['partner_name'=>'partner_name', 'payment_id'=>'payment_id']).'\');') }}
 			<div class="dataTables_length">
 	        {{ Former::select('pag', 'Exibir')
 	        	->addOption('5', '5')
@@ -62,22 +59,23 @@
 		</tr>
 	</thead>
 	{{ Table::body($transactionVoucherData)
-			->ignore(['id', 'transaction_id', 'voucher_id', 'payment_partner_id', 'status', 'transaction', 'voucher'])
+			->ignore(['id', 'transaction_id', 'voucher_id', 'payment_partner_id', 'status', 'created_at', 'updated_at', 'voucher'])
 			->date(function($data) {
-				if(isset($data['transaction']['created_at'])){
-					return date("d/m/Y H:i:s", strtotime($data['transaction']['created_at']));
+				if(isset($data['created_at'])){
+					return date("d/m/Y H:i:s", strtotime($data['created_at']));
 				}
 				return '--';
 			})
 			->order_id(function($data) {
-				if(isset($data['transaction']['order']['braspag_order_id'])){
-					return $data['transaction']['order']['braspag_order_id'];
+				if(isset($data['voucher']['order_customer']['braspag_order_id'])){
+					$braspag_order_id = $data['voucher']['order_customer']['braspag_order_id'];
+					return link_to_route('admin.order', $braspag_order_id, ['braspag_order_id' => $braspag_order_id]);
 				}
 				return '--';
 			})
 			->customer(function($data) {
-				if(isset($data['transaction']['order']['user']['first_name'])){
-					return $data['transaction']['order']['user']['first_name'].' '.$data['transaction']['order']['user']['last_name'];
+				if(isset($data['voucher']['order']['user']['first_name'])){
+					return $data['voucher']['order']['user']['first_name'].' '.$data['voucher']['order']['user']['last_name'];
 				}
 				return '--';
 			})
@@ -89,7 +87,7 @@
 			})
 			->offer(function($data) {
 				if(isset($data['voucher']['offer_option']['offer_id'])){
-					return $data['voucher']['offer_option']['offer_id'].' | '.$data['voucher']['offer_option']['offer_title'].' ('.$data['voucher']['offer_option']['title'].')';
+					return link_to_route('offer', $data['voucher']['offer_option']['offer_id'].' | '.$data['voucher']['offer_option']['offer_title'], ['slug' => $data['voucher']['offer_option']['slug']]).' ('.$data['voucher']['offer_option']['title'].')';
 				}
 				return '--';
 			})
@@ -145,5 +143,36 @@
 		{{ $transactionVoucherData->links() }}
 	</div>
 </div>
+
+<script type="text/javascript">
+function exportar(url){
+	var partner_name = ($('#partner_name').val() == '')?'null':$('#partner_name').val();
+	var payment_id = ($('#payment_id').val() == '')?'null':$('#payment_id').val();
+
+	url = url.replace('/partner_name', '/'+partner_name);
+	url = url.replace('/payment_id', '/'+payment_id);
+
+	window.location.href = url;
+};
+
+$(function() {
+  var availableTags = [
+  	<?php
+  		$partners = DB::table('profiles')
+  					 ->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')
+  					 ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
+  					 ->where('roles.id', 9)
+  					 ->get(['profiles.first_name']);
+
+  		foreach ($partners as $partner) {
+  			echo '"'.$partner->first_name.'", ';
+  		}
+  	?>
+  ];
+  $("#partner_name").autocomplete({
+    source: availableTags
+  });
+});
+</script>
 
 @stop

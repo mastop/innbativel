@@ -53,7 +53,7 @@
 	</div>
 {{ Table::open() }}
 {{ Table::headers('ID', 'Status', 'Valor', 'Forma de pagamento', 'Data e hora', 'ID das Ofertas', 'Cliente', 'Ações') }}
-{{ Table::body($orderArray)->ignore(['user', 'offer', 'id', 'user_id', 'antifraud_id', 'braspag_id', 'coupon_id', 'first_digits_card', 'holder_card', 'donation', 'credit_discount', 'cpf', 'telephone', 'is_gift', 'boleto', 'capture_date', 'history', 'updated_at', 'braspag_order_id_string'])
+{{ Table::body($orderArray)->ignore(['user', 'offer', 'id', 'user_id', 'antifraud_id', 'braspag_id', 'coupon_id', 'first_digits_card', 'holder_card', 'donation', 'card_boletus_rate', 'antecipation_rate', 'interest_rate', 'credit_discount', 'cpf', 'telephone', 'is_gift', 'boleto', 'capture_date', 'history', 'updated_at', 'braspag_order_id_string'])
 	->oferta(function($order) {
 		if(isset($order['offer'])) {
 			$id = '| ';
@@ -81,7 +81,7 @@
 			    ])
 			)->pull_right()->split();
 		}
-	    else if($order['status'] == 'pago' && strpos($order['payment_terms'], 'Cartão') !== false && date('d/m/Y') == date('d/m/Y',strtotime($order['capture_date']))){
+	    else if($order['status'] == 'pago' && strpos($order['payment_terms'], 'cartão') !== false && date('d/m/Y') == date('d/m/Y',strtotime($order['capture_date']))){
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
 					['Cancelar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'cancelar\', \''.$order['braspag_order_id_string'].'\');'],
@@ -89,7 +89,7 @@
 			    ])
 			)->pull_right()->split();
 	    }
-	    else if($order['status'] == 'pago' && strpos($order['payment_terms'], 'Cartão') !== false && date('d/m/Y') != date('d/m/Y',strtotime($order['capture_date']))){
+	    else if($order['status'] == 'pago' && strpos($order['payment_terms'], 'cartão') !== false && date('d/m/Y') != date('d/m/Y',strtotime($order['capture_date']))){
 	        return DropdownButton::normal('Ações',
 			  	Navigation::links([
 					['Estornar', 'javascript: action(\''.route('admin.order.void', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'estornar\', \''.$order['braspag_order_id_string'].'\');'],
@@ -118,7 +118,20 @@ function action(url, action, braspag_order_id){
 	var title = 'Atenção: '+action;
 
 	if (!$('#dataConfirmModal').length) {
-	    $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">'+title+'</h3></div><div class="modal-body"><p id="modal-message">'+message+'</p><input type="text" id="comment-on-action" style="width: 100%;" autofocus="autofocus"/></div><div class="modal-footer"><button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Não, voltar</button><a class="btn btn-danger" id="dataConfirmOK">Sim</a></div></div>');
+	    var modal = '<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">'
+	    				+'<div class="modal-header">'
+								+'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'
+								+'<h3 id="dataConfirmLabel">'+title+'</h3></div><div class="modal-body">'
+								+'<p id="modal-message">'+message+'</p>'
+								+'<input type="text" id="comment-on-action" style="width: 100%;" autofocus="autofocus"/>'
+							+'</div>'
+							+'<div class="modal-footer">'
+								+'<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Não, voltar</button>'
+								+'<a class="btn btn-danger" id="dataConfirmOK">Sim</a>'
+							+'</div>'
+						+'</div>';
+
+	    $('body').append(modal);
 	}
 
 	$('#dataConfirmModal').find('.modal-message').text(message);

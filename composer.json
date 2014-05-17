@@ -22,7 +22,8 @@
 		"tijsverkoyen/css-to-inline-styles": "1.2.*@dev",
 		"facebook/php-sdk": "dev-master",
 		"goodby/csv": "*",
-        "barryvdh/laravel-debugbar": "1.*"
+        "barryvdh/laravel-debugbar": "1.*",
+        "maatwebsite/excel": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
