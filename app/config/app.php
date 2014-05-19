@@ -144,6 +144,7 @@ return array(
 		'Intervention\Image\ImageServiceProvider',
 		'Aws\Laravel\AwsServiceProvider',
         'Barryvdh\Debugbar\ServiceProvider',
+        'Maatwebsite\Excel\ExcelServiceProvider',
 	),
 
 	/*
@@ -241,6 +242,7 @@ return array(
 		'Typography'      => 'Bootstrapper\Typography',
 		'Image'			  => 'Intervention\Image\Facades\Image',
 		'AWS' 			  => 'Aws\Laravel\AwsFacade',
+        'Excel' => 'Maatwebsite\Excel\Facades\Excel',
         //'Debugbar' => 'Barryvdh\Debugbar\Facade',
 	),
 
