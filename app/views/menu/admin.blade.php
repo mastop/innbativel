@@ -23,5 +23,6 @@
           ['Sugestões', route('admin.suggest'), false, false, null, 'leaf'],
           ['Configurações', route('admin.config'), false, false, null, 'cogs'],
           ['FAQ\'s', route('admin.faq'), false, false, null, 'question-sign'],
+          ['Newsletters', route('admin.newsletter'), false, false, null, 'question-sign'],
     ])
 ) }}
