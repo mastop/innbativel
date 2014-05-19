@@ -31,11 +31,12 @@ class SetupOrdersTable extends Migration {
 		$table->enum('status', array('pendente', 'pago', 'cancelado', 'revisao'))->default('pendente');
 		$table->integer('first_digits_card')->nullable();
 		$table->integer('holder_card')->nullable();
-		$table->decimal('donation', 2, 2)->nullable();
-        $table->decimal('total', 7, 2)->nullable();
-        $table->decimal('credit_discount', 7, 2)->nullable();
-		$table->decimal('card_boletus_value', 7, 2)->default(0);
-        $table->decimal('antecipation_value', 7, 2)->default(0);
+		$table->decimal('donation', 4, 2)->nullable();
+        $table->decimal('total', 9, 2)->nullable();
+        $table->decimal('credit_discount', 9, 2)->nullable();
+		$table->decimal('card_boletus_rate', 4, 2)->default(0);
+        $table->decimal('antecipation_rate', 4, 2)->default(0);
+        $table->decimal('interest_rate', 4, 2)->default(0); // TAXA DE JUROS
 		$table->string('cpf')->nullable();
 		$table->string('telephone')->nullable();
 		$table->boolean('is_gift')->default(false);

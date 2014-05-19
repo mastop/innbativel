@@ -33,6 +33,11 @@ class Voucher extends Eloquent {
                 ->with(['user']);
   }
 
+  public function offer_option_offer(){
+    return $this->belongsTo('OfferOption', 'offer_option_id')
+                ->with('offer');
+  }
+
   public function offer_option(){
   	return $this->belongsTo('OfferOption', 'offer_option_id')
                 ->leftJoin('offers', 'offers_options.offer_id', '=', 'offers.id')

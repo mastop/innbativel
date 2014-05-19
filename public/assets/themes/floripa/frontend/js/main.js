@@ -1,76 +1,52 @@
 ;(function($){
 
-		Innbativel = window.Innbativel || {};
+    Innbativel = window.Innbativel || {};
 
-		Innbativel.init = function(){};
-		
-		Innbativel.ready = function(){
+    Innbativel.init = function(){};
 
-			
+    Innbativel.ready = function(){
 
-		};
+    };
 
-		Innbativel.load = function(){
+    Innbativel.load = function(){
 
-			//   $.ajax({
-			//       url: Innbativel.basePath + '/ajax/search/recomendations',
-			//       cache: true
-			//   }).done(function(json) {
-			//   	var list = '';
-			//   	$('#super-search .control-group label').append('<span class="tips comma"/>');
-			//   	$(json).each(function(index, word){
-			//   		 list += '<a href="#">'+ word +'</a>';
-			//   	});
-			//   	$('#super-search .control-group label span').hide().empty().append(list).fadeIn(1000);
+        $('#printEULA .control.print').click(function () {
+            $('#log').prepend( "daora <br />");
+            var printContents = document.getElementById('printEULA').innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        });
 
-				// $('#super-search .control-group label span a').on('click', function(e){
-				// 	e.preventDefault();
-				// 	var text = $(this).text();
-				// 	console.log(text);
-				// 	$('#super-search .controls input').attr('value', text);
-				// 	$('#super-search form').submit();
-				// 	return false;
-				// });
-			//   });
+        $('#header-scroll .navMenuCollapse2').collapse({ toggle:false });
+        $('#nav .navMenuCollapse').collapse({ toggle:false });
 
-				// if (Innbativel.userAuth == 'false') {
-				//     $.ajax({
-				//         url: Innbativel.basePath + '/entrar/facebook/ajax',
-				//         cache: true
-				//     }).done(function(json) {
-				//         if (json == 'yep') {
-				//             window.location.reload();
-				//         };
-				//     });
-				// }
+        $('#header-scroll .navbar-toggle').on('click', function() {
+            $('.navbar-collapse').css({ maxHeight: $(window).height() - $('.navbar-header').height() + "px" });
+        });
 
-			$('#header-scroll .navMenuCollapse2').collapse({ toggle:false });
-			$('#nav .navMenuCollapse').collapse({ toggle:false });
-					
-			scrollDetect();
+        scrollEvents();
 
-			$(window).scroll(scrollDetect);
+        $(window).scroll(scrollEvents);
 
-			function scrollDetect() {
-				var scrollHeight = $(window).scrollTop();
+        function scrollEvents() {
 
-				//$('#output').prepend( scrollHeight + "<br />");
+            var scrollHeight = $(window).scrollTop();
 
-				if( scrollHeight > 250 ) {
-					//$('#output').prepend( "MAIOR <br />");
-					$('#header-scroll').removeClass('out');
-					$('#nav .navMenuCollapse').collapse('hide');
-				} else {
-					//$('#header-scroll .navMenuCollapse2').addClass('collapse');
-					//$('#output').prepend( "menor <br />");
-					$('#header-scroll').addClass('out');
-					$('#header-scroll .navMenuCollapse2').collapse('hide');
-				}
-			}
+            if( scrollHeight > 130 ) {
+                $('#header-scroll').removeClass('out');
+                $('#nav .navMenuCollapse').collapse('hide');
+            } else {
+                $('#header-scroll').addClass('out');
+                $('#header-scroll .navMenuCollapse2').collapse('hide');
+            }
 
-		};
+        }
 
-		$(window).on('ready', Innbativel.ready);
-		$(window).on('load', Innbativel.load);
+    };
+
+    $(window).on('ready', Innbativel.ready);
+    $(window).on('load', Innbativel.load);
 
 })(jQuery);

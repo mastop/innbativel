@@ -14,10 +14,7 @@
 			{{ Former::inline_open(route('admin.payment')) }}
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('id')->class('input-medium')->placeholder('ID')->label('ID') }}
-			{{ Former::select('partner_id', 'Parceiro')
-	        	->addOption('', null)
-				->fromQuery(DB::table('profiles')->select('profiles.first_name AS name', 'profiles.user_id AS id')->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')->where('roles.id', 9), 'name', 'id')
-	        }}
+			{{ Former::text('partner_name')->class('input-medium')->placeholder('Parceiro')->label('Parceiro') }}
 	        {{ Former::select('payment_id', 'Período de venda')
 	        	->addOption('Todos', null)
 				->options($paymData)
@@ -87,7 +84,7 @@
 				return '--';
 			})
 			->paid_onn(function($data) {
-				return isset($data['paid_on'])?date("d/m/Y H:i:s", strtotime($data['paid_on'])):'<span class="text-error">Não pago</span>';
+				return isset($data['paid_on'])?date("d/m/Y", strtotime($data['paid_on'])):'<span class="text-error">Não pago</span>';
 			})
 			->totall(function($data) {
 				if(isset($data['total'])){
@@ -106,12 +103,7 @@
 				else{
 					return DropdownButton::normal('Ações',
 					  	Navigation::links([
-					  		
-					  		///////////////////////////////////////////////////
-					  		// FAZER COM JS, COM MODAL PEDINDO A DATA E HORA //
-					  		///////////////////////////////////////////////////
-
-							['Marcar como pago', route('admin.payment.update_status', $data['id'])],
+					  		['Marcar como pago', 'javascript: marcar_pago(\''.route('admin.payment.update_status', ['id' => $data['id']]).'\','.$data['id'].');'],
 					    ])
 					)->pull_right()->split();
 				}
@@ -137,13 +129,28 @@
 
 
 <script type="text/javascript">
-function action(url, action, braspag_order_id){
+function marcar_pago(url, id){
 	var href = url;
-	var message = 'Realmente deseja '+action+' a compra '+braspag_order_id+'? Se sim, comente abaixo o motivo da ação.';
-	var title = 'Atenção: '+action;
+	var message = 'Informe a data do pagamento #'+id;
+	var title = 'Marcar pagamento #'+id+' como pago';
 
 	if (!$('#dataConfirmModal').length) {
-	    $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">'+title+'</h3></div><div class="modal-body"><p id="modal-message">'+message+'</p><input type="text" id="comment-on-action" style="width: 100%;" autofocus="autofocus"/></div><div class="modal-footer"><button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Não, voltar</button><a class="btn btn-danger" id="dataConfirmOK">Sim</a></div></div>');
+		var modal = '<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">'
+	    				+'<div class="modal-header">'
+								+'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'
+								+'<h3 id="dataConfirmLabel">'+title+'</h3></div><div class="modal-body">'
+								+'<p id="modal-message">'+message+'</p>'
+								+'<input type="text" id="date" style="width: 100%;" autofocus="autofocus" value="{{ date('d/m/Y') }}"/>'
+							+'</div>'
+							+'<div class="modal-footer">'
+								+'<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Voltar</button>'
+								+'<a class="btn btn-success" id="dataConfirmOK">Enviar</a>'
+							+'</div>'
+						+'</div>';
+
+	    $('body').append(modal);
+
+	    $('#date').mask('00/00/0000');
 	}
 
 	$('#dataConfirmModal').find('.modal-message').text(message);
@@ -153,32 +160,29 @@ function action(url, action, braspag_order_id){
 }
 
 function submit_action(url){
-	window.location.href = url + $('#comment-on-action').val();
+	window.location.href = url + '/' + $('#date').val().replace('/', '-').replace('/', '-');
 }
 
-function exportar(url){
-	var status = ($('#status').val() == '')?'null':$('#status').val();
-	var terms = ($('#terms').val() == '')?'null':$('#terms').val();
-	var name = ($('#name').val() == '')?'null':$('#name').val()
-	var email = ($('#email').val() == '')?'null':$('#email').val()
-	var braspag_order_id = ($('#braspag_order_id').val() == '')?'null':$('#braspag_order_id').val()
-	var offer_id = ($('#offer_id').val() == '')?'null':$('#offer_id').val()
-	var date_start = ($('#date_start').val() == '')?'null':$('#date_start').val()
-	var date_end = ($('#date_end').val() == '')?'null':$('#date_end').val()
+$(function() {
+  var availableTags = [
+  	<?php
+  		$partners = DB::table('profiles')
+  					 ->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')
+  					 ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
+  					 ->where('roles.id', 9)
+  					 ->get(['profiles.first_name']);
 
-	url = url.replace('/status', '/'+status);
-	url = url.replace('/terms', '/'+terms);
-	url = url.replace('/name', '/'+name);
-	url = url.replace('/email', '/'+email);
-	url = url.replace('/braspag_order_id', '/'+braspag_order_id);
-	url = url.replace('/offer_id', '/'+offer_id);
-	url = url.replace('/date_start', '/'+date_start);
-	url = url.replace('/date_end', '/'+date_end);
-
-	window.location.href = url;
-};
+  		foreach ($partners as $partner) {
+  			echo '"'.$partner->first_name.'", ';
+  		}
+  	?>
+  ];
+  $("#partner_name").autocomplete({
+    source: availableTags
+  });
+});
 
 </script>
-</script>
+<script src="{{ asset('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
 
 @stop

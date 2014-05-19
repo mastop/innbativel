@@ -26,6 +26,8 @@ class SetupPaymentsTable extends Migration {
         $table->dateTime('sales_from');
         $table->dateTime('sales_to');
         $table->date('date');
+        $table->boolean('is_sales_close')->default(false);
+        $table->string('cronjob')->nullable();
         
       });
     }
