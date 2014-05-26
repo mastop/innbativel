@@ -3,7 +3,7 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Lista de Pagamentos aos Parceiros</h6>
+			<h6>Lista de Pagamentos</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('painel.payment') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
 	        </div>
@@ -20,6 +20,7 @@
 	        }}
 			{{ Former::submit() }}
 			{{ Former::link('Limpar Filtros', route('painel.payment')) }}
+			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('painel.payment.export', ['id'=>'id', 'payment_id'=>'payment_id']).'\');') }}
 			<div class="dataTables_length">
 	        {{ Former::select('pag', 'Exibir')
 	        	->addOption('5', '5')
@@ -51,14 +52,15 @@
 			<th>Período</th>
 			<th>Data a ser pago</th>
 			<th>Data do pagamento</th>
-			<th style="text-align: right;">Valor (R$)</th>
+			<th style="text-align: right;">Valor Total das Vendas (R$)</th>
+			<th>Ações</th>
 		</tr>
 	</thead>
 	{{ Table::body($paymentPartnerData)
 			->ignore(['id', 'partner_id', 'payment_id', 'total', 'paid_on', 'payment', 'partner'])
 			->idd(function($data) {
 				if(isset($data['id'])){
-					return '<a href="'.route('painel.payment.voucher', ['partner_id' => $data['partner_id'], 'payment_id' => $data['payment_id']]).'">'.$data['id'].'</a>';
+					return $data['payment_id'];
 				}
 				return '--';
 			})
@@ -83,14 +85,23 @@
 				}
 				return '--';
 			})
+			->acoes(function($data) {
+				return DropdownButton::normal('Ações',
+				  	Navigation::links([
+						['Ver mais detalhes', route('painel.payment.voucher', ['payment_id' => $data['payment']['id']])],
+				    ])
+				)->pull_right()->split();
+			})
+			
 	}}
 	<thead>
 		<tr>
-		<th>Total</th>
-		<th></th>
-		<th></th>
-		<th></th>
-		<th style="text-align: right;">{{ number_format($totals['transfer'], 2, ',', '.') }}</th>
+			<th>Total</th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th style="text-align: right;">{{ number_format($totals['transfer'], 2, ',', '.') }}</th>
+			<th></th>
 		</tr>
 	</thead>
 	{{ Table::close() }}
@@ -99,5 +110,17 @@
 		{{ $paymentPartnerData->links() }}
 	</div>
 </div>
+
+<script type="text/javascript">
+function exportar(url){
+	var id = ($('#id').val() == '')?'null':$('#id').val();
+	var payment_id = ($('#payment_id').val() == '')?'null':$('#payment_id').val();
+
+	url = url.replace('/id', '/'+id);
+	url = url.replace('/payment_id', '/'+payment_id);
+
+	window.location.href = url;
+};
+</script>
 
 @stop

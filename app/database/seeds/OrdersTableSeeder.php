@@ -90,7 +90,7 @@ class OrdersTableSeeder extends DatabaseSeeder
         'braspag_id' => '1234-1234-1234-1234',
         'status' => 'pago',
         'donation' => 1,
-        'total' => 2000.00,
+        'total' => 751.00,
         'card_boletus_rate' => 6.65,
         'antecipation_rate' => 3.63,
         'cpf' => '1231231233',
