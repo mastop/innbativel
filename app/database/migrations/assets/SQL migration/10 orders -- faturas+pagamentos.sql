@@ -24,7 +24,7 @@ SELECT
 
 f.id AS id, f.id_usuario AS user_id, f.id AS braspag_order_id, '' AS antifraud_id, '' AS braspag_id,
 (CASE
-        WHEN (f.status = 0 OR f.status = '0') THEN 'iniciado'
+        WHEN (f.status = 0 OR f.status = '0') THEN 'pendente'
         WHEN (f.status = 1 OR f.status = '1') THEN 'aprovado'
         ELSE 'cancelado'
 END) AS status,

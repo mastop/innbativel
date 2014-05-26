@@ -179,6 +179,9 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('order/view', function(){ return Redirect::route('admin.order'); });
 	Route::get('order/view/{id}', ['as' => 'admin.order.view', 'uses' => 'AdminOrderController@getView']);
 
+	Route::get('order/voucher/cancel', function(){ return Redirect::route('admin.order'); });
+	Route::post('order/voucher/cancel', ['as' => 'admin.order.voucher_cancel', 'uses' => 'AdminOrderController@getVoucherCancel']);
+
 	Route::get('order/teste', ['as' => 'admin.order.teste', 'uses' => 'AdminOrderController@teste']);
 
 	Route::any('order/offers', ['as' => 'admin.order.offers', 'uses' => 'AdminOrderController@anyListByOffer']);

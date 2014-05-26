@@ -54,7 +54,7 @@ BEGIN
     SET @remaining_coupons = (SELECT COUNT(v.id) FROM vouchers v WHERE v.status = 'pago' AND v.order_id = arg_order_id);
     IF(@remaining_coupons = 0) THEN 
       SET @remaining_coupon_discount = @remaining_coupon_discount + @donation; 
-      UPDATE orders o SET status = 'cancelado' WHERE o.id = arg_order_id;
+      UPDATE orders o SET status = 'cancelado_parcial' WHERE o.id = arg_order_id;
     END IF;
     -- FIM CASO DOAÇÃO
 

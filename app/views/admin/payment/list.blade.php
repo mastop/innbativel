@@ -153,7 +153,7 @@ function marcar_pago(url, id){
 	    $('#date').mask('00/00/0000');
 	}
 
-	$('#dataConfirmModal').find('.modal-message').text(message);
+	$('#dataConfirmModal').find('#modal-message').text(message);
 	$('#dataConfirmModal').find('#dataConfirmLabel').text(title);
 	$('#dataConfirmOK').attr('href', 'javascript: submit_action("'+url+'")');
 	$('#dataConfirmModal').modal({show:true});

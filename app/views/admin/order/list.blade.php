@@ -81,7 +81,7 @@
 			    ])
 			)->pull_right()->split();
 		}
-	    else if($order['status'] == 'pago' && strpos($order['payment_terms'], 'cartão') !== false && date('d/m/Y') == date('d/m/Y',strtotime($order['capture_date']))){
+	    else if($order['status'] == 'pago' && strpos(strtolower($order['payment_terms']), 'cartão') !== false && date('d/m/Y') == date('d/m/Y',strtotime($order['capture_date']))){
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
 					['Cancelar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'cancelar\', \''.$order['braspag_order_id_string'].'\');'],
@@ -89,7 +89,7 @@
 			    ])
 			)->pull_right()->split();
 	    }
-	    else if($order['status'] == 'pago' && strpos($order['payment_terms'], 'cartão') !== false && date('d/m/Y') != date('d/m/Y',strtotime($order['capture_date']))){
+	    else if($order['status'] == 'pago' && strpos(strtolower($order['payment_terms']), 'cartão') !== false && date('d/m/Y') != date('d/m/Y',strtotime($order['capture_date']))){
 	        return DropdownButton::normal('Ações',
 			  	Navigation::links([
 					['Estornar', 'javascript: action(\''.route('admin.order.void', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'estornar\', \''.$order['braspag_order_id_string'].'\');'],
@@ -134,7 +134,7 @@ function action(url, action, braspag_order_id){
 	    $('body').append(modal);
 	}
 
-	$('#dataConfirmModal').find('.modal-message').text(message);
+	$('#dataConfirmModal').find('#modal-message').text(message);
 	$('#dataConfirmModal').find('#dataConfirmLabel').text(title);
 	$('#dataConfirmOK').attr('href', 'javascript: submit_action("'+url+'")');
 	$('#dataConfirmModal').modal({show:true});
