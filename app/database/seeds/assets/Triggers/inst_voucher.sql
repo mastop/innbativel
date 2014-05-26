@@ -12,8 +12,8 @@ CREATE TRIGGER inst_voucher AFTER INSERT ON vouchers
 FOR EACH ROW
 BEGIN
   IF (NEW.status = 'pago') THEN
-    INSERT INTO transactions_vouchers (voucher_id, status, created_at,  updated_at)
-         VALUES                       (NEW.id,     'pago', NOW(),       NOW());
+    INSERT INTO transactions_vouchers (voucher_id, status, 		created_at,  updated_at)
+         VALUES                       (NEW.id,     'pagamento', NOW(),       NOW());
   END IF;
 END; -- $$
 

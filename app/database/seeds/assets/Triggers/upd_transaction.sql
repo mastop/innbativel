@@ -25,23 +25,34 @@ BEGIN
 
     UPDATE vouchers SET status = 'pago' WHERE order_id = NEW.id;
 
-  ELSEIF ((NEW.status = 'cancelado' OR NEW.status = 'convercao_creditos') AND OLD.status = 'pago') THEN
+  ELSEIF (NEW.status = 'cancelado' AND OLD.status = 'pago') THEN
 
     SET @coupon_discount = (SELECT value FROM discount_coupons WHERE id = NEW.coupon_id);
 
-    INSERT INTO transactions (order_id, status,     total,     credit_discount,                     coupon_discount,                  created_at, updated_at)
-         VALUES              (NEW.id,   NEW.status, NEW.total, COALESCE(NEW.credit_discount, 0.00), COALESCE(@coupon_discount, 0.00), NOW(),      NOW());
+    INSERT INTO transactions (order_id, status,         total,     credit_discount,                     coupon_discount,                  created_at, updated_at)
+         VALUES              (NEW.id,   'cancelamento', NEW.total, COALESCE(NEW.credit_discount, 0.00), COALESCE(@coupon_discount, 0.00), NOW(),      NOW());
 
     UPDATE vouchers SET status = NEW.status WHERE order_id = NEW.id;
 
     SET @credit_discount_refund = COALESCE(NEW.credit_discount, 0.00);
 
-    IF(NEW.status = 'convercao_creditos') THEN
-      SET @credit_discount_refund = @credit_discount_refund + NEW.total;
+    IF(@credit_discount_refund > 0) THEN
+      UPDATE profiles SET credit = credit + @credit_discount_refund WHERE id = NEW.user_id;
     END IF;
 
+  ELSEIF (NEW.status = 'convercao_creditos' AND OLD.status = 'pago') THEN
+
+    SET @coupon_discount = (SELECT value FROM discount_coupons WHERE id = NEW.coupon_id);
+
+    INSERT INTO transactions (order_id, status,               total,     credit_discount,                     coupon_discount,                  created_at, updated_at)
+         VALUES              (NEW.id,   'convercao_creditos', NEW.total, COALESCE(NEW.credit_discount, 0.00), COALESCE(@coupon_discount, 0.00), NOW(),      NOW());
+
+    UPDATE vouchers SET status = NEW.status WHERE order_id = NEW.id;
+
+    SET @credit_discount_refund = NEW.total + COALESCE(NEW.credit_discount, 0.00);
+
     IF(@credit_discount_refund > 0) THEN
-    	UPDATE profiles SET credit = credit + @credit_discount_refund WHERE id = NEW.user_id;
+      UPDATE profiles SET credit = credit + @credit_discount_refund WHERE id = NEW.user_id;
     END IF;
 
   END IF;

@@ -16,17 +16,26 @@
 CREATE TRIGGER upd_vouchers AFTER UPDATE ON vouchers
 FOR EACH ROW
 BEGIN
-  IF ((NEW.status = 'pago' AND OLD.status != 'pago') OR ((NEW.status = 'cancelado' OR NEW.status = 'convercao_creditos') AND OLD.status = 'pago')) THEN
+  IF (NEW.status = 'pago' AND OLD.status != 'pago') THEN
 
-    INSERT INTO transactions_vouchers (voucher_id, status,     created_at, updated_at)
-         VALUES                       (NEW.id,     NEW.status, NOW(),      NOW());
+    INSERT INTO transactions_vouchers (voucher_id, status,		  created_at, updated_at)
+         VALUES                       (NEW.id,     'pagamento', NOW(),      NOW());
+
+  ELSEIF ((NEW.status = 'cancelado' OR NEW.status = 'convercao_creditos') AND OLD.status = 'pago') THEN
+
+    INSERT INTO transactions_vouchers (voucher_id, status,         created_at, updated_at)
+         VALUES                       (NEW.id,     'cancelamento', NOW(),      NOW());
 
   ELSEIF ((NEW.status = 'cancelado_parcial' OR NEW.status = 'convercao_creditos_parcial') AND OLD.status = 'pago') THEN
 
-    INSERT INTO transactions_vouchers (voucher_id, status,      created_at, updated_at)
-         VALUES                       (NEW.id,     NEW.status, NOW(),      NOW());
+    INSERT INTO transactions_vouchers (voucher_id, status,         created_at, updated_at)
+         VALUES                       (NEW.id,     'cancelamento', NOW(),      NOW());
 
-    CALL inst_transaction_partial_cancellation(NEW.order_id, NEW.offer_option_id, NEW.status);
+    IF(NEW.status = 'cancelado_parcial') THEN
+      CALL inst_transaction_partial_cancellation(NEW.order_id, NEW.offer_option_id, 'cancelamento_parcial');
+    ELSE
+      CALL inst_transaction_partial_cancellation(NEW.order_id, NEW.offer_option_id, 'convercao_creditos_parcial');
+    END IF;
 
   END IF;
 END; -- $$

@@ -523,4 +523,7 @@ Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 
 	Route::any('pagamentos/vouchers_export', function(){ return Redirect::route('painel.payment.voucher'); });
 	Route::get('pagamentos/vouchers_export/{payment_id?}', ['as' => 'painel.payment.voucher_export', 'uses' => 'PainelPaymentController@getVoucherExport']);
+
+	Route::any('pagamentos/export', function(){ return Redirect::route('painel.payment.voucher'); });
+	Route::get('pagamentos/export/{id?}/{payment_id?}', ['as' => 'painel.payment.export', 'uses' => 'PainelPaymentController@getExport']);
 });

@@ -194,6 +194,7 @@ class PainelPaymentController extends BaseController {
 															'pag' => $pag,
 															'payment_id' => Input::get('payment_id'),
 													  ]);
+													  // ->get()->toArray();print('<pre>');print_r($transactionVoucherData);print('</pre>');die();
 
 		$totals = [];
 		$totals['transfer'] = 0;
@@ -218,6 +219,70 @@ class PainelPaymentController extends BaseController {
 		$paymData['atual'] = 'Atual';
 
 		$this->layout->content = View::make('painel.payment.voucher', compact('sort', 'order', 'pag', 'transactionVoucherData', 'paymData', 'totals'));
+	}
+
+	public function getExport($id, $payment_id){
+		$id = ($id == 'null')?null:$id;
+		$payment_id = ($payment_id == 'null')?null:$payment_id;
+
+		/*
+		 * Obj
+		 */
+		$payment_partner = $this->payment_partner;
+
+		/*
+		 * Sort filter
+		 */
+		$sort = in_array(Input::get('sort'), ['user_id']) ? Input::get('sort') : 'id';
+
+		/*
+		 * Order filter
+		 */
+    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+
+    	/*
+		 * Search filters
+		 */
+
+		if (isset($id)) {
+			$payment_partner = $payment_partner->where('id', $id);
+		}
+
+		if (isset($payment_id)) {
+			$payment_partner = $payment_partner->where('payment_id', $payment_id);
+		}
+
+		$payment_partner = $payment_partner->where('partner_id', Auth::user()->id);
+
+		$paymentPartnerData = $payment_partner->with(['payment', 'partner'])
+											  ->orderBy($sort, $order)
+											  ->get();
+
+		$transfer = 0;
+
+		$spreadsheet = array();
+		$spreadsheet[] = array('ID', 'Período', 'Data a Ser Pago', 'Data do Pagamento', 'Valor Total das Vendas (R$)');
+
+		foreach ($paymentPartnerData as $paymentPartner) {
+			$ss = null;
+
+			$ss[] = $paymentPartner->payment_id;
+			$ss[] = date("d/m/Y H:i:s", strtotime($paymentPartner->payment->sales_from)).' - '.date("d/m/Y H:i:s", strtotime($paymentPartner->payment->sales_to));
+			$ss[] = date("d/m/Y H:i:s", strtotime($paymentPartner->payment->date));
+			$ss[] = isset($paymentPartner->paid_on)?date("d/m/Y", strtotime($paymentPartner->paid_on)):'Não pago';
+			$ss[] = number_format($paymentPartner->total, 2, ',', '.');
+
+			$spreadsheet[] = $ss;
+
+			$transfer += $paymentPartner->total;
+		}
+
+		$spreadsheet[] = array('Total', '', '', '', number_format($transfer, 2, ',', '.'));
+
+		Excel::create('PagamentosINNBativel')
+	         ->sheet('PagamentosINNBativel')
+	            ->with($spreadsheet)
+	         ->export('xls');
 	}
 
 	public function getVoucherExport($payment_id){
@@ -287,7 +352,7 @@ class PainelPaymentController extends BaseController {
 													  ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('Data', 'Cliente', 'Código do Cupom', 'Oferta e Opção Escolhida', 'Status', 'Valor do Cupom (R$)', 'Valor Parceiro (R$)');
+		$spreadsheet[] = array('Data', 'Cliente', 'Código do Cupom', 'Oferta e Opção Escolhida', 'Status', 'Valor do Cupom (R$)', 'Valor a Receber (R$)');
 
 		$voucher_price = 0;
 		$transfer = 0;

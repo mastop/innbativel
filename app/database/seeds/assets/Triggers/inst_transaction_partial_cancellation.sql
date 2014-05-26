@@ -18,7 +18,7 @@ BEGIN
 
     IF(@offer_id = @coupon_discount_offer_id) THEN
 
-      SET @remaining_coupon_discount_temp = (SELECT (dc.value - (SELECT COALESCE(SUM(t.coupon_discount), 0.00) FROM transactions t WHERE t.order_id = arg_order_id AND t.status IN ('cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial'))) FROM orders o LEFT JOIN discount_coupons dc ON o.coupon_id = dc.id WHERE o.id = arg_order_id);
+      SET @remaining_coupon_discount_temp = (SELECT (dc.value - (SELECT COALESCE(SUM(t.coupon_discount), 0.00) FROM transactions t WHERE t.order_id = arg_order_id AND t.status IN ('cancelamento', 'cancelamento_parcial', 'convercao_creditos', 'convercao_creditos_parcial'))) FROM orders o LEFT JOIN discount_coupons dc ON o.coupon_id = dc.id WHERE o.id = arg_order_id);
 
       IF (@remaining_coupon_discount_temp > 0) THEN
 
@@ -40,11 +40,11 @@ BEGIN
     SET @cancellations = (SELECT COALESCE(SUM(oo.price_with_discount), 0.00) FROM vouchers v LEFT JOIN offers_options oo ON v.offer_option_id = oo.id WHERE v.order_id = arg_order_id AND v.status IN ('cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial'));
     SET @remaining_order = @original_order - @cancellations;
 
-    SET @remaining_credit_discount = (SELECT (o.credit_discount - (SELECT COALESCE(SUM(t.credit_discount), 0.00) FROM transactions t WHERE t.order_id = arg_order_id AND t.status IN ('cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial'))) FROM orders o WHERE o.id = arg_order_id);
-    SET @remaining_coupon_discount = (SELECT (dc.value - (SELECT COALESCE(SUM(t.coupon_discount), 0.00) FROM transactions t WHERE t.order_id = arg_order_id AND t.status IN ('cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial'))) FROM orders o LEFT JOIN discount_coupons dc ON o.coupon_id = dc.id WHERE o.id = arg_order_id);
+    SET @remaining_credit_discount = (SELECT (COALESCE(o.credit_discount, 0.00) - (SELECT COALESCE(SUM(t.credit_discount), 0.00) FROM transactions t WHERE t.order_id = arg_order_id AND t.status IN ('cancelamento', 'cancelamento_parcial', 'convercao_creditos', 'convercao_creditos_parcial'))) FROM orders o WHERE o.id = arg_order_id);
+    SET @remaining_coupon_discount = (SELECT (COALESCE(dc.value, 0.00) - (SELECT COALESCE(SUM(t.coupon_discount), 0.00) FROM transactions t WHERE t.order_id = arg_order_id AND t.status IN ('cancelamento', 'cancelamento_parcial', 'convercao_creditos', 'convercao_creditos_parcial'))) FROM orders o LEFT JOIN discount_coupons dc ON o.coupon_id = dc.id WHERE o.id = arg_order_id);
 
     SET @original_payment = (SELECT o.total FROM orders o WHERE o.id = arg_order_id);
-    SET @previous_cancellation_payment = (SELECT COALESCE(SUM(t.total), 0.00) FROM transactions t WHERE t.order_id = arg_order_id AND t.status IN ('cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial'));
+    SET @previous_cancellation_payment = (SELECT COALESCE(SUM(t.total), 0.00) FROM transactions t WHERE t.order_id = arg_order_id AND t.status IN ('cancelamento', 'cancelamento_parcial', 'convercao_creditos', 'convercao_creditos_parcial'));
     SET @balance = @original_payment - @previous_cancellation_payment;
 
     -- INICIO CASO DOAÇÃO

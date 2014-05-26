@@ -31,7 +31,7 @@ class SetupOrdersTable extends Migration {
 		$table->enum('status', array('pendente', 'pago', 'cancelado', 'revisao', 'convercao_creditos'))->default('pendente');
 		$table->integer('first_digits_card')->nullable();
 		$table->integer('holder_card')->nullable();
-		$table->decimal('donation', 4, 2)->nullable();
+		$table->decimal('donation', 4, 2)->default(0);
         $table->decimal('total', 9, 2)->nullable();
         $table->decimal('credit_discount', 9, 2)->nullable();
 		$table->decimal('card_boletus_rate', 4, 2)->default(0);
