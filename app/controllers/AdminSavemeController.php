@@ -74,6 +74,7 @@ class AdminSavemeController extends BaseController {
 		$saveme = $saveme->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'title' => Input::get('title'),
 			'geocode' => Input::get('geocode'),
 		]);

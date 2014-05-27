@@ -83,6 +83,7 @@ class PainelContractController extends BaseController {
 		$contract = $contract->with(['partner', 'consultant'])->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'id' => Input::get('id'),
 			'is_signed' => Input::get('is_signed'),
 			'signed_at_begin' => Input::get('signed_at_begin'),

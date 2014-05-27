@@ -128,6 +128,7 @@ class AdminOrderController extends BaseController {
 								->appends([
 									'sort' => $sort,
 									'order' => $order,
+									'pag' => $pag,
 									'status' => Input::get('status'),
 									'terms' => Input::get('terms'),
 									'date_start' => Input::get('date_start'),
@@ -202,6 +203,7 @@ class AdminOrderController extends BaseController {
 									   ->appends([
 											'sort' => $sort,
 											'order' => $order,
+											'pag' => $pag,
 											'offer_id' => Input::get('offer_id'),
 											'starts_on' => Input::get('starts_on'),
 											'ends_on' => Input::get('ends_on'),
@@ -519,6 +521,7 @@ class AdminOrderController extends BaseController {
 							 ->appends([
 								 'sort' => $sort,
 								 'order' => $order,
+								 'pag' => $pag,
 								 'offer_option_id' => $offer_option_id,
 								 'id' => Input::get('id'),
 							 ]);

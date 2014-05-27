@@ -24,10 +24,10 @@ class Transaction extends Eloquent {
   }
 
   public function order(){
-    return $this->belongsTo('Order', 'order_id');
+    return $this->belongsTo('Order', 'order_id')->with(['buyer', 'voucher_offer']);
   }
 
-  public function changer(){
+  public function customer(){
     return $this->belongsTo('User', 'changer_id')->leftJoin('profiles', 'users.id', '=', 'profiles.user_id');
   }
 

@@ -74,6 +74,7 @@ class AdminPermController extends BaseController {
 		$perm = $perm->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'name' => Input::get('name'),
 			'description' => Input::get('description'),
 		]);

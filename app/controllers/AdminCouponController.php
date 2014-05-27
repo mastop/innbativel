@@ -79,6 +79,7 @@ class AdminCouponController extends BaseController {
 		->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'display_code' => Input::get('display_code'),
 			'starts_on' => Input::get('starts_on'),
 			'ends_on' => Input::get('ends_on'),

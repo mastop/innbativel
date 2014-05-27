@@ -62,6 +62,7 @@ class AdminRoleController extends BaseController {
 		$role = $role->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'name' => Input::get('name'),
 			'level' => Input::get('level'),
 		]);

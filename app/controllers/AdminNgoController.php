@@ -74,6 +74,7 @@ class AdminNgoController extends BaseController {
 		$ngo = $ngo->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'name' => Input::get('name'),
 			'description' => Input::get('description'),
 		]);

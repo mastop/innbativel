@@ -82,6 +82,7 @@ class AdminSuggestATripController extends BaseController {
 		$suggest = $suggest->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'name' => Input::get('name'),
 			'email' => Input::get('email'),
 			'destiny' => Input::get('destiny'),

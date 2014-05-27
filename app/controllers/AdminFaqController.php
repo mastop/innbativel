@@ -66,6 +66,7 @@ class AdminFaqController extends BaseController {
 		$faq = $faq->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'question' => Input::get('question'),
 			'answer' => Input::get('answer'),
 			'group_title' => Input::get('group_title'),

@@ -62,6 +62,7 @@ class AdminConfigController extends BaseController {
 		$config = $config->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'name' => Input::get('name'),
 			'value' => Input::get('value'),
 		]);

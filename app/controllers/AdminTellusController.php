@@ -90,6 +90,7 @@ class AdminTellusController extends BaseController {
 		$tellus = $tellus->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'name' => Input::get('name'),
 			'destiny' => Input::get('destiny'),
 			'parnter_name' => Input::get('parnter_name'),

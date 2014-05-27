@@ -111,6 +111,7 @@ class AdminUserCreditController extends BaseController {
 								 ->appends([
 										'sort' => $sort,
 										'order' => $order,
+										'pag' => $pag,
 										'name' => Input::get('name'),
 										'email' => Input::get('email'),
 										'new_name' => Input::get('new_name'),
