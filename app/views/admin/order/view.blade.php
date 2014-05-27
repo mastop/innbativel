@@ -6,7 +6,7 @@
 
         <div class="control-group required">
             <b class="control-label">Nome</b>
-            <div class="controls">{{ link_to_route('admin.user.view', $order->user->first_name.(isset($order->user->last_name)?(' '.$order->user->last_name):''), ['id' =>$order->user->id]) }}</div>
+            <div class="controls">{{ link_to_route('admin.user.view', $order->user->first_name.(isset($order->user->last_name)?(' '.$order->user->last_name):''), ['id' =>$order->user->id], ['title' => 'Ver usuário']) }}</div>
 
             <b class="control-label">E-mail</b>
             <div class="controls">{{ $order->user->email }}</div>

@@ -142,7 +142,7 @@ class AdminOrderController extends BaseController {
 				$braspag_order_id = $value->braspag_order_id;
 				$id = $value->id;
 
-				$value->braspag_order_id = link_to_route('admin.order.view', $braspag_order_id, ['id'=>$id]);
+				$value->braspag_order_id = link_to_route('admin.order.view', $braspag_order_id, ['id'=>$id], ['title' => 'Ver detalhes']);
 				$value->braspag_order_id_string = $braspag_order_id;
 
 				// $m = new Money($value->total, new Currency('BRL'));
