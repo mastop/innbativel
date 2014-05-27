@@ -1,11 +1,7 @@
 @section('content')
-
-<h3 class="titulo">Política de Privacidade</h3>
-
+<h4>​Política de privacidade do INNBatível​</h4>​
 <p>
-Nosso compromisso é respeitar sua privacidade e garantir o sigilo de todas as informações que você nos fornece. Todos os dados cadastrados em nosso site são utilizados apenas para melhorar sua experiência de compra e mantê-lo atualizado sobre nossas promoções e vantagens oferecidas por empresas parceiras do INNBatível.</p>
-<p>
-    &nbsp;</p>
+    Nosso compromisso é respeitar sua privacidade e garantir o sigilo de todas as informações que você nos fornece. Todos os dados cadastrados em nosso site são utilizados apenas para melhorar sua experiência de compra e mantê-lo atualizado sobre nossas promoções e vantagens oferecidas por empresas parceiras do INNBatível.</p>
 <p>
     <em>Uso e Segurança das informações</em></p>
 <p>

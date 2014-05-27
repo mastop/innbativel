@@ -10,7 +10,11 @@ Route::any('/politica-de-privacidade', ['as' => 'politica-de-privacidade', 'uses
 Route::any('/quem-somos', ['as' => 'quem-somos', 'uses' => 'PageController@anyQuemSomos', 'after' => 'cache.public']);
 Route::any('/acao-social', ['as' => 'acao-social', 'uses' => 'PageController@anyAcaoSocial', 'after' => 'cache.public']);
 Route::any('/imprensa', ['as' => 'imprensa', 'uses' => 'PageController@anyImprensa', 'after' => 'cache.public']);
-Route::any('/fale-conosco', ['as' => 'fale-conosco', 'uses' => 'PageController@anyFaleConosco', 'after' => 'cache.public']);
 Route::any('webservice/valida-cupom.php', ['as' => 'snowland-valida-cupom', 'uses' => 'XmlServerController@postSnowlandValida']);
 Route::any('webservice/utiliza-cupom.php', ['as' => 'snowland-utiliza-cupom', 'uses' => 'XmlServerController@postSnowlandUtiliza']);
 Route::any('criteo.php', ['as' => 'criteo', 'uses' => 'XmlServerController@getCriteo']);
+
+/*
+ * Newsletter
+ */
+Route::post('newsletter/gravar', ['as' => 'newsletter.save', 'uses' => 'NewsletterController@postNewsletter']);
