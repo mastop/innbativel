@@ -151,7 +151,7 @@ class XmlServerController extends BaseController {
 		}
 
 		if($voucher[0]['order']['status'] != 'pago'){
-			if(in_array($voucher[0]['order']['status'], ['revisao', 'pendente'])){
+			if($voucher[0]['order']['status'] == 'pendente'){
 				$data['result'] = [
 					'valido' => 'false',
 					'erro' => 6,
@@ -299,7 +299,7 @@ class XmlServerController extends BaseController {
 		}
 
 		if($voucher[0]['order']['status'] != 'pago'){
-			if(in_array($voucher[0]['order']['status'], ['iniciado', 'revisao', 'pendente', 'nao_finalizado'])){
+			if($voucher[0]['order']['status'] == 'pendente'){
 				$data['result'] = [
 					'utilizado' => 'false',
 					'erro' => 6,

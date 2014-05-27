@@ -149,7 +149,7 @@ function update_tracking_code(url, voucher_id){
 	    $('body').append(modal);
 	}
 
-	$('#dataConfirmModal').find('.modal-message').text(message);
+	$('#dataConfirmModal').find('#modal-message').text(message);
 	$('#dataConfirmModal').find('#dataConfirmLabel').text(title);
 	$('#dataConfirmOK').attr('href', submit);
 	$('#dataConfirmModal').modal({show:true});
