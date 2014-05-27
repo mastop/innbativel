@@ -487,6 +487,8 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('payment/periodos/delete', function(){ return Redirect::route('admin.payment.period'); });
 	Route::get('payment/periodos/delete/{id}', ['as' => 'admin.payment.delete', 'uses' => 'AdminPaymentController@getDelete']);
 	Route::post('payment/periodos/delete/{id}', ['as' => 'admin.payment.destroy', 'uses' => 'AdminPaymentController@postDelete']);
+
+	Route::any('transaction', ['as' => 'admin.transaction', 'uses' => 'AdminTransactionController@anyIndex']);
 });
 
 Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
