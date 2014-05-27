@@ -9,11 +9,11 @@
 -- Observação: os pedidos PARCIALMENTE cancelados (incluindo os parcialmente cancelados e convertidos para créditos na conta do comprador) NÃO são inseridos em transações (transactions) através deste trigger; e sim através do TRIGGER ATUALIZA VOUCHER (vouchers) -- mais abaixo deste documento
 -- ------------------------
 
--- DROP TRIGGER IF EXISTS upd_transaction;
+-- DROP TRIGGER IF EXISTS upd_order;
 
 -- DELIMITER $$
 
-CREATE TRIGGER upd_transaction AFTER UPDATE ON orders
+CREATE TRIGGER upd_order AFTER UPDATE ON orders
 FOR EACH ROW
 BEGIN
   IF (NEW.status = 'pago' AND OLD.status != 'pago') THEN
@@ -32,7 +32,7 @@ BEGIN
     INSERT INTO transactions (order_id, status,         total,     credit_discount,                     coupon_discount,                  created_at, updated_at)
          VALUES              (NEW.id,   'cancelamento', NEW.total, COALESCE(NEW.credit_discount, 0.00), COALESCE(@coupon_discount, 0.00), NOW(),      NOW());
 
-    UPDATE vouchers SET status = NEW.status WHERE order_id = NEW.id;
+    UPDATE vouchers SET status = NEW.status WHERE order_id = NEW.id AND status = 'pago';
 
     SET @credit_discount_refund = COALESCE(NEW.credit_discount, 0.00);
 
@@ -47,7 +47,7 @@ BEGIN
     INSERT INTO transactions (order_id, status,               total,     credit_discount,                     coupon_discount,                  created_at, updated_at)
          VALUES              (NEW.id,   'convercao_creditos', NEW.total, COALESCE(NEW.credit_discount, 0.00), COALESCE(@coupon_discount, 0.00), NOW(),      NOW());
 
-    UPDATE vouchers SET status = NEW.status WHERE order_id = NEW.id;
+    UPDATE vouchers SET status = NEW.status WHERE order_id = NEW.id AND status = 'pago';
 
     SET @credit_discount_refund = NEW.total + COALESCE(NEW.credit_discount, 0.00);
 

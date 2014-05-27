@@ -30,7 +30,7 @@
 		</div>
 	</div>
 	<style type="text/css">
-	.column-totall{
+	.column-voucherValue, .column-paid, .column-transfer, .column-cardTax, .column-antecipationTax, .column-gain{
 		text-align: right;
 	}
 	</style>
@@ -64,19 +64,19 @@
 			}
 			return '--';
 		})
-		->statuss(function($transaction) {
-			if(isset($transaction->created_at)){
-				return '--';
-			}
-			return '--';
-		})
 		->orderr(function($transaction) {
-			if(isset($transaction->created_at)){
-				return '--';
+			if(isset($transaction->status)){
+				return link_to_route('admin.order.view', $transaction->order->braspag_order_id, ['id' => $transaction->order->id]);
 			}
 			return '--';
 		})
-		->voucher(function($transaction) {
+		->statuss(function($transaction) {
+			if(isset($transaction->order->braspag_order_id)){
+				return $transaction->status;
+			}
+			return '--';
+		})
+		->voucherValue(function($transaction) {
 			if(isset($transaction->created_at)){
 				return '--';
 			}
@@ -94,13 +94,13 @@
 			}
 			return '--';
 		})
-		->card_tax(function($transaction) {
+		->cardTax(function($transaction) {
 			if(isset($transaction->created_at)){
 				return '--';
 			}
 			return '--';
 		})
-		->antecipation_tax(function($transaction) {
+		->antecipationTax(function($transaction) {
 			if(isset($transaction->created_at)){
 				return '--';
 			}
@@ -116,6 +116,7 @@
 	<thead>
 		<tr>
 		<th>Total</th>
+		<th></th>
 		<th></th>
 		<th></th>
 		<th style="text-align: right;">{{ number_format(1, 2, ',', '.') }}</th>

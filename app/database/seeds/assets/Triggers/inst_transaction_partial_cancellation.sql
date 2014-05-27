@@ -5,11 +5,11 @@
 -- ou seja, quando apenas um voucher (vouchers) é cancelado em uma compra de mais de um voucher
 -- ------------------------
 
--- DROP PROCEDURE IF EXISTS inst_transaction_partial_cancellation;
+-- DROP FUNCTION IF EXISTS inst_transaction_partial_cancellation;
 
 -- DELIMITER $$
    
-CREATE PROCEDURE inst_transaction_partial_cancellation (arg_order_id INT, arg_offer_option_id INT, arg_status VARCHAR(30)) 
+CREATE FUNCTION inst_transaction_partial_cancellation (arg_order_id INT, arg_offer_option_id INT, arg_status VARCHAR(30)) RETURNS INT(20) DETERMINISTIC
 BEGIN
    -- INICIO CASO CUPOM DE DESCONTO RESTRITO A OFERTA
     -- EXPLICAÇÃO: CASOS QUANDO O CANCELAMENTO PARCIAL É DE UMA OFERTA QUE GANHOU DESCONTO POR UM CUPOM DE DESCONTO RESTRITA APENAS A ELA
@@ -67,6 +67,8 @@ BEGIN
       INSERT INTO transactions (order_id,       status,     total,                         credit_discount,                         coupon_discount,                         created_at, updated_at)
            VALUES              (arg_order_id,   arg_status, COALESCE(@money_refund, 0.00), COALESCE(@credit_discount_refund, 0.00), COALESCE(@coupon_discount_refund, 0.00), NOW(),      NOW());
 
+      SET @transaction_id = LAST_INSERT_ID();
+
       IF(arg_status = 'convercao_creditos_parcial') THEN SET @credit_discount_refund = @credit_discount_refund + @money_refund; END IF;
 
       UPDATE profiles p
@@ -81,6 +83,8 @@ BEGIN
 
       INSERT INTO transactions (order_id,       status,     total,                         credit_discount,                         created_at, updated_at)
            VALUES              (arg_order_id,   arg_status, COALESCE(@money_refund, 0.00), COALESCE(@credit_discount_refund, 0.00), NOW(),      NOW());
+
+      SET @transaction_id = LAST_INSERT_ID();
 
       IF(arg_status = 'convercao_creditos_parcial') THEN SET @credit_discount_refund = @credit_discount_refund + @money_refund; END IF;
 
@@ -100,6 +104,8 @@ BEGIN
       INSERT INTO transactions (order_id,       status,     total,                         created_at, updated_at)
            VALUES              (arg_order_id,   arg_status, COALESCE(@money_refund, 0.00), NOW(),      NOW());
 
+      SET @transaction_id = LAST_INSERT_ID();
+
       IF(arg_status = 'convercao_creditos_parcial') THEN
 
         UPDATE profiles p
@@ -110,6 +116,8 @@ BEGIN
       END IF;
 
     END IF;
+
+    RETURN @transaction_id;
 END; -- $$
 
 -- DELIMITER ;

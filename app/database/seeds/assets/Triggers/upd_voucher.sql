@@ -18,24 +18,28 @@ FOR EACH ROW
 BEGIN
   IF (NEW.status = 'pago' AND OLD.status != 'pago') THEN
 
-    INSERT INTO transactions_vouchers (voucher_id, status,		  created_at, updated_at)
-         VALUES                       (NEW.id,     'pagamento', NOW(),      NOW());
+    SET @transaction_id = (SELECT t.id FROM transactions t WHERE t.order_id = NEW.order_id ORDER BY t.id DESC LIMIT 1);
+
+    INSERT INTO transactions_vouchers (voucher_id, transaction_id,  status,		   created_at, updated_at)
+         VALUES                       (NEW.id,     @transaction_id, 'pagamento', NOW(),      NOW());
 
   ELSEIF ((NEW.status = 'cancelado' OR NEW.status = 'convercao_creditos') AND OLD.status = 'pago') THEN
 
-    INSERT INTO transactions_vouchers (voucher_id, status,         created_at, updated_at)
-         VALUES                       (NEW.id,     'cancelamento', NOW(),      NOW());
+    SET @transaction_id = (SELECT t.id FROM transactions t WHERE t.order_id = NEW.order_id ORDER BY t.id DESC LIMIT 1);
+
+    INSERT INTO transactions_vouchers (voucher_id, transaction_id,  status,         created_at, updated_at)
+         VALUES                       (NEW.id,     @transaction_id, 'cancelamento', NOW(),      NOW());
 
   ELSEIF ((NEW.status = 'cancelado_parcial' OR NEW.status = 'convercao_creditos_parcial') AND OLD.status = 'pago') THEN
 
-    INSERT INTO transactions_vouchers (voucher_id, status,         created_at, updated_at)
-         VALUES                       (NEW.id,     'cancelamento', NOW(),      NOW());
-
     IF(NEW.status = 'cancelado_parcial') THEN
-      CALL inst_transaction_partial_cancellation(NEW.order_id, NEW.offer_option_id, 'cancelamento_parcial');
+      SET @transaction_id = (SELECT inst_transaction_partial_cancellation(NEW.order_id, NEW.offer_option_id, 'cancelamento_parcial'));
     ELSE
-      CALL inst_transaction_partial_cancellation(NEW.order_id, NEW.offer_option_id, 'convercao_creditos_parcial');
+      SET @transaction_id = (SELECT inst_transaction_partial_cancellation(NEW.order_id, NEW.offer_option_id, 'convercao_creditos_parcial'));
     END IF;
+
+    INSERT INTO transactions_vouchers (voucher_id, transaction_id,  status,         created_at, updated_at)
+         VALUES                       (NEW.id,     @transaction_id, 'cancelamento', NOW(),      NOW());
 
   END IF;
 END; -- $$
