@@ -30,7 +30,7 @@
 		</div>
 	</div>
 	<style type="text/css">
-	.column-vouchersValue, .column-paid, .column-creditDiscount, .column-couponDiscount, .column-cardBoletusRate, .column-antecipationRate, .column-transfer, .column-gainn{
+	.column-vouchersValue, .column-paid, .column-creditDiscount, .column-couponDiscount, .column-cardBoletusRate, .column-antecipationRate, .column-transfer, .column-gainn, .column-nVouchers{
 		text-align: right;
 	}
 	</style>
@@ -51,10 +51,11 @@
 			<th style="text-align: right;">Taxa de antecipação (R$) **</th>
 			<th style="text-align: right;">Valor parceiro (R$) ***</th>
 			<th style="text-align: right;">Faturamento (R$)</th>
+			<th style="text-align: right;">Número de Cupons</th>
 		</tr>
 	</thead>
 	{{ Table::body($transactions)
-		->ignore(['id', 'order_id', 'status', 'total', 'credit_discount', 'coupon_discount', 'created_at', 'updated_at', 'order', 'voucher', 'vouchers', 'transfers', 'gain'])
+		->ignore(['id', 'order_id', 'status', 'total', 'credit_discount', 'coupon_discount', 'created_at', 'updated_at', 'order', 'voucher', 'vouchers', 'transfers', 'gain', 'card_boletus_rate', 'antecipation_rate','display_codes'])
 		->date(function($transaction) {
 			if(isset($transaction->created_at)){
 				return date("d/m/Y H:i:s", strtotime($transaction->created_at));
@@ -68,11 +69,10 @@
 			return '--';
 		})
 		->voucherss(function($transaction) {
-			$vouchers = '';
-			foreach ($transaction->voucher as $voucher) {
-				$vouchers .= $voucher->id.'-'.$voucher->display_code.'<br/>';
+			if(isset($transaction->display_codes)){
+				return $transaction->display_codes;
 			}
-			return substr($vouchers, 0, -5);
+			return '--';
 		})
 		->statuss(function($transaction) {
 			if(isset($transaction->order->braspag_order_id)){
@@ -147,38 +147,22 @@
 		})
 		->cardBoletusRate(function($transaction) {
 			if(isset($transaction->order)){
-				if(strpos($transaction->order->payment_terms, 'cartão') !== false || strpos($transaction->order->payment_terms, 'Cartão') !== false){
-					$cardBoletusRate = $transaction->total * $transaction->order->card_boletus_rate;
-				}
-				else{
-					$cardBoletusRate = $transaction->order->card_boletus_rate;
-				}
-
 				if($transaction->status == 'pagamento'){
-					return number_format($cardBoletusRate, 2, ',', '.');
+					return number_format($transaction->card_boletus_rate, 2, ',', '.');
 				}
 				else{
-					return number_format(-1 * $cardBoletusRate, 2, ',', '.');
+					return number_format(-1 * $transaction->card_boletus_rate, 2, ',', '.');
 				}
 			}
 			return '--';
 		})
 		->antecipationRate(function($transaction) {
 			if(isset($transaction->order)){
-				if(strpos($transaction->order->payment_terms, 'cartão') !== false || strpos($transaction->order->payment_terms, 'Cartão') !== false){
-					$cardBoletusRate = $transaction->total * $transaction->order->card_boletus_rate;
-				}
-				else{
-					$cardBoletusRate = $transaction->order->card_boletus_rate;
-				}
-
-				$antecipationRate = ($transaction->total - $cardBoletusRate) * $transaction->order->antecipation_rate;
-
 				if($transaction->status == 'pagamento'){
-					return number_format($antecipationRate, 2, ',', '.');
+					return number_format($transaction->antecipation_rate, 2, ',', '.');
 				}
 				else{
-					return number_format(-1 * $antecipationRate, 2, ',', '.');
+					return number_format(-1 * $transaction->antecipation_rate, 2, ',', '.');
 				}
 			}
 			return '--';
@@ -204,6 +188,16 @@
 			}
 			return '--';
 		})
+		->nVouchers(function($transaction) {
+			if(isset($transaction->transfers)){
+				if($transaction->status == 'pagamento'){
+					return count($transaction->voucher);
+				}
+				else{
+					return -1 * count($transaction->voucher);
+				}
+			}
+		})
 	}}
 	<thead>
 		<tr>
@@ -220,6 +214,7 @@
 		<th style="text-align: right;">{{ number_format($total['antecipationRate'], 2, ',', '.') }}</th>
 		<th style="text-align: right;">{{ number_format($total['transfer'], 2, ',', '.') }}</th>
 		<th style="text-align: right;">{{ number_format($total['gain'], 2, ',', '.') }}</th>
+		<th style="text-align: right;">{{ $total['n_vouchers'] }}</th>
 		</tr>
 	</thead>
 	{{ Table::close() }}

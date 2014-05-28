@@ -85,30 +85,38 @@ class AdminTransactionController extends BaseController {
 		$total['antecipationRate'] = 0;
 		$total['transfer'] = 0;
 		$total['gain'] = 0;
+		$total['n_vouchers'] = 0;
 
 		foreach ($transactions as $transaction) {
 			$vouchers = 0;
 			$transfers = 0;
+			$display_codes = '';
 
 			foreach ($transaction->voucher as $voucher) {
 				$vouchers += $voucher->offer_option_offer->price_with_discount;
 				$transfers += $voucher->offer_option_offer->transfer;
+				$display_codes .= $voucher->id.'-'.$voucher->display_code.'<br/>';
 			}
+
+			$display_codes = substr($display_codes, 0, -5);
 
 			if(strpos($transaction->order->payment_terms, 'cartão') !== false || strpos($transaction->order->payment_terms, 'Cartão') !== false){
 				$cardBoletusRate = $transaction->total * $transaction->order->card_boletus_rate;
+				$antecipationRate = ($transaction->total - $cardBoletusRate) * $transaction->order->antecipation_rate;
 			}
 			else{
-				$cardBoletusRate = $transaction->order->card_boletus_rate;
+				$cardBoletusRate = ($transaction->status == 'pagamento') ? $transaction->order->card_boletus_rate : 0;
+				$antecipationRate = 0;
 			}
-			
-			$antecipationRate = ($transaction->total - $cardBoletusRate) * $transaction->order->antecipation_rate;
 
 			$gain = $transaction->total - $cardBoletusRate - $antecipationRate - $transfers;
 
 			$transaction->vouchers = $vouchers;
 			$transaction->transfers = $transfers;
 			$transaction->gain = $gain;
+			$transaction->card_boletus_rate = $cardBoletusRate;
+			$transaction->antecipation_rate = $antecipationRate;
+			$transaction->display_codes = $display_codes;
 
 			if($transaction->status == 'pagamento'){
 				$total['vouchers'] += $vouchers;
@@ -119,6 +127,7 @@ class AdminTransactionController extends BaseController {
 				$total['antecipationRate'] += $antecipationRate;
 				$total['transfer'] += $transfers;
 				$total['gain'] += $gain;
+				$total['n_vouchers'] += count($transaction->voucher);
 			}
 			else{
 				$total['vouchers'] -= $vouchers;
@@ -129,6 +138,7 @@ class AdminTransactionController extends BaseController {
 				$total['antecipationRate'] -= $antecipationRate;
 				$total['transfer'] -= $transfers;
 				$total['gain'] -= $gain;
+				$total['n_vouchers'] -= count($transaction->voucher);
 			}
 		}
 
