@@ -2545,3 +2545,29 @@ div.multifile button{
     margin-top: 3px;
     border: 2px dashed #D5D5D5;
 }
+
+div.offerOptions{
+    margin-bottom: 15px;
+
+}
+div.offerOption{
+    background-color: #aaccff;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+span.offerOptionNumber{
+    float:left;
+    font-size:2em;
+    position: relative;
+    top: -10px;
+    left: -10px;
+    padding: 10px;
+    cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important;
+}
+div.offerOptions div.control-group, div.offerOptions div.control-group div.controls input{
+    padding: 5px;
+
+}
