@@ -19,6 +19,7 @@ class ContractsOptionsTableSeeder extends DatabaseSeeder
 	$interpreter->addObserver(function(array $columns) use ($pdo) {
 	    $stmt = $pdo->prepare('INSERT INTO contract_options (id, contract_id, title, price_original, price_with_discount, percent_off, transfer, max_qty) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 	    if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
+        unset($stmt);
 	});
 
 	$lexer->parse(app_path().'/database/seeds/assets/contract_options.csv', $interpreter);
