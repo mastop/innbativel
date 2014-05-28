@@ -37,7 +37,7 @@ class AdminTransactionController extends BaseController {
 		/*
 		 * Obj
 		 */
-		$transaction = $this->transaction;
+		$transactions = $this->transaction;
 
 		/*
 		 * Paginate
@@ -61,13 +61,13 @@ class AdminTransactionController extends BaseController {
 		 * Search filters
 		 */
 		if (Input::has('title')) {
-			$transaction = $transaction->where('title', 'like', '%'. Input::get('title') .'%');
+			$transactions = $transaction->where('title', 'like', '%'. Input::get('title') .'%');
 		}
 
 		/*
 		 * Finally Obj
 		 */
-		$transaction = $transaction->with(['order'])
+		$transactions = $transactions->with(['order', 'voucher'])
 								   ->orderBy($sort, $order)
 								   ->paginate($pag)
 								   ->appends([
@@ -76,11 +76,75 @@ class AdminTransactionController extends BaseController {
 										'pag' => $pag,
 										'title' => Input::get('title'),
 									]);
+		
+		$total['vouchers'] = 0;
+		$total['credits'] = 0;
+		$total['coupons'] = 0;
+		$total['paid'] = 0;
+		$total['cardBoletusRate'] = 0;
+		$total['antecipationRate'] = 0;
+		$total['transfer'] = 0;
+		$total['gain'] = 0;
+
+		foreach ($transactions as $transaction) {
+			$vouchers = 0;
+			$transfers = 0;
+
+			foreach ($transaction->voucher as $voucher) {
+				$vouchers += $voucher->offer_option_offer->price_with_discount;
+				$transfers += $voucher->offer_option_offer->transfer;
+			}
+
+			if(strpos($transaction->order->payment_terms, 'cartão') !== false || strpos($transaction->order->payment_terms, 'Cartão') !== false){
+				$cardBoletusRate = $transaction->total * $transaction->order->card_boletus_rate;
+			}
+			else{
+				$cardBoletusRate = $transaction->order->card_boletus_rate;
+			}
+			
+			$antecipationRate = ($transaction->total - $cardBoletusRate) * $transaction->order->antecipation_rate;
+
+			$gain = $transaction->total - $cardBoletusRate - $antecipationRate - $transfers;
+
+			$transaction->vouchers = $vouchers;
+			$transaction->transfers = $transfers;
+			$transaction->gain = $gain;
+
+			if($transaction->status == 'pagamento'){
+				$total['vouchers'] += $vouchers;
+				$total['credits'] += $transaction->credit_discount;
+				$total['coupons'] += $transaction->coupon_discount;
+				$total['paid'] += $transaction->total;
+				$total['cardBoletusRate'] += $cardBoletusRate;
+				$total['antecipationRate'] += $antecipationRate;
+				$total['transfer'] += $transfers;
+				$total['gain'] += $gain;
+			}
+			else{
+				$total['vouchers'] -= $vouchers;
+				$total['credits'] -= $transaction->credit_discount;
+				$total['coupons'] -= $transaction->coupon_discount;
+				$total['paid'] -= $transaction->total;
+				$total['cardBoletusRate'] -= $cardBoletusRate;
+				$total['antecipationRate'] -= $antecipationRate;
+				$total['transfer'] -= $transfers;
+				$total['gain'] -= $gain;
+			}
+		}
+
+		$total = $this->round($total);
 
 		/*
 		 * Layout / View
 		 */
-		$this->layout->content = View::make('admin.transaction.list', compact('sort', 'order', 'pag', 'transaction'));
+		$this->layout->content = View::make('admin.transaction.list', compact('sort', 'order', 'pag', 'transactions', 'total'));
+	}
+
+	private function round($total){
+		foreach ($total as $key => $value) {
+			$total[$key] = round($value, 2);
+		}
+		return $total;
 	}
 
 }

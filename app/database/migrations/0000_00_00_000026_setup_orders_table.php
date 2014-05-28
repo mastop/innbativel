@@ -34,9 +34,9 @@ class SetupOrdersTable extends Migration {
 		$table->decimal('donation', 4, 2)->default(0);
         $table->decimal('total', 9, 2)->nullable();
         $table->decimal('credit_discount', 9, 2)->nullable();
-		$table->decimal('card_boletus_rate', 4, 2)->default(0);
-        $table->decimal('antecipation_rate', 4, 2)->default(0);
-        $table->decimal('interest_rate', 4, 2)->default(0); // TAXA DE JUROS
+		$table->decimal('card_boletus_rate', 12, 12)->default(0);
+        $table->decimal('antecipation_rate', 12, 12)->default(0);
+        $table->decimal('interest_rate', 12, 12)->default(0); // TAXA DE JUROS
 		$table->string('cpf')->nullable();
 		$table->string('telephone')->nullable();
 		$table->boolean('is_gift')->default(false);

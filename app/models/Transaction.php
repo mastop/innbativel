@@ -20,7 +20,7 @@ class Transaction extends Eloquent {
 
   public function voucher(){
     return $this->belongsToMany('Voucher', 'transactions_vouchers', 'transaction_id', 'voucher_id')
-                ->with(['offer_option']);
+                ->with(['offer_option_offer']);
   }
 
   public function order(){
@@ -30,5 +30,7 @@ class Transaction extends Eloquent {
   public function customer(){
     return $this->belongsTo('User', 'changer_id')->leftJoin('profiles', 'users.id', '=', 'profiles.user_id');
   }
+
+
 
 }
