@@ -89,6 +89,7 @@ class PainelOrderController extends BaseController {
 									   ->appends([
 											'sort' => $sort,
 											'order' => $order,
+											'pag' => $pag,
 											'offer_id' => Input::get('offer_id'),
 											'starts_on' => Input::get('starts_on'),
 											'ends_on' => Input::get('ends_on'),
@@ -171,6 +172,7 @@ class PainelOrderController extends BaseController {
 							 ->appends([
 								 'sort' => $sort,
 								 'order' => $order,
+								 'pag' => $pag,
 								 'offer_option_id' => $offer_option_id,
 								 'id' => Input::get('id'),
 							 ]);

@@ -70,6 +70,7 @@ class AdminDestinyController extends BaseController {
 		$destiny = $destiny->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'name' => Input::get('name'),
 		]);
 

@@ -74,6 +74,7 @@ class AdminIncludedController extends BaseController {
 		$included = $included->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'title' => Input::get('title'),
 			'description' => Input::get('description'),
 		]);

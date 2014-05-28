@@ -97,6 +97,7 @@ class AdminCommentController extends BaseController {
 						   ->appends([
 								'sort' => $sort,
 								'order' => $order,
+								'pag' => $pag,
 								'comment' => Input::get('comment'),
 								'user_id' => Input::get('user_id'),
 								'offer_id' => Input::get('offer_id'),

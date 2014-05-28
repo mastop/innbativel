@@ -13,23 +13,23 @@ class Triggers extends DatabaseSeeder
 
 
 
-		$triggers = 'DROP TRIGGER IF EXISTS inst_transaction;';
+		$triggers = 'DROP TRIGGER IF EXISTS inst_order;';
 		if(!$mysqli->query($triggers)) print_r($mysqli->error);
 
-		$triggers = file_get_contents(app_path().'/database/seeds/assets/Triggers/inst_transaction.sql');
-		if(!$mysqli->query($triggers)) print_r($mysqli->error);
-
-
-
-		$triggers = 'DROP TRIGGER IF EXISTS upd_transaction;';
-		if(!$mysqli->query($triggers)) print_r($mysqli->error);
-
-		$triggers = file_get_contents(app_path().'/database/seeds/assets/Triggers/upd_transaction.sql');
+		$triggers = file_get_contents(app_path().'/database/seeds/assets/Triggers/inst_order.sql');
 		if(!$mysqli->query($triggers)) print_r($mysqli->error);
 
 
 
-		$triggers = 'DROP PROCEDURE IF EXISTS inst_transaction_partial_cancellation;';
+		$triggers = 'DROP TRIGGER IF EXISTS upd_order;';
+		if(!$mysqli->query($triggers)) print_r($mysqli->error);
+
+		$triggers = file_get_contents(app_path().'/database/seeds/assets/Triggers/upd_order.sql');
+		if(!$mysqli->query($triggers)) print_r($mysqli->error);
+
+
+
+		$triggers = 'DROP FUNCTION IF EXISTS inst_transaction_partial_cancellation;';
 		if(!$mysqli->query($triggers)) print_r($mysqli->error);
 
 		$triggers = file_get_contents(app_path().'/database/seeds/assets/Triggers/inst_transaction_partial_cancellation.sql');

@@ -70,6 +70,7 @@ class AdminCategoryController extends BaseController {
 		$category = $category->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'title' => Input::get('title'),
 		]);
 

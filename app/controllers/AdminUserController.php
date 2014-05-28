@@ -96,6 +96,7 @@ class AdminUserController extends BaseController {
 				->orderBy($sort, $order)->paginate($pag)->appends([
 					'sort' => $sort,
 					'order' => $order,
+					'pag' => $pag,
 					'email' => Input::get('email'),
 					'name' => Input::get('name'),
 				]);
@@ -416,6 +417,7 @@ class AdminUserController extends BaseController {
 				->orderBy($sort, $order)->paginate($pag)->appends([
 					'sort' => $sort,
 					'order' => $order,
+					'pag' => $pag,
 					'email' => Input::get('email'),
 					'name' => Input::get('name'),
 				]);

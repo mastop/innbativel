@@ -34,12 +34,12 @@
             <div class="controls">R${{ number_format($order->credit_discount, '2', ',', '.') }}</div>
 
             <b class="control-label">Cupom de desconto usado nesta compra</b>
-            <div class="controls">{{ isset($order->discount_coupon)?('R$'.number_format($order->discount_coupon->value, '2', ',', '.').' | '.$order->discount_coupon->display_code):'Nenhum' }}</div>
+            <div class="controls">{{ isset($order->discount_coupon)?('R$'.number_format($order->discount_coupon->value, '2', ',', '.').' | '.link_to_route('admin.coupon', $order->discount_coupon->display_code, ['display_code' => $order->discount_coupon->display_code], ['title' => 'Ver cupom de desconto'])):'Nenhum' }}</div>
 
             <b class="control-label">Meio de pagamento</b>
             <div class="controls">{{ $order->payment_terms }}</div>
 
-            @if(strpos(strtolower($order->payment_terms), 'cartão') != false)
+            @if(strpos($order->payment_terms, 'cartão') !== false || strpos($order->payment_terms, 'Cartão') !== false)
 	            <b class="control-label">Titular do cartão</b>
 	            <div class="controls">{{ isset($order->holder_card)?$order->holder_card:'--' }}</div>
 

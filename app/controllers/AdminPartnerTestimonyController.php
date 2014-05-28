@@ -86,6 +86,7 @@ class AdminPartnerTestimonyController extends BaseController {
 		$partner_testimony = $partner_testimony->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'name' => Input::get('name'),
 			'destiny' => Input::get('destiny'),
 			'sponsor' => Input::get('sponsor'),

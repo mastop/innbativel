@@ -209,6 +209,7 @@ class AdminPaymentController extends BaseController {
 															'partner_name' => Input::get('partner_name'),
 															'payment_id' => Input::get('payment_id'),
 													  ]);
+													  // ->get()->toArray(); print('<pre>'); print_r($transactionVoucherData); print('</pre>'); die();
 
 		$totals = [];
 		$totals['transfer'] = 0;

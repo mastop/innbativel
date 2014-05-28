@@ -33,74 +33,141 @@ class TransactionsVouchersTableSeeder extends DatabaseSeeder
     $transactions_vouchers = [
     	[
             'voucher_id' => 1,
-            'payment_partner_id' => 1,
+            'transaction_id' => 1,
         ],
         [
             'voucher_id' => 2,
-            'payment_partner_id' => 1,
+            'transaction_id' => 1,
         ],
         [
             'voucher_id' => 3,
-            'payment_partner_id' => 1,
-        ],
-        [
-            'voucher_id' => 4,
-            'payment_partner_id' => 1,
+            'transaction_id' => 1,
         ],
         //////////////////////////////
         [
+            'voucher_id' => 4,
+            'transaction_id' => 2,
+        ],
+        [
             'voucher_id' => 5,
-            'payment_partner_id' => 1,
+            'transaction_id' => 2,
         ],
         [
             'voucher_id' => 6,
-            'payment_partner_id' => 1,
-        ],
-        [
-            'voucher_id' => 7,
-            'payment_partner_id' => 1,
+            'transaction_id' => 2,
         ],
         //////////////////////////////
         [
+            'voucher_id' => 7,
+            'transaction_id' => 3,
+        ],
+        [
             'voucher_id' => 8,
-            'payment_partner_id' => 2,
+            'transaction_id' => 3,
         ],
         [
             'voucher_id' => 9,
-            'payment_partner_id' => 2,
+            'transaction_id' => 3,
         ],
+        //////////////////////////////
         [
             'voucher_id' => 10,
-            'payment_partner_id' => 2,
+            'transaction_id' => 4,
         ],
         [
             'voucher_id' => 11,
-            'payment_partner_id' => 2,
+            'transaction_id' => 4,
+        ],
+        [
+            'voucher_id' => 12,
+            'transaction_id' => 4,
         ],
         //////////////////////////////
         [
-            'voucher_id' => 3,
-            'payment_partner_id' => 1,
-            'status' => 'cancelamento',
+            'voucher_id' => 13,
+            'transaction_id' => 5,
         ],
         //////////////////////////////
         [
-            'voucher_id' => 5,
-            'status' => 'cancelamento',
+            'voucher_id' => 14,
+            'transaction_id' => 6,
         ],
         //////////////////////////////
         [
-            'voucher_id' => 8,
-            'status' => 'cancelamento',
+            'voucher_id' => 15,
+            'transaction_id' => 7,
         ],
-        [
-            'voucher_id' => 9,
-            'status' => 'cancelamento',
-        ],
-        [
-            'voucher_id' => 10,
-            'status' => 'cancelamento',
-        ],
+        //////////////////////////////
+        // [
+        //     'voucher_id' => 1,
+        //     'payment_partner_id' => 1,
+        // ],
+        // [
+        //     'voucher_id' => 2,
+        //     'payment_partner_id' => 1,
+        // ],
+        // [
+        //     'voucher_id' => 3,
+        //     'payment_partner_id' => 1,
+        // ],
+        // [
+        //     'voucher_id' => 4,
+        //     'payment_partner_id' => 1,
+        // ],
+        // //////////////////////////////
+        // [
+        //     'voucher_id' => 5,
+        //     'payment_partner_id' => 1,
+        // ],
+        // [
+        //     'voucher_id' => 6,
+        //     'payment_partner_id' => 1,
+        // ],
+        // [
+        //     'voucher_id' => 7,
+        //     'payment_partner_id' => 1,
+        // ],
+        // //////////////////////////////
+        // [
+        //     'voucher_id' => 8,
+        //     'payment_partner_id' => 2,
+        // ],
+        // [
+        //     'voucher_id' => 9,
+        //     'payment_partner_id' => 2,
+        // ],
+        // [
+        //     'voucher_id' => 10,
+        //     'payment_partner_id' => 2,
+        // ],
+        // [
+        //     'voucher_id' => 11,
+        //     'payment_partner_id' => 2,
+        // ],
+        // //////////////////////////////
+        // [
+        //     'voucher_id' => 3,
+        //     'payment_partner_id' => 1,
+        //     'status' => 'cancelamento',
+        // ],
+        // //////////////////////////////
+        // [
+        //     'voucher_id' => 5,
+        //     'status' => 'cancelamento',
+        // ],
+        // //////////////////////////////
+        // [
+        //     'voucher_id' => 8,
+        //     'status' => 'cancelamento',
+        // ],
+        // [
+        //     'voucher_id' => 9,
+        //     'status' => 'cancelamento',
+        // ],
+        // [
+        //     'voucher_id' => 10,
+        //     'status' => 'cancelamento',
+        // ],
     ];
 
     foreach ($transactions_vouchers as $transaction_voucher)

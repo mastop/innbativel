@@ -29,6 +29,7 @@
 	        	->addOption('25', '25')
 	        	->addOption('50', '50')
 	        	->addOption('100', '100')
+	        	->select($pag)
 	        }}
 	        </div>
 			{{ Former::hidden('sort', $sort) }}

@@ -104,6 +104,7 @@ class AdminPartnerController extends BaseController {
 				 ->orderBy($sort, $order)->paginate($pag)->appends([
 					'sort' => $sort,
 					'order' => $order,
+					'pag' => $pag,
 					'email' => Input::get('email'),
 				 ]);
 
@@ -401,6 +402,7 @@ class AdminPartnerController extends BaseController {
 		->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'email' => Input::get('email'),
 		]);
 

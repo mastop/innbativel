@@ -4,11 +4,11 @@
 -- Este trigger insere uma transação (transactions) quando um pedido (orders) é inserido com status é 'pago'
 -- ------------------------
 
--- DROP TRIGGER IF EXISTS inst_transaction;
+-- DROP TRIGGER IF EXISTS inst_order;
 
 -- DELIMITER $$
 
-CREATE TRIGGER inst_transaction AFTER INSERT ON orders
+CREATE TRIGGER inst_order AFTER INSERT ON orders
 FOR EACH ROW
 BEGIN
   IF (NEW.status = 'pago') THEN
