@@ -53,7 +53,7 @@ class AdminOrderController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '10';
 
 		/*
 		 * Sort filter
@@ -70,7 +70,12 @@ class AdminOrderController extends BaseController {
 		 * Search filters
 		 */
 		if (Input::has('status') AND Input::get('status') != '') {
-			$orderData = $orderData->where('status', '=', Input::get('status'));
+			if(Input::get('status') == 'cancelado'){
+				$orderData = $orderData->whereIn('status', ['cancelado', 'convercao_creditos', 'cancelado_parcial']);
+			}
+			else {
+				$orderData = $orderData->where('status', '=', Input::get('status'));
+			}
 		}
 
 		if (Input::has('terms') AND Input::get('terms') != '') {
@@ -123,6 +128,7 @@ class AdminOrderController extends BaseController {
 								->appends([
 									'sort' => $sort,
 									'order' => $order,
+									'pag' => $pag,
 									'status' => Input::get('status'),
 									'terms' => Input::get('terms'),
 									'date_start' => Input::get('date_start'),
@@ -137,7 +143,7 @@ class AdminOrderController extends BaseController {
 				$braspag_order_id = $value->braspag_order_id;
 				$id = $value->id;
 
-				$value->braspag_order_id = link_to_route('admin.order.view', $braspag_order_id, ['id'=>$id]);
+				$value->braspag_order_id = link_to_route('admin.order.view', $braspag_order_id, ['id'=>$id], ['title' => 'Ver detalhes']);
 				$value->braspag_order_id_string = $braspag_order_id;
 
 				// $m = new Money($value->total, new Currency('BRL'));
@@ -197,6 +203,7 @@ class AdminOrderController extends BaseController {
 									   ->appends([
 											'sort' => $sort,
 											'order' => $order,
+											'pag' => $pag,
 											'offer_id' => Input::get('offer_id'),
 											'starts_on' => Input::get('starts_on'),
 											'ends_on' => Input::get('ends_on'),
@@ -375,15 +382,6 @@ class AdminOrderController extends BaseController {
 
 	public function getOffersExport($offer_option_id, $status = NULL){
 		$ordersObj = $this->order;
-
-		if(isset($status)){
-			if($status == 'pendente'){
-				$ordersObj = $ordersObj->whereIn('status', ['pendente', 'revisao']);
-			}
-			else{
-				$ordersObj = $ordersObj->where('status', $status);
-			}
-		}
 		
 		$ordersData = $ordersObj->with([
 										'user',
@@ -393,8 +391,8 @@ class AdminOrderController extends BaseController {
 											  	},
 										'voucher' => function($query) use($offer_option_id, $status){
 													if(isset($status)){
-														if($status == 'pendente'){
-															$query->where('vouchers.offer_option_id', $offer_option_id)->whereIn('vouchers.status', ['pendente', 'revisao']);
+														if($status == 'cancelado'){
+															$query->where('vouchers.offer_option_id', $offer_option_id)->whereIn('vouchers.status', ['cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial']);
 														}
 														else{
 															$query->where('vouchers.offer_option_id', $offer_option_id)->where('vouchers.status', $status);
@@ -407,12 +405,12 @@ class AdminOrderController extends BaseController {
 									   ])
 								->whereExists(function($query) use($offer_option_id, $status){
 									if(isset($status)){
-										if($status == 'pendente'){
+										if($status == 'cancelado'){
 											$query->select(DB::raw(1))
 							                      ->from('vouchers')
 												  ->whereRaw('vouchers.order_id = orders.id')
 												  ->whereRaw('vouchers.offer_option_id = "'.$offer_option_id.'"')
-												  ->whereRaw('vouchers.status IN ("pendente", "revisao")');
+												  ->whereRaw('vouchers.status IN ("cancelado", "cancelado_parcial", "convercao_creditos", "convercao_creditos_parcial")');
 										}
 										else{
 											$query->select(DB::raw(1))
@@ -456,9 +454,9 @@ class AdminOrderController extends BaseController {
 
 			$spreadsheet[] = $ss;
 		}
-
-		Excel::create('Ofertas')
-	         ->sheet('Ofertas')
+		$title = 'Ofertas'.(isset($status)?'_'.$status:'');
+		Excel::create($title)
+	         ->sheet($title)
 	            ->with($spreadsheet)
 	         ->export('xls');
 	}
@@ -523,6 +521,7 @@ class AdminOrderController extends BaseController {
 							 ->appends([
 								 'sort' => $sort,
 								 'order' => $order,
+								 'pag' => $pag,
 								 'offer_option_id' => $offer_option_id,
 								 'id' => Input::get('id'),
 							 ]);
@@ -592,55 +591,30 @@ class AdminOrderController extends BaseController {
 						'discount_coupon',
 					])
 					->where('id', $id)
-					->first()
-					->toArray();
+					->first();
 		// print('<pre>');
 		// print_r($order);
 		// print('</pre>'); die();
 
-		$data['orderData'] = [
-			'ID Compra' => $order['braspag_order_id'],
-			'Braspag ID' => $order['braspag_id'],
-			'Antifraud ID' => $order['antifraud_id'],
-		];
+		$transaction = Transaction::where('order_id', $id)->get();
 
-		$ordered_offers = [ 'Quantidade comprada' => count($order['offer']) ];
+		$this->layout->content = View::make('admin.order.view', compact('order', 'transaction'));
+	}
 
-		foreach ($order['offer'] as $ord) {
-			$ordered_offers = array_merge($ordered_offers,
-			[
-				'Voucher #'.$ord['pivot']['id'] => 'Código: '.$ord['pivot']['id'].'-'.$ord['pivot']['display_code'].'-'.$ord['offer_id'].(($ord['is_product'] == true)?' | Código de rastreamento: '.(isset($ord['pivot']['tracking_code'])?$ord['pivot']['tracking_code']:'--'):'').' | '.$ord['pivot']['status'].' | Oferta: #'.$ord['offer_id'].' '.$ord['offer_title'].'  ('.$ord['title'].' R$ '.$ord['price_with_discount'].')'
-			]);
+	public function getVoucherCancel(){
+		$voucher = Voucher::where('id', Input::get('id'))->first();
+		if($voucher->status == 'pago'){
+			$voucher->status = (Input::get('convert_credits') == 0)?'cancelado_parcial':'convercao_creditos_parcial';
+			$voucher->save();
+
+			$order = $this->order->where('id', Input::get('order_id'))->first();
+			$order->history .= "<br/>" . date('d/m/Y H:i:s') . " - Cancelamento parcial de cupom (" . Input::get('comment') . " por " . Auth::user()->email . ")";
+			$order->save();
+
+			return Redirect::back()->with('success', 'Voucher '.$voucher->id.'-'.$voucher->display_code.' cancelado com sucesso.');
 		}
 
-		$data['orderData'] = array_merge($data['orderData'], $ordered_offers);
-		$data['orderData'] = array_merge($data['orderData'],
-		[
-			'Total pago' => $order['total'],
-			'Cupom de desconto' => isset($order['discount_coupon'])?($order['discount_coupon']['value'].' | '. $order['discount_coupon']['display_code']) : '--',
-			'Crédito do usuário' => $order['credit_discount'],
-			'Meio de pagamento' => $order['payment_terms'],
-			'Títular do cartão' => $order['holder_card'],
-			'Número do cartão' => (isset($order['first_digits_card'])?$order['first_digits_card']:'****').' **** **** ****',
-			'CPF/CNPJ' => $order['cpf'],
-			'Telefone' => $order['telephone'],
-			'Conta INN' => $order['user']['first_name'].' '.$order['user']['last_name'].' | '. $order['user']['email'],
-			// 'Conta INN' => '<a href="'.route('admin.user.view', ['id' => $order['user']['id']]).'">'.$order['user']['first_name'].' '.$order['user']['last_name'].' | '. $order['user']['email'].'</a>',
-			'Início da transação' => $order['created_at'],
-			'Última atualização' => $order['updated_at'],
-			'Data/hora da captura' => $order['capture_date'],
-			'Histórico' => $order['history'],
-		]);
-
-		$data['orderData'] = array_map(function($v){
-			return (is_null($v)||empty($v)) ? "--" : $v;
-		}, $data['orderData']);
-
-		// print('<pre>');
-		// print_r($data);
-		// print('</pre>'); die();
-
-		$this->layout->content = View::make('admin.order.view', $data);
+		return Redirect::back()->with('error', 'Voucher '.$voucher->id.'-'.$voucher->display_code.' não pôde ser cancelado pois já estava cancelado.');
 	}
 
 	private function sendTransactionalEmail($order, $new_status){

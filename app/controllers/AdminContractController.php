@@ -105,6 +105,7 @@ class AdminContractController extends BaseController {
 		$contract = $contract->with(['partner', 'consultant'])->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'id' => Input::get('id'),
 			'partner_id' => Input::get('partner_id'),
 			'consultant_id' => Input::get('consultant'),

@@ -70,6 +70,7 @@ class AdminGenreController extends BaseController {
 		$genre = $genre->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
+			'pag' => $pag,
 			'name' => Input::get('name'),
 		]);
 

@@ -96,6 +96,7 @@ class AdminUserIndicationController extends BaseController {
 								 ->appends([
 										'sort' => $sort,
 										'order' => $order,
+										'pag' => $pag,
 										'indicated_name' => Input::get('indicated_name'),
 										'indicated_email' => Input::get('indicated_email'),
 										'name' => Input::get('name'),

@@ -44,6 +44,7 @@
 	        	->addOption('25', '25')
 	        	->addOption('50', '50')
 	        	->addOption('100', '100')
+	        	->select($pag)
 	        }}
 	        </div>
 			{{ Former::hidden('sort', $sort) }}
@@ -76,22 +77,25 @@
 		if($order['status'] == 'revisao'){
 	        return DropdownButton::normal('Ações',
 			  	Navigation::links([
+			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
 					['Aprovar', 'javascript: action(\''.route('admin.order.approve', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'aprovar\', \''.$order['braspag_order_id_string'].'\');'],
 					['Rejeitar', 'javascript: action(\''.route('admin.order.reject', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'rejeitar\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
 			)->pull_right()->split();
 		}
-	    else if($order['status'] == 'pago' && strpos($order['payment_terms'], 'cartão') !== false && date('d/m/Y') == date('d/m/Y',strtotime($order['capture_date']))){
+	    else if($order['status'] == 'pago' && strpos(strtolower($order['payment_terms']), 'cartão') !== false && date('d/m/Y') == date('d/m/Y',strtotime($order['capture_date']))){
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
+			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
 					['Cancelar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'cancelar\', \''.$order['braspag_order_id_string'].'\');'],
 					['Converter valor em créditos', 'javascript: action(\''.route('admin.order.convert_value_2_credit', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'converter valor em créditos\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
 			)->pull_right()->split();
 	    }
-	    else if($order['status'] == 'pago' && strpos($order['payment_terms'], 'cartão') !== false && date('d/m/Y') != date('d/m/Y',strtotime($order['capture_date']))){
+	    else if($order['status'] == 'pago' && strpos(strtolower($order['payment_terms']), 'cartão') !== false && date('d/m/Y') != date('d/m/Y',strtotime($order['capture_date']))){
 	        return DropdownButton::normal('Ações',
 			  	Navigation::links([
+			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
 					['Estornar', 'javascript: action(\''.route('admin.order.void', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'estornar\', \''.$order['braspag_order_id_string'].'\');'],
 					['Converter valor em créditos', 'javascript: action(\''.route('admin.order.convert_value_2_credit', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'converter valor em créditos\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
@@ -100,6 +104,7 @@
 	    else if($order['status'] == 'pago'){
 	        return DropdownButton::normal('Ações',
 			  	Navigation::links([
+			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
 					['Cancelar boleto', 'javascript: action(\''.route('admin.order.cancel_boletus', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'cancelar boleto\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
 			)->pull_right()->split();
@@ -134,7 +139,7 @@ function action(url, action, braspag_order_id){
 	    $('body').append(modal);
 	}
 
-	$('#dataConfirmModal').find('.modal-message').text(message);
+	$('#dataConfirmModal').find('#modal-message').text(message);
 	$('#dataConfirmModal').find('#dataConfirmLabel').text(title);
 	$('#dataConfirmOK').attr('href', 'javascript: submit_action("'+url+'")');
 	$('#dataConfirmModal').modal({show:true});

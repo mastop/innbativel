@@ -179,6 +179,9 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('order/view', function(){ return Redirect::route('admin.order'); });
 	Route::get('order/view/{id}', ['as' => 'admin.order.view', 'uses' => 'AdminOrderController@getView']);
 
+	Route::get('order/voucher/cancel', function(){ return Redirect::route('admin.order'); });
+	Route::post('order/voucher/cancel', ['as' => 'admin.order.voucher_cancel', 'uses' => 'AdminOrderController@getVoucherCancel']);
+
 	Route::get('order/teste', ['as' => 'admin.order.teste', 'uses' => 'AdminOrderController@teste']);
 
 	Route::any('order/offers', ['as' => 'admin.order.offers', 'uses' => 'AdminOrderController@anyListByOffer']);
@@ -481,6 +484,7 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::get('payment/periodos/delete/{id}', ['as' => 'admin.payment.delete', 'uses' => 'AdminPaymentController@getDelete']);
 	Route::post('payment/periodos/delete/{id}', ['as' => 'admin.payment.destroy', 'uses' => 'AdminPaymentController@postDelete']);
 
+	Route::any('transaction', ['as' => 'admin.transaction', 'uses' => 'AdminTransactionController@anyIndex']);
 
     /*
 	 * Newsletter
@@ -526,4 +530,7 @@ Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
 
 	Route::any('pagamentos/vouchers_export', function(){ return Redirect::route('painel.payment.voucher'); });
 	Route::get('pagamentos/vouchers_export/{payment_id?}', ['as' => 'painel.payment.voucher_export', 'uses' => 'PainelPaymentController@getVoucherExport']);
+
+	Route::any('pagamentos/export', function(){ return Redirect::route('painel.payment.voucher'); });
+	Route::get('pagamentos/export/{id?}/{payment_id?}', ['as' => 'painel.payment.export', 'uses' => 'PainelPaymentController@getExport']);
 });

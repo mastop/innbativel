@@ -27,6 +27,7 @@
 	        	->addOption('25', '25')
 	        	->addOption('50', '50')
 	        	->addOption('100', '100')
+	        	->select($pag)
 	        }}
 	        </div>
 			{{ Former::hidden('sort', $sort) }}
@@ -149,7 +150,7 @@ function update_tracking_code(url, voucher_id){
 	    $('body').append(modal);
 	}
 
-	$('#dataConfirmModal').find('.modal-message').text(message);
+	$('#dataConfirmModal').find('#modal-message').text(message);
 	$('#dataConfirmModal').find('#dataConfirmLabel').text(title);
 	$('#dataConfirmOK').attr('href', submit);
 	$('#dataConfirmModal').modal({show:true});

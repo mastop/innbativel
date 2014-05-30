@@ -9,28 +9,28 @@ class ConfigurationsTableSeeder extends DatabaseSeeder
         'name' => 'boletus-value', 'value' => '1.6',
       ],
       [
-        'name' => 'card-tax-1x', 'value' => '2.66',
+        'name' => 'card-tax-1x', 'value' => '0.0266',
       ],
       [
-        'name' => 'card-tax-3x', 'value' => '3.41',
+        'name' => 'card-tax-3x', 'value' => '0.0341',
       ],
       [
-        'name' => 'card-tax-6x', 'value' => '3.66',
+        'name' => 'card-tax-6x', 'value' => '0.0366',
       ],
       [
-        'name' => 'card-tax-10x', 'value' => '4.16',
+        'name' => 'card-tax-10x', 'value' => '0.0416',
       ],
       [
-        'name' => 'antecipation-tax-1x', 'value' => '1.49',
+        'name' => 'antecipation-tax-1x', 'value' => '0.0149',
       ],
       [
-        'name' => 'antecipation-tax-3x', 'value' => '2.98',
+        'name' => 'antecipation-tax-3x', 'value' => '0.0298',
       ],
       [
-        'name' => 'antecipation-tax-6x', 'value' => '5.215',
+        'name' => 'antecipation-tax-6x', 'value' => '0.05215',
       ],
       [
-        'name' => 'antecipation-tax-10x', 'value' => '8.195',
+        'name' => 'antecipation-tax-10x', 'value' => '0.08195',
       ],
       [
         'name' => 'interest-rate-3x', 'value' => '0.035202404',

@@ -26,8 +26,12 @@ class Order extends Eloquent {
     return $this->belongsTo('User', 'user_id')->leftJoin('profiles', 'users.id', '=', 'profiles.user_id');
   }
 
+  public function buyer(){
+    return $this->belongsTo('User', 'user_id')->with('profile');
+  }
+
   public function discount_coupon(){
-  	return $this->belongsTo('DiscountCoupon');
+  	return $this->belongsTo('DiscountCoupon', 'coupon_id');
   }
 
   public function voucher(){

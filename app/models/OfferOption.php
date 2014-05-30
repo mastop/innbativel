@@ -53,14 +53,14 @@ class OfferOption extends Eloquent {
 
 	public function qty_pending(){
 		return $this->hasMany('Voucher', 'offer_option_id')
-					->whereIn('vouchers.status', ['pendente', 'revisao'])
+					->where('vouchers.status', 'pendente')
 					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
 					->groupBy('vouchers.offer_option_id');
 	}
 
 	public function qty_cancelled(){
 		return $this->hasMany('Voucher', 'offer_option_id')
-					->where('vouchers.status', 'cancelado')
+					->whereIn('vouchers.status', ['cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial'])
 					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
 					->groupBy('vouchers.offer_option_id');
 	}

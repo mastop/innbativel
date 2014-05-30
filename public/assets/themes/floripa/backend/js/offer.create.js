@@ -70,4 +70,48 @@
         revert: true
     });
     $( "div.multifiles, div.multifile, div.multifile button").disableSelection();
+
+    $( "div#offerOptionsMain" ).sortable({
+        stop: function( event, ui ) {
+            resetOfferOptions();
+            //alert(ui.item.html());
+        }
+    });
+    $( "div#offerOptionsMain" ).disableSelection();
+
+    $('#offer_opt_add').click(function(){
+        var div_clone = $('#offerOptionsMain div.offerOptions').last();
+        //alert(div_clone.html());
+        var div = div_clone.clone().insertAfter(div_clone);
+        resetOfferOptions();
+        //div.appendTo($('#offerOptionsMain'));
+        $( "div#offerOptionsMain" ).sortable();
+        $( "div#offerOptionsMain" ).disableSelection();
+    });
+
+    $( "div#offerOptionsMain" ).on( "click", "button", function() {
+        var total = $('div#offerOptionsMain div.offerOptions').length;
+        if(total > 1){
+            $(this).parent().parent().fadeOut('slow').remove();
+            resetOfferOptions();
+        }
+    });
+
+
+    function resetOfferOptions(){
+        $('div#offerOptionsMain div.offerOptions').each(function(i){
+            var num = i + 1;
+            $(this).find('span.offerOptionNumber').html(num);
+            $(this).find('[id*="offer_options"]').each(function(){
+                var newVal = $(this).attr('id').replace(/\[[0-9]+\]/g, '['+ i +']');
+                $(this).attr('id', newVal);
+                $(this).attr('name', newVal);
+            });
+            $(this).find('label').each(function(){
+                var newVal = $(this).attr('for').replace(/\[[0-9]+\]/g, '['+ i +']');
+                $(this).attr('for', newVal);
+            });
+            //console.log(i);
+        });
+    }
 })(jQuery);
