@@ -1,6 +1,6 @@
 <?php
 
-class AdminSuggestATripController extends BaseController {
+class SuggestATripController extends BaseController {
 
 	/**
 	 * Suggest a trip Repository
@@ -15,16 +15,29 @@ class AdminSuggestATripController extends BaseController {
 	public function __construct(SuggestATrip $suggest)
 	{
 		/*
-		 * Set Suggest a trip Instance
-		 */
-
-		$this->suggest = $suggest;
-
-		/*
 		 * Set Sidebar Status
 		 */
 
 		$this->sidebar = true;
+
+        /*
+        * Enable Sidebar
+        */
+
+        $this->sidebar = true;
+
+        /*
+         * Enable and Set Actions
+         */
+
+        $this->actions = 'suggest';
+
+        /*
+         * Set Suggest a trip Instance
+         */
+
+        $this->suggest = $suggest;
+
 	}
 
 	/**
@@ -92,7 +105,7 @@ class AdminSuggestATripController extends BaseController {
 		/*
 		 * Layout / View
 		 */
-		$this->layout->content = View::make('admin.suggest.list', compact('sort', 'order', 'pag', 'suggest'));
+		$this->layout->content = View::make('suggest.list', compact('sort', 'order', 'pag', 'suggest'));
 	}
 
 	/**
@@ -107,7 +120,9 @@ class AdminSuggestATripController extends BaseController {
 		 * Layout / View
 		 */
 
-		$this->layout->content = View::make('admin.suggest.create');
+		$this->layout->content = View::make('suggest.create');
+
+        $this->actions = 'suggest.create';
 	}
 
 	/**
@@ -118,6 +133,9 @@ class AdminSuggestATripController extends BaseController {
 
 	public function postCreate()
 	{
+
+        $this->actions = 'suggest.save';
+
 		$inputs = Input::all();
 
 		$rules = [
@@ -132,13 +150,42 @@ class AdminSuggestATripController extends BaseController {
 		{
 			$this->suggest->create($inputs);
 
-			return Redirect::route('admin.suggest');
+
+            //Início e-mail
+            $name = $inputs['name'];
+            $email = $inputs['email'];
+            $destiny = $inputs['destiny'];
+            $suggestion = $inputs['suggestion'];
+
+            $data = array('name' => $name, 'email' => $email, 'destiny' => $destiny, 'suggestion' => $suggestion);
+
+            //Manda e-mail
+            Mail::send('emails.suggest.create', $data,
+                function($message) use($name, $email){
+                    $message->to('leohkume@hotmail.com', 'INNBatível')
+                        ->setSubject('[INNBatível] '.$name. ', recebemos uma sugestão.'
+                        );
+                }
+            );
+
+            //Retorna para o cliente
+            Mail::send('emails.suggest.reply', $data,
+                function($message) use($name, $email){
+                    $message->to($email, 'INNBatível')
+                        ->setSubject('[INNBatível] '.$name. ', recebemos sua sugestão.'
+                        );
+                }
+            );
+
+            //Mostra mensagem de salvo com sucesso
+            Session::flash('success', 'Sugestão enviada com sucesso!');
+            return Redirect::route("home");
 		}
 
 		/*
 		 * Return and display Errors
 		 */
-		return Redirect::route('admin.suggest.create')
+		return Redirect::route('home')
 			->withInput()
 			->withErrors($validation);
 	}
@@ -155,14 +202,14 @@ class AdminSuggestATripController extends BaseController {
 
 		if (is_null($suggest))
 		{
-			return Redirect::route('admin.suggest');
+			return Redirect::route('suggest');
 		}
 
 		/*
 		 * Layout / View
 		 */
 
-		$this->layout->content = View::make('admin.suggest.edit', compact('suggest'));
+		$this->layout->content = View::make('suggest.edit', compact('suggest'));
 	}
 
 	/**
@@ -195,13 +242,13 @@ class AdminSuggestATripController extends BaseController {
 				$suggest->update($inputs);
 			}
 
-			return Redirect::route('admin.suggest');
+			return Redirect::route('suggest');
 		}
 
 		/*
 		 * Return and display Errors
 		 */
-		return Redirect::route('admin.suggest.edit', $id)
+		return Redirect::route('suggest.edit', $id)
 			->withInput()
 			->withErrors($validation);
 	}
@@ -218,7 +265,7 @@ class AdminSuggestATripController extends BaseController {
 
 		if (is_null($suggest))
 		{
-			return Redirect::route('admin.suggest');
+			return Redirect::route('suggest');
 		}
 
 		Session::flash('error', 'Você tem certeza que deleja excluir esta sugestão de viagem? Esta operação não poderá ser desfeita.');
@@ -234,7 +281,7 @@ class AdminSuggestATripController extends BaseController {
 		 * Layout / View
 		 */
 
-		$this->layout->content = View::make('admin.suggest.delete', $data);
+		$this->layout->content = View::make('suggest.delete', $data);
 	}
 
 	/**
@@ -249,7 +296,7 @@ class AdminSuggestATripController extends BaseController {
 
 		Session::flash('success', 'Sugestão de viagem excluída com sucesso.');
 
-		return Redirect::route('admin.suggest');
+		return Redirect::route('suggest');
 	}
 
 }
