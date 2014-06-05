@@ -360,14 +360,18 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	 * Suggest a trip
 	 */
 
+	Route::any('suggest', ['as' => 'admin.suggest', 'uses' => 'AdminSuggestATripController@anyIndex']);
+
+	Route::get('suggest/create', ['as' => 'admin.suggest.create', 'uses' => 'AdminSuggestATripController@getCreate']);
+	Route::post('suggest/create', ['as' => 'admin.suggest.save', 'uses' => 'AdminSuggestATripController@postCreate']);
 
 	Route::any('suggest/edit', function(){ return Redirect::route('admin.suggest'); });
-	Route::get('suggest/edit/{id}', ['as' => 'admin.suggest.edit', 'uses' => 'SuggestATripController@getEdit']);
-	Route::post('suggest/edit/{id}', ['as' => 'admin.suggest.update', 'uses' => 'SuggestATripController@postEdit']);
+	Route::get('suggest/edit/{id}', ['as' => 'admin.suggest.edit', 'uses' => 'AdminSuggestATripController@getEdit']);
+	Route::post('suggest/edit/{id}', ['as' => 'admin.suggest.update', 'uses' => 'AdminSuggestATripController@postEdit']);
 
 	Route::any('suggest/delete', function(){ return Redirect::route('admin.suggest'); });
-	Route::get('suggest/delete/{id}', ['as' => 'admin.suggest.delete', 'uses' => 'SuggestATripController@getDelete']);
-	Route::post('suggest/delete/{id}', ['as' => 'admin.suggest.destroy', 'uses' => 'SuggestATripController@postDelete']);
+	Route::get('suggest/delete/{id}', ['as' => 'admin.suggest.delete', 'uses' => 'AdminSuggestATripController@getDelete']);
+	Route::post('suggest/delete/{id}', ['as' => 'admin.suggest.destroy', 'uses' => 'AdminSuggestATripController@postDelete']);
 
 	/*
 	 * User Indication
