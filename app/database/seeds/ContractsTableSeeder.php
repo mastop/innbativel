@@ -23,6 +23,7 @@ class ContractsTableSeeder extends DatabaseSeeder
 	    $columns[26] = rand(1,2);
 	    // print_r($columns);
 	    if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
+        unset($stmt);
 	});
 
 	$lexer->parse(app_path().'/database/seeds/assets/contracts.csv', $interpreter);
