@@ -147,7 +147,7 @@ class PainelPaymentController extends BaseController {
     	
 
 		$transactionVoucherData = $transaction_voucher->with(['voucher' => function($query){ 
-																	$query->with(['offer_option', 'order_customer'])
+																	$query->with(['offer_option_offer', 'order_customer'])
 																		  ->whereExists(function($query){ 
 																				$query->select(DB::raw(1))
 																                      ->from('offers_options')
@@ -201,8 +201,8 @@ class PainelPaymentController extends BaseController {
 		$totals['voucher_price'] = 0;
 
 		foreach ($transactionVoucherData as $transactionVoucher) {
-			$totals['transfer'] += ($transactionVoucher->voucher->offer_option->transfer * ($transactionVoucher->status == 'pagamento'?1:-1));
-			$totals['voucher_price'] += ($transactionVoucher->voucher->offer_option->price_with_discount * ($transactionVoucher->status == 'pagamento'?1:-1));
+			$totals['transfer'] += ($transactionVoucher->voucher->offer_option_offer->transfer * ($transactionVoucher->status == 'pagamento'?1:-1));
+			$totals['voucher_price'] += ($transactionVoucher->voucher->offer_option_offer->price_with_discount * ($transactionVoucher->status == 'pagamento'?1:-1));
 		}
 
 		// print('<pre>');
@@ -309,7 +309,7 @@ class PainelPaymentController extends BaseController {
 
 
 		$transactionVoucherData = $transaction_voucher->with(['voucher' => function($query){ 
-																	$query->with(['offer_option', 'order_customer'])
+																	$query->with(['offer_option_offer', 'order_customer'])
 																		  ->whereExists(function($query){ 
 																				$query->select(DB::raw(1))
 																                      ->from('offers_options')
@@ -364,19 +364,19 @@ class PainelPaymentController extends BaseController {
 
 			$ss[] = date("d/m/Y H:i:s", strtotime($transactionVoucher->created_at));
 			$ss[] = $transactionVoucher->voucher->order->user->first_name.' '.$transactionVoucher->voucher->order->user->last_name;
-			$ss[] = $transactionVoucher->voucher->id.'-'.$transactionVoucher->voucher->display_code.'-'.$transactionVoucher->voucher->offer_option->offer_id;
-			$ss[] = $transactionVoucher->voucher->offer_option->offer_id.' | '.$transactionVoucher->voucher->offer_option->offer_title.' ('.$transactionVoucher->voucher->offer_option->title.')';
+			$ss[] = $transactionVoucher->voucher->id.'-'.$transactionVoucher->voucher->display_code.'-'.$transactionVoucher->voucher->offer_option_offer->offer->id;
+			$ss[] = $transactionVoucher->voucher->offer_option_offer->offer->id.' | '.$transactionVoucher->voucher->offer_option_offer->offer->title.' ('.$transactionVoucher->voucher->offer_option_offer->title.')';
 			$ss[] = $transactionVoucher->status;
-			$ss[] = number_format($transactionVoucher->voucher->offer_option->price_with_discount * $coefficient, 2, ',', '.');
-			$ss[] = number_format($transactionVoucher->voucher->offer_option->transfer * $coefficient, 2, ',', '.');
+			$ss[] = number_format($transactionVoucher->voucher->offer_option_offer->price_with_discount * $coefficient, 2, ',', '.');
+			$ss[] = number_format($transactionVoucher->voucher->offer_option_offer->transfer * $coefficient, 2, ',', '.');
 
 			$spreadsheet[] = $ss;
 
-			$voucher_price += ($transactionVoucher->voucher->offer_option->price_with_discount * $coefficient);
-			$transfer += ($transactionVoucher->voucher->offer_option->transfer * $coefficient);
+			$voucher_price += ($transactionVoucher->voucher->offer_option_offer->price_with_discount * $coefficient);
+			$transfer += ($transactionVoucher->voucher->offer_option_offer->transfer * $coefficient);
 		}
 
-		$spreadsheet[] = array('Total', '', '', '', '', '', number_format($voucher_price, 2, ',', '.'), number_format($transfer, 2, ',', '.'));
+		$spreadsheet[] = array('Total', '', '', '', '', number_format($voucher_price, 2, ',', '.'), number_format($transfer, 2, ',', '.'));
 
 		Excel::create('TransacoesDeVouchersINNBativel')
 	         ->sheet('TransacoesDeVouchersINNBativel')

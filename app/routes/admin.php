@@ -488,8 +488,15 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::get('payment/periodos/delete/{id}', ['as' => 'admin.payment.delete', 'uses' => 'AdminPaymentController@getDelete']);
 	Route::post('payment/periodos/delete/{id}', ['as' => 'admin.payment.destroy', 'uses' => 'AdminPaymentController@postDelete']);
 
+	/*
+	 * Transaction
+	 */
+
 	Route::any('transaction', ['as' => 'admin.transaction', 'uses' => 'AdminTransactionController@anyIndex']);
 
+	Route::any('transaction/export', function(){ return Redirect::back(); });
+	Route::get('transaction/export/{date_start?}/{date_end?}', ['as' => 'admin.transaction.export', 'uses' => 'AdminTransactionController@getExport']);
+    
     /*
 	 * Newsletter
 	 */

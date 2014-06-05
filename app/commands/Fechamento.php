@@ -64,7 +64,7 @@ class Fechamento extends Command {
 								LEFT JOIN offers o ON o.id = oo.offer_id
 								LEFT JOIN payments_partners pp ON pp.partner_id = o.partner_id
 						   SET tv.payment_partner_id = pp.id
-						   WHERE tv.payment_partner_id IS NULL AND pp.total IS NULL;");
+						   WHERE tv.payment_partner_id IS NULL AND pp.payment_id = ".$payment_id.";");
 
 			// CALCULANDO pagamentos_empresas.total dos pagamentos que acabaram de ser fechados
 			DB::statement("UPDATE payments_partners pp

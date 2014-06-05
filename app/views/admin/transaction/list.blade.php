@@ -10,9 +10,11 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('admin.transaction')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::text('title')->class('input-medium')->placeholder('Título')->label('Título') }}
+			{{ Former::date('date_start')->class('input-medium')->placeholder('Data início')->label('Data início') }}
+			{{ Former::date('date_end')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
 			{{ Former::submit() }}
 			{{ Former::link('Limpar Filtros', route('admin.transaction')) }}
+			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('admin.transaction.export', ['date_start' => 'date_start', 'date_end' => 'date_end']).'\');') }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
@@ -39,8 +41,8 @@
 	<thead>
 		<tr>
 			<th>Data</th>
+			<th>ID da Compra</th>
 			<th>Cliente</th>
-			<th>Cupons</th>
 			<th>Tipo</th>
 			<th>Forma de pagamento</th>
 			<th style="text-align: right;">Valor dos cupons (R$)</th>
@@ -62,15 +64,15 @@
 			}
 			return '--';
 		})
-		->customer(function($transaction) {
-			if(isset($transaction->order->buyer->profile)){
-				return $transaction->order->buyer->profile->first_name.(isset($transaction->order->buyer->profile->last_name)?' '.$transaction->order->buyer->profile->last_name:'');
+		->order_id(function($transaction) {
+			if(isset($transaction->order->braspag_order_id)){
+				return link_to_route('admin.order.view', $transaction->order->braspag_order_id, ['id' => $transaction->order->id]);
 			}
 			return '--';
 		})
-		->voucherss(function($transaction) {
-			if(isset($transaction->display_codes)){
-				return $transaction->display_codes;
+		->customer(function($transaction) {
+			if(isset($transaction->order->buyer->profile)){
+				return $transaction->order->buyer->profile->first_name.(isset($transaction->order->buyer->profile->last_name)?' '.$transaction->order->buyer->profile->last_name:'');
 			}
 			return '--';
 		})
@@ -201,20 +203,20 @@
 	}}
 	<thead>
 		<tr>
-		<th>Total</th>
-		<th></th>
-		<th></th>
-		<th></th>
-		<th></th>
-		<th style="text-align: right;">{{ number_format($total['vouchers'], 2, ',', '.') }}</th>
-		<th style="text-align: right;">{{ number_format($total['credits'], 2, ',', '.') }}</th>
-		<th style="text-align: right;">{{ number_format($total['coupons'], 2, ',', '.') }}</th>
-		<th style="text-align: right;">{{ number_format($total['paid'], 2, ',', '.') }}</th>
-		<th style="text-align: right;">{{ number_format($total['cardBoletusRate'], 2, ',', '.') }}</th>
-		<th style="text-align: right;">{{ number_format($total['antecipationRate'], 2, ',', '.') }}</th>
-		<th style="text-align: right;">{{ number_format($total['transfer'], 2, ',', '.') }}</th>
-		<th style="text-align: right;">{{ number_format($total['gain'], 2, ',', '.') }}</th>
-		<th style="text-align: right;">{{ $total['n_vouchers'] }}</th>
+			<th>Total</th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th style="text-align: right;">{{ number_format($total['vouchers'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ number_format($total['credits'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ number_format($total['coupons'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ number_format($total['paid'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ number_format($total['cardBoletusRate'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ number_format($total['antecipationRate'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ number_format($total['transfer'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ number_format($total['gain'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ $total['n_vouchers'] }}</th>
 		</tr>
 	</thead>
 	{{ Table::close() }}
@@ -224,4 +226,15 @@
 	</div>
 </div>
 
+<script type="text/javascript">
+function exportar(url){
+	var date_start = ($('#date_start').val() == '')?'null':$('#date_start').val();
+	var date_end = ($('#date_end').val() == '')?'null':$('#date_end').val();
+
+	url = url.replace('/date_start', '/'+date_start);
+	url = url.replace('/date_end', '/'+date_end);
+
+	window.location.href = url;
+}
+</script>
 @stop
