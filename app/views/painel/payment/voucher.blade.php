@@ -59,59 +59,59 @@
 	{{ Table::body($transactionVoucherData)
 			->ignore(['id', 'transaction_id', 'voucher_id', 'payment_partner_id', 'status', 'created_at', 'updated_at', 'voucher'])
 			->date(function($data) {
-				if(isset($data['created_at'])){
-					return date("d/m/Y H:i:s", strtotime($data['created_at']));
+				if(isset($data->created_at)){
+					return date("d/m/Y H:i:s", strtotime($data->created_at));
 				}
 				return '--';
 			})
 			
 			->customer(function($data) {
-				if(isset($data['voucher']['order']['user']['first_name'])){
-					return $data['voucher']['order']['user']['first_name'].' '.$data['voucher']['order']['user']['last_name'];
+				if(isset($data->voucher->order->user->first_name)){
+					return $data->voucher->order->user->first_name.' '.$data->voucher->order->user->last_name;
 				}
 				return '--';
 			})
 			->voucherr(function($data) {
-				if(isset($data['voucher'])){
-					return $data['voucher']['id'].'-'.$data['voucher']['display_code'].'-'.$data['voucher']['offer_option']['offer_id'];
+				if(isset($data->voucher)){
+					return $data->voucher->id.'-'.$data->voucher->display_code.'-'.$data->voucher->offer_option_offer->offer->id;
 				}
 				return '--';
 			})
 			->offer(function($data) {
-				if(isset($data['voucher']['offer_option']['offer_id'])){
-					return link_to_route('offer', $data['voucher']['offer_option']['offer_id'].' | '.$data['voucher']['offer_option']['offer_title'], ['slug' => $data['voucher']['offer_option']['slug']]).' ('.$data['voucher']['offer_option']['title'].')';
+				if(isset($data->voucher->offer_option_offer->offer->id)){
+					return link_to_route('offer', $data->voucher->offer_option_offer->offer->id.' | '.$data->voucher->offer_option_offer->offer->title, ['slug' => $data->voucher->offer_option_offer->offer->slug]).' ('.$data->voucher->offer_option_offer->title.')';
 				}
 				return '--';
 			})
 			->statuss(function($data) {
-				if(isset($data['status'])){
-					if($data['status'] == 'pagamento'){
-						return '<span class="text-info">'.$data['status'].'</span>';
+				if(isset($data->status)){
+					if($data->status == 'pagamento'){
+						return '<span class="text-info">'.$data->status.'</span>';
 					}
 					else{
-						return '<span class="text-error">'.$data['status'].'</span>';
+						return '<span class="text-error">'.$data->status.'</span>';
 					}
 				}
 				return '--';
 			})
 			->price(function($data) {
-				if(isset($data['voucher']['offer_option']['price_with_discount'])){
-					if($data['status'] == 'pagamento'){
-						return number_format($data['voucher']['offer_option']['price_with_discount'], 2, ',', '.');
+				if(isset($data->voucher->offer_option_offer->price_with_discount)){
+					if($data->status == 'pagamento'){
+						return number_format($data->voucher->offer_option_offer->price_with_discount, 2, ',', '.');
 					}
 					else{
-						return number_format(($data['voucher']['offer_option']['price_with_discount'] * -1), 2, ',', '.');
+						return number_format(($data->voucher->offer_option_offer->price_with_discount * -1), 2, ',', '.');
 					}
 				}
 				return '--';
 			})
 			->transfer(function($data) {
-				if(isset($data['voucher']['offer_option']['transfer'])){
-					if($data['status'] == 'pagamento'){
-						return number_format($data['voucher']['offer_option']['transfer'], 2, ',', '.');
+				if(isset($data->voucher->offer_option_offer->transfer)){
+					if($data->status == 'pagamento'){
+						return number_format($data->voucher->offer_option_offer->transfer, 2, ',', '.');
 					}
 					else{
-						return number_format(($data['voucher']['offer_option']['transfer'] * -1), 2, ',', '.');
+						return number_format(($data->voucher->offer_option_offer->transfer * -1), 2, ',', '.');
 					}
 				}
 				return '--';
