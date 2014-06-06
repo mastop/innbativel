@@ -18,3 +18,13 @@ Route::any('criteo.php', ['as' => 'criteo', 'uses' => 'XmlServerController@getCr
  * Newsletter
  */
 Route::post('newsletter/gravar', ['as' => 'newsletter.save', 'uses' => 'NewsletterController@postNewsletter']);
+
+/*
+ * Suggest a trip
+ */
+
+Route::any('suggest', ['as' => 'suggest', 'uses' => 'SuggestATripController@anyIndex']);
+
+
+Route::get('suggest/create', ['as' => 'suggest.create', 'uses' => 'SuggestATripController@getCreate']);
+Route::post('suggest/create', ['as' => 'suggest.save', 'uses' => 'SuggestATripController@postCreate']);
