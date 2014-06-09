@@ -16,14 +16,6 @@
 
 //     $interpreter = new Interpreter();
 
-//     t.id AS id, 
-//     t.id_pagamento AS order_id, 
-//     t.status AS status, 
-//     p.valor_total_com_desconto AS total, 
-//     p.desconto AS credit_discount, 
-//     p.datahora AS created_at, 
-//     t.datahora AS updated_at 
-
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //         $stmt = $pdo->prepare('INSERT INTO transactions (id, order_id, status, total, credit_discount, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)');
 //         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
