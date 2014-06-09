@@ -1,29 +1,29 @@
 <?php
 
-use Goodby\CSV\Import\Standard\Lexer;
-use Goodby\CSV\Import\Standard\Interpreter;
-use Goodby\CSV\Import\Standard\LexerConfig;
+// use Goodby\CSV\Import\Standard\Lexer;
+// use Goodby\CSV\Import\Standard\Interpreter;
+// use Goodby\CSV\Import\Standard\LexerConfig;
 
-class TransactionsVouchersTableSeeder extends DatabaseSeeder
-{
-  public function run()
-  {
-    $pdo = new PDO('mysql:host='.Config::get('database.connections.mysql.host').';dbname='.Config::get('database.connections.mysql.database'), Config::get('database.connections.mysql.username'), Config::get('database.connections.mysql.password'));
+// class TransactionsVouchersTableSeeder extends DatabaseSeeder
+// {
+//   public function run()
+//   {
+//     $pdo = new PDO('mysql:host='.Config::get('database.connections.mysql.host').';dbname='.Config::get('database.connections.mysql.database'), Config::get('database.connections.mysql.username'), Config::get('database.connections.mysql.password'));
 
-    $config = new LexerConfig();
-    $config->setToCharset('UTF-8');
-    $lexer = new Lexer($config); //ISO8591 ou UTF-8
+//     $config = new LexerConfig();
+//     $config->setToCharset('UTF-8');
+//     $lexer = new Lexer($config); //ISO8591 ou UTF-8
 
-    $interpreter = new Interpreter();
+//     $interpreter = new Interpreter();
 
-    $interpreter->addObserver(function(array $columns) use ($pdo) {
-        $stmt = $pdo->prepare('INSERT INTO transactions_vouchers (id, voucher_id, transaction_id, payment_partner_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
-    });
+//     $interpreter->addObserver(function(array $columns) use ($pdo) {
+//         $stmt = $pdo->prepare('INSERT INTO transactions_vouchers (id, voucher_id, transaction_id, payment_partner_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)');
+//         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
+//     });
 
-    $lexer->parse(app_path().'/database/seeds/assets/transactions_vouchers.csv', $interpreter);
-  }
-}
+//     $lexer->parse(app_path().'/database/seeds/assets/transactions_vouchers.csv', $interpreter);
+//   }
+// }
 
 class TransactionsVouchersTableSeeder extends DatabaseSeeder
 {
