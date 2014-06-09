@@ -20,7 +20,7 @@ class TransactionsTableSeeder extends DatabaseSeeder
             'total' => 1450.318568004,
             'coupon_discount' => 0,
             'credit_discount' => 100,
-            'created_at' => date('Y-m-d H:i:s',strtotime("-10 days")),
+            'created_at' => date('Y-m-d H:i:s',strtotime("-11 days")),
         ],
         [
             'order_id' => 3,
@@ -28,15 +28,15 @@ class TransactionsTableSeeder extends DatabaseSeeder
             'total' => 1593.203013,
             'coupon_discount' => 0,
             'credit_discount' => 0,
-            'created_at' => date('Y-m-d H:i:s',strtotime("-10 days")),
+            'created_at' => date('Y-m-d H:i:s',strtotime("-12 days")),
         ],
         [
             'order_id' => 4,
             'status' => 'pagamento',
-            'total' => 1500.00,
+            'total' => 1648.13,
             'coupon_discount' => 0,
             'credit_discount' => 0,
-            'created_at' => date('Y-m-d H:i:s',strtotime("-10 days")),
+            'created_at' => date('Y-m-d H:i:s',strtotime("-13 days")),
         ],
         [
             'order_id' => 5,
@@ -44,7 +44,7 @@ class TransactionsTableSeeder extends DatabaseSeeder
             'total' => 0,
             'coupon_discount' => 100,
             'credit_discount' => 200,
-            'created_at' => date('Y-m-d H:i:s',strtotime("-10 days")),
+            'created_at' => date('Y-m-d H:i:s',strtotime("-14 days")),
         ],
         [
             'order_id' => 6,
@@ -52,7 +52,7 @@ class TransactionsTableSeeder extends DatabaseSeeder
             'total' => 601.00,
             'coupon_discount' => 0,
             'credit_discount' => 0,
-            'created_at' => date('Y-m-d H:i:s',strtotime("-10 days")),
+            'created_at' => date('Y-m-d H:i:s',strtotime("-15 days")),
         ],
         [
             'order_id' => 7,
@@ -60,7 +60,15 @@ class TransactionsTableSeeder extends DatabaseSeeder
             'total' => 280.00,
             'coupon_discount' => 100,
             'credit_discount' => 0,
-            'created_at' => date('Y-m-d H:i:s',strtotime("-10 days")),
+            'created_at' => date('Y-m-d H:i:s',strtotime("-16 days")),
+        ],
+        [
+            'order_id' => 8,
+            'status' => 'pagamento',
+            'total' => 0.00,
+            'coupon_discount' => 0,
+            'credit_discount' => 1500,
+            'created_at' => date('Y-m-d H:i:s',strtotime("-17 days")),
         ],
         // [
         //     'order_id' => 1,

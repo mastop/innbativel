@@ -14,7 +14,7 @@
 			{{ Former::inline_open(route('admin.tag')) }}
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('title')->class('input-medium')->placeholder('Título')->label('Título') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.tag')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

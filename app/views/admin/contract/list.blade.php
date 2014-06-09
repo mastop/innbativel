@@ -36,7 +36,7 @@
 			{{ Former::date('created_at_end')->class('input-medium')->placeholder('Data criação fim')->label('Data criação fim') }}
 			{{ Former::date('signed_at_begin')->class('input-medium')->placeholder('Data assinatura início')->label('Data assinatura início') }}
 			{{ Former::date('signed_at_end')->class('input-medium')->placeholder('Data assinatura fim')->label('Data assinatura fim') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.contract')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

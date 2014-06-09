@@ -17,7 +17,9 @@
 //     $interpreter = new Interpreter();
 
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
-//         $stmt = $pdo->prepare('INSERT INTO payments (id, sales_from, sales_to, date) VALUES (?, ?, ?, ?)');
+//         $stmt = $pdo->prepare('INSERT INTO payments (id, sales_from, sales_to, date, is_sales_close) VALUES (?, ?, ?, ?, ?)');
+
+//         $columns[4] = ($column[2] > date('Y-m-d H:i:s') ? 0 : 1;
 
 //         if(!$stmt->execute($columns)){ print_r($stmt->errorInfo()); }
 
@@ -25,8 +27,11 @@
 //         $sales_to = $column[2];
 //         $script_date = date('Y-m-d H:i:s', strtotime($sales_to)+1);
 //         $cron_date = Crontab::date2cron($script_date);
-//         $cronjob = $cron_date.' php /Applications/MAMP/htdocs/innbativel/artisan fechamento '.$id.' --env=local';
-//         Crontab::addJob($cronjob);
+//         $cronjob = $cron_date.' php /var/app/current/artisan fechamento '.$id;
+        
+//         if($sales_to > date('Y-m-d H:i:s')){
+//           Crontab::addJob($cronjob);
+//         }
 
 //         $stmt_update = $pdo->prepare('UPDATE payments SET cronjob = ? WHERE id = ?');
 

@@ -45,6 +45,17 @@ class Fechamento extends Command {
 			$this->error('Cron job duplicado: o fechamento do periodo (payments id = '.$payment_id.') já havia sido feito');
 		}
 		else{
+			$payment->is_sales_close = true;
+			$payment->save();
+
+			// INSERINDO BOLETOS NÃO PAGOS EM transactions
+			$boleto_from = date('Y-m-d H:i:s', strtotime($payment->sales_from . ' - 5 day'));
+			$boleto_to = date('Y-m-d H:i:s', strtotime($payment->sales_to . ' - 5 day'));
+			DB::statement("INSERT INTO transactions (order_id, status, created_at) 
+								SELECT o.id AS order_id, 'pagamento' AS status, o.created_at AS created_at 
+								FROM orders o
+								WHERE o.created_at >= '".$boleto_from."' AND o.created_at <= '".$boleto_to."' AND o.status = 'pendente' AND o.payment_terms = 'Boleto';");
+
 			// INSERINDO pagamentos_empresas COM EMPRESAS QUE TIVERAM TRANSAÇÕES NO ÚLTIMO PERÍODO DE VENDAS
 			DB::statement("INSERT INTO payments_partners (payment_id, partner_id) 
 								SELECT ".$payment_id." AS payment_id, o.partner_id AS partner_id 
@@ -76,9 +87,6 @@ class Fechamento extends Command {
 								WHERE tv.payment_partner_id = pp.id
 								GROUP BY tv.payment_partner_id)
 						  WHERE pp.total IS NULL;");
-
-			$payment->is_sales_close = true;
-			$payment->save();
 
 			$this->info('Sucesso');
 		}

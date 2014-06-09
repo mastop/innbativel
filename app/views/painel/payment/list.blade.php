@@ -18,7 +18,7 @@
 	        	->addOption('Todos', null)
 				->options($paymData)
 	        }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('painel.payment')) }}
 			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('painel.payment.export', ['id'=>'id', 'payment_id'=>'payment_id']).'\');') }}
 			<div class="dataTables_length">

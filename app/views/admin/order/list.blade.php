@@ -7,7 +7,7 @@
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.order') }}" title="Listar todos os pagamentos" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
 	            <a href="{{ route('admin.order.offers') }}" title="Listar pagamentos por ofertas" class="dropdown-toggle navbar-icon"><i class="icon-taggs"></i></a>
-	            <a href="{{ route('admin.order.voucher') }}" title="Listar vouchers" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
+	            <a href="{{ route('admin.order.voucher') }}" title="Listar cupons" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
 	        </div>
 		</div>
 	</div>
@@ -33,7 +33,7 @@
 			{{ Former::text('offer_id')->class('input-medium')->placeholder('ID da oferta')->label('ID da oferta') }}
 			{{ Former::date('date_start')->class('input-medium')->placeholder('Data início')->label('Data início') }}
 			{{ Former::date('date_end')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.order')) }}
 			{{ Former::link('Exportar pesquisa acima para excel', 'javascript: exportar(\''.route('admin.order.list_paym_export', ['status'=>'status', 'terms'=>'terms', 'name'=>'name', 'email'=>'email', 'braspag_order_id'=>'braspag_order_id', 'offer_id'=>'offer_id', 'date_start'=>'date_start', 'date_end'=>'date_end']).'\');') }}
 			<div class="dataTables_length">
@@ -53,17 +53,19 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('ID', 'Status', 'Valor', 'Forma de pagamento', 'Data e hora', 'ID das Ofertas', 'Cliente', 'Ações') }}
-{{ Table::body($orderArray)->ignore(['user', 'offer', 'id', 'user_id', 'antifraud_id', 'braspag_id', 'coupon_id', 'first_digits_card', 'holder_card', 'donation', 'card_boletus_rate', 'antecipation_rate', 'interest_rate', 'credit_discount', 'cpf', 'telephone', 'is_gift', 'boleto', 'capture_date', 'history', 'updated_at', 'braspag_order_id_string'])
-	->oferta(function($order) {
-		if(isset($order['offer'])) {
-			$id = '| ';
-			foreach ($order['offer'] as $offer) {
-				$id .= $offer->offer_id.' | ';
-			}
-			return $id;
+{{ Table::headers('Data e hora', 'Número do Pedido', 'Cliente', 'ID das Ofertas', 'Forma de pagamento', 'Status', 'Valor', 'Ações') }}
+{{ Table::body($orderArray)->ignore(['user', 'offer', 'id', 'user_id', 'braspag_order_id', 'braspag_order_id_string', 'status', 'total', 'payment_terms', 'antifraud_id', 'braspag_id', 'coupon_id', 'first_digits_card', 'holder_card', 'donation', 'card_boletus_rate', 'antecipation_rate', 'interest_rate', 'credit_discount', 'cpf', 'telephone', 'is_gift', 'boleto', 'capture_date', 'history', 'created_at', 'updated_at'])
+	->datetime(function($order) {
+		if(isset($order['created_at'])) {
+			return date('d/m/Y H:i:s', strtotime($order['created_at']));
 		}
-		return 'Não encontrada.';
+		return '--';
+	})
+	->braspag_order_idd(function($order) {
+		if(isset($order['braspag_order_id'])) {
+			return $order['braspag_order_id'];
+		}
+		return '--';
 	})
 	->cliente(function($order) {
 		if(isset($order['user'])) {
@@ -71,7 +73,35 @@
 			$id = $order['user']->user_id;
 			return link_to_route('admin.user.view', $name, ['id'=>$id]);
 		}
-		return 'Não informado.';
+		return '--';
+	})
+	->oferta(function($order) {
+		if(isset($order['offer'])) {
+			$id = '| ';
+			foreach ($order['offer'] as $offer) {
+				$id .= link_to_route('offer', $offer->offer_id, ['slug' => $offer->slug]).' | ';
+			}
+			return $id;
+		}
+		return '--';
+	})
+	->payment_termss(function($order) {
+		if(isset($order['payment_terms'])) {
+			return $order['payment_terms'];
+		}
+		return '--';
+	})
+	->statuss(function($order) {
+		if(isset($order['status'])) {
+			return $order['status'];
+		}
+		return '--';
+	})
+	->totall(function($order) {
+		if(isset($order['total'])) {
+			return $order['total'];
+		}
+		return '--';
 	})
 	->acoes(function($order) {
 		if($order['status'] == 'revisao'){
@@ -79,11 +109,11 @@
 			  	Navigation::links([
 			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
 					['Aprovar', 'javascript: action(\''.route('admin.order.approve', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'aprovar\', \''.$order['braspag_order_id_string'].'\');'],
-					['Rejeitar', 'javascript: action(\''.route('admin.order.reject', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'rejeitar\', \''.$order['braspag_order_id_string'].'\');'],
+					['Rejeitar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'rejeitar\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
 			)->pull_right()->split();
 		}
-	    else if($order['status'] == 'pago' && strpos(strtolower($order['payment_terms']), 'cartão') !== false && date('d/m/Y') == date('d/m/Y',strtotime($order['capture_date']))){
+	    else if($order['status'] == 'pago'){
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
 			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
@@ -92,20 +122,10 @@
 			    ])
 			)->pull_right()->split();
 	    }
-	    else if($order['status'] == 'pago' && strpos(strtolower($order['payment_terms']), 'cartão') !== false && date('d/m/Y') != date('d/m/Y',strtotime($order['capture_date']))){
-	        return DropdownButton::normal('Ações',
+	    else{
+	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
 			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
-					['Estornar', 'javascript: action(\''.route('admin.order.void', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'estornar\', \''.$order['braspag_order_id_string'].'\');'],
-					['Converter valor em créditos', 'javascript: action(\''.route('admin.order.convert_value_2_credit', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'converter valor em créditos\', \''.$order['braspag_order_id_string'].'\');'],
-			    ])
-			)->pull_right()->split();
-	    }
-	    else if($order['status'] == 'pago'){
-	        return DropdownButton::normal('Ações',
-			  	Navigation::links([
-			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
-					['Cancelar boleto', 'javascript: action(\''.route('admin.order.cancel_boletus', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'cancelar boleto\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
 			)->pull_right()->split();
 	    }

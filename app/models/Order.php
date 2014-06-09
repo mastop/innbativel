@@ -47,9 +47,15 @@ class Order extends Eloquent {
   }
 
   public function offer(){
-  	return $this->belongsToMany('OfferOption', 'vouchers', 'order_id', 'offer_option_id')
+    return $this->belongsToMany('OfferOption', 'vouchers', 'order_id', 'offer_option_id')
                 ->leftJoin('offers', 'offers_options.offer_id', '=', 'offers.id')
-                ->select(['offers.id','offers.title AS offer_title', 'is_product'])
+                ->select(['offers.id','offers.title AS offer_title', 'is_product', 'offers.slug AS slug'])
+                ->withPivot('id', 'status', 'used', 'display_code', 'name', 'email', 'tracking_code');
+  }
+
+  public function offer_option_offer(){
+    return $this->belongsToMany('OfferOption', 'vouchers', 'order_id', 'offer_option_id')
+                ->with(['offer'])
                 ->withPivot('id', 'status', 'used', 'display_code', 'name', 'email', 'tracking_code');
   }
 

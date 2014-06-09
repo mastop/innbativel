@@ -19,7 +19,7 @@
 	        	->addOption('Todos', null)
 				->options($paymData)
 	        }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.payment')) }}
 			<div class="dataTables_length">
 	        {{ Former::select('pag', 'Exibir')

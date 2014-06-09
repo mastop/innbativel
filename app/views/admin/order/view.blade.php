@@ -1,4 +1,9 @@
 @section('content')
+	<style type="text/css">
+	.column-totall, .column-creditDiscount, .column-couponDiscount{
+		text-align: right;
+	}
+	</style>
 
     <div class="well widget row-fluid">
 
@@ -15,6 +20,9 @@
         <div class="control-group"><h1>Pedido</h1></div>
 
         <div class="control-group required">
+        	<b class="control-label">Status</b>
+            <div class="controls">{{ $order->status }}</div>
+
             <b class="control-label">Número do pedido</b>
             <div class="controls">{{ $order->braspag_order_id }}</div>
 
@@ -54,13 +62,13 @@
             <div class="controls">{{ isset($order->telephone)?$order->telephone:'--' }}</div>
         </div>
 
-        <div class="control-group"><h1>Vouchers</h1></div>
+        <div class="control-group"><h1>Cupons</h1></div>
 
         <div class="control-group required">
 	        {{ Table::open() }}
-			{{ Table::headers('Código', 'Status', 'Validado (usado)?', 'Voucher válido de', 'até', 'Código de rastreamento', 'Oferta', 'Opção escolhida', 'Ações') }}
-			{{ Table::body($order->offer)
-				->ignore(['id', 'offer_title', 'is_product', 'offer_id', 'title', 'subtitle', 'price_original', 'price_with_discount', 'transfer', 'min_qty', 'max_qty', 'max_qty_per_buyer', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'display_order', 'pivot'])
+			{{ Table::headers('Código', 'Status', 'Validado (usado)?', 'Cupom válido de', 'até', 'Código de rastreamento', 'Oferta', 'Opção escolhida', 'Ações') }}
+			{{ Table::body($order->offer_option_offer)
+				->ignore(['id', 'offer_id', 'title', 'subtitle', 'price_original', 'price_with_discount', 'transfer', 'min_qty', 'max_qty', 'max_qty_per_buyer', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'display_order', 'pivot', 'offer'])
 				->display_code(function($body) {
 					if(isset($body->pivot)){
 						return $body->pivot->id.'-'.$body->pivot->display_code;
@@ -97,9 +105,9 @@
 					}
 					return '--';
 				})
-				->offer(function($body) {
+				->offerr(function($body) {
 					if(isset($body->offer_id)){
-						return $body->offer_id.' - '.$body->offer_title;
+						return $body->offer_id.' | '.$body->offer->destiny->name;
 					}
 					return '--';
 				})
@@ -120,13 +128,6 @@
 								])
 							)->pull_right()->split();
 						}
-						else{
-							return DropdownButton::normal('Ações',
-								Navigation::links([
-									//['Visualizar', route('admin.voucher.view', $body->pivot->id)],
-								])
-							)->pull_right()->split();
-						}
 					}
 				})
 			}}
@@ -137,7 +138,15 @@
 
         <div class="control-group required">
             {{ Table::open() }}
-			{{ Table::headers('Data', 'Tipo', 'Total', 'Créditos do usuário', 'Cupom de desconto') }}
+			<thead>
+				<tr>
+					<th>Data</th>
+					<th>Tipo</th>
+					<th style="text-align: right;">Total (R$)</th>
+					<th style="text-align: right;">Créditos do usuário (R$)</th>
+					<th style="text-align: right;">Cupom de desconto (R$)</th>
+				</tr>
+			</thead>
 			{{ Table::body($transaction)
 				->ignore(['id', 'order_id', 'status', 'total', 'credit_discount', 'coupon_discount', 'created_at', 'updated_at'])
 				->created_att(function($body) {
@@ -154,19 +163,34 @@
 				})
 				->totall(function($body) {
 					if(isset($body->total)){
-						return 'R$'.number_format($body->total, '2', ',', '.');
+						if($body->status == 'pagamento'){
+							return number_format($body->total, '2', ',', '.');
+						}
+						else{
+							return number_format(-1 * $body->total, '2', ',', '.');
+						}
 					}
 					return '--';
 				})
-				->credit_discountt(function($body) {
+				->creditDiscount(function($body) {
 					if(isset($body->credit_discount)){
-						return 'R$'.number_format($body->credit_discount, '2', ',', '.');
+						if($body->status == 'pagamento'){
+							return number_format($body->credit_discount, '2', ',', '.');
+						}
+						else{
+							return number_format(-1 * $body->credit_discount, '2', ',', '.');
+						}
 					}
 					return '--';
 				})
-				->coupon_discountt(function($body) {
+				->couponDiscount(function($body) {
 					if(isset($body->coupon_discount)){
-						return 'R$'.number_format($body->coupon_discount, '2', ',', '.');
+						if($body->status == 'pagamento'){
+							return number_format($body->coupon_discount, '2', ',', '.');
+						}
+						else{
+							return number_format(-1 * $body->coupon_discount, '2', ',', '.');
+						}
 					}
 					return '--';
 				})
@@ -190,17 +214,41 @@
             <div class="controls">{{ $order->history }}</div>
         </div>
 
+        <div class="control-group"><h1>Ações</h1></div>
+
+        <div class="control-group required">
+
+			@if($order->status == 'revisao')
+			
+				{{ Former::link('Aprovar', 'javascript: action(\''.route('admin.order.approve', ['id' => $order->id, 'braspag_order_id' => $order->braspag_order_id, 'comment' => 'motivo: ']).'\', \'aprovar\', \''.$order->braspag_order_id.'\');') }}
+
+            	{{ Former::link('Rejeitar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order->id, 'braspag_order_id' => $order->braspag_order_id, 'comment' => 'motivo: ']).'\', \'rejeitar\', \''.$order->braspag_order_id.'\');') }}
+			
+			@elseif($order->status == 'pago')
+			
+				{{ Former::link('Cancelar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order->id, 'braspag_order_id' => $order->braspag_order_id, 'comment' => 'motivo: ']).'\', \'cancelar\', \''.$order->braspag_order_id.'\');') }}
+
+            	{{ Former::link('Converter valor em créditos', 'javascript: action(\''.route('admin.order.convert_value_2_credit', ['id' => $order->id, 'braspag_order_id' => $order->braspag_order_id, 'comment' => 'motivo: ']).'\', \'converter valor em créditos\', \''.$order->braspag_order_id.'\');') }}
+			
+			@else
+
+				Nenhuma ação disponível.
+			
+			@endif
+
+        </div>
+
     </div>
 
 	<script type="text/javascript">
 	function voucher_cancel(id, voucher_display_code, convert_credits){
 		if(convert_credits == 0){
-			var title = 'Atenção: cancelar voucher '+id+'-'+voucher_display_code;
-			var message = 'Realmente deseja cancelar o voucher '+id+'-'+voucher_display_code+'? Se sim, comente abaixo o motivo da ação.';
+			var title = 'Atenção: cancelar cupom '+id+'-'+voucher_display_code;
+			var message = 'Realmente deseja cancelar o cupom '+id+'-'+voucher_display_code+'? Se sim, comente abaixo o motivo da ação.';
 		}
 		else{
-			var title = 'Atenção: cancelar voucher '+id+'-'+voucher_display_code+' e converter valor para créditos do usuário';
-			var message = 'Realmente deseja cancelar o voucher '+id+'-'+voucher_display_code+' e converter o valor para créditos do usuário? Se sim, comente abaixo o motivo da ação.';
+			var title = 'Atenção: cancelar cupom '+id+'-'+voucher_display_code+' e converter valor para créditos do usuário';
+			var message = 'Realmente deseja cancelar o cupom '+id+'-'+voucher_display_code+' e converter o valor para créditos do usuário? Se sim, comente abaixo o motivo da ação.';
 		}
 
 		if (!$('#dataConfirmModal').length) {
@@ -233,24 +281,37 @@
 		$('#dataConfirmModal').modal({show:true});
 	}
 
-	$(function() {
-	  var availableTags = [
-	  	<?php
-	  		$partners = DB::table('profiles')
-	  					 ->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')
-	  					 ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
-	  					 ->where('roles.id', 9)
-	  					 ->get(['profiles.first_name']);
+	function action(url, action, braspag_order_id){
+		var href = url;
+		var message = 'Realmente deseja '+action+' a compra '+braspag_order_id+'? Se sim, comente abaixo o motivo da ação.';
+		var title = 'Atenção: '+action;
 
-	  		foreach ($partners as $partner) {
-	  			echo '"'.$partner->first_name.'", ';
-	  		}
-	  	?>
-	  ];
-	  $("#partner_name").autocomplete({
-	    source: availableTags
-	  });
-	});
+		if (!$('#dataConfirmModal2').length) {
+		    var modal = '<div id="dataConfirmModal2" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">'
+		    				+'<div class="modal-header">'
+									+'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'
+									+'<h3 id="dataConfirmLabel">'+title+'</h3></div><div class="modal-body">'
+									+'<p id="modal-message">'+message+'</p>'
+									+'<input type="text" id="comment-on-action" style="width: 100%;" autofocus="autofocus"/>'
+								+'</div>'
+								+'<div class="modal-footer">'
+									+'<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Não, voltar</button>'
+									+'<a class="btn btn-danger" id="dataConfirmOK2">Sim</a>'
+								+'</div>'
+							+'</div>';
+
+		    $('body').append(modal);
+		}
+
+		$('#dataConfirmModal2').find('#modal-message').text(message);
+		$('#dataConfirmModal2').find('#dataConfirmLabel').text(title);
+		$('#dataConfirmOK2').attr('href', 'javascript: submit_action("'+url+'")');
+		$('#dataConfirmModal2').modal({show:true});
+	}
+
+	function submit_action(url){
+		window.location.href = url + $('#comment-on-action').val();
+	}
 
 	</script>
 @stop

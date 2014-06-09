@@ -14,7 +14,7 @@
 			{{ Former::inline_open(route('admin.destiny')) }}
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('name')->class('input-medium')->placeholder('Destino')->label('Destino') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.destiny')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

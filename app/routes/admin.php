@@ -193,18 +193,20 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::any('order/list_paym_export', function(){ return Redirect::route('admin.order'); });
 	Route::get('order/list_paym_export/{status?}/{terms?}/{name?}/{email?}/{braspag_order_id?}/{offer_id?}/{date_start?}/{date_end?}', ['as' => 'admin.order.list_paym_export', 'uses' => 'AdminOrderController@getListPaymExport']);
 
-	Route::any('order/void', function(){ return Redirect::route('admin.order'); });
-	Route::get('order/void/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.void', 'uses' => 'AdminOrderController@getVoid']);
+	// Route::any('order/void', function(){ return Redirect::route('admin.order'); });
+	// Route::get('order/void/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.void', 'uses' => 'AdminOrderController@getVoid']);
 	Route::any('order/cancel', function(){ return Redirect::route('admin.order'); });
 	Route::get('order/cancel/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.cancel', 'uses' => 'AdminOrderController@getCancel']);
-	Route::any('order/reject', function(){ return Redirect::route('admin.order'); });
-	Route::get('order/reject/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.reject', 'uses' => 'AdminOrderController@getReject']);
+	// Route::any('order/reject', function(){ return Redirect::route('admin.order'); });
+	// Route::get('order/reject/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.reject', 'uses' => 'AdminOrderController@getReject']);
 	Route::any('order/approve', function(){ return Redirect::route('admin.order'); });
 	Route::get('order/approve/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.approve', 'uses' => 'AdminOrderController@getApprove']);
 	Route::any('order/convert_value_2_credit', function(){ return Redirect::route('admin.order'); });
 	Route::get('order/convert_value_2_credit/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.convert_value_2_credit', 'uses' => 'AdminOrderController@getConvertValue2Credit']);
-	Route::any('order/cancel_boletus', function(){ return Redirect::route('admin.order'); });
-	Route::get('order/cancel_boletus/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.cancel_boletus', 'uses' => 'AdminOrderController@getCancelBoletus']);
+	// Route::any('order/cancel_boletus', function(){ return Redirect::route('admin.order'); });
+	// Route::get('order/cancel_boletus/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.cancel_boletus', 'uses' => 'AdminOrderController@getCancelPaidByCredit']);
+	// Route::any('order/cancel_paid_by_credit', function(){ return Redirect::route('admin.order'); });
+	// Route::get('order/cancel_paid_by_credit/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.cancel_boletus', 'uses' => 'AdminOrderController@getCancelPaidByCredit']);
 
 	Route::any('order/voucher/{offer_option_id?}', ['as' => 'admin.order.voucher', 'uses' => 'AdminOrderController@anyVouchers']);
 
@@ -359,7 +361,7 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	/*
 	 * Suggest a trip
 	 */
-
+	
 
 	Route::any('suggest/edit', function(){ return Redirect::route('admin.suggest'); });
 	Route::get('suggest/edit/{id}', ['as' => 'admin.suggest.edit', 'uses' => 'SuggestATripController@getEdit']);
@@ -490,7 +492,7 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 
 	Route::any('transaction', ['as' => 'admin.transaction', 'uses' => 'AdminTransactionController@anyIndex']);
 
-	Route::any('transaction/export', function(){ return Redirect::back(); });
+	Route::any('transaction/export', function(){ return Redirect::route('admin.transaction'); });
 	Route::get('transaction/export/{date_start?}/{date_end?}', ['as' => 'admin.transaction.export', 'uses' => 'AdminTransactionController@getExport']);
     
     /*

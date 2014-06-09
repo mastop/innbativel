@@ -6,7 +6,7 @@
 			<h6>Lista de Cupons</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('painel.order.offers') }}" title="Listar ofertas" class="dropdown-toggle navbar-icon"><i class="icon-taggs"></i></a>
-	            <a href="{{ route('painel.order.voucher') }}" title="Listar vouchers" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
+	            <a href="{{ route('painel.order.voucher') }}" title="Listar cupons" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
 	        </div>
 		</div>
 	</div>
@@ -16,7 +16,7 @@
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::select('offer_option_id', 'Oferta')->addOption('Todas', null)->options($offersOptions, $offer_option_id) }}
 			{{ Former::number('id')->class('input-medium')->placeholder('Chave do cupom')->label('Chave do cupom (primeiros digitos)') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('painel.order.voucher')) }}
 			{{ Former::link('Exportar pesquisa acima para excel', 'javascript: exportar(\''.route('painel.order.voucher_export', ['id' =>'id', 'offer_option_id' => 'offer_option_id']).'\');') }}
 			<div class="dataTables_length">
@@ -126,7 +126,7 @@ function submit_action(url){
 
 function update_tracking_code(url, voucher_id){
 	var href = url;
-	var message = 'Insira o código de rastreamento do produto com chave do voucher #'+voucher_id;
+	var message = 'Insira o código de rastreamento do produto com chave do cupom #'+voucher_id;
 	var title = 'Código de rastreamento';
 	var submit = 'javascript: document.getElementById(\'update-tracking-code\').submit()';
 

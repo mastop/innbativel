@@ -15,7 +15,7 @@
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('name')->label('')->class('input-medium')->placeholder('Nome') }}
 			{{ Former::text('level')->label('')->class('input-medium')->placeholder('Nível') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.role')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

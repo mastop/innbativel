@@ -18,7 +18,7 @@
 			{{ Former::text('new_name')->class('input-medium')->placeholder('Nome do novo cliente')->label('Nome do novo cliente') }}
 			{{ Former::text('new_email')->class('input-medium')->placeholder('E-mail do novo cliente')->label('E-mail do novo cliente') }}
 			{{ Former::text('value')->class('input-medium')->placeholder('Valor do crédito')->label('Valor do crédito') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.credit_indication')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

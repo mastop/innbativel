@@ -217,7 +217,7 @@ class AdminTransactionController extends BaseController {
 								     ->get();
 		
 		$spreadsheet = array();
-		$spreadsheet[] = array('Data', 'ID da Compra', 'Cliente', 'Tipo', 'Forma de pagto', 'Valor dos cupons (R$)', 'Créditos do usuário (R$)', 'Cupons de desconto (R$)', 'Total pago (R$)', 'Taxa cartão/boleto (R$) *', 'Taxa de antecipação (R$) **', 'Valor parceiro (R$) ***', 'Faturamento (R$)', 'Número de Cupons');
+		$spreadsheet[] = array('Data', 'Número do pedido', 'Cliente', 'Tipo', 'Forma de pagto', 'Valor dos cupons (R$)', 'Créditos do usuário (R$)', 'Cupons de desconto (R$)', 'Total pago (R$)', 'Taxa cartão/boleto (R$) *', 'Taxa de antecipação (R$) **', 'Valor parceiro (R$) ***', 'Faturamento (R$)', 'Número de Cupons');
 
 		$total['vouchers'] = 0;
 		$total['credits'] = 0;

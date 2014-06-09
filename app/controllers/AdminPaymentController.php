@@ -369,7 +369,7 @@ class AdminPaymentController extends BaseController {
 													  ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('Data', 'ID Compra', 'Cliente', 'Código do Cupom', 'Oferta e Opção Escolhida', 'Status', 'Valor do Cupom (R$)', 'Valor Parceiro (R$)');
+		$spreadsheet[] = array('Data', 'Número do Pedido', 'Cliente', 'Código do Cupom', 'Oferta e Opção Escolhida', 'Status', 'Valor do Cupom (R$)', 'Valor Parceiro (R$)');
 
 		$voucher_price = 0;
 		$transfer = 0;

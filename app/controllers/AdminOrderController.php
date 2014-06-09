@@ -143,7 +143,7 @@ class AdminOrderController extends BaseController {
 				$braspag_order_id = $value->braspag_order_id;
 				$id = $value->id;
 
-				$value->braspag_order_id = link_to_route('admin.order.view', $braspag_order_id, ['id'=>$id], ['title' => 'Ver detalhes']);
+				$value->braspag_order_id = link_to_route('admin.order.view', $braspag_order_id, ['id' => $id], ['title' => 'Ver detalhes']);
 				$value->braspag_order_id_string = $braspag_order_id;
 
 				// $m = new Money($value->total, new Currency('BRL'));
@@ -250,7 +250,7 @@ class AdminOrderController extends BaseController {
 		foreach ($offersOptions as $offerOption) {
 			$ss = null;
 			$ss[] = $offerOption->offer_id;
-			$ss[] = $offerOption['offer']->title;
+			$ss[] = $offerOption['offer']['destiny']->name;
 			$ss[] = $offerOption->title;
 			$ss[] = $offerOption['offer']->starts_on;
 			$ss[] = $offerOption['offer']->ends_on;
@@ -386,7 +386,7 @@ class AdminOrderController extends BaseController {
 		$ordersData = $ordersObj->with([
 										'user',
 										'discount_coupon',
-										'offer' => function($query) use($offer_option_id){
+										'offer_option_offer' => function($query) use($offer_option_id){
 												   $query->where('offers_options.id', $offer_option_id);
 											  	},
 										'voucher' => function($query) use($offer_option_id, $status){
@@ -436,11 +436,11 @@ class AdminOrderController extends BaseController {
 			$ss = null;
 			$ss[] = $order->braspag_order_id;
 			$ss[] = $order->status;
-			$ss[] = $order['offer']{0}->offer_id;
-			$ss[] = $order['offer']{0}->offer_title;
-			$ss[] = $order['offer']{0}->title;
-			$ss[] = $order['offer']{0}->price_with_discount;
-			$ss[] = count($order['voucher']);
+			$ss[] = $order->offer_option_offer{0}->offer_id;
+			$ss[] = $order->offer_option_offer{0}->offer->title;
+			$ss[] = $order->offer_option_offer{0}->title;
+			$ss[] = $order->offer_option_offer{0}->price_with_discount;
+			$ss[] = count($order->voucher);
 			$ss[] = $order['user']->first_name.' '.$order['user']->last_name;
 			$ss[] = $order['user']->email;
 			$ss[] = $order->payment_terms;
@@ -584,14 +584,14 @@ class AdminOrderController extends BaseController {
 	public function getView($id)
 	{
 		$order = $this->order
-					->findOrFail($id)
-					->with([
+					  ->findOrFail($id)
+					  ->with([
 						'user',
-						'offer',
+						'offer_option_offer',
 						'discount_coupon',
-					])
-					->where('id', $id)
-					->first();
+					  ])
+					  ->where('id', $id)
+					  ->first();
 		// print('<pre>');
 		// print_r($order);
 		// print('</pre>'); die();
@@ -657,10 +657,10 @@ class AdminOrderController extends BaseController {
 		Voucher::where('order_id', $order->id)->where('status', $old_status)->update(['status' => $new_status]);
 
 		// inserir creditos por indicação
-		$credit_ind_user = UserCredit::where('new_user_id', '=', $order->user_id);
+		$credit_ind_user = UserCredit::where('new_user_id', '=', $order->user_id)->first();
 
 		if($credit_ind_user){
-			$indicator_user = User::find($credit_ind_user->user_id);
+			$indicator_user = Profile::where('user_id', '=', $credit_ind_user->user_id)->first();
 			$indicator_user->credit += $credit_ind_user->value;
 			$indicator_user->save();
 
@@ -668,243 +668,258 @@ class AdminOrderController extends BaseController {
 		}
 	}
 
-	public function getVoid($id, $braspag_order_id, $comment){
-		$order = Order::find($id);
-		if($order->braspag_order_id != $braspag_order_id){
-			$error = 'Erro #1';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-		}
+	// public function getVoid($id, $braspag_order_id, $comment){
+	// 	$order = Order::find($id);
+	// 	if($order->braspag_order_id != $braspag_order_id){
+	// 		$error = 'Erro #1';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	// 	}
 
-		//////////////////////////////////////
-		// require_once('braspag/nusoap.php');
-	 	// require_once('braspag/vars.php');
-		//////////////////////////////////////
+	// 	//////////////////////////////////////
+	// 	// require_once('braspag/nusoap.php');
+	//  	// require_once('braspag/vars.php');
+	// 	//////////////////////////////////////
 
-	    $url_transacao = 'https://pagador.com.br/webservice/pagadorTransaction.asmx?WSDL';
+	//     $url_transacao = 'https://pagador.com.br/webservice/pagadorTransaction.asmx?WSDL';
 
-	    $client = new nusoap_client($url_transacao, 'wsdl', '', '', '', '');
+	//     $client = new nusoap_client($url_transacao, 'wsdl', '', '', '', '');
 
-	    $err = $client->getError();
+	//     $err = $client->getError();
 
-	    if ($err) {
-			$error = 'Erro #2';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-	    }
+	//     if ($err) {
+	// 		$error = 'Erro #2';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	//     }
 
-	    $param = array(
-	      'request' => array(
-	        'MerchantId'   => $MerchantId,
-	        'RequestId'   => getGUID(),
-	        'Version' => '1.0',
-	        'TransactionDataCollection' => array(
-	          'TransactionDataRequest' => array(
-	            'BraspagTransactionId' => '{'.$order->braspag_id.'}',
-	            'Amount' => $order->total,
-	          ),
-	        ),
-	      ),
-	    );
+	//     $param = array(
+	//       'request' => array(
+	//         'MerchantId'   => $MerchantId,
+	//         'RequestId'   => getGUID(),
+	//         'Version' => '1.0',
+	//         'TransactionDataCollection' => array(
+	//           'TransactionDataRequest' => array(
+	//             'BraspagTransactionId' => '{'.$order->braspag_id.'}',
+	//             'Amount' => $order->total,
+	//           ),
+	//         ),
+	//       ),
+	//     );
 
-	    // print("<pre>");
-	    // print_r($param);
-	    // print("</pre>");
+	//     // print("<pre>");
+	//     // print_r($param);
+	//     // print("</pre>");
 
-	    $result = $client->call('RefundCreditCardTransaction', array('parameters' => $param), '', '', false, true);
+	//     $result = $client->call('RefundCreditCardTransaction', array('parameters' => $param), '', '', false, true);
 
-	    // print("<pre>");
-	    // print_r($result);
-	    // print("</pre>");
+	//     // print("<pre>");
+	//     // print_r($result);
+	//     // print("</pre>");
 
-	    if ($client->fault || !$result) {
-			$error = 'Erro #3';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-	    } else {
-	      $err = $client->getError();
-	      if ($err) {
-	        $error = 'Erro #4';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-	      } else {
-	        // print("<pre>");
-	        // print_r($result);
-	        // print("</pre>");
-	        if($result['RefundCreditCardTransactionResult']['Success'] == true){
-	        	$new_status = 'cancelado';
-	        	$this->updateOrder($order, $new_status, $comment);
-	        }
-	        else{
-	        	$error = 'Erro #5';
-				return Redirect::route('admin.order')
-					->withErrors($error);
-	        }
-	      }
-	    }
+	//     if ($client->fault || !$result) {
+	// 		$error = 'Erro #3';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	//     } else {
+	//       $err = $client->getError();
+	//       if ($err) {
+	//         $error = 'Erro #4';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	//       } else {
+	//         // print("<pre>");
+	//         // print_r($result);
+	//         // print("</pre>");
+	//         if($result['RefundCreditCardTransactionResult']['Success'] == true){
+	//         	$new_status = 'cancelado';
+	//         	$this->updateOrder($order, $new_status, $comment);
+	//         }
+	//         else{
+	//         	$error = 'Erro #5';
+	// 			return Redirect::back()
+	// 				->withErrors($error);
+	//         }
+	//       }
+	//     }
 
-	    return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' estornado com sucesso.');
-	}
+	//     return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' estornado com sucesso.');
+	// }
+
+	// public function getCancel($id, $braspag_order_id, $comment){
+	// 	$order = Order::find($id);
+	// 	if($order->braspag_order_id != $braspag_order_id){
+	// 		$error = 'Erro #6';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	// 	}
+
+	// 	//////////////////////////////////////
+	// 	// require_once('braspag/nusoap.php');
+	//     // require_once('braspag/vars.php');
+	//     //////////////////////////////////////
+	//     $url_transacao = 'https://pagador.com.br/webservice/pagadorTransaction.asmx?WSDL';
+
+	//     $client = new nusoap_client($url_transacao, 'wsdl', '', '', '', '');
+
+	//     $err = $client->getError();
+
+	//     if ($err) {
+	//       	$error = 'Erro #7';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	//     }
+
+	//     $param = array(
+	//       'request' => array(
+	//         'MerchantId'   => $MerchantId,
+	//         'RequestId'   => getGUID(),
+	//         'Version' => '1.0',
+	//         'TransactionDataCollection' => array(
+	//           'TransactionDataRequest' => array(
+	//             'BraspagTransactionId' => '{'.$order->braspag_id.'}',
+	//             'Amount' => $order->total,
+	//           ),
+	//         ),
+	//       ),
+	//     );
+
+	//     // print("<pre>");
+	//     // print_r($param);
+	//     // print("</pre>");
+
+	//     $result = $client->call('VoidCreditCardTransaction', array('parameters' => $param), '', '', false, true);
+
+	//     // print("<pre>");
+	//     // print_r($result);
+	//     // print("</pre>");
+
+	//     if ($client->fault || !$result) {
+	//       	$error = 'Erro #8';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	//     } else {
+	//       $err = $client->getError();
+	//       if ($err) {
+	//         $error = 'Erro #9';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	//       } else {
+	//         // print("<pre>");
+	//         // print_r($result);
+	//         // print("</pre>");
+	//         if($result['VoidCreditCardTransactionResult']['Success'] == true){
+	//         	$new_status = 'cancelado';
+	//         	$this->updateOrder($order, $new_status, $comment);
+	//         }
+	//         else{
+	//         	$error = 'Erro #10';
+	// 			return Redirect::back()
+	// 				->withErrors($error);
+	//         }
+	//       }
+	//     }
+
+	//     return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' cancelado com sucesso.');
+	// }
 
 	public function getCancel($id, $braspag_order_id, $comment){
 		$order = Order::find($id);
 		if($order->braspag_order_id != $braspag_order_id){
-			$error = 'Erro #6';
-			return Redirect::route('admin.order')
+			$error = 'Erro #26';
+			return Redirect::back()
 				->withErrors($error);
 		}
 
-		//////////////////////////////////////
-		// require_once('braspag/nusoap.php');
-	    // require_once('braspag/vars.php');
-	    //////////////////////////////////////
-	    $url_transacao = 'https://pagador.com.br/webservice/pagadorTransaction.asmx?WSDL';
+		$new_status = 'cancelado';
 
-	    $client = new nusoap_client($url_transacao, 'wsdl', '', '', '', '');
+		$this->updateOrder($order, $new_status, $comment);
 
-	    $err = $client->getError();
-
-	    if ($err) {
-	      	$error = 'Erro #7';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-	    }
-
-	    $param = array(
-	      'request' => array(
-	        'MerchantId'   => $MerchantId,
-	        'RequestId'   => getGUID(),
-	        'Version' => '1.0',
-	        'TransactionDataCollection' => array(
-	          'TransactionDataRequest' => array(
-	            'BraspagTransactionId' => '{'.$order->braspag_id.'}',
-	            'Amount' => $order->total,
-	          ),
-	        ),
-	      ),
-	    );
-
-	    // print("<pre>");
-	    // print_r($param);
-	    // print("</pre>");
-
-	    $result = $client->call('VoidCreditCardTransaction', array('parameters' => $param), '', '', false, true);
-
-	    // print("<pre>");
-	    // print_r($result);
-	    // print("</pre>");
-
-	    if ($client->fault || !$result) {
-	      	$error = 'Erro #8';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-	    } else {
-	      $err = $client->getError();
-	      if ($err) {
-	        $error = 'Erro #9';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-	      } else {
-	        // print("<pre>");
-	        // print_r($result);
-	        // print("</pre>");
-	        if($result['VoidCreditCardTransactionResult']['Success'] == true){
-	        	$new_status = 'cancelado';
-	        	$this->updateOrder($order, $new_status, $comment);
-	        }
-	        else{
-	        	$error = 'Erro #10';
-				return Redirect::route('admin.order')
-					->withErrors($error);
-	        }
-	      }
-	    }
-
-	    return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' cancelado com sucesso.');
+		return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' via boleto cancelado com sucesso. IMPORTANTE: ainda é necessário reembolsar o cliente.');
 	}
 
-	public function getReject($id, $braspag_order_id, $comment){
-		$order = Order::find($id);
-		if($order->braspag_order_id != $braspag_order_id){
-			$error = 'Erro #11';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-		}
+	// public function getReject($id, $braspag_order_id, $comment){
+	// 	$order = Order::find($id);
+	// 	if($order->braspag_order_id != $braspag_order_id){
+	// 		$error = 'Erro #11';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	// 	}
 
-		//////////////////////////////////////
-		// require_once('braspag/nusoap.php');
-	    // require_once('braspag/vars.php');
-	    //////////////////////////////////////
+	// 	//////////////////////////////////////
+	// 	// require_once('braspag/nusoap.php');
+	//     // require_once('braspag/vars.php');
+	//     //////////////////////////////////////
 
-	    $url_antifraud = 'https://antifraude.braspag.com.br/AntiFraudeWS/AntiFraud.asmx?WSDL';
+	//     $url_antifraud = 'https://antifraude.braspag.com.br/AntiFraudeWS/AntiFraud.asmx?WSDL';
 
-	    $client = new nusoap_client($url_antifraud, 'wsdl', '', '', '', '');
+	//     $client = new nusoap_client($url_antifraud, 'wsdl', '', '', '', '');
 
-	    $err = $client->getError();
+	//     $err = $client->getError();
 
-	    if ($err) {
-	      	$error = 'Erro #12';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-	    }
+	//     if ($err) {
+	//       	$error = 'Erro #12';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	//     }
 
-	    $param = array(
-	      'updateStatusRequest' => array(
-	        'MerchantId'   => $MerchantId,
-	        'RequestId'   => getGUID(),
-	        'Version'   => '1.0',
-	        'AntiFraudTransactionId' => '{'.$order->antifraud_id.'}',
-	        'NewStatus' => 'REJECT',
-	        'Comment' => $comment,
-	      ),
-	    );
+	//     $param = array(
+	//       'updateStatusRequest' => array(
+	//         'MerchantId'   => $MerchantId,
+	//         'RequestId'   => getGUID(),
+	//         'Version'   => '1.0',
+	//         'AntiFraudTransactionId' => '{'.$order->antifraud_id.'}',
+	//         'NewStatus' => 'REJECT',
+	//         'Comment' => $comment,
+	//       ),
+	//     );
 
-	    // print("<pre>");
-	    // print_r($param);
-	    // print("</pre>");
+	//     // print("<pre>");
+	//     // print_r($param);
+	//     // print("</pre>");
 
-	    $result = $client->call('UpdateStatus', array('parameters' => $param), '', '', false, true);
+	//     $result = $client->call('UpdateStatus', array('parameters' => $param), '', '', false, true);
 
-	    // print("<pre>");
-	    // print_r($result);
-	    // print("</pre>");
+	//     // print("<pre>");
+	//     // print_r($result);
+	//     // print("</pre>");
 
-	    if ($client->fault || !$result) {
-	      	$error = 'Erro #13';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-	    } else {
-	      $err = $client->getError();
-	      if ($err) {
-	        $error = 'Erro #14';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-	      } else {
-	        // print("<pre>");
-	        // print_r($result);
-	        // print("</pre>");
+	//     if ($client->fault || !$result) {
+	//       	$error = 'Erro #13';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	//     } else {
+	//       $err = $client->getError();
+	//       if ($err) {
+	//         $error = 'Erro #14';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	//       } else {
+	//         // print("<pre>");
+	//         // print_r($result);
+	//         // print("</pre>");
 
-	        if($result['UpdateStatusResult']['Success'] == true){
-	        	$new_status = 'cancelado';
-	        	$this->updateOrder($order, $new_status, $comment);
-	        	$this->sendTransactionalEmail($order, $new_status);
-	        }
-	        else{
-	        	$error = 'Erro #15';
-				return Redirect::route('admin.order')
-					->withErrors($error);
-	        }
-	      }
-	    }
+	//         if($result['UpdateStatusResult']['Success'] == true){
+	//         	$new_status = 'cancelado';
+	//         	$this->updateOrder($order, $new_status, $comment);
+	//         	$this->sendTransactionalEmail($order, $new_status);
+	//         }
+	//         else{
+	//         	$error = 'Erro #15';
+	// 			return Redirect::back()
+	// 				->withErrors($error);
+	//         }
+	//       }
+	//     }
 
-	    return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' rejeitado com sucesso.');
-	}
+	//     return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' rejeitado com sucesso.');
+	// }
 
 	public function getApprove($id, $braspag_order_id, $comment){
 		$order = Order::find($id);
 		if($order->braspag_order_id != $braspag_order_id){
 			$error = 'Erro #16';
-			return Redirect::route('admin.order')
+			return Redirect::back()
 				->withErrors($error);
 		}
 
@@ -921,7 +936,7 @@ class AdminOrderController extends BaseController {
 
 	    if ($err) {
 	      	$error = 'Erro #17';
-			return Redirect::route('admin.order')
+			return Redirect::back()
 				->withErrors($error);
 	    }
 
@@ -959,13 +974,13 @@ class AdminOrderController extends BaseController {
 
 	    if ($client->fault || !$result) {
 	      	$error = 'Erro #18';
-			return Redirect::route('admin.order')
+			return Redirect::back()
 				->withErrors($error);
 	    } else {
 	      $err = $client->getError();
 	      if ($err) {
 	        $error = 'Erro #19';
-			return Redirect::route('admin.order')
+			return Redirect::back()
 				->withErrors($error);
 	      } else {
 	        // print("<pre>");
@@ -973,7 +988,7 @@ class AdminOrderController extends BaseController {
 	        // print("</pre>");
 	        if($result['UpdateStatusResult']['Success'] != true){
 	        	$error = 'Erro #20';
-				return Redirect::route('admin.order')
+				return Redirect::back()
 					->withErrors($error);
 	        }
 	      }
@@ -994,7 +1009,7 @@ class AdminOrderController extends BaseController {
 
 	    if ($err) {
 	      	$error = 'Erro #21';
-			return Redirect::route('admin.order')
+			return Redirect::back()
 				->withErrors($error);
 	    }
 
@@ -1037,13 +1052,13 @@ class AdminOrderController extends BaseController {
 
 	    if ($client_pagador->fault || !$result) {
 	    	$error = 'Erro #22';
-			return Redirect::route('admin.order')
+			return Redirect::back()
 				->withErrors($error);
 	    } else {
 	      $err = $client_pagador->getError();
 	      if ($err) {
 	        $error = 'Erro #23';
-			return Redirect::route('admin.order')
+			return Redirect::back()
 				->withErrors($error);
 	      } else {
 	        // print("<pre>");
@@ -1056,49 +1071,65 @@ class AdminOrderController extends BaseController {
 	        }
 	        else{
 	        	$error = 'Erro #24';
-				return Redirect::route('admin.order')
+				return Redirect::back()
 					->withErrors($error);
 	        }
 	      }
 	    }
 
-	    return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' aprovado com sucesso.');
+	    return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' aprovado com sucesso.');
 	}
 
 	public function getConvertValue2Credit($id, $braspag_order_id, $comment){
 		$order = Order::find($id);
 		if($order->braspag_order_id != $braspag_order_id){
 			$error = 'Erro #25';
-			return Redirect::route('admin.order')
+			return Redirect::back()
 				->withErrors($error);
 		}
 
-		$new_status = 'cancelado';
+		$new_status = 'convercao_creditos';
 		$total = $order->total;
 
 		$this->updateOrder($order, $new_status, $comment);
 
-		$profile = Profile::where('user_id', '=', $order->user_id);
-		$profile->credit += $total;
-		$profile->save();
+		// PS: o crédito é passado ao cliente pelo Trigger, por isso comentei a linha abaixo
+		// $profile = Profile::where('user_id', '=', $order->user_id)->first();
+		// $profile->credit += $total;
+		// $profile->save();
 
 		return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' convertido em créditos ao usuário com sucesso.');
 	}
 
-	public function getCancelBoletus($id, $braspag_order_id, $comment){
-		$order = Order::find($id);
-		if($order->braspag_order_id != $braspag_order_id){
-			$error = 'Erro #26';
-			return Redirect::route('admin.order')
-				->withErrors($error);
-		}
+	// public function getCancelBoletus($id, $braspag_order_id, $comment){
+	// 	$order = Order::find($id);
+	// 	if($order->braspag_order_id != $braspag_order_id){
+	// 		$error = 'Erro #26';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	// 	}
 
-		$new_status = 'cancelado';
+	// 	$new_status = 'cancelado';
 
-		$this->updateOrder($order, $new_status, $comment);
+	// 	$this->updateOrder($order, $new_status, $comment);
 
-		return Redirect::route('admin.order')->with('success', 'Pagamento '.$order->braspag_order_id.' via boleto cancelado com sucesso. Ainda é necessário reembolsar o cliente.');
-	}
+	// 	return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' via boleto cancelado com sucesso. Ainda é necessário reembolsar o cliente.');
+	// }
+
+	// public function getCancelPaidByCredit($id, $braspag_order_id, $comment){
+	// 	$order = Order::find($id);
+	// 	if($order->braspag_order_id != $braspag_order_id){
+	// 		$error = 'Erro #26';
+	// 		return Redirect::back()
+	// 			->withErrors($error);
+	// 	}
+
+	// 	$new_status = 'cancelado';
+
+	// 	$this->updateOrder($order, $new_status, $comment);
+
+	// 	return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' via boleto cancelado com sucesso. Ainda é necessário reembolsar o cliente.');
+	// }
 
 	public function postBraspagReturn(){
 		$server_addr = array(
