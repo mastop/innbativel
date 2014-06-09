@@ -7,6 +7,6 @@
     <b>Nome:</b>{{ $name }}<br />
     <b>E-mail:</b>{{ $email }}<br />
     <b>Destino:</b>{{ $destiny }}<br />
-    <b>Sugest&atildeo:</b>{{ $suggestion }}<br />
+    <b>Sugest&atilde;o:</b>{{ $suggestion }}<br />
 
 </p>

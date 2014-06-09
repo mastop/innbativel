@@ -14,6 +14,10 @@ Route::any('webservice/valida-cupom.php', ['as' => 'snowland-valida-cupom', 'use
 Route::any('webservice/utiliza-cupom.php', ['as' => 'snowland-utiliza-cupom', 'uses' => 'XmlServerController@postSnowlandUtiliza']);
 Route::any('criteo.php', ['as' => 'criteo', 'uses' => 'XmlServerController@getCriteo']);
 
+/*
+ * Newsletter
+ */
+Route::post('newsletter/gravar', ['as' => 'newsletter.save', 'uses' => 'NewsletterController@postNewsletter']);
 
 /*
  * Suggest a trip
@@ -24,8 +28,3 @@ Route::any('suggest', ['as' => 'suggest', 'uses' => 'SuggestATripController@anyI
 
 Route::get('suggest/create', ['as' => 'suggest.create', 'uses' => 'SuggestATripController@getCreate']);
 Route::post('suggest/create', ['as' => 'suggest.save', 'uses' => 'SuggestATripController@postCreate']);
-
-/*
- * Newsletter
- */
-Route::post('newsletter/gravar', ['as' => 'newsletter.save', 'uses' => 'NewsletterController@postNewsletter']);
