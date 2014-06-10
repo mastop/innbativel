@@ -123,7 +123,6 @@
         }
     });
 
-
     function resetOfferOptions(){
         $('div#offerOptionsMain div.offerOptions').each(function(i){
             var num = i + 1;
@@ -149,4 +148,25 @@
             decimal:    ','
         });
     }
+    // Para calcular o %OFF
+    $('#offerOptionsMain').on('keyup', 'input.PriceWithDiscount', function(event) {
+        var PriceOriginal = $(this).closest('div.offerOption').find('input.PriceOriginal').maskMoney('unmasked')[0];
+        var PriceWithDiscount = $(this).maskMoney('unmasked')[0];
+        var TotalDiscount = $(this).closest('div.offerOption').find('input.TotalDiscount');
+        if(PriceOriginal > 0){
+            var discount = (PriceOriginal - PriceWithDiscount) / PriceOriginal * 100;
+                TotalDiscount.val(Math.round(discount));
+        }
+    });
+    // Para reclamar se o repasse ao parceiro for maior que o valor com desconto
+    $('#offerOptionsMain').on('blur', 'input.TotalTransfer', function(event) {
+        var PriceWithDiscount = $(this).closest('div.offerOption').find('input.PriceWithDiscount').maskMoney('unmasked')[0];
+        var TotalTransfer = $(this).maskMoney('unmasked')[0];
+        if(TotalTransfer > PriceWithDiscount){
+            alert('O repasse ao parceiro não pode ser maior que o preço com desconto!');
+            $(this).val(0);
+            $(this).focus();
+            return false;
+        }
+    });
 })(jQuery);

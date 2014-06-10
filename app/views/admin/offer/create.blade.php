@@ -99,16 +99,16 @@
                 <span class="badge badge-info offerOptionNumber">1</span>
                 {{ Former::text('offer_options[0][title]', 'Título')->class('span12') }}
                 {{ Former::text('offer_options[0][subtitle]', 'Subtítulo')->class('span12') }}
-                {{ Former::text('offer_options[0][price_original]', 'Preço Original')->class('span12 currency')->prepend('R$') }}
-                {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12 currency')->prepend('R$') }}
-                {{ Former::text('offer_options[0][percent_off]', 'Total do Desconto')->class('span4')->append('% OFF')->value('0') }}
-                {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12 currency')->prepend('R$') }}
+                {{ Former::text('offer_options[0][price_original]', 'Preço Original')->class('span12 currency PriceOriginal')->prepend('R$') }}
+                {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12 currency PriceWithDiscount')->prepend('R$') }}
+                {{ Former::text('offer_options[0][percent_off]', 'Total do Desconto')->class('span4 TotalDiscount')->append('% OFF')->value('0') }}
+                {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12 currency TotalTransfer')->prepend('R$') }}
                 {{ Former::text('offer_options[0][min_qty]', 'Estoque Mínimo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty]', 'Estoque Máximo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty_per_buyer]', 'Máximo por Cliente')->class('span4')->append('compras')->value('0') }}
                 {{ Former::text('offer_options[0][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker') }}
                 {{ Former::text('offer_options[0][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker') }}
-                {{ Former::button('Remover esta Opção')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
+                {{ Former::button('Remover esta Opção de Venda')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
                 </div>
                 <div class="span1">
                     &nbsp;
@@ -117,7 +117,7 @@
 
         </div>
 
-        {{ Former::button('Adicionar Opção')->id('offer_opt_add')->class('btn btn-large btn-block btn-success') }}
+        {{ Former::button('Adicionar Opção de Venda')->id('offer_opt_add')->class('btn btn-large btn-block btn-success') }}
 
         {{ Former::legend('Ofertas Adicionais') }}
 
