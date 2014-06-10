@@ -46,7 +46,7 @@ class OffersTableSeeder extends DatabaseSeeder
 	  [
 		'title' => 'Florianópolis - SC',
 		'subtitle' => 'Aproveite os feriadões de Páscoa ou Dia do Trabalho (1º de Maio) e conheça Florianópolis, a Ilha da Magia!',
-		'cover_img' => 'http://innbativel.kissr.com/assets/uploads/oferta-home-destaque.jpg',
+		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-destaque.jpg',
 		'genre_id' => 1,
 		'category_id' => 1,
 		'genre2_id' => 2,
@@ -59,7 +59,7 @@ class OffersTableSeeder extends DatabaseSeeder
 	  [
 		'title' => 'Praia do Rosa - SC',
 		'subtitle' => 'Dias de sossego na maravilhosa Praia do Rosa!',
-		'cover_img' => 'http://innbativel.kissr.com/assets/uploads/oferta-home-hp-01.jpg',
+		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-hp-01.jpg',
 		'category_id' => 1,
 		'genre_id' => 3,
 		'partner_id' => 2,
@@ -72,7 +72,7 @@ class OffersTableSeeder extends DatabaseSeeder
 	  [
 		'title' => 'Urubici - SC',
 		'subtitle' => 'Garanta já dias apaixonados na Serra Catarinense! Urubici lhe aguarda com paisagens de tirar o fôlego, e muitos vinhos para degustar! Válido também em Julho!',
-		'cover_img' => 'http://innbativel.kissr.com/assets/uploads/oferta-home-hp-02.jpg',
+		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-hp-02.jpg',
 		'category_id' => 1,
 		'genre_id' => 4,
 		'partner_id' => 1,
@@ -84,7 +84,7 @@ class OffersTableSeeder extends DatabaseSeeder
 	  [
 		'title' => 'Santiago do Chile',
 		'subtitle' => 'Compre sua viagem de férias e garanta momentos inesquecíveis em Santiago. Aproveite!',
-		'cover_img' => 'http://innbativel.kissr.com/assets/uploads/oferta-home-pi-01.jpg',
+		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-pi-01.jpg',
 		'category_id' => 1,
 		'genre_id' => 5,
 		'partner_id' => 2,
@@ -96,7 +96,7 @@ class OffersTableSeeder extends DatabaseSeeder
 	  [
 		'title' => 'Buenos Aires - Argentina',
 		'subtitle' => 'Aproveite o feriadão de Páscoa e Tiradentes para curtir o melhor da Argentina!',
-		'cover_img' => 'http://innbativel.kissr.com/assets/uploads/oferta-home-pi-02.jpg',
+		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-pi-02.jpg',
 		'category_id' => 1,
 		'genre_id' => 6,
 		'partner_id' => 1,
@@ -108,7 +108,7 @@ class OffersTableSeeder extends DatabaseSeeder
 	  [
 		'title' => 'Bonito - MS',
 		'subtitle' => 'Encante-se com Bonito, a Capital Brasileira do Ecoturismo!',
-		'cover_img' => 'http://innbativel.kissr.com/assets/uploads/oferta-home-pn-01.jpg',
+		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-pn-01.jpg',
 		'category_id' => 1,
 		'genre_id' => 7,
 		'partner_id' => 2,
@@ -120,7 +120,7 @@ class OffersTableSeeder extends DatabaseSeeder
 	  [
 		'title' => 'Chocofest em Gramado - RS',
 		'subtitle' => 'Delicie-se com os melhores chocolates de Gramado e ainda participe desta linda festa!',
-		'cover_img' => 'http://innbativel.kissr.com/assets/uploads/oferta-home-pn-02.jpg',
+		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-pn-02.jpg',
 		'category_id' => 1,
 		'genre_id' => 8,
 		'partner_id' => 1,
@@ -132,7 +132,7 @@ class OffersTableSeeder extends DatabaseSeeder
 	  [
 		'title' => 'Santiago do Chile',
 		'subtitle' => 'Aproveite o feriadão de Páscoa e faça sua Viagem Internacional ao Chile! Brinque na neve no Valle Nevado!',
-		'cover_img' => 'http://innbativel.kissr.com/assets/uploads/oferta-home-de-01.jpg',
+		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-de-01.jpg',
 		'category_id' => 1,
 		'genre_id' => 6,
 		'partner_id' => 2,
@@ -144,7 +144,7 @@ class OffersTableSeeder extends DatabaseSeeder
 	  [
 		'title' => 'Campos do Jordão',
 		'subtitle' => 'Aproveite e curta Campos do Jordão ainda mais! Descontos de até 50% em restaurantes, passeios e baladas. Válido na Páscoa e em JULHO!',
-		'cover_img' => 'http://innbativel.kissr.com/assets/uploads/oferta-home-de-02.jpg',
+		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-de-02.jpg',
 		'category_id' => 1,
 		'genre_id' => 9,
 		'genre2_id' => 10,
