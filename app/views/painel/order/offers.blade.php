@@ -17,7 +17,7 @@
 			{{ Former::text('offer_id')->class('input-medium')->placeholder('ID da oferta')->label('ID da oferta') }}
 			{{ Former::date('starts_on')->class('input-medium')->placeholder('Data início')->label('Data início') }}
 			{{ Former::date('ends_on')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('painel.order.offers')) }}
 			{{ Former::link('Exportar pesquisa acima para excel', 'javascript: exportar(\''.route('painel.order.list_offers_export', ['offer_id' =>'offer_id', 'starts_on' => 'starts_on', 'ends_on'=>'ends_on']).'\');') }}
 			<div class="dataTables_length">
@@ -98,7 +98,7 @@
 	->actions(function($offer_option) {
 		return DropdownButton::normal('Ações',
 				  	Navigation::links([
-						['Ver vouchers', route('painel.order.voucher', ['offer_option_id' => $offer_option['id']])],
+						['Ver Cupons', route('painel.order.voucher', ['offer_option_id' => $offer_option['id']])],
 				    ])
 				)->pull_right()->split();
 	})

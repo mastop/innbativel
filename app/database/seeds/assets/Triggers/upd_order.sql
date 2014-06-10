@@ -27,10 +27,12 @@ BEGIN
 
   ELSEIF (NEW.status = 'cancelado' AND OLD.status = 'pago') THEN
 
+    SELECT COALESCE(SUM(t.total), 0.00), COALESCE(SUM(t.credit_discount), 0.00), COALESCE(SUM(t.coupon_discount), 0.00) INTO @previous_total, @previous_credit_discount, @previous_coupon_discount FROM transactions t WHERE t.order_id = NEW.id AND t.status != 'pagamento';
+
     SET @coupon_discount = (SELECT value FROM discount_coupons WHERE id = NEW.coupon_id);
 
-    INSERT INTO transactions (order_id, status,         total,     credit_discount,                     coupon_discount,                  created_at, updated_at)
-         VALUES              (NEW.id,   'cancelamento', NEW.total, COALESCE(NEW.credit_discount, 0.00), COALESCE(@coupon_discount, 0.00), NOW(),      NOW());
+    INSERT INTO transactions (order_id, status,         total,                         credit_discount,                                                   coupon_discount,                                                created_at, updated_at)
+         VALUES              (NEW.id,   'cancelamento', (NEW.total - @previous_total), (COALESCE(NEW.credit_discount, 0.00) - @previous_credit_discount), (COALESCE(@coupon_discount, 0.00) - @previous_coupon_discount), NOW(),      NOW());
 
     UPDATE vouchers SET status = NEW.status WHERE order_id = NEW.id AND status = 'pago';
 
@@ -42,14 +44,16 @@ BEGIN
 
   ELSEIF (NEW.status = 'convercao_creditos' AND OLD.status = 'pago') THEN
 
+    SELECT COALESCE(SUM(t.total), 0.00), COALESCE(SUM(t.credit_discount), 0.00), COALESCE(SUM(t.coupon_discount), 0.00) INTO @previous_total, @previous_credit_discount, @previous_coupon_discount FROM transactions t WHERE t.order_id = NEW.id AND t.status != 'pagamento';
+
     SET @coupon_discount = (SELECT value FROM discount_coupons WHERE id = NEW.coupon_id);
 
-    INSERT INTO transactions (order_id, status,               total,     credit_discount,                     coupon_discount,                  created_at, updated_at)
-         VALUES              (NEW.id,   'convercao_creditos', NEW.total, COALESCE(NEW.credit_discount, 0.00), COALESCE(@coupon_discount, 0.00), NOW(),      NOW());
+    INSERT INTO transactions (order_id, status,               total,                         credit_discount,                                                   coupon_discount,                                                created_at, updated_at)
+         VALUES              (NEW.id,   'convercao_creditos', (NEW.total - @previous_total), (COALESCE(NEW.credit_discount, 0.00) - @previous_credit_discount), (COALESCE(@coupon_discount, 0.00) - @previous_coupon_discount), NOW(),      NOW());
+
+    SET @credit_discount_refund = (SELECT SUM(oo.price_with_discount) FROM vouchers v LEFT JOIN offers_options oo ON oo.id = v.offer_option_id WHERE v.order_id = NEW.id AND v.status = 'pago') + NEW.donation - ((COALESCE(@coupon_discount, 0.00) - @previous_coupon_discount) + @previous_credit_discount);
 
     UPDATE vouchers SET status = NEW.status WHERE order_id = NEW.id AND status = 'pago';
-
-    SET @credit_discount_refund = NEW.total + COALESCE(NEW.credit_discount, 0.00);
 
     IF(@credit_discount_refund > 0) THEN
       UPDATE profiles SET credit = credit + @credit_discount_refund WHERE id = NEW.user_id;

@@ -158,6 +158,32 @@ class VouchersTableSeeder extends DatabaseSeeder
         'email' => 'lindo@nil.da',
         'status' => 'pago',
       ],
+      ////////////////////////////////////////////
+      [
+        'order_id' => 8,
+        'offer_option_id' => 3,
+        'display_code' => 'hjk0-hj4f-32fd-vcju',
+        'name' => 'Gilberto',
+        'email' => 'gil@gmail.com',
+        'status' => 'pago',
+      ],
+      [
+        'order_id' => 8,
+        'offer_option_id' => 10,
+        'display_code' => 'bt56-bg7s-4frc-7nbg',
+        'name' => 'Gilberto',
+        'email' => 'gil@gmail.com',
+        'status' => 'pago',
+      ],
+      [
+        'order_id' => 8,
+        'offer_option_id' => 11,
+        'display_code' => 'koj7-23ds-df7b-vjjh',
+        'name' => 'Gilberto',
+        'email' => 'lindo@nil.da',
+        'status' => 'pago',
+      ],
+      ////////////////////////////////////////////
       // [
       //   'order_id' => 2,
       //   'offer_option_id' => 4,

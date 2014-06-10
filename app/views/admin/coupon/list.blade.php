@@ -16,7 +16,7 @@
 			{{ Former::text('display_code')->class('input-medium')->placeholder('Código')->label('Código') }}
 			{{ Former::date('starts_on')->class('input-medium')->placeholder('Data início')->label('Data início') }}
 			{{ Former::date('ends_on')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.coupon')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

@@ -17,7 +17,7 @@
 //     $interpreter = new Interpreter();
 
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
-//         $stmt = $pdo->prepare('INSERT INTO transactions_vouchers (id, voucher_id, payment_partner_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)');
+//         $stmt = $pdo->prepare('INSERT INTO transactions_vouchers (id, voucher_id, transaction_id, payment_partner_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)');
 //         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 
@@ -96,6 +96,19 @@ class TransactionsVouchersTableSeeder extends DatabaseSeeder
         [
             'voucher_id' => 15,
             'transaction_id' => 7,
+        ],
+        //////////////////////////////
+        [
+            'voucher_id' => 16,
+            'transaction_id' => 8,
+        ],
+        [
+            'voucher_id' => 17,
+            'transaction_id' => 8,
+        ],
+        [
+            'voucher_id' => 18,
+            'transaction_id' => 8,
         ],
         //////////////////////////////
         // [

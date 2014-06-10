@@ -3,7 +3,7 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Lista de Transações de Vouchers</h6>
+			<h6>Lista de Transações de Cupons</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('painel.payment.voucher') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
 	        </div>
@@ -17,7 +17,7 @@
 	        	->addOption('Todos', null)
 				->options($paymData)
 	        }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('painel.payment.voucher')) }}
 			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('painel.payment.voucher_export', ['payment_id'=>'payment_id']).'\');') }}
 			<div class="dataTables_length">

@@ -28,7 +28,7 @@
 	        }}
 			{{ Former::text('date_start')->class('input-medium')->placeholder('Data inicial')->label('Data inicial') }}
 			{{ Former::text('date_ends')->class('input-medium')->placeholder('Data final')->label('Data final') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.comment')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

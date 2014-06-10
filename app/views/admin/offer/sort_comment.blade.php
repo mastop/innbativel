@@ -24,7 +24,7 @@
 			</ul>
 		</div>
 
-	    {{ Former::submit() }}
+	    {{ Former::submit('Enviar') }}
 		{{ Former::link('Resetar', route('admin.offer.sort_comment', $offer->id)) }}
 
 	    {{ Former::close() }}

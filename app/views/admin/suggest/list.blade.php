@@ -17,7 +17,7 @@
 			{{ Former::text('suggestion')->class('input-medium')->placeholder('Sugestão')->label('Sugestão') }}
 			{{ Former::text('name')->class('input-medium')->placeholder('Nome')->label('Nome') }}
 			{{ Former::text('email')->class('input-medium')->placeholder('E-mail')->label('E-mail') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.suggest')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

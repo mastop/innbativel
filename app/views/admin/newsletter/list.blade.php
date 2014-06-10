@@ -15,7 +15,7 @@
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('name')->class('input-medium')->placeholder('Informe um nome para pesquisar')->label('Nome') }}
             {{ Former::text('email')->class('input-medium')->placeholder('Informe um e-mail para pesquisar')->label('E-mail') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.newsletter')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

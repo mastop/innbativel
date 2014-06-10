@@ -17,7 +17,7 @@
 			{{ Former::text('indicated_email')->class('input-medium')->placeholder('E-mail do indicado')->label('E-mail do indicado') }}
 			{{ Former::text('name')->class('input-medium')->placeholder('Nome do cliente')->label('Nome do cliente') }}
 			{{ Former::text('email')->class('input-medium')->placeholder('E-mail do cliente')->label('E-mail do cliente') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.indication')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

@@ -12,7 +12,7 @@
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::date('date_start')->class('input-medium')->placeholder('Data início')->label('Data início') }}
 			{{ Former::date('date_end')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.transaction')) }}
 			{{ Former::link('Exportar pesquisa para excel', 'javascript: exportar(\''.route('admin.transaction.export', ['date_start' => 'date_start', 'date_end' => 'date_end']).'\');') }}
 			<div class="dataTables_length">
@@ -41,7 +41,7 @@
 	<thead>
 		<tr>
 			<th>Data</th>
-			<th>ID da Compra</th>
+			<th>Número do pedido</th>
 			<th>Cliente</th>
 			<th>Tipo</th>
 			<th>Forma de pagamento</th>

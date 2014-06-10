@@ -15,7 +15,7 @@
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('title')->class('input-medium')->placeholder('Título')->label('Título') }}
 			{{ Former::text('geocode')->class('input-medium')->placeholder('Geocode')->label('Geocode') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.saveme')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

@@ -11,7 +11,7 @@
    
 CREATE FUNCTION inst_transaction_partial_cancellation (arg_order_id INT, arg_offer_option_id INT, arg_status VARCHAR(30)) RETURNS INT(20) DETERMINISTIC
 BEGIN
-   -- INICIO CASO CUPOM DE DESCONTO RESTRITO A OFERTA
+    -- INICIO CASO CUPOM DE DESCONTO RESTRITO A OFERTA
     -- EXPLICAÇÃO: CASOS QUANDO O CANCELAMENTO PARCIAL É DE UMA OFERTA QUE GANHOU DESCONTO POR UM CUPOM DE DESCONTO RESTRITA APENAS A ELA
     SET @coupon_discount_offer_id = (SELECT COALESCE(dc.offer_id, 0) FROM orders o LEFT JOIN discount_coupons dc ON o.coupon_id = dc.id WHERE o.id = arg_order_id);
     SET @offer_id = (SELECT oo.offer_id FROM offers_options oo WHERE oo.id = arg_offer_option_id);
@@ -26,8 +26,8 @@ BEGIN
 
         IF(@count = 0) THEN
 
-          INSERT INTO transactions (order_id,       status,              coupon_discount,                 created_at, updated_at)
-               VALUES              (arg_order_id,   arg_status,          @remaining_coupon_discount_temp, NOW(),      NOW());
+          INSERT INTO transactions (order_id,       status,     coupon_discount,                 created_at, updated_at)
+               VALUES              (arg_order_id,   arg_status, @remaining_coupon_discount_temp, NOW(),      NOW());
 
         END IF;
 
@@ -52,9 +52,13 @@ BEGIN
     SET @donation = (SELECT o.donation FROM orders o WHERE o.id = arg_order_id);
     SET @remaining_order = @remaining_order + @donation;
     SET @remaining_coupons = (SELECT COUNT(v.id) FROM vouchers v WHERE v.status = 'pago' AND v.order_id = arg_order_id);
+    
     IF(@remaining_coupons = 0) THEN 
+
       SET @remaining_coupon_discount = @remaining_coupon_discount + @donation; 
+      SET @donation_cred = @donation;
       UPDATE orders o SET status = 'cancelado_parcial' WHERE o.id = arg_order_id;
+
     END IF;
     -- FIM CASO DOAÇÃO
 
@@ -69,7 +73,11 @@ BEGIN
 
       SET @transaction_id = LAST_INSERT_ID();
 
-      IF(arg_status = 'convercao_creditos_parcial') THEN SET @credit_discount_refund = @credit_discount_refund + @money_refund; END IF;
+      IF(arg_status = 'convercao_creditos_parcial') THEN 
+
+        SET @credit_discount_refund = (SELECT oo.price_with_discount FROM offers_options oo WHERE oo.id = arg_offer_option_id) - (COALESCE(@coupon_discount_refund, 0.00) + COALESCE(@remaining_coupon_discount_temp, 0.00)) + COALESCE(@donation_cred, 0.00);
+
+      END IF;
 
       UPDATE profiles p
       LEFT JOIN orders o ON p.user_id = o.user_id
@@ -86,7 +94,11 @@ BEGIN
 
       SET @transaction_id = LAST_INSERT_ID();
 
-      IF(arg_status = 'convercao_creditos_parcial') THEN SET @credit_discount_refund = @credit_discount_refund + @money_refund; END IF;
+      IF(arg_status = 'convercao_creditos_parcial') THEN 
+
+        SET @credit_discount_refund = (SELECT oo.price_with_discount FROM offers_options oo WHERE oo.id = arg_offer_option_id) - COALESCE(@remaining_coupon_discount_temp, 0.00) + COALESCE(@donation_cred, 0.00);
+
+      END IF;
 
       UPDATE profiles p
       LEFT JOIN orders o ON p.user_id = o.user_id
@@ -101,12 +113,14 @@ BEGIN
 
       SET @money_refund = @balance - @new_balance;
 
-      INSERT INTO transactions (order_id,       status,     total,                         created_at, updated_at)
-           VALUES              (arg_order_id,   arg_status, COALESCE(@money_refund, 0.00), NOW(),      NOW());
+      INSERT INTO transactions (order_id,     status,     total,                         created_at, updated_at)
+           VALUES              (arg_order_id, arg_status, COALESCE(@money_refund, 0.00), NOW(),      NOW());
 
       SET @transaction_id = LAST_INSERT_ID();
 
-      IF(arg_status = 'convercao_creditos_parcial') THEN
+      IF(arg_status = 'convercao_creditos_parcial') THEN 
+
+        SET @money_refund = (SELECT oo.price_with_discount FROM offers_options oo WHERE oo.id = arg_offer_option_id) - COALESCE(@remaining_coupon_discount_temp, 0.00) + COALESCE(@donation_cred, 0.00);
 
         UPDATE profiles p
         LEFT JOIN orders o ON p.user_id = o.user_id

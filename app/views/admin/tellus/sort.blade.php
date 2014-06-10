@@ -23,7 +23,7 @@
 			</ul>
 		</div>
 
-	    {{ Former::submit() }}
+	    {{ Former::submit('Enviar') }}
 		{{ Former::link('Resetar', route('admin.tellus.sort')) }}
 
 	    {{ Former::close() }}

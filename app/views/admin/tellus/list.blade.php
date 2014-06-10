@@ -20,7 +20,7 @@
 			{{ Former::text('depoiment')->class('input-medium')->placeholder('Depoimento')->label('Depoimetno') }}
 			{{ Former::date('date_start')->class('input-medium')->placeholder('Data inicial')->label('Data da inicial') }}
 			{{ Former::date('date_end')->class('input-medium')->placeholder('Data da final')->label('Data da final') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.tellus')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

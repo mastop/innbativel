@@ -16,7 +16,7 @@
 			{{ Former::text('question')->class('input-medium')->placeholder('Pergunta')->label('Pergunta') }}
 			{{ Former::text('answer')->class('input-medium')->placeholder('Resposta')->label('Resposta') }}
 			{{ Former::text('group_title')->class('input-medium')->placeholder('Grupo')->label('Grupo') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.faq')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

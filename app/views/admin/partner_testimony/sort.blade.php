@@ -23,7 +23,7 @@
 			</ul>
 		</div>
 
-	    {{ Former::submit() }}
+	    {{ Former::submit('Enviar') }}
 		{{ Former::link('Resetar', route('admin.partner_testimony.sort')) }}
 
 	    {{ Former::close() }}

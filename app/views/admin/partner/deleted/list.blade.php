@@ -14,7 +14,7 @@
 			{{ Former::inline_open(route('admin.partner.deleted')) }}
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('email')->class('input-medium')->placeholder('E-mail') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.partner')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}

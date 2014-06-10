@@ -19,7 +19,7 @@
 			{{ Former::text('sponsor')->class('input-medium')->placeholder('Responsável')->label('Responsável') }}
 			{{ Former::text('role')->class('input-medium')->placeholder('Cargo do responsável')->label('Cargo do responsável') }}
 			{{ Former::text('testimony')->class('input-medium')->placeholder('Depoimento')->label('Depoimetno') }}
-			{{ Former::submit() }}
+			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.partner_testimony')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
