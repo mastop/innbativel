@@ -1,5 +1,12 @@
 (function($){
-    //$(".chosen-select").chosen({disable_search_threshold: 5, allow_single_deselect: true, max_selected_options: 5, no_results_text: "Nenhum item encontrado com "});
+    $('.redactor').redactor({
+        lang: 'pt_br',
+        linebreaks: true,
+        observeLinks: true,
+        convertVideoLinks: true,
+        plugins: ['fontsize'],
+        buttons: ['html', 'formatting',  'bold', 'italic', 'unorderedlist', 'orderedlist', 'image', 'video', 'file', 'table', 'link', 'alignment', 'horizontalrule']
+    });
     $(".select2").select2({allowClear: true});
     $("#offers_includes").select2({maximumSelectionSize: 5});
 

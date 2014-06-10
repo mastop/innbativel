@@ -30,9 +30,9 @@
         {{ Former::date('ends_on', 'Fim da Oferta')->class('span12') }}
 
 
-        {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12') }}
+        {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques da Oferta') }}
         {{ Former::textarea('summary', 'Descrição Resumida')->rows(5)->columns(20)->class('span12') }}
-        {{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12') }}
+        {{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira as Regras da Oferta') }}
 
 
         {{ Former::multiselect('offers_includes', 'Inclusos')
