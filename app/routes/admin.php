@@ -212,6 +212,8 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 
 	Route::any('order/voucher/exportar', function(){ return Redirect::route('admin.order'); });
 	Route::get('order/voucher/exportar/{offer_option_id?}/{id?}', ['as' => 'admin.order.voucher_export', 'uses' => 'AdminOrderController@getVoucherExport']);
+
+	// Route::get('order/validate_discount_coupon/{display_code}/{offers_options_ids}', ['as' => 'admin.order.val_disc_counpon', 'uses' => 'AdminOrderController@validateDiscountCoupon']);
 	
 	/*
 	 * Category
