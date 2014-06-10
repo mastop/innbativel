@@ -20,7 +20,7 @@
           ['Gênero', route('admin.genre'), false, false, null, 'leaf'],
           ['Conte pra gente', route('admin.tellus'), false, false, null, 'leaf'],
           ['Depoimento de parceiros', route('admin.partner_testimony'), false, false, null, 'leaf'],
-          // ['Sugestões', route('admin.suggest'), false, false, null, 'leaf'],
+          ['Sugestões', route('admin.suggest'), false, false, null, 'leaf'],
           ['Configurações', route('admin.config'), false, false, null, 'cogs'],
           ['FAQ\'s', route('admin.faq'), false, false, null, 'question-sign'],
           ['Newsletters', route('admin.newsletter'), false, false, null, 'question-sign'],
