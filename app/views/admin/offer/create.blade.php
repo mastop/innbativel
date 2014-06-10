@@ -26,8 +26,8 @@
         ->class('span12 select2')
         }}
 
-        {{ Former::date('starts_on', 'Início da Oferta')->class('span12') }}
-        {{ Former::date('ends_on', 'Fim da Oferta')->class('span12') }}
+        {{ Former::text('starts_on', 'Início da Oferta')->class('span12 datepicker') }}
+        {{ Former::text('ends_on', 'Fim da Oferta')->class('span12 datepicker') }}
 
 
         {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques da Oferta') }}
@@ -106,8 +106,8 @@
                 {{ Former::text('offer_options[0][min_qty]', 'Estoque Mínimo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty]', 'Estoque Máximo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty_per_buyer]', 'Máximo por Cliente')->class('span4')->append('compras')->value('0') }}
-                {{ Former::date('offer_options[0][voucher_validity_start]', 'Início Val. Cupom')->class('span12') }}
-                {{ Former::date('offer_options[0][voucher_validity_end]', 'Fim Val. Cupom')->class('span12') }}
+                {{ Former::text('offer_options[0][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker') }}
+                {{ Former::text('offer_options[0][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker') }}
                 {{ Former::button('Remover esta Opção')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
                 </div>
                 <div class="span1">

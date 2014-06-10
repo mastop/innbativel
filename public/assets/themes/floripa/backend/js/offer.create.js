@@ -7,6 +7,20 @@
         plugins: ['fontsize'],
         buttons: ['html', 'formatting',  'bold', 'italic', 'unorderedlist', 'orderedlist', 'image', 'video', 'file', 'table', 'link', 'alignment', 'horizontalrule']
     });
+    $.datepicker.setDefaults( $.datepicker.regional[ "pt-BR" ]);
+//    $('body').on('click', 'input.datepicker', function(event) {
+//        $(this).datepicker({
+//            showOn: 'focus',
+//            numberOfMonths: 2,
+//            showButtonPanel: false,
+//            minDate: 0
+//        }).focus();
+//    });
+    $('input.datepicker').datepicker({
+        numberOfMonths: 2,
+        showButtonPanel: false,
+        minDate: 0
+    });
     $(".select2").select2({allowClear: true});
     $("#offers_includes").select2({maximumSelectionSize: 5});
 
@@ -84,7 +98,6 @@
     $( "div#offerOptionsMain" ).sortable({
         stop: function( event, ui ) {
             resetOfferOptions();
-            //alert(ui.item.html());
         }
     });
     $( "div#offerOptionsMain" ).disableSelection();
@@ -114,12 +127,17 @@
                 var newVal = $(this).attr('id').replace(/\[[0-9]+\]/g, '['+ i +']');
                 $(this).attr('id', newVal);
                 $(this).attr('name', newVal);
+                $(this).removeClass('hasDatepicker');
             });
             $(this).find('label').each(function(){
                 var newVal = $(this).attr('for').replace(/\[[0-9]+\]/g, '['+ i +']');
                 $(this).attr('for', newVal);
             });
-            //console.log(i);
+        });
+        $('div#offerOptionsMain div.offerOptions input.datepicker').datepicker({
+            numberOfMonths: 2,
+            showButtonPanel: false,
+            minDate: 0
         });
     }
 })(jQuery);
