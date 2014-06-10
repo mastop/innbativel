@@ -99,10 +99,10 @@
                 <span class="badge badge-info offerOptionNumber">1</span>
                 {{ Former::text('offer_options[0][title]', 'Título')->class('span12') }}
                 {{ Former::text('offer_options[0][subtitle]', 'Subtítulo')->class('span12') }}
-                {{ Former::text('offer_options[0][price_original]', 'Preço Original')->class('span12')->prepend('R$') }}
-                {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12')->prepend('R$') }}
+                {{ Former::text('offer_options[0][price_original]', 'Preço Original')->class('span12 currency')->prepend('R$') }}
+                {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12 currency')->prepend('R$') }}
                 {{ Former::text('offer_options[0][percent_off]', 'Total do Desconto')->class('span4')->append('% OFF')->value('0') }}
-                {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12')->prepend('R$') }}
+                {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12 currency')->prepend('R$') }}
                 {{ Former::text('offer_options[0][min_qty]', 'Estoque Mínimo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty]', 'Estoque Máximo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty_per_buyer]', 'Máximo por Cliente')->class('span4')->append('compras')->value('0') }}

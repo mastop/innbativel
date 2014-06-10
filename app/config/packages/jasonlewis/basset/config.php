@@ -35,6 +35,7 @@ return [
         $collection->javascript('jquery-migrate')->apply('JsMin');
         $collection->javascript('jquery-ui')->apply('JsMin');
         $collection->javascript('assets/vendor/jquery.ui/stable/ui/i18n/jquery.ui.datepicker-pt-BR.js')->apply('JsMin');
+        $collection->javascript('assets/themes/floripa/backend/js/plugins/maskmoney/jquery.maskMoney.min.js')->apply('JsMin');
         $collection->javascript('jquery-cookie')->apply('JsMin');
         $collection->javascript('jquery-hashchange')->apply('JsMin');
         $collection->javascript('jquery-easytabs')->apply('JsMin');

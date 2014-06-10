@@ -21,6 +21,11 @@
         showButtonPanel: false,
         minDate: 0
     });
+    $('input.currency').maskMoney({
+        thousands: '.',
+        decimal:    ','
+    });
+
     $(".select2").select2({allowClear: true});
     $("#offers_includes").select2({maximumSelectionSize: 5});
 
@@ -138,6 +143,10 @@
             numberOfMonths: 2,
             showButtonPanel: false,
             minDate: 0
+        });
+        $('div#offerOptionsMain div.offerOptions input.currency').maskMoney({
+            thousands: '.',
+            decimal:    ','
         });
     }
 })(jQuery);
