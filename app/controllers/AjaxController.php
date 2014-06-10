@@ -26,7 +26,7 @@ class AjaxController extends BaseController {
 	public function getSearchOffers()
 	{
         $q = Input::get('q');
-        $page = Input::get('page_limit', 2);
+        $page = Input::get('page_limit', 10);
         $now = date('Y-m-d H:i:s');
 
         //$data['offers'] = Offer::with(['saveme', 'offer_option', 'partner', 'destiny'])->where('starts_on','<', $now)->where('ends_on','>', $now)->where('title', 'LIKE', $q)->orderBy('starts_on', 'asc')->get();
