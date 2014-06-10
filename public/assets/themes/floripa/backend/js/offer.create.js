@@ -1,5 +1,8 @@
 (function($){
-    $(".chosen-select").chosen({disable_search_threshold: 5, allow_single_deselect: true, max_selected_options: 5, no_results_text: "Nenhum item encontrado com "});
+    //$(".chosen-select").chosen({disable_search_threshold: 5, allow_single_deselect: true, max_selected_options: 5, no_results_text: "Nenhum item encontrado com "});
+    $(".select2").select2({allowClear: true});
+    $("#offers_includes").select2({maximumSelectionSize: 5});
+
     $(document).bind('dragover', function (e)
     {
         var dropZone = $('.dropzone'),
@@ -84,9 +87,7 @@
         //alert(div_clone.html());
         var div = div_clone.clone().insertAfter(div_clone);
         resetOfferOptions();
-        //div.appendTo($('#offerOptionsMain'));
-        $( "div#offerOptionsMain" ).sortable();
-        $( "div#offerOptionsMain" ).disableSelection();
+        $( "div#offerOptionsMain" ).sortable("refresh");
     });
 
     $( "div#offerOptionsMain" ).on( "click", "button", function() {

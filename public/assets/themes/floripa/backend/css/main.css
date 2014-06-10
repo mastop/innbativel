@@ -1960,7 +1960,7 @@ button.btn.btn-mini, input[type="submit"].btn.btn-mini { *padding-top: 1px; *pad
 ================================================== */
 
 fieldset { padding: 0; margin: 0; border: 0; }
-legend { display: block; width: 98%; padding-left: 2%; margin-bottom: 20px; font-size: 21px; line-height: 40px; color: #333333; border: 0; border-bottom: 1px solid #e5e5e5; }
+legend { display: block; width: 98%; padding-left: 2%; margin-bottom: 20px; font-size: 21px; line-height: 40px; color: #333333; border: 0;}
 legend small { font-size: 15px; color: #999999; }
 
 .field-icon { position: absolute; top: 8px; right: 8px; display: block; font-size: 14px; line-height: 1; }
@@ -2570,4 +2570,7 @@ span.offerOptionNumber{
 div.offerOptions div.control-group, div.offerOptions div.control-group div.controls input{
     padding: 5px;
 
+}
+button#offer_opt_add{
+    margin-bottom: 25px;
 }

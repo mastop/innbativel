@@ -49,8 +49,8 @@ class SetupOffersTable extends Migration {
 		$table->boolean('display_map')->default(false);
 		$table->integer('display_order')->default(99); // ordem das ofertas na home, em categorias e em qualquer outro lugar
 		$table->boolean('is_product')->default(false);
-		$table->boolean('is_available')->default(false);
-		$table->boolean('is_active')->default(false);
+		$table->boolean('is_available')->default(true);
+		$table->boolean('is_active')->default(true);
 
 		/*
 		 * Foreign Keys

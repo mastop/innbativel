@@ -19,8 +19,18 @@ class Holiday extends Eloquent {
   	'title' => 'required',
   );
 
-  public function offer(){
-  	return $this->belongsToMany('Offer', 'offers_holidays', 'holiday_id', 'offer_id');
-  }
+    public function offer(){
+        return $this->belongsToMany('Offer', 'offers_holidays', 'holiday_id', 'offer_id');
+    }
+    public static function getAllArray(){
+        $holidays = parent::orderBy('title')->get(['id', 'title'])->toArray();
+        $ret = array();
+        if(!empty($holidays)){
+            foreach($holidays as $c){
+                $ret[$c['id']] = $c['title'];
+            }
+        }
+        return $ret;
+    }
 
 }

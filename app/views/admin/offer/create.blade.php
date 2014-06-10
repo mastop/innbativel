@@ -12,18 +12,18 @@
         {{ Former::text('subtitle', 'Subtítulo')->class('span12') }}
         {{ Former::text('subsubtitle', 'Subtítulo 2')->class('span12') }}
         {{ Former::text('saveme_title', 'Título SaveMe')->class('span12') }}
-        {{ Former::select('destiny_id', 'Destino')->fromQuery(Destiny::all(), 'name')->class('span12  chosen-select') }}
+        {{ Former::select('destiny_id', 'Destino')->fromQuery(Destiny::all(), 'name')->class('span12 select2') }}
 
         {{ Former::select('partner_id', 'Empresa Parceira')
         ->addOption(null)
         ->data_placeholder('Selecione uma Empresa Parceira')
         ->fromQuery(User::getAllByRole('parceiro'))
-        ->class('span12 chosen-select') }}
+        ->class('span12 select2') }}
 
         {{ Former::select('ngo_id', 'ONG para Doação')
         ->data_placeholder('Selecione uma ONG')
         ->fromQuery(Ngo::orderBy('name')->get(), 'name')
-        ->class('span12 chosen-select')
+        ->class('span12 select2')
         }}
 
         {{ Former::date('starts_on', 'Início da Oferta')->class('span12') }}
@@ -38,13 +38,13 @@
         {{ Former::multiselect('offers_includes', 'Inclusos')
         ->fromQuery(Included::orderBy('title')->get())
         ->data_placeholder('Selecione os Itens Inclusos')
-        ->class('span12  chosen-select') }}
+        ->class('span12') }}
 
         {{ Former::select('tell_us_id', 'Depoimento de Cliente')
         ->addOption(null)
         ->fromQuery(TellUs::orderBy('destiny')->get())
         ->data_placeholder('Selecione um Depoimento')
-        ->class('span12 chosen-select') }}
+        ->class('span12 select2') }}
 
 
         {{ Former::stacked_radios('category_id', 'Categorias')->radios(Category::getAllArray()) }}
@@ -55,6 +55,8 @@
         {{ Former::checkbox('is_available', '')
         ->text('Oferta será publicada')
         ->check() }}
+        {{ Former::checkbox('is_product', '')
+        ->text('É um <b>produto</b>?') }}
 
 
         {{ Former::legend('Gêneros') }}
@@ -63,14 +65,14 @@
         ->addOption(null)
         ->data_placeholder('Selecione um Gênero')
         ->fromQuery(Genre::orderBy('title')->get())
-        ->class('span12 chosen-select')
+        ->class('span12 select2')
         }}
 
         {{ Former::select('genre2_id', 'Gênero 2')
         ->addOption(null)
         ->data_placeholder('Selecione um Gênero')
         ->fromQuery(Genre::orderBy('title')->get())
-        ->class('span12 chosen-select')
+        ->class('span12 select2')
         }}
 
 
@@ -100,6 +102,7 @@
                 {{ Former::text('offer_options[0][price_original]', 'Preço Original')->class('span12')->prepend('R$') }}
                 {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12')->prepend('R$') }}
                 {{ Former::text('offer_options[0][percent_off]', 'Total do Desconto')->class('span4')->append('% OFF')->value('0') }}
+                {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12')->prepend('R$') }}
                 {{ Former::text('offer_options[0][min_qty]', 'Estoque Mínimo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty]', 'Estoque Máximo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty_per_buyer]', 'Máximo por Cliente')->class('span4')->append('compras')->value('0') }}
@@ -114,9 +117,96 @@
 
         </div>
 
-
         {{ Former::button('Adicionar Opção')->id('offer_opt_add')->class('btn btn-large btn-block btn-success') }}
 
+        {{ Former::legend('Ofertas Adicionais') }}
+
+        <div class="row-fluid">
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span10">
+                {{ Former::framework('Nude') }}
+                {{ Former::hidden('offers_additional', '')
+                ->id('offers_additional')
+                ->class('span12') }}
+            </div>
+            <div class="span1">
+                &nbsp;
+            </div>
+        </div>
+
+        {{ Former::legend('Tags') }}
+
+        <div class="row-fluid">
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span10">
+                {{ Former::hidden('offers_tags', '')
+                //->fromQuery(Tag::orderBy('title')->get(), 'title')
+                ->data_placeholder('Digite as Tags da Oferta')
+                ->id('offers_tags')
+                ->class('span12') }}
+            </div>
+            <div class="span1">
+                &nbsp;
+            </div>
+        </div>
+        {{ Former::framework('TwitterBootstrap') }}
+        <div class="row-fluid" style="margin-top: 25px;">
+            <div class="span6">
+                {{ Former::legend('Grupos') }}
+                {{ Former::checkboxes('offers_groups', '')->checkboxes(Group::getAllArray()) }}
+            </div>
+            <div class="span6">
+                {{ Former::legend('Feriados') }}
+                {{ Former::checkboxes('offers_holidays', '')->checkboxes(Holiday::getAllArray()) }}
+            </div>
+        </div>
+
+        {{ Former::legend('Saveme') }}
+
+        <div class="control-group">
+            <label for="saveme_sudeste" class="control-label"><input type="checkbox" name="saveme_sudeste_chk" id="saveme_sudeste_chk" checked> Sudeste</label>
+            <div class="controls">
+                <input class="span12" id="saveme_sudeste" type="text" name="saveme_sudeste" value="2">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="saveme_sul" class="control-label"><input type="checkbox" name="saveme_sul_chk" id="saveme_sul_chk" checked> Sul</label>
+            <div class="controls">
+                <input class="span12" id="saveme_sul" type="text" name="saveme_sul" value="2">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="saveme_nordeste" class="control-label"><input type="checkbox" name="saveme_nordeste_chk" id="saveme_nordeste_chk" checked> Nordeste</label>
+            <div class="controls">
+                <input class="span12" id="saveme_nordeste" type="text" name="saveme_nordeste" value="2">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="saveme_norte" class="control-label"><input type="checkbox" name="saveme_norte_chk" id="saveme_norte_chk" checked> Norte</label>
+            <div class="controls">
+                <input class="span12" id="saveme_norte" type="text" name="saveme_norte" value="2">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="saveme_centrooeste" class="control-label"><input type="checkbox" name="saveme_centrooeste_chk" id="saveme_centrooeste_chk" checked> Centro-Oeste</label>
+            <div class="controls">
+                <input class="span12" id="saveme_centrooeste" type="text" name="saveme_centrooeste" value="2">
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        @foreach (Saveme::orderBy('title')->get() as $saveme)
+        <div class="control-group">
+            <div class="controls">
+                <input type="checkbox" name="offers_saveme[]" id="offers_saveme[]" value="{{$saveme->id}}" checked> <input class="input-small" id="offers_saveme{{$saveme->id}}" type="text" name="offers_saveme{{$saveme->id}}" value="2"> {{$saveme->title}}
+            </div>
+        </div>
+        @endforeach
+
+        {{ Former::hidden('is_active', '')->value(1) }}
 
 
 
@@ -227,6 +317,59 @@
                         );
                     });
                 });
+                // Tags
+                $('#offers_tags').select2({tags:[@foreach (DB::table('tags')->lists('title', 'id') as $id => $tag) {"id": {{$id}}, "text" : "{{$tag}}"}, @endforeach],tokenSeparators: [",", " "]});
+                $("#offers_additional").select2({
+                    placeholder: "Procurar Ofertas",
+                    minimumInputLength: 1,
+                    multiple: true,
+                    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                        url: "{{route('ajax-offers')}}",
+                        dataType: 'jsonp',
+                        data: function (term, page) {
+                            return {
+                                q: term, // search term
+                                page_limit: 20
+                            };
+                        },
+                        results: function (data, page) { // parse the results into the format expected by Select2.
+                            // since we are using custom formatting functions we do not need to alter remote JSON data
+                            return {results: data.offers};
+                        }
+                    },
+                    formatResult: offerFormatResult, // omitted for brevity, see the source of this page
+                    formatSelection: offerFormatSelection,  // omitted for brevity, see the source of this page
+                    dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
+                    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+                });
+                $("#offers_additional").on("change", function() { $("#offers_additional_val").html($("#offers_additional").val()); $("#offers_additional").select2("container").find("ul.select2-choices").sortable('refresh')});
+
+                $("#offers_additional").select2("container").find("ul.select2-choices").sortable({
+                    containment: 'parent',
+                    start: function() { $("#offers_additional").select2("onSortStart"); },
+                    update: function() { $("#offers_additional").select2("onSortEnd"); }
+                });
+                function offerFormatResult(offer) {
+                    var markup = "<table class='offer-result'><tr>";
+                    if (offer.cover_img !== undefined) {
+                        markup += "<td class='offer-image'><img src='" + offer.cover_img + "' style='max-width:100px;'/></td>";
+                    }else{
+                        markup += "<td class='offer-image'><img src='{{asset('assets/themes/floripa/backend/img/logo.png')}}'/></td>";
+                    }
+                    markup += "<td class='offer-info'><div class='offer-title'><b>#"+offer.ofid+"</b> " + offer.offer_title + " ( "+offer.destname+" )</div>";
+                    if (offer.optitle !== undefined) {
+                        markup += "<div class='offer-sub'>Opção: " + offer.optitle + " - "+offer.opsubtitle+" - R$ "+offer.price_with_discount+"</div>";
+                    }
+                    else if (offer.percent_off !== undefined) {
+                        markup += "<div class='offer-percent_off'>" + offer.percent_off + "% OFF</div>";
+                    }
+                    markup += "</td></tr></table>";
+                    return markup;
+                }
+
+                function offerFormatSelection(offer) {
+                    return "<b>#"+offer.ofid+"</b> " + offer.offer_title + " ( "+offer.destname+" ) - Opção: " + offer.optitle;
+                }
             });
         </script>
 
