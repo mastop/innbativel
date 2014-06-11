@@ -319,28 +319,42 @@
                 });
                 // Tags
                 $('#offers_tags').select2({tags:[@foreach (DB::table('tags')->lists('title', 'id') as $id => $tag) {"id": {{$id}}, "text" : "{{$tag}}"}, @endforeach],tokenSeparators: [",", " "]});
+                // Ofertas Adicionais
                 $("#offers_additional").select2({
                     placeholder: "Procurar Ofertas",
                     minimumInputLength: 1,
                     multiple: true,
-                    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                    ajax: {
                         url: "{{route('ajax-offers')}}",
                         dataType: 'jsonp',
                         data: function (term, page) {
                             return {
-                                q: term, // search term
+                                q: term, // termo
                                 page_limit: 20
                             };
                         },
-                        results: function (data, page) { // parse the results into the format expected by Select2.
-                            // since we are using custom formatting functions we do not need to alter remote JSON data
+                        results: function (data, page) {
                             return {results: data.offers};
                         }
                     },
-                    formatResult: offerFormatResult, // omitted for brevity, see the source of this page
-                    formatSelection: offerFormatSelection,  // omitted for brevity, see the source of this page
-                    dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
-                    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+                    initSelection: function(element, callback) {
+                        // O input já tem valores que apontam para ids de OfferOptions
+                        // Esta função transforma o id em um objeto que o select2 pode renderizar
+                        // usando o formatSelection
+                        var id=$(element).val();
+                        if (id!=="") {
+                            $.ajax("{{route('ajax-offer')}}", {
+                                data: {
+                                    'id': id
+                                },
+                                dataType: "jsonp"
+                            }).done(function(data) { callback(data.offers); });
+                        }
+                    },
+                    formatResult: offerFormatResult,
+                    formatSelection: offerFormatSelection,
+                    dropdownCssClass: "bigdrop",
+                    escapeMarkup: function (m) { return m; }
                 });
                 $("#offers_additional").on("change", function() { $("#offers_additional_val").html($("#offers_additional").val()); $("#offers_additional").select2("container").find("ul.select2-choices").sortable('refresh')});
 
