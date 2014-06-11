@@ -1,5 +1,31 @@
 (function($){
-    //$(".chosen-select").chosen({disable_search_threshold: 5, allow_single_deselect: true, max_selected_options: 5, no_results_text: "Nenhum item encontrado com "});
+    $('.redactor').redactor({
+        lang: 'pt_br',
+        linebreaks: true,
+        observeLinks: true,
+        convertVideoLinks: true,
+        plugins: ['fontsize'],
+        buttons: ['html', 'formatting',  'bold', 'italic', 'unorderedlist', 'orderedlist', 'image', 'video', 'file', 'table', 'link', 'alignment', 'horizontalrule']
+    });
+    $.datepicker.setDefaults( $.datepicker.regional[ "pt-BR" ]);
+//    $('body').on('click', 'input.datepicker', function(event) {
+//        $(this).datepicker({
+//            showOn: 'focus',
+//            numberOfMonths: 2,
+//            showButtonPanel: false,
+//            minDate: 0
+//        }).focus();
+//    });
+    $('input.datepicker').datepicker({
+        numberOfMonths: 2,
+        showButtonPanel: false,
+        minDate: 0
+    });
+    $('input.currency').maskMoney({
+        thousands: '.',
+        decimal:    ','
+    });
+
     $(".select2").select2({allowClear: true});
     $("#offers_includes").select2({maximumSelectionSize: 5});
 
@@ -77,7 +103,6 @@
     $( "div#offerOptionsMain" ).sortable({
         stop: function( event, ui ) {
             resetOfferOptions();
-            //alert(ui.item.html());
         }
     });
     $( "div#offerOptionsMain" ).disableSelection();
@@ -98,7 +123,6 @@
         }
     });
 
-
     function resetOfferOptions(){
         $('div#offerOptionsMain div.offerOptions').each(function(i){
             var num = i + 1;
@@ -107,12 +131,42 @@
                 var newVal = $(this).attr('id').replace(/\[[0-9]+\]/g, '['+ i +']');
                 $(this).attr('id', newVal);
                 $(this).attr('name', newVal);
+                $(this).removeClass('hasDatepicker');
             });
             $(this).find('label').each(function(){
                 var newVal = $(this).attr('for').replace(/\[[0-9]+\]/g, '['+ i +']');
                 $(this).attr('for', newVal);
             });
-            //console.log(i);
+        });
+        $('div#offerOptionsMain div.offerOptions input.datepicker').datepicker({
+            numberOfMonths: 2,
+            showButtonPanel: false,
+            minDate: 0
+        });
+        $('div#offerOptionsMain div.offerOptions input.currency').maskMoney({
+            thousands: '.',
+            decimal:    ','
         });
     }
+    // Para calcular o %OFF
+    $('#offerOptionsMain').on('keyup', 'input.PriceWithDiscount', function(event) {
+        var PriceOriginal = $(this).closest('div.offerOption').find('input.PriceOriginal').maskMoney('unmasked')[0];
+        var PriceWithDiscount = $(this).maskMoney('unmasked')[0];
+        var TotalDiscount = $(this).closest('div.offerOption').find('input.TotalDiscount');
+        if(PriceOriginal > 0){
+            var discount = (PriceOriginal - PriceWithDiscount) / PriceOriginal * 100;
+                TotalDiscount.val(Math.round(discount));
+        }
+    });
+    // Para reclamar se o repasse ao parceiro for maior que o valor com desconto
+    $('#offerOptionsMain').on('blur', 'input.TotalTransfer', function(event) {
+        var PriceWithDiscount = $(this).closest('div.offerOption').find('input.PriceWithDiscount').maskMoney('unmasked')[0];
+        var TotalTransfer = $(this).maskMoney('unmasked')[0];
+        if(TotalTransfer > PriceWithDiscount){
+            alert('O repasse ao parceiro não pode ser maior que o preço com desconto!');
+            $(this).val(0);
+            $(this).focus();
+            return false;
+        }
+    });
 })(jQuery);

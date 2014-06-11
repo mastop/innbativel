@@ -26,13 +26,13 @@
         ->class('span12 select2')
         }}
 
-        {{ Former::date('starts_on', 'Início da Oferta')->class('span12') }}
-        {{ Former::date('ends_on', 'Fim da Oferta')->class('span12') }}
+        {{ Former::text('starts_on', 'Início da Oferta')->class('span12 datepicker') }}
+        {{ Former::text('ends_on', 'Fim da Oferta')->class('span12 datepicker') }}
 
 
-        {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12') }}
+        {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques da Oferta') }}
         {{ Former::textarea('summary', 'Descrição Resumida')->rows(5)->columns(20)->class('span12') }}
-        {{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12') }}
+        {{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira as Regras da Oferta') }}
 
 
         {{ Former::multiselect('offers_includes', 'Inclusos')
@@ -99,16 +99,16 @@
                 <span class="badge badge-info offerOptionNumber">1</span>
                 {{ Former::text('offer_options[0][title]', 'Título')->class('span12') }}
                 {{ Former::text('offer_options[0][subtitle]', 'Subtítulo')->class('span12') }}
-                {{ Former::text('offer_options[0][price_original]', 'Preço Original')->class('span12')->prepend('R$') }}
-                {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12')->prepend('R$') }}
-                {{ Former::text('offer_options[0][percent_off]', 'Total do Desconto')->class('span4')->append('% OFF')->value('0') }}
-                {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12')->prepend('R$') }}
+                {{ Former::text('offer_options[0][price_original]', 'Preço Original')->class('span12 currency PriceOriginal')->prepend('R$') }}
+                {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12 currency PriceWithDiscount')->prepend('R$') }}
+                {{ Former::text('offer_options[0][percent_off]', 'Total do Desconto')->class('span4 TotalDiscount')->append('% OFF')->value('0') }}
+                {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12 currency TotalTransfer')->prepend('R$') }}
                 {{ Former::text('offer_options[0][min_qty]', 'Estoque Mínimo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty]', 'Estoque Máximo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty_per_buyer]', 'Máximo por Cliente')->class('span4')->append('compras')->value('0') }}
-                {{ Former::date('offer_options[0][voucher_validity_start]', 'Início Val. Cupom')->class('span12') }}
-                {{ Former::date('offer_options[0][voucher_validity_end]', 'Fim Val. Cupom')->class('span12') }}
-                {{ Former::button('Remover esta Opção')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
+                {{ Former::text('offer_options[0][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker') }}
+                {{ Former::text('offer_options[0][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker') }}
+                {{ Former::button('Remover esta Opção de Venda')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
                 </div>
                 <div class="span1">
                     &nbsp;
@@ -117,7 +117,7 @@
 
         </div>
 
-        {{ Former::button('Adicionar Opção')->id('offer_opt_add')->class('btn btn-large btn-block btn-success') }}
+        {{ Former::button('Adicionar Opção de Venda')->id('offer_opt_add')->class('btn btn-large btn-block btn-success') }}
 
         {{ Former::legend('Ofertas Adicionais') }}
 
@@ -319,28 +319,42 @@
                 });
                 // Tags
                 $('#offers_tags').select2({tags:[@foreach (DB::table('tags')->lists('title', 'id') as $id => $tag) {"id": {{$id}}, "text" : "{{$tag}}"}, @endforeach],tokenSeparators: [",", " "]});
+                // Ofertas Adicionais
                 $("#offers_additional").select2({
                     placeholder: "Procurar Ofertas",
                     minimumInputLength: 1,
                     multiple: true,
-                    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                    ajax: {
                         url: "{{route('ajax-offers')}}",
                         dataType: 'jsonp',
                         data: function (term, page) {
                             return {
-                                q: term, // search term
+                                q: term, // termo
                                 page_limit: 20
                             };
                         },
-                        results: function (data, page) { // parse the results into the format expected by Select2.
-                            // since we are using custom formatting functions we do not need to alter remote JSON data
+                        results: function (data, page) {
                             return {results: data.offers};
                         }
                     },
-                    formatResult: offerFormatResult, // omitted for brevity, see the source of this page
-                    formatSelection: offerFormatSelection,  // omitted for brevity, see the source of this page
-                    dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
-                    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+                    initSelection: function(element, callback) {
+                        // O input já tem valores que apontam para ids de OfferOptions
+                        // Esta função transforma o id em um objeto que o select2 pode renderizar
+                        // usando o formatSelection
+                        var id=$(element).val();
+                        if (id!=="") {
+                            $.ajax("{{route('ajax-offer')}}", {
+                                data: {
+                                    'id': id
+                                },
+                                dataType: "jsonp"
+                            }).done(function(data) { callback(data.offers); });
+                        }
+                    },
+                    formatResult: offerFormatResult,
+                    formatSelection: offerFormatSelection,
+                    dropdownCssClass: "bigdrop",
+                    escapeMarkup: function (m) { return m; }
                 });
                 $("#offers_additional").on("change", function() { $("#offers_additional_val").html($("#offers_additional").val()); $("#offers_additional").select2("container").find("ul.select2-choices").sortable('refresh')});
 

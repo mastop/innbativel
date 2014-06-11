@@ -2574,3 +2574,5 @@ div.offerOptions div.control-group, div.offerOptions div.control-group div.contr
 button#offer_opt_add{
     margin-bottom: 25px;
 }
+.bigdrop.select2-container .select2-results {max-height: 300px;}
+.bigdrop .select2-results {max-height: 300px;}
