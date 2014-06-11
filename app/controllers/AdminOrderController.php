@@ -1192,28 +1192,36 @@ class AdminOrderController extends BaseController {
 		return Response::make('<status>OK</status>', 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
 	}
 
-	private function validateDiscountCoupon($offers_options_ids, $display_code){
-		$offer_ids = OfferOption::whereIn('id', $offers_options_ids)->get('offer_id');
+	private function validateDiscountCoupon($display_code, $offers_options_ids){
+		$offers = OfferOption::whereIn('id', $offers_options_ids)->get(['offer_id']);
+		$offer_ids = [];
+		
+		foreach ($offers as $o) {
+			$offer_ids[] = $o->offer_id;
+		}
 
 		$discount_coupon = DiscountCoupon::where('display_code', '=', $display_code)
-										  ->where( function ( $query )
+										  ->where( function ( $query ) use ( $offer_ids )
 												   {
 												        $query->whereIn('offer_id', $offer_ids)
-												            ->orWhere('offer_id', 'IS', 'NULL');
+												            ->orWhereNull('offer_id');
 												   })
 										  ->where( function ( $query )
 												   {
 												        $query->where('user_id', '=', Auth::user()->id)
-												            ->orWhere('user_id', 'IS', 'NULL');
+												            ->orWhereNull('user_id');
 												   })
-										  ->where('qty_used', '<', 'qty')
-										  ->where('starts_on', '<=', date('d/m/Y h:i:s'))
-										  ->where('ends_on', '>=', date('d/m/Y h:i:s'))
-										  ->get('id', 'value', 'qty_used')
+										  ->where('starts_on', '<=', date('Y-m-d H:i:s'))
+										  ->where('ends_on', '>=', date('Y-m-d H:i:s'))
+										  ->get(['id', 'value', 'qty_used', 'qty'])
 										  ->first()
 											;
-
-		return isset($discount_coupons)?$discount_coupons:NULL;
+		if(isset($discount_coupon) && $discount_coupon->qty_used < $discount_coupon->qty){
+			return $discount_coupon;
+		}
+		else{
+			return NULL;
+		}
 	}
 
 	public function teste(){
