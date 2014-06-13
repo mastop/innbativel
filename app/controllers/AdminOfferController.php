@@ -175,6 +175,7 @@ class AdminOfferController extends BaseController {
                 foreach($offer_options as $k => $opt){
                     $opt['display_order'] = $k;
                     $opt['offer_id'] = $offer->id;
+                    // A linha abaixo está comentada porque deste jeito não executa os Mutators
                     //$offer_option = $offer->offer_option()->create($opt);
                     $offer_option = $this->offer_option->create($opt);
                     // Verifica os valores de $offer_option para pegar o menor e depois jogar na oferta
@@ -189,14 +190,37 @@ class AdminOfferController extends BaseController {
                 $offer->price_with_discount = $price_with_discount;
                 $offer->percent_off = $percent_off;
 
-                // Adiciona os itens inclusos
+                // Salva os itens inclusos
                 $offers_included = Input::get('offers_included');
-
                 if(is_array($offers_included)){
                     foreach($offers_included as $k => $v){
                         $offer->included()->attach($v, array('display_order' => $k));
                     }
                 }
+
+                // Salva as ofertas adicionais
+                $offers_additional = explode(',', Input::get('offers_additional'));
+                if(is_array($offers_additional)){
+                    foreach($offers_additional as $k => $v){
+                        $offer->offer_additional()->attach($v, array('display_order' => $k));
+                    }
+                }
+
+                // Salva as Tags
+                $offers_tags = explode(',', Input::get('offers_tags'));
+                if(is_array($offers_tags)){
+                    $tags = array();
+                    foreach($offers_tags as $v){
+                        if(is_numeric($v)){ // Se for número, joga no array $tags
+                            $tags[] = $v;
+                        }else{ // Se não for número, cria a tag primeiro e joga no array o ID
+                            $tags[] = Tag::firstOrCreate(array('title' => $v))->id;
+                        }
+                    }
+                    $offer->tag()->sync($tags);
+                }
+
+
 
                 // Update na oferta
                 $offer->save();
