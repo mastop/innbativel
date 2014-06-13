@@ -1,6 +1,6 @@
 <?php
 
-class Offer extends Eloquent {
+class Offer extends BaseModel {
 
 	/**
 	* The name of the table associated with the model.
@@ -15,20 +15,48 @@ class Offer extends Eloquent {
 	 );
 
 	protected $guarded = [];
-	protected $fillable = [];
+    protected $fillable = [
+        'partner_id', // Id do Parceiro
+        'category_id', // Id da Categoria
+        'genre_id', // Id do Gênero
+        'genre2_id', // Id do Gênero 2
+        'destiny_id', // Id do Destino
+        'ngo_id', // Id da ONG
+        'tell_us_id', // Id do depoimento do cliente
+        'title', // Título
+        'subtitle', // SubTítulo
+        'subsubtitle', // SubTítulo 2
+        'price_original', // Preço Original
+        'price_with_discount', // Preço Com Desconto
+        // TODO: percent_off com index para facilitar a busca
+        'rules', // Regras
+        'features', // Destaques
+        'saveme_title', // Título Saveme
+        'starts_on', // Data de Início
+        'ends_on', // Data de Término
+        'cover_img', // Imagem Principal
+        'offer_old_img', // Imagem Pré-Reservas
+        'newsletter_img', // Imagem Newsletters
+        'saveme_img', // Imagem Saveme
+        // 'video', // TODO: remover este campo da tabela
+        'display_map', // Exibir mapa?
+        'is_product', // Será publicada?
+        'is_active', // Oferta ativa?
+    ];
 
 	protected $softDelete = false;
 	public $timestamps = true;
 
 	public static $rules = [
-		 'partner_id' => 'required|integer',
-		 'ngo_id' => 'required|integer',
-		 'genre_id' => 'required|integer',
-		 'destiny_id' => 'required',
-		 'title' => 'required',
-		 'starts_on' => 'required',
-		 'ends_on' => 'required',
-		 'cover_img' => 'required|mimes:jpeg,jpg,png',
+        'title' => 'required',
+        'destiny_id' => 'required|integer',
+        'partner_id' => 'required|integer',
+        'ngo_id' => 'required|integer',
+        'starts_on' => 'required',
+        'ends_on' => 'required',
+        'rules' => 'required',
+        'category_id' => 'required|integer',
+        'genre_id' => 'required|integer',
 	 ];
 
 	public function order(){
@@ -156,5 +184,44 @@ class Offer extends Eloquent {
 		//return $destiny->city.'-'.$destiny->state_id;
 		return $destiny->name;
 	}
+
+    /**
+     * Esta função é necessária para substituir string vazia por NULL.
+     * Sem esta função, vai dar erro no SQL por causa da foreign key associada a genre2_id
+     * @param $value
+     * @return void
+     */
+    public function setGenre2IdAttribute($value)
+    {
+        $this->attributes['genre2_id'] = $value ?: null;
+    }
+
+    /**
+     * Formata a data de início, pegando dd/mm/YYYY
+     * e transformando em YYYY-mm-dd HH:ii:ss
+     *
+     * @param $value
+     * @return void
+     */
+    public function setStartsOnAttribute($value)
+    {
+        $starts_on = implode("-",array_reverse(explode("/",$value)));
+        $starts_on .= ' 00:00:00';
+        $this->attributes['starts_on'] = $starts_on;
+    }
+
+    /**
+     * Formata a data de término, pegando dd/mm/YYYY
+     * e transformando em YYYY-mm-dd HH:ii:ss
+     *
+     * @param $value
+     * @return void
+     */
+    public function setEndsOnAttribute($value)
+    {
+        $ends_on = implode("-",array_reverse(explode("/",$value)));
+        $ends_on .= ' 23:59:59';
+        $this->attributes['ends_on'] = $ends_on;
+    }
 
 }
