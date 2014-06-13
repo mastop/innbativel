@@ -1,10 +1,22 @@
 @section('content')
-
     <div class="well widget row-fluid">
 
+    <pre>
+    DEBUG:
+    {{print_r(Input::old())}}
+    </pre>
+    
         {{ Former::horizontal_open()->rules([
         	'title' => 'required',
-        ]) }}
+        	'destiny_id' => 'required',
+        	'partner_id' => 'required',
+        	'starts_on' => 'required',
+        	'ends_on' => 'required',
+        	'rules' => 'required',
+        	'category_id' => 'required',
+        	'ngo_id' => 'required',
+        	'genre_id' => 'required',
+        ])->id('formOffer') }}
 
         {{ Former::legend('Dados da Oferta') }}
 
@@ -12,7 +24,12 @@
         {{ Former::text('subtitle', 'Subtítulo')->class('span12') }}
         {{ Former::text('subsubtitle', 'Subtítulo 2')->class('span12') }}
         {{ Former::text('saveme_title', 'Título SaveMe')->class('span12') }}
-        {{ Former::select('destiny_id', 'Destino')->fromQuery(Destiny::all(), 'name')->class('span12 select2') }}
+
+        {{ Former::select('destiny_id', 'Destino')
+        ->addOption(null)
+        ->data_placeholder('Selecione um Destino')
+        ->fromQuery(Destiny::all(), 'name')
+        ->class('span12 select2') }}
 
         {{ Former::select('partner_id', 'Empresa Parceira')
         ->addOption(null)
@@ -31,7 +48,7 @@
 
 
         {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques da Oferta') }}
-        {{ Former::textarea('summary', 'Descrição Resumida')->rows(5)->columns(20)->class('span12') }}
+        {{-- Former::textarea('summary', 'Descrição Resumida')->rows(5)->columns(20)->class('span12') --}}
         {{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira as Regras da Oferta') }}
 
 
@@ -47,7 +64,7 @@
         ->class('span12 select2') }}
 
 
-        {{ Former::stacked_radios('category_id', 'Categorias')->radios(Category::getAllArray()) }}
+        {{ Former::stacked_radios('category_id', 'Categoria')->radios(Category::getAllArray()) }}
 
         {{ Former::checkbox('display_map', '')
         ->text('Exibir mapa na oferta')
@@ -76,7 +93,7 @@
         }}
 
 
-        {{ Former::legend('Fotos') }}
+        {{ Former::legend('Fotos')->id('OfferImagesLegend') }}
 
 
         {{-- Macro ImageUpload() está definida em app/start/global.php --}}
@@ -91,29 +108,57 @@
         {{ Former::legend('Opções de Venda') }}
 
         <div id="offerOptionsMain">
+            @if(!Input::old('offer_options'))
             <div class="row-fluid offerOptions">
                 <div class="span1">
                     &nbsp;
                 </div>
                 <div class="span10 offerOption">
                 <span class="badge badge-info offerOptionNumber">1</span>
-                {{ Former::text('offer_options[0][title]', 'Título')->class('span12') }}
+                {{ Former::text('offer_options[0][title]', 'Título')->class('span12 required')->required() }}
                 {{ Former::text('offer_options[0][subtitle]', 'Subtítulo')->class('span12') }}
-                {{ Former::text('offer_options[0][price_original]', 'Preço Original')->class('span12 currency PriceOriginal')->prepend('R$') }}
-                {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12 currency PriceWithDiscount')->prepend('R$') }}
-                {{ Former::text('offer_options[0][percent_off]', 'Total do Desconto')->class('span4 TotalDiscount')->append('% OFF')->value('0') }}
-                {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12 currency TotalTransfer')->prepend('R$') }}
+                {{ Former::text('offer_options[0][price_original]', 'Preço Original')->class('span12 currency PriceOriginal required')->required()->prepend('R$') }}
+                {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12 currency PriceWithDiscount required')->required()->prepend('R$') }}
+                {{ Former::text('offer_options[0][percent_off]', 'Total do Desconto')->class('span4 TotalDiscount required')->required()->append('% OFF')->value('0') }}
+                {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12 currency TotalTransfer required')->required()->prepend('R$') }}
                 {{ Former::text('offer_options[0][min_qty]', 'Estoque Mínimo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty]', 'Estoque Máximo')->class('span4')->append('compradores')->value('0') }}
                 {{ Former::text('offer_options[0][max_qty_per_buyer]', 'Máximo por Cliente')->class('span4')->append('compras')->value('0') }}
-                {{ Former::text('offer_options[0][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker') }}
-                {{ Former::text('offer_options[0][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker') }}
+                {{ Former::text('offer_options[0][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker required')->required() }}
+                {{ Former::text('offer_options[0][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker required')->required() }}
                 {{ Former::button('Remover esta Opção de Venda')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
                 </div>
                 <div class="span1">
                     &nbsp;
                 </div>
             </div>
+            @else
+                @foreach (Input::old('offer_options') as $k => $offer_options)
+                <div class="row-fluid offerOptions">
+                    <div class="span1">
+                        &nbsp;
+                    </div>
+                    <div class="span10 offerOption">
+                        <span class="badge badge-info offerOptionNumber">{{$k+1}}</span>
+                        {{ Former::text('offer_options['.$k.'][title]', 'Título')->class('span12 required')->required() }}
+                        {{ Former::text('offer_options['.$k.'][subtitle]', 'Subtítulo')->class('span12') }}
+                        {{ Former::text('offer_options['.$k.'][price_original]', 'Preço Original')->class('span12 currency PriceOriginal required')->required()->prepend('R$') }}
+                        {{ Former::text('offer_options['.$k.'][price_with_discount]', 'Preço com Desconto')->class('span12 currency PriceWithDiscount required')->required()->prepend('R$') }}
+                        {{ Former::text('offer_options['.$k.'][percent_off]', 'Total do Desconto')->class('span4 TotalDiscount required')->required()->append('% OFF')->value('0') }}
+                        {{ Former::text('offer_options['.$k.'][transfer]', 'Repasse ao Parceiro')->class('span12 currency TotalTransfer required')->required()->prepend('R$') }}
+                        {{ Former::text('offer_options['.$k.'][min_qty]', 'Estoque Mínimo')->class('span4')->append('compradores')->value('0') }}
+                        {{ Former::text('offer_options['.$k.'][max_qty]', 'Estoque Máximo')->class('span4')->append('compradores')->value('0') }}
+                        {{ Former::text('offer_options['.$k.'][max_qty_per_buyer]', 'Máximo por Cliente')->class('span4')->append('compras')->value('0') }}
+                        {{ Former::text('offer_options['.$k.'][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker required')->required() }}
+                        {{ Former::text('offer_options['.$k.'][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker required')->required() }}
+                        {{ Former::button('Remover esta Opção de Venda')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
+                    </div>
+                    <div class="span1">
+                        &nbsp;
+                    </div>
+                </div>
+                @endforeach
+            @endif
 
         </div>
 
@@ -127,7 +172,7 @@
             </div>
             <div class="span10">
                 {{ Former::framework('Nude') }}
-                {{ Former::hidden('offers_additional', '')
+                {{ Former::hidden('offers_additional')
                 ->id('offers_additional')
                 ->class('span12') }}
             </div>
@@ -143,8 +188,7 @@
                 &nbsp;
             </div>
             <div class="span10">
-                {{ Former::hidden('offers_tags', '')
-                //->fromQuery(Tag::orderBy('title')->get(), 'title')
+                {{ Former::hidden('offers_tags')
                 ->data_placeholder('Digite as Tags da Oferta')
                 ->id('offers_tags')
                 ->class('span12') }}
@@ -316,6 +360,23 @@
                             }
                         );
                     });
+                });
+                // Caso imagens já estejam pré-selecionadas
+                $('input.fileuploaded').each(function(){
+                    if($(this).val() != ''){
+                        // Single file
+                        var fileURL = url + 'temp/'+$(this).val();
+                        $(this).parent().find('div.dropzone').css("background-image", "url('"+fileURL+"')").css("background-position", "center center").css("background-repeat", "no-repeat");
+                        $(this).parent().find('div.fileremove').show();
+                        $(this).parent().find('div.dropinfo').hide();
+                    }else if($(this).parent().data('img') != undefined){
+                        // Multi files
+                        var fileURL = url + 'temp/'+$(this).parent().data('img');
+                        $(this).parent().css("background-image", "url('"+fileURL+"')").css("background-position", "center center").css("background-repeat", "no-repeat");
+                        $(this).val($(this).parent().data('img'));
+                        $(this).parent().fadeIn();
+                        $(this).parent().sortable({connectWith: ".multifiles"});
+                    }
                 });
                 // Tags
                 $('#offers_tags').select2({tags:[@foreach (DB::table('tags')->lists('title', 'id') as $id => $tag) {"id": {{$id}}, "text" : "{{$tag}}"}, @endforeach],tokenSeparators: [",", " "]});

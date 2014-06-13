@@ -149,9 +149,9 @@
         });
     }
     // Para calcular o %OFF
-    $('#offerOptionsMain').on('keyup', 'input.PriceWithDiscount', function(event) {
+    $('#offerOptionsMain').on('keyup', 'input.PriceWithDiscount,input.PriceOriginal', function(event) {
         var PriceOriginal = $(this).closest('div.offerOption').find('input.PriceOriginal').maskMoney('unmasked')[0];
-        var PriceWithDiscount = $(this).maskMoney('unmasked')[0];
+        var PriceWithDiscount = $(this).closest('div.offerOption').find('input.PriceWithDiscount').maskMoney('unmasked')[0];
         var TotalDiscount = $(this).closest('div.offerOption').find('input.TotalDiscount');
         if(PriceOriginal > 0){
             var discount = (PriceOriginal - PriceWithDiscount) / PriceOriginal * 100;
@@ -168,5 +168,81 @@
             $(this).focus();
             return false;
         }
+    });
+    // Função para ajudar a validar os campos vazios
+    // Retorna true se for vazio, false se não for
+    function isEmpty(field){
+        var c = $('#'+field);
+        var cVal = c.val().trim();
+        if(c.attr('type') == 'radio'){
+            cVal = $('input[name='+field+']:checked', '#formOffer').val();
+            if(cVal === undefined){
+                cVal = "";
+            }
+        }
+        var t = c.closest('div.control-group').find('label:first').text();
+        if(cVal == ''){
+            c.focus();
+            alert('O campo "'+t+'" é obrigatório');
+            return true;
+        }
+        return false;
+    }
+    // Validação do envio da Oferta
+    $( "#formOffer" ).submit(function( e ) {
+        // Valida título
+        if(isEmpty('title')){
+            return false;
+        }
+        // Valida Destino
+        if(isEmpty('destiny_id')){
+            return false;
+        }
+        // Valida Empresa Parceira
+        if(isEmpty('partner_id')){
+            return false;
+        }
+        // Valida Início da Oferta
+        if(isEmpty('starts_on')){
+            return false;
+        }
+        // Valida Fim da Oferta
+        if(isEmpty('ends_on')){
+            return false;
+        }
+        // Valida Regras
+        if(isEmpty('rules')){
+            return false;
+        }
+        // Valida Categoria
+        if(isEmpty('category_id')){
+            return false;
+        }
+        // Valida Gênero 1
+        if(isEmpty('genre_id')){
+            return false;
+        }
+        // Valida a imagem principal da oferta
+        if($('#cover_img').val() == ""){
+            alert('Envie a imagem principal da oferta');
+            $('html, body').animate({
+                scrollTop: $("#OfferImagesLegend").offset().top
+            }, 1000);
+            return false;
+        }
+        // Valida Opções de Venda
+        var optionEmpty = false;
+        $('div#offerOptionsMain input.required').each(function(){
+            if($(this).val() == ""){
+                var optionNumber = $(this).closest('div.offerOption').find('span.offerOptionNumber').text();
+                var optionTitle = $(this).closest('div.control-group').find('label:first').text();
+                alert('Preencha o campo "'+optionTitle+'" da Opção de Venda '+optionNumber);
+                $(this).focus();
+                optionEmpty = true;
+                return false;
+            }
+        });
+        if(optionEmpty) return false;
+        return true;
     });
 })(jQuery);

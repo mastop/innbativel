@@ -1,10 +1,6 @@
 <?php
 
-use SebastianBergmann\Money\Money;
-use SebastianBergmann\Money\Currency;
-use SebastianBergmann\Money\IntlFormatter;
-
-class OfferOption extends Eloquent {
+class OfferOption extends BaseModel {
 
 	/**
 	* The name of the table associated with the model.
@@ -14,13 +10,26 @@ class OfferOption extends Eloquent {
 	protected $table = 'offers_options';
 
 	protected $guarded = [];
-	protected $fillable = [];
+    protected $fillable = [
+        'offer_id', // ID da Oferta
+        'title', // Título
+        'subtitle', // SubTítulo
+        'price_original', // Preço Original
+        'price_with_discount', // Preço Com Desconto
+        'transfer', // Repasse ao Parceiro
+        'min_qty', // Estoque Mínimo
+        'max_qty', // Estoque Máximo
+        'max_qty_per_buyer', // Máximo por cliente
+        'percent_off', // %OFF
+        'voucher_validity_start', // Início Validade Cupom
+        'voucher_validity_end', // Fim Validade Cupom
+        'display_order', // Ordem
+    ];
 
 	protected $softDelete = false;
 	public $timestamps = false;
 
 	public static $rules = array(
-	 'offer_id' => 'required|integer',
 	 'title' => 'required',
 	 'subtitle' => 'required',
 	 'price_with_discount' => 'required',
@@ -76,27 +85,67 @@ class OfferOption extends Eloquent {
 		return $this->belongsTo('Destiny', 'departure_city_id');
 	}
 
-	public function getPriceOriginalAttribute($value)
-	{
-		// $value = (int) $value;
+    /**
+     * Formata a data de Início Validade Cupom, pegando dd/mm/YYYY
+     * e transformando em YYYY-mm-dd HH:ii:ss
+     *
+     * @param $value
+     * @return void
+     */
+    public function setVoucherValidityStartAttribute($value)
+    {
+        $starts_on = implode("-",array_reverse(explode("/",$value)));
+        $starts_on .= ' 00:00:00';
+        $this->attributes['voucher_validity_start'] = $starts_on;
+    }
 
-		// $money = new Money($value, new Currency('BRL'));
-		// $inter = new IntlFormatter('pt_BR');
+    /**
+     * Formata a data de Fim Validade Cupom, pegando dd/mm/YYYY
+     * e transformando em YYYY-mm-dd HH:ii:ss
+     *
+     * @param $value
+     * @return void
+     */
+    public function setVoucherValidityEndAttribute($value)
+    {
+        $ends_on = implode("-",array_reverse(explode("/",$value)));
+        $ends_on .= ' 23:59:59';
+        $this->attributes['voucher_validity_end'] = $ends_on;
+    }
 
-		// return $inter->format($money);
+    /**
+     * Formata o valor original, para transformar
+     * 1.2345,67 em 12345.76
+     *
+     * @param $value
+     * @return void
+     */
+    public function setPriceOriginalAttribute($value){
+        $v = str_replace(',', '.', str_replace('.', '', $value));
+        $this->attributes['price_original'] = $v;
+    }
 
-		return substr($value, 0, -2);
-	}
+    /**
+     * Formata o valor com desconto, para transformar
+     * 1.2345,67 em 12345.76
+     *
+     * @param $value
+     * @return void
+     */
+    public function setPriceWithDiscountAttribute($value){
+        $v = str_replace(',', '.', str_replace('.', '', $value));
+        $this->attributes['price_with_discount'] = $v;
+    }
 
-	public function getPriceWithDiscountAttribute($value)
-	{
-		// $value = (int) $value;
-
-		// $money = new Money($value, new Currency('BRL'));
-		// $inter = new IntlFormatter('pt_BR');
-
-		// return $inter->format($money);
-
-		return substr($value, 0, -2);
-	}
+    /**
+     * Formata o valor de repasse ao parceiro, para transformar
+     * 1.2345,67 em 12345.76
+     *
+     * @param $value
+     * @return void
+     */
+    public function setTransferAttribute($value){
+        $v = str_replace(',', '.', str_replace('.', '', $value));
+        $this->attributes['transfer'] = $v;
+    }
 }
