@@ -8,17 +8,19 @@ class AdminOfferController extends BaseController {
 	 * @var Offer
 	 */
 	protected $offer;
+	protected $offer_option;
 
 	/**
 	 * Constructor
 	 */
-	public function __construct(Offer $offer)
+	public function __construct(Offer $offer, OfferOption $offer_option)
 	{
 		/*
 		 * Set Offer Instance
 		 */
 
 		$this->offer = $offer;
+		$this->offer_option = $offer_option;
 
 		/*
 		 * Set Sidebar Status
@@ -156,27 +158,57 @@ class AdminOfferController extends BaseController {
 
 	public function postCreate()
 	{
-		$inputs = Input::all();
-
-		$rules = [
-        	'name' => 'required',
-		];
-
-	    $validation = Validator::make($inputs, $rules);
-
-		if ($validation->passes())
+		if ($this->offer->passes() && $this->offer_option->passes(Input::get('offer_options')[0]))
 		{
-			$this->offer->create($inputs);
+            // Cria a oferta
+			$offer = $this->offer->create(Input::all());
 
-			return Redirect::route('admin.offer');
+            if($offer->id){
+                // Insere as opções de venda
+                $offer_options = Input::get('offer_options');
+
+                $price_original = 0;
+                $price_with_discount = 0;
+
+
+                foreach($offer_options as $k => $opt){
+                    $opt['display_order'] = $k;
+                    $opt['offer_id'] = $offer->id;
+                    //$offer_option = $offer->offer_option()->create($opt);
+                    $offer_option = $this->offer_option->create($opt);
+                    // Verifica os valores de $offer_option para pegar o menor e depois jogar na oferta
+                    if($price_with_discount == 0 || $offer_option->price_with_discount < $price_with_discount){
+                        $price_original = $offer_option->price_original;
+                        $price_with_discount = $offer_option->price_with_discount;
+                    }
+                }
+                // Atualiza a oferta com os menores valores de offer_option
+                $offer->price_original = $price_original;
+                $offer->price_with_discount = $price_with_discount;
+
+                // Update na oferta
+                $offer->save();
+            }
+
+
+
+
+
+            return Redirect::route('admin.offer.create')
+                ->withInput()
+                ->withErrors($this->offer->errors());
+
+			//return Redirect::route('admin.offer');
 		}
+
+        Session::flash('error', 'Erro ao salvar oferta no banco de dados. Verifique o formulário abaixo e tente novamente.');
 
 		/*
 		 * Return and display Errors
 		 */
 		return Redirect::route('admin.offer.create')
 			->withInput()
-			->withErrors($validation);
+			->withErrors($this->offer->errors());
 	}
 
 	/**
