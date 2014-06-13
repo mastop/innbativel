@@ -73,14 +73,27 @@ foreach ($required_paths as $required_path) {
 HTML::macro('ImageUpload', function($name, $label, $multiple = false)
 {
     $filefield = ($multiple) ? '<input id="'.$name.'_file" type="file" name="'.$name.'_file[]" class="fileupload" accept="image/*" multiple>' : '<input id="'.$name.'_file" type="file" name="'.$name.'_file" class="fileupload" accept="image/*">';
-    $hiddenfield = ($multiple) ? '<input id="'.$name.'" type="hidden" name="'.$name.'[]" class="fileuploaded" value="">' : '<input id="'.$name.'" type="hidden" name="'.$name.'" class="fileuploaded" value="">';
+    //$hiddenfield = ($multiple) ? '<input id="'.$name.'" type="hidden" name="'.$name.'[]" class="fileuploaded">' : '<input id="'.$name.'" type="hidden" name="'.$name.'" class="fileuploaded">';
+    $hiddenfield = ($multiple) ? Former::hidden($name.'[]')->class('fileuploaded') : Former::hidden($name)->id($name)->class('fileuploaded');
     $text = ($multiple) ? 'Arraste as imagens até aqui' : 'Arraste a imagem até aqui';
-    $multipleDiv = '<div class="clearfix"></div><div class="multifiles">
-                         <div class="multifile">
+    $multipleDiv = '<div class="clearfix" id="'.$name.'"></div><div class="multifiles">
+                         {MULTIFILES}
+                    </div>';
+    if(!is_array(Input::old($name))){
+        $multifiles = '<div class="multifile">
                             '.Button::danger('<span class="icon icon-remove"> Remover</span>', ['class'=>'btn-mini']).'
                             '.$hiddenfield.'
-                         </div>
-                    </div>';
+                         </div>';
+    }else{
+        $multifiles = '';
+        foreach(Input::old($name) as $img){
+            $multifiles .= '<div class="multifile" data-img="'.$img.'">
+                            '.Button::danger('<span class="icon icon-remove"> Remover</span>', ['class'=>'btn-mini']).'
+                            '.$hiddenfield.'
+                            </div>';
+        }
+    }
+    $multipleDiv = str_replace('{MULTIFILES}', $multifiles, $multipleDiv);
     return '<div class="control-group">
             <label for="'.$name.'_file" class="control-label">'.$label.'</label>
             <div class="controls">
@@ -96,8 +109,8 @@ HTML::macro('ImageUpload', function($name, $label, $multiple = false)
                         '.Button::danger('<span class="icon icon-remove"> Remover</span>', ['class'=>'btn-mini']).'
                     </div>
                 </div>
-                '.$filefield.$hiddenfield.'
-                '.(($multiple) ? $multipleDiv : '').'
+                '.$filefield.'
+                '.(($multiple) ? $multipleDiv : $hiddenfield).'
             </div>
         </div>';
 });

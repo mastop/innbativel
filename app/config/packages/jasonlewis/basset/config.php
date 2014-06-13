@@ -24,6 +24,7 @@ return [
       {
         $collection->stylesheet('assets/themes/floripa/backend/css/plugins.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/js/plugins/select2/select2.css')->apply('UriRewriteFilter');
+        $collection->stylesheet('assets/themes/floripa/backend/js/plugins/redactor/redactor.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/js/plugins/file-upload/css/jquery.fileupload.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/css/font-awesome.css')->apply('UriRewriteFilter');
         $collection->stylesheet('assets/themes/floripa/backend/css/icons.css')->apply('UriRewriteFilter');
@@ -33,6 +34,8 @@ return [
         $collection->javascript('jquery')->apply('JsMin');
         $collection->javascript('jquery-migrate')->apply('JsMin');
         $collection->javascript('jquery-ui')->apply('JsMin');
+        $collection->javascript('assets/vendor/jquery.ui/stable/ui/i18n/jquery.ui.datepicker-pt-BR.js')->apply('JsMin');
+        $collection->javascript('assets/themes/floripa/backend/js/plugins/maskmoney/jquery.maskMoney.min.js')->apply('JsMin');
         $collection->javascript('jquery-cookie')->apply('JsMin');
         $collection->javascript('jquery-hashchange')->apply('JsMin');
         $collection->javascript('jquery-easytabs')->apply('JsMin');
@@ -40,6 +43,9 @@ return [
         $collection->javascript('jquery-inputmask')->apply('JsMin');
         $collection->javascript('jquery-select2')->apply('JsMin');
         $collection->javascript('jquery-select2-ptbr')->apply('JsMin');
+        $collection->javascript('jquery-redactor')->apply('JsMin');
+        $collection->javascript('jquery-redactor-ptbr')->apply('JsMin');
+        $collection->javascript('jquery-redactor-fontsize')->apply('JsMin');
         $collection->javascript('bootstrap-js')->apply('JsMin');
         $collection->javascript('underscore')->apply('JsMin');
         $collection->javascript('holder')->apply('JsMin');
@@ -169,6 +175,9 @@ return [
             'jquery-datatables'         => 'assets/themes/floripa/backend/js/plugins/tables/jquery.dataTables.min.js',
             'jquery-select2'            => 'assets/themes/floripa/backend/js/plugins/select2/select2.js',
             'jquery-select2-ptbr'       => 'assets/themes/floripa/backend/js/plugins/select2/select2_locale_pt-BR.js',
+            'jquery-redactor'           => 'assets/themes/floripa/backend/js/plugins/redactor/redactor.min.js',
+            'jquery-redactor-ptbr'      => 'assets/themes/floripa/backend/js/plugins/redactor/lang/pt_br.js',
+            'jquery-redactor-fontsize'  => 'assets/themes/floripa/backend/js/plugins/redactor/plugins/fontsize/fontsize.js',
             'bootstrap-js'              => 'assets/vendor/bootstrap/3/dist/js/bootstrap.min.js',
             'prettify-js'               => 'assets/vendor/prettify/prettify.js',
             'underscore'                => 'assets/vendor/underscore/underscore.min.js',

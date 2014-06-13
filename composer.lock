@@ -1,36 +1,37 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "826415e6b803ec613cab9d56fc6ea315",
+    "hash": "1c1d51ba606e78ee4ddbe8ef1950a1da",
     "packages": [
         {
             "name": "anahkiasen/former",
-            "version": "dev-master",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Anahkiasen/former.git",
-                "reference": "fce6790e10bbd0acf3f5a5224d56477ecd44ba7b"
+                "reference": "e5c4ba1e749c421465d7edad2fa9e9ab922f8a2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Anahkiasen/former/zipball/fce6790e10bbd0acf3f5a5224d56477ecd44ba7b",
-                "reference": "fce6790e10bbd0acf3f5a5224d56477ecd44ba7b",
+                "url": "https://api.github.com/repos/Anahkiasen/former/zipball/e5c4ba1e749c421465d7edad2fa9e9ab922f8a2d",
+                "reference": "e5c4ba1e749c421465d7edad2fa9e9ab922f8a2d",
                 "shasum": ""
             },
             "require": {
-                "anahkiasen/html-object": "1.*",
-                "illuminate/config": "~4",
-                "illuminate/container": "~4",
-                "illuminate/http": "~4",
-                "illuminate/routing": "~4",
-                "illuminate/session": "~4",
-                "illuminate/translation": "~4"
+                "anahkiasen/html-object": "~1.4",
+                "illuminate/config": "~4.0",
+                "illuminate/container": "~4.0",
+                "illuminate/http": "~4.0",
+                "illuminate/routing": "~4.0",
+                "illuminate/session": "~4.0",
+                "illuminate/translation": "~4.0"
             },
             "require-dev": {
-                "illuminate/database": "~4",
-                "mockery/mockery": "dev-master"
+                "illuminate/database": "~4.0",
+                "mockery/mockery": "~0.9"
             },
             "type": "library",
             "autoload": {
@@ -60,7 +61,7 @@
                 "foundation",
                 "laravel"
             ],
-            "time": "2014-02-09 00:37:24"
+            "time": "2014-06-01 09:29:29"
         },
         {
             "name": "anahkiasen/html-object",
@@ -454,7 +455,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan H. Wage",
+                    "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/",
                     "role": "Creator"
@@ -2509,9 +2510,7 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 },
                 {
                     "name": "Chris Corbyn"
