@@ -131,6 +131,10 @@ class Offer extends BaseModel {
 		return $this->belongsToMany('Included', 'offers_included', 'offer_id', 'included_id')->withPivot('display_order')->orderBy('display_order', 'asc');
 	}
 
+    public function tag(){
+        return $this->belongsToMany('Tag', 'offers_tags', 'offer_id', 'tag_id');
+    }
+
 	private function convertImageString($value)
 	{
 		if (!is_null($value)) {
