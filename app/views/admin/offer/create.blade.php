@@ -201,11 +201,11 @@
         <div class="row-fluid" style="margin-top: 25px;">
             <div class="span6">
                 {{ Former::legend('Grupos') }}
-                {{ Former::checkboxes('offers_groups', '')->checkboxes(Group::getAllArray()) }}
+                {{ Former::checkboxes('offers_groups[]', '')->checkboxes(Group::getAllArray()) }}
             </div>
             <div class="span6">
                 {{ Former::legend('Feriados') }}
-                {{ Former::checkboxes('offers_holidays', '')->checkboxes(Holiday::getAllArray()) }}
+                {{ Former::checkboxes('offers_holidays[]', '')->checkboxes(Holiday::getAllArray()) }}
             </div>
         </div>
 
