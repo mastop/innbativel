@@ -52,7 +52,7 @@
         {{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira as Regras da Oferta') }}
 
 
-        {{ Former::multiselect('offers_includes', 'Inclusos')
+        {{ Former::multiselect('offers_included', 'Inclusos')
         ->fromQuery(Included::orderBy('title')->get())
         ->data_placeholder('Selecione os Itens Inclusos')
         ->class('span12') }}

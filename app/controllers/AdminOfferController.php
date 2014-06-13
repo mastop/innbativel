@@ -189,6 +189,15 @@ class AdminOfferController extends BaseController {
                 $offer->price_with_discount = $price_with_discount;
                 $offer->percent_off = $percent_off;
 
+                // Adiciona os itens inclusos
+                $offers_included = Input::get('offers_included');
+
+                if(is_array($offers_included)){
+                    foreach($offers_included as $k => $v){
+                        $offer->included()->attach($v, array('display_order' => $k));
+                    }
+                }
+
                 // Update na oferta
                 $offer->save();
             }
