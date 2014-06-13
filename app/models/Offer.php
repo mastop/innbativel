@@ -28,7 +28,7 @@ class Offer extends BaseModel {
         'subsubtitle', // SubTítulo 2
         'price_original', // Preço Original
         'price_with_discount', // Preço Com Desconto
-        // TODO: percent_off com index para facilitar a busca
+        'percent_off', // %OFF
         'rules', // Regras
         'features', // Destaques
         'saveme_title', // Título Saveme

@@ -169,6 +169,7 @@ class AdminOfferController extends BaseController {
 
                 $price_original = 0;
                 $price_with_discount = 0;
+                $percent_off = 0;
 
 
                 foreach($offer_options as $k => $opt){
@@ -180,11 +181,13 @@ class AdminOfferController extends BaseController {
                     if($price_with_discount == 0 || $offer_option->price_with_discount < $price_with_discount){
                         $price_original = $offer_option->price_original;
                         $price_with_discount = $offer_option->price_with_discount;
+                        $percent_off = $offer_option->percent_off;
                     }
                 }
                 // Atualiza a oferta com os menores valores de offer_option
                 $offer->price_original = $price_original;
                 $offer->price_with_discount = $price_with_discount;
+                $offer->percent_off = $percent_off;
 
                 // Update na oferta
                 $offer->save();

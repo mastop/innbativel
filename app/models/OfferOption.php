@@ -31,7 +31,7 @@ class OfferOption extends BaseModel {
 
 	public static $rules = array(
 	 'title' => 'required',
-	 'subtitle' => 'required',
+	 //'subtitle' => 'required',
 	 'price_with_discount' => 'required',
 	 'min_qty' => 'required|integer',
 	 'max_qty' => 'required|integer',

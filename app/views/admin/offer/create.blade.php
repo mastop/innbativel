@@ -5,7 +5,7 @@
     DEBUG:
     {{print_r(Input::old())}}
     </pre>
-    
+
         {{ Former::horizontal_open()->rules([
         	'title' => 'required',
         	'destiny_id' => 'required',
