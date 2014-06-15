@@ -135,54 +135,6 @@ class Offer extends BaseModel {
         return $this->belongsToMany('Tag', 'offers_tags', 'offer_id', 'tag_id');
     }
 
-	private function convertImageString($value)
-	{
-		if (!is_null($value)) {
-			$arr = explode(',', $value);
-			$result = [];
-
-			foreach ($arr as $key => $value) {
-				$array = explode(':', $value);
-				$result[$array[0]] = $array[1];
-			}
-
-			return $result;
-		}
-
-		return '';
-	}
-
-	public function getCoverImgAttribute($value)
-	{
-		return $this->convertImageString($value);
-	}
-
-	public function getOfferOldImgAttribute($value)
-	{
-		return $this->convertImageString($value);
-	}
-
-	public function getInstallmentAttribute($value)
-	{
-		if (!empty($value) &&
-			!is_null($value) &&
-			!empty($this->offer_option[0]->price_with_discount) &&
-			!is_null($this->offer_option[0]->price_with_discount)
-		){
-			$price = (int) preg_replace('/[^0-9]/', '', $this->offer_option[0]->price_with_discount);
-			$value = 12;
-
-			if($price <= 251){
-				$value = 3;
-			}
-			else if($price <= 501){
-				$value = 6;
-			}
-		}
-
-		return $value;
-	}
-
 	public function getFullDestinnyAttribute(){
         $destiny = Destiny::find($this->destiny_id);
 		//return $destiny->city.'-'.$destiny->state_id;
