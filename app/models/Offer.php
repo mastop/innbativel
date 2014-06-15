@@ -88,7 +88,7 @@ class Offer extends BaseModel {
 	}
 
 	public function saveme(){
-		return $this->belongsToMany('Saveme', 'offers_saveme', 'saveme_id', 'offer_id')->withPivot('priority');
+		return $this->belongsToMany('Saveme', 'offers_saveme', 'offer_id', 'saveme_id')->withPivot('priority');
 	}
 
 	public function group(){
