@@ -201,11 +201,37 @@
         <div class="row-fluid" style="margin-top: 25px;">
             <div class="span6">
                 {{ Former::legend('Grupos') }}
-                {{ Former::checkboxes('offers_groups[]', '')->checkboxes(Group::getAllArray()) }}
+                {{--
+                    Isso está deste jeito porque a BOSTA do Former tem um bug
+                    que não repopula os checkboxes agrupados
+                --}}
+                <div class="control-group">
+                    <div class="controls">
+                        @foreach(Group::getAllArray() as $g => $grupo)
+                            <label for="offers_groups_{{$g}}" class="checkbox">
+                                <input value="{{$g}}" id="offers_groups_{{$g}}" type="checkbox" name="offers_groups[]"
+                            @if(is_array(Input::get('offers_groups', Input::old('offers_groups'))) && in_array($g, Input::get('offers_groups', Input::old('offers_groups'))))
+                             checked
+                            @endif
+                            > {{$grupo}}</label>
+                        @endforeach
+                    </div>
+                </div>
             </div>
             <div class="span6">
                 {{ Former::legend('Feriados') }}
-                {{ Former::checkboxes('offers_holidays[]', '')->checkboxes(Holiday::getAllArray()) }}
+                <div class="control-group">
+                    <div class="controls">
+                        @foreach(Holiday::getAllArray() as $f => $feriado)
+                        <label for="offers_holidays_{{$f}}" class="checkbox">
+                            <input value="{{$f}}" id="offers_holidays_{{$f}}" type="checkbox" name="offers_holidays[]"
+                            @if(is_array(Input::get('offers_holidays', Input::old('offers_holidays'))) && in_array($f, Input::get('offers_holidays', Input::old('offers_holidays'))))
+                             checked
+                            @endif
+                            > {{$feriado}}</label>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -245,7 +271,11 @@
         @foreach (Saveme::orderBy('title')->get() as $saveme)
         <div class="control-group">
             <div class="controls">
-                <input type="checkbox" name="offers_saveme[]" id="offers_saveme[]" value="{{$saveme->id}}" checked> <input class="input-small" id="offers_saveme{{$saveme->id}}" type="text" name="offers_saveme{{$saveme->id}}" value="2"> {{$saveme->title}}
+                <input type="checkbox" name="offers_saveme[]" id="offers_saveme[]" value="{{$saveme->id}}"
+                    @if((is_array(Input::get('offers_saveme', Input::old('offers_saveme'))) && in_array($saveme->id, Input::get('offers_saveme', Input::old('offers_saveme')))) or (!is_array(Input::get('offers_saveme', Input::old('offers_saveme')))))
+                     checked
+                    @endif
+                    > <input class="input-small" id="offers_saveme{{$saveme->id}}" type="text" name="offers_saveme{{$saveme->id}}" value="{{Input::get('offers_saveme'.$saveme->id, Input::old('offers_saveme'.$saveme->id, 2))}}"> {{$saveme->title}}
             </div>
         </div>
         @endforeach

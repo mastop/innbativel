@@ -220,6 +220,26 @@ class AdminOfferController extends BaseController {
                     $offer->tag()->sync($tags);
                 }
 
+                // Salva os grupos
+                $offers_groups = Input::get('offers_groups');
+                if(is_array($offers_groups)){
+                    foreach($offers_groups as $k => $v){
+                        $offer->group()->attach($v, array('display_order' => $k));
+                    }
+                }
+
+                // Salva os Feriados
+                $offer->holiday()->sync(Input::get('offers_holidays'));
+
+                // Salva o SaveMe
+                $offers_saveme = Input::get('offers_saveme');
+                if(is_array($offers_saveme)){
+                    foreach($offers_saveme as $v){
+                        $offer->saveme()->attach($v, array('priority' => Input::get('offers_saveme'.$v)));
+                    }
+                }
+
+
 
 
                 // Update na oferta
