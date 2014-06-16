@@ -148,4 +148,29 @@ class OfferOption extends BaseModel {
         $v = str_replace(',', '.', str_replace('.', '', $value));
         $this->attributes['transfer'] = $v;
     }
+
+
+    /**
+     * Formata a data de Início Validade Cupom, pegando YYYY-mm-dd HH:ii:ss
+     * e transformando em dd/mm/YYYY
+     *
+     * @param $value
+     * @return string
+     */
+    public function getVoucherValidityStartAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
+
+    /**
+     * Formata a data de Fim Validade Cupom, pegando YYYY-mm-dd HH:ii:ss
+     * e transformando em dd/mm/YYYY
+     *
+     * @param $value
+     * @return string
+     */
+    public function getVoucherValidityEndAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
 }

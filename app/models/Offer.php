@@ -92,7 +92,7 @@ class Offer extends BaseModel {
 	}
 
 	public function group(){
-		return $this->belongsToMany('Group', 'offers_groups', 'offer_id', 'group_id')->withPivot('display_order')->orderBy('display_order', 'asc');
+		return $this->belongsToMany('Group', 'offers_groups', 'offer_id', 'group_id')->withPivot('display_order')->orderBy('offers_groups.display_order', 'asc');
 	}
 
 	public function discount_coupon(){
@@ -179,5 +179,31 @@ class Offer extends BaseModel {
         $ends_on .= ' 23:59:59';
         $this->attributes['ends_on'] = $ends_on;
     }
+
+    /**
+     * Formata a data de início, pegando YYYY-mm-dd HH:ii:ss
+     * e transformando em dd/mm/YYYY
+     *
+     * @param $value
+     * @return string
+     */
+    public function getStartsOnAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
+
+    /**
+     * Formata a data de término, pegando YYYY-mm-dd HH:ii:ss
+     * e transformando em dd/mm/YYYY
+     *
+     * @param $value
+     * @return string
+     */
+    public function getEndsOnAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
+
+
 
 }
