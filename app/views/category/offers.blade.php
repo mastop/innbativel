@@ -15,7 +15,7 @@
                 <div class="offer-label">{{ $offer['genre2']['icon'] . $offer['genre2']['title'] }}</div>
                 @endif
                 <figure>
-                    <img src="{{ $offer['cover_img']['http'] }}" alt="{{ $offer['subtitle'] }}">
+                    <img src="{{ $offer['cover_img'] }}" alt="{{ $offer['subtitle'] }}">
                 </figure>
                 <header class="tooltip" data-tip="{{ $offer['subtitle'] }}">
                     <h2 itemprop="name">{{ $offer['title'] }}</h2>
