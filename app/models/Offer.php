@@ -204,6 +204,13 @@ class Offer extends BaseModel {
         return date('d/m/Y', strtotime($value));
     }
 
+    public function getCoverImgAttribute($value)
+    {
+        if(substr($value, 0, 4) == 'http')
+        return $value;
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
+    }
+
 
 
 }
