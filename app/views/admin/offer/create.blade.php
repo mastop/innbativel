@@ -1,11 +1,6 @@
 @section('content')
     <div class="well widget row-fluid">
 
-    <pre>
-    DEBUG:
-    {{print_r(Input::old())}}
-    </pre>
-
         {{ Former::horizontal_open()->rules([
         	'title' => 'required',
         	'destiny_id' => 'required',
@@ -482,5 +477,4 @@
         </script>
 
     </div>
-
 @stop
