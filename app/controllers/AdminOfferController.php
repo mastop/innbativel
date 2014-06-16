@@ -385,23 +385,11 @@ class AdminOfferController extends BaseController {
                         }
                     }
                 }
-
-
-
-
                 // Update na oferta
                 $offer->save();
+                Session::flash('success', 'Oferta <b>#'.$offer->id.' - '.$offer->title.'</b> criada com sucesso.');
+                return Redirect::route('admin.offer');
             }
-
-
-
-
-
-            return Redirect::route('admin.offer.create')
-                ->withInput()
-                ->withErrors($this->offer->errors());
-
-			//return Redirect::route('admin.offer');
 		}
 
         Session::flash('error', 'Erro ao salvar oferta no banco de dados. Verifique o formulário abaixo e tente novamente.');
