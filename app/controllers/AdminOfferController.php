@@ -410,19 +410,36 @@ class AdminOfferController extends BaseController {
 
 	public function getEdit($id)
 	{
-		$offer = $this->offer->with(['ngo', 'partner'])->find($id);
+		$offer = $this->offer->find($id);
 
 		if (is_null($offer))
 		{
+            Session::flash('error', 'Oferta #'.$id.' não encontrada.');
 			return Redirect::route('admin.offer');
 		}
 
+        $s3access = Configuration::get('s3access');
+        $s3secret = Configuration::get('s3secret');
+        $s3region = Configuration::get('s3region');
+        $s3bucket = Configuration::get('s3bucket');
 
-		/*
-		 * Layout / View
-		 */
+        $s3 = Aws\S3\S3Client::factory(
+            array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+        );
 
-		$this->layout->content = View::make('admin.offer.edit', compact('offer'));
+        $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
+
+        $postObject = new Aws\S3\Model\PostObject($s3, $s3bucket, array('acl' => 'public-read', 'Cache-Control' => 'max-age=315360000', 'Content-Type' => '^', 'Expires' => $expires, "success_action_status" => "200"));
+        $form = $postObject->prepareData()->getFormInputs();
+        $policy = $form['policy'];
+        $signature = $form['signature'];
+        $uid = uniqid();
+
+        $holidays = $offer->holiday()->lists('holiday_id');
+        $groups = $offer->group()->lists('group_id');
+        $savesme = $offer->saveme()->lists('priority', 'saveme_id');
+        $this->layout->page_title = 'Editando Oferta #'.$offer->id.' '.$offer->title;
+        $this->layout->content = View::make('admin.offer.edit', compact('offer', 'policy', 'signature', 'uid', 's3bucket', 's3access', 'expires', 'holidays', 'groups', 'savesme'));
 	}
 
 	/**
