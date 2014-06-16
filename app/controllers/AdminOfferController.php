@@ -239,6 +239,153 @@ class AdminOfferController extends BaseController {
                     }
                 }
 
+                // Salva as imagens da Oferta
+
+                $s3access = Configuration::get('s3access');
+                $s3secret = Configuration::get('s3secret');
+                $s3region = Configuration::get('s3region');
+                $s3bucket = Configuration::get('s3bucket');
+
+                $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
+
+                $s3 = Aws\S3\S3Client::factory(
+                    array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+                );
+
+                // Imagem Principal
+                $cover_img = Input::get('cover_img');
+
+                if($cover_img){
+                    // Pega a extensão da imagem
+                    $ext = pathinfo($cover_img, PATHINFO_EXTENSION);
+                    // Cria um novo nome para a imagem
+                    $newname = "{$offer->slug}-cover.$ext";
+                    $newpath = "ofertas/{$offer->id}/$newname";
+                    // Copia a imagem para o lugar definitivo
+                    $s3->copyObject(array(
+                        'Bucket'     => $s3bucket,
+                        'Key'        => "$newpath",
+                        'CopySource' => "{$s3bucket}/temp/{$cover_img}",
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => '^',
+                        'Expires'    => $expires
+                    ));
+                    // Coloca o novo nome da imagem em $offer
+                    $offer->cover_img = $newname;
+
+                    // Criando o Thumb da imagem Principal
+                    $result = $s3->getObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key' => "$newpath"
+                    ));
+                    $thumb = Image::make($result['Body'])->resize(537, 224);
+                    $s3->putObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => "ofertas/{$offer->id}/thumb/$newname",
+                        'Body'   => $thumb->encode($ext, 65), // 65 é a Qualidade
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => $result['ContentType'],
+                        'Expires'    => $expires
+                    ));
+                }
+
+                // Imagem de Pré-Reserva
+                $offer_old_img = Input::get('offer_old_img');
+
+                if($offer_old_img){
+                    // Pega a extensão da imagem
+                    $ext = pathinfo($offer_old_img, PATHINFO_EXTENSION);
+                    // Cria um novo nome para a imagem
+                    $newname = "{$offer->slug}-old.$ext";
+                    $newpath = "ofertas/{$offer->id}/$newname";
+                    // Copia a imagem para o lugar definitivo
+                    $s3->copyObject(array(
+                        'Bucket'     => $s3bucket,
+                        'Key'        => "$newpath",
+                        'CopySource' => "{$s3bucket}/temp/{$offer_old_img}",
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => '^',
+                        'Expires'    => $expires
+                    ));
+                    // Coloca o novo nome da imagem em $offer
+                    $offer->offer_old_img = $newname;
+                }
+
+                // Imagem de Newsletter
+                $newsletter_img = Input::get('newsletter_img');
+
+                if($newsletter_img){
+                    // Pega a extensão da imagem
+                    $ext = pathinfo($newsletter_img, PATHINFO_EXTENSION);
+                    // Cria um novo nome para a imagem
+                    $newname = "{$offer->slug}-newsletter.$ext";
+                    $newpath = "ofertas/{$offer->id}/$newname";
+                    // Copia a imagem para o lugar definitivo
+                    $s3->copyObject(array(
+                        'Bucket'     => $s3bucket,
+                        'Key'        => "$newpath",
+                        'CopySource' => "{$s3bucket}/temp/{$newsletter_img}",
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => '^',
+                        'Expires'    => $expires
+                    ));
+                    // Coloca o novo nome da imagem em $offer
+                    $offer->newsletter_img = $newname;
+                }
+
+                // Imagem SaveMe
+                $saveme_img = Input::get('saveme_img');
+
+                if($saveme_img){
+                    // Pega a extensão da imagem
+                    $ext = pathinfo($saveme_img, PATHINFO_EXTENSION);
+                    // Cria um novo nome para a imagem
+                    $newname = "{$offer->slug}-saveme.$ext";
+                    $newpath = "ofertas/{$offer->id}/$newname";
+                    // Copia a imagem para o lugar definitivo
+                    $s3->copyObject(array(
+                        'Bucket'     => $s3bucket,
+                        'Key'        => "$newpath",
+                        'CopySource' => "{$s3bucket}/temp/{$saveme_img}",
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => '^',
+                        'Expires'    => $expires
+                    ));
+                    // Coloca o novo nome da imagem em $offer
+                    $offer->saveme_img = $newname;
+                }
+
+                // Demais imagens
+                $offers_images = Input::get('offers_images');
+                if(is_array($offers_images)){
+                    foreach($offers_images as $k => $i){
+                        if(!empty($i)){
+                            // Pega a extensão da imagem
+                            $ext = pathinfo($i, PATHINFO_EXTENSION);
+                            // Cria um novo nome para a imagem
+                            $newname = "{$offer->slug}-imagem-$k.$ext";
+                            $newpath = "ofertas/{$offer->id}/$newname";
+                            // Copia a imagem para o lugar definitivo
+                            $s3->copyObject(array(
+                                'Bucket'     => $s3bucket,
+                                'Key'        => "$newpath",
+                                'CopySource' => "{$s3bucket}/temp/{$i}",
+                                'ACL'        => 'public-read',
+                                'CacheControl' => 'max-age=315360000',
+                                'ContentType' => '^',
+                                'Expires'    => $expires
+                            ));
+                            // Coloca a nova imagem em $offer
+                            $offer->offer_image()->create(array('url' => $newname));
+                        }
+                    }
+                }
+
 
 
 
