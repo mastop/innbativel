@@ -89,7 +89,7 @@ class SetupContractsTable extends Migration {
 		$table->string('title')->nullable();
 		$table->decimal('price_original', 7, 2)->nullable();
 		$table->decimal('price_with_discount', 7, 2)->nullable();
-		$table->decimal('percent_off', 3, 2)->nullable();
+        $table->tinyInteger('percent_off')->nullable();
 		$table->decimal('transfer', 7, 2)->nullable();
 		$table->integer('max_qty')->nullable();
 
