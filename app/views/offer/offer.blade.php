@@ -4,7 +4,7 @@
             <h2>{{ $offer->title }}</h2>
             <h3>{{ $offer->subtitle }}</h3>
             <p>{{ $offer->description }}</p>
-            <figure id="offer-image"><img src="{{ asset($offer->cover_img['normal']) }}"></figure>
+            <figure id="offer-image"><img src="{{ asset($offer->cover_img) }}"></figure>
             @if(isset($offer->offer_image) &&!empty($offer->offer_image) && !is_null($offer->offer_image))
             <div id="offer-thumbs">
                 <ul class="clearfix">

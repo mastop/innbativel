@@ -28,7 +28,7 @@ class Offer extends BaseModel {
         'subsubtitle', // SubTítulo 2
         'price_original', // Preço Original
         'price_with_discount', // Preço Com Desconto
-        // TODO: percent_off com index para facilitar a busca
+        'percent_off', // %OFF
         'rules', // Regras
         'features', // Destaques
         'saveme_title', // Título Saveme
@@ -88,11 +88,11 @@ class Offer extends BaseModel {
 	}
 
 	public function saveme(){
-		return $this->belongsToMany('Saveme', 'offers_saveme', 'saveme_id', 'offer_id')->withPivot('priority');
+		return $this->belongsToMany('Saveme', 'offers_saveme', 'offer_id', 'saveme_id')->withPivot('priority');
 	}
 
 	public function group(){
-		return $this->belongsToMany('Group', 'offers_groups', 'offer_id', 'group_id')->withPivot('display_order')->orderBy('display_order', 'asc');
+		return $this->belongsToMany('Group', 'offers_groups', 'offer_id', 'group_id')->withPivot('display_order')->orderBy('offers_groups.display_order', 'asc');
 	}
 
 	public function discount_coupon(){
@@ -131,53 +131,9 @@ class Offer extends BaseModel {
 		return $this->belongsToMany('Included', 'offers_included', 'offer_id', 'included_id')->withPivot('display_order')->orderBy('display_order', 'asc');
 	}
 
-	private function convertImageString($value)
-	{
-		if (!is_null($value)) {
-			$arr = explode(',', $value);
-			$result = [];
-
-			foreach ($arr as $key => $value) {
-				$array = explode(':', $value);
-				$result[$array[0]] = $array[1];
-			}
-
-			return $result;
-		}
-
-		return '';
-	}
-
-	public function getCoverImgAttribute($value)
-	{
-		return $this->convertImageString($value);
-	}
-
-	public function getOfferOldImgAttribute($value)
-	{
-		return $this->convertImageString($value);
-	}
-
-	public function getInstallmentAttribute($value)
-	{
-		if (!empty($value) &&
-			!is_null($value) &&
-			!empty($this->offer_option[0]->price_with_discount) &&
-			!is_null($this->offer_option[0]->price_with_discount)
-		){
-			$price = (int) preg_replace('/[^0-9]/', '', $this->offer_option[0]->price_with_discount);
-			$value = 12;
-
-			if($price <= 251){
-				$value = 3;
-			}
-			else if($price <= 501){
-				$value = 6;
-			}
-		}
-
-		return $value;
-	}
+    public function tag(){
+        return $this->belongsToMany('Tag', 'offers_tags', 'offer_id', 'tag_id');
+    }
 
 	public function getFullDestinnyAttribute(){
         $destiny = Destiny::find($this->destiny_id);
@@ -223,5 +179,38 @@ class Offer extends BaseModel {
         $ends_on .= ' 23:59:59';
         $this->attributes['ends_on'] = $ends_on;
     }
+
+    /**
+     * Formata a data de início, pegando YYYY-mm-dd HH:ii:ss
+     * e transformando em dd/mm/YYYY
+     *
+     * @param $value
+     * @return string
+     */
+    public function getStartsOnAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
+
+    /**
+     * Formata a data de término, pegando YYYY-mm-dd HH:ii:ss
+     * e transformando em dd/mm/YYYY
+     *
+     * @param $value
+     * @return string
+     */
+    public function getEndsOnAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
+
+    public function getCoverImgAttribute($value)
+    {
+        if(substr($value, 0, 4) == 'http')
+        return $value;
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
+    }
+
+
 
 }

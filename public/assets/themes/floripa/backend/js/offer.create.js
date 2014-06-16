@@ -27,7 +27,7 @@
     });
 
     $(".select2").select2({allowClear: true});
-    $("#offers_includes").select2({maximumSelectionSize: 5});
+    $("#offers_included").select2({maximumSelectionSize: 5});
 
     $(document).bind('dragover', function (e)
     {

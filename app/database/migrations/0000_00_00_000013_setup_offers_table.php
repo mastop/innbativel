@@ -35,6 +35,7 @@ class SetupOffersTable extends Migration {
 		$table->string('subsubtitle')->nullable(); // HTML
 		$table->decimal('price_original', 7, 2)->nullable();
 		$table->decimal('price_with_discount', 7, 2)->nullable();
+        $table->tinyInteger('percent_off')->nullable();
 		$table->text('rules')->nullable(); // HTML
 		$table->text('features')->nullable(); // HTML
 		$table->string('saveme_title')->nullable();
