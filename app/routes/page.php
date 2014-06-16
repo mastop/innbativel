@@ -28,3 +28,13 @@ Route::any('suggest', ['as' => 'suggest', 'uses' => 'SuggestATripController@anyI
 
 Route::get('suggest/create', ['as' => 'suggest.create', 'uses' => 'SuggestATripController@getCreate']);
 Route::post('suggest/create', ['as' => 'suggest.save', 'uses' => 'SuggestATripController@postCreate']);
+
+/*
+ * Tell Us
+ */
+
+Route::any('tellus', ['as' => 'tellus', 'uses' => 'TellUsController@anyIndex']);
+
+
+Route::get('tellus/create', ['as' => 'tellus.create', 'uses' => 'TellUsController@getCreate']);
+Route::post('tellus/create', ['as' => 'tellus.save', 'uses' => 'TellUsController@postCreate']);
