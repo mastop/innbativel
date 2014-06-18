@@ -24,4 +24,11 @@ class OfferImage extends Eloquent {
   	return $this->belongsTo('Offer');
   }
 
+    public function getUrlAttribute($value)
+    {
+        if(empty($value) || substr($value, 0, 4) == 'http')
+            return $value;
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->offer_id.'/'.$value;
+    }
+
 }
