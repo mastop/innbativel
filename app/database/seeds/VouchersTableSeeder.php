@@ -18,7 +18,7 @@
 
 //     $interpreter->addObserver(function(array $columns) use ($pdo) {
 //     	ov.id_compra AS order_offer_id, ov.usado AS used, ov.numero AS display_code, ov.nome AS name, ov.email_voucher AS email
-//         $stmt = $pdo->prepare('INSERT INTO vouchers (id, order_offer_id, used, display_code, name, email) VALUES (?, ?, ?, ?, ?, ?)');
+//         $stmt = $pdo->prepare('INSERT INTO vouchers (id, order_offer_id, used, display_code, name, email, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
 //         if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
 //     });
 

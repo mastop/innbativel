@@ -677,8 +677,8 @@ class AdminOrderController extends BaseController {
 	// 	}
 
 	// 	//////////////////////////////////////
-	// 	// require_once('braspag/nusoap.php');
-	//  	// require_once('braspag/vars.php');
+	// 	// require_once(app_path().'/braspag/nusoap.php');
+	//  	// require_once(app_path().'/braspag/vars.php');
 	// 	//////////////////////////////////////
 
 	//     $url_transacao = 'https://pagador.com.br/webservice/pagadorTransaction.asmx?WSDL';
@@ -755,8 +755,8 @@ class AdminOrderController extends BaseController {
 	// 	}
 
 	// 	//////////////////////////////////////
-	// 	// require_once('braspag/nusoap.php');
-	//     // require_once('braspag/vars.php');
+	// 	// require_once(app_path().'/braspag/nusoap.php');
+	//     // require_once(app_path().'/braspag/vars.php');
 	//     //////////////////////////////////////
 	//     $url_transacao = 'https://pagador.com.br/webservice/pagadorTransaction.asmx?WSDL';
 
@@ -847,8 +847,8 @@ class AdminOrderController extends BaseController {
 	// 	}
 
 	// 	//////////////////////////////////////
-	// 	// require_once('braspag/nusoap.php');
-	//     // require_once('braspag/vars.php');
+	// 	// require_once(app_path().'/braspag/nusoap.php');
+	//     // require_once(app_path().'/braspag/vars.php');
 	//     //////////////////////////////////////
 
 	//     $url_antifraud = 'https://antifraude.braspag.com.br/AntiFraudeWS/AntiFraud.asmx?WSDL';
@@ -915,8 +915,21 @@ class AdminOrderController extends BaseController {
 	//     return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' rejeitado com sucesso.');
 	// }
 
+	private function creditByIndication($user_id){
+		// inserir creditos por indicação
+		$credit_ind_user = UserCredit::where('new_user_id', $user_id)->first();
+
+		if($credit_ind_user){
+			$indicator_user = Profile::where('user_id', $credit_ind_user->user_id)->first();
+			$indicator_user->credit += $credit_ind_user->value;
+			$indicator_user->save();
+
+			$credit_ind_user->delete();
+		}
+	}
+
 	public function getApprove($id, $braspag_order_id, $comment){
-		$order = Order::find($id);
+		$order = Order::where('id', $id)->first();
 		if($order->braspag_order_id != $braspag_order_id){
 			$error = 'Erro #16';
 			return Redirect::back()
@@ -924,8 +937,8 @@ class AdminOrderController extends BaseController {
 		}
 
 		//////////////////////////////////////
-		// require_once('braspag/nusoap.php');
-	    // require_once('braspag/vars.php');
+		require_once(app_path().'/braspag/nusoap.php');
+	    require_once(app_path().'/braspag/vars.php');
 	    //////////////////////////////////////
 
 	    $url_antifraud = 'https://antifraude.braspag.com.br/AntiFraudeWS/AntiFraud.asmx?WSDL';
@@ -1068,11 +1081,12 @@ class AdminOrderController extends BaseController {
 	        	$new_status = 'pago';
 	        	$this->updateOrder($order, $new_status, $comment);
 	        	$this->sendTransactionalEmail($order, $new_status);
+	        	$this->creditByIndication($order->user_id);
 	        }
 	        else{
 	        	$error = 'Erro #24';
 				return Redirect::back()
-					->withErrors($error);
+							   ->withErrors($error);
 	        }
 	      }
 	    }
@@ -1151,8 +1165,8 @@ class AdminOrderController extends BaseController {
 		);
 
 		if (
-		  empty($_SERVER['SERVER_ADDR']) ||
-		  !in_array($_SERVER['SERVER_ADDR'], $server_addr) ||
+		  empty($_SERVER['HTTP_X_FORWARDED_FOR']) ||
+		  !in_array($_SERVER['HTTP_X_FORWARDED_FOR'], $server_addr) ||
 		  // empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
 		  // !strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' &&
 		  !isset($_POST) ||
@@ -1162,29 +1176,23 @@ class AdminOrderController extends BaseController {
 		}
 
 		$braspag_order_id = $_POST['NumPedido'];
-		$codpagamento = $_POST['CODPAGAMENTO'];
+		// $codpagamento = $_POST['CODPAGAMENTO'];
 
 		$status = ($_POST['Status'] == '0')?'pago':'cancelado';
 
 		$order = $this->order->where('braspag_order_id', $braspag_order_id)->get();
 
 		$user_id = $order->user_id;
+		$order_id = $order->id;
 
 		$order->historico .= '<br/>'.date('d/m/Y H:i:s')." - Status alterado para ".$status.", atualizado pelo retorno da Braspag";
 		$order->status = $status;
 		$order->save();
 
-		$user_credit = UserCredit::where('new_user_id', $user_id)->get();
+		Voucher::where('order_id', $order_id)->update(array('status' => $status));
 
-		if($user_credit){
-			$user_credit_id = $user_credit->user_id;
-			$value = $user_credit->value;
-
-			$user = Profile::where('user_id', $user_credit_id)->get();
-			$user->credit += $value;
-			$user->save();
-
-			$user_credit->destroy();
+		if($status == 'pago'){
+			$this->creditByIndication($user_id);
 		}
 
 		$this->sendTransactionalEmail($order, $status);
@@ -1258,6 +1266,11 @@ class AdminOrderController extends BaseController {
 
 	    // validate user input
 		if ($validation->passes()){
+			// as vezes houve uma tentativa de compra com o braspag order id que teve erros, 
+			// mas o usuario permanece na mesma página (com o mesmo braspag order id), tal compra
+			// deve ser deletada, para uma nova (sem erros) ser criada em seguida
+			Order::where('braspag_order_id', $braspag_order_id)->delete();
+
 			//organize some of the user inputs
 			$user_id = Auth::user()->id;
 			$braspag_order_id = $inputs['reference_code'];
@@ -1295,29 +1308,30 @@ class AdminOrderController extends BaseController {
 			// save the items the user ordered and calculate total
 			foreach ($offers_options as $offer_option) {
 				$qty_ordered = array_shift($qties); // pega o primeiro elemento de $qties e joga no final do próprio array $qties, além de obter o valor manipulado em si, claro
-				$qty_sold = isset($offer_option['qty_sold'][0])?$offer_option['qty_sold']['0']['qty']:0;
-				$max_qty_allowed = min($offer_option['max_qty_per_buyer'], ($offer_option['max_qty'] - $offer_option['min_qty'] - $qty_sold));
+				$qty_sold = isset($offer_option->qty_sold{0})?$offer_option->qty_sold{0}->qty:0;
+				$max_qty_allowed = min($offer_option->max_qty_per_buyer, ($offer_option->max_qty - $offer_option->min_qty - $qty_sold));
 
 				if($qty_ordered > $max_qty_allowed){
 					// ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
-					$error = 'A quantidade selecionada para a oferta ' . $offer_option['offer']->title . ' é maior do que a quantidade em estoque.';
+					$error = 'A quantidade selecionada para a oferta ' . $offer_option->offer->title . ' é maior do que a quantidade em estoque.';
 
-					return Redirect::route('public.pagamento')
-							->withErrors($error);
+					return Redirect::back()
+								   ->withInput()
+								   ->withErrors($error);
 				}
 				else{
-					$products[] = '<a href="' . route('oferta', $offer_option['offer']->slug) . '">' . $qty_ordered . ' x ' . $offer_option['offer']->title . ' | ' . $offer_option->title . '</a>';
+					$products[] = '<a href="' . route('oferta', $offer_option->offer->slug) . '">' . $qty_ordered . ' x ' . $offer_option->offer->title . ' | ' . $offer_option->title . '</a>';
 
 					// save each ordered item now to create vouchers later (case the order go successfully)
-					for ($i=0; $i < $qty_ordered; $i++) {
-						$voucher['offer_option_id'] = $offer_option['id'];
+					for ($i = 0; $i < $qty_ordered; $i++) {
+						$voucher['offer_option_id'] = $offer_option->id;
 						$voucher['order_id'] = $order_id;
 						$voucher['display_code'] = $braspag_order_id . $offer_option->offer_id;
 						$vouchers[] = $voucher;
 					}
 
 					// sum the total
-					$total += ($qty_ordered * $offer_option['price_with_discount']);
+					$total += ($qty_ordered * $offer_option->price_with_discount);
 					$qty_total += $qty_ordered;
 				}
 			}
@@ -1335,10 +1349,12 @@ class AdminOrderController extends BaseController {
 
 			// subtrate discounts and user credit from the total, calculating the total left
 			if($discount_coupon_value < $total){
-				$user_profile = Profile::where('user_id', '=', $user_id)->get('credit');
+				$user_profile = Profile::where('user_id', $user_id)->get('credit');
 				$user_credit = $user_profile->credit;
 
-				$total_left = $total - ($discount_coupon_value + $user_credit);
+				$total_left = $total - $discount_coupon_value;
+
+				$total_left = ($total_left > $user_credit) ? $total_left - $user_credit : 0 ;
 			}
 			// if the discount coupon value cover the product price
 			else{
@@ -1357,7 +1373,7 @@ class AdminOrderController extends BaseController {
 			if($total_left <= 0){
 				$order->status = 'pago';
 				$order->coupon_id = $discount_coupon_id;
-				$order->total = $total;
+				$order->total = 0.00;
 				$order->credit_discount = $total - $discount_coupon_value;
 				$order->payment_terms = 'Créditos e/ou cupom de disconto';
 				$order->history .= '<br/>'.date('d/m/Y h:i:s').' - Pagamento feito completamente com créditos do usuário e/ou cupom de disconto';
@@ -1374,7 +1390,7 @@ class AdminOrderController extends BaseController {
 				$inputs['number'] = preg_replace('/\D/', '', $inputs['number']);
 
 				$rules = [
-					'cpf_cnpj' => 'required|digitsbetween:16,22',
+					'cpf_cnpj' => 'required|digitsbetween:10,22',
         			'telephone' => 'required|digitsbetween:10,20',
 					'flag' => 'required',
 		        	'number' => 'required|digits:16',
@@ -1388,12 +1404,12 @@ class AdminOrderController extends BaseController {
 			    $validation = Validator::make($inputs, $rules);
 
 			    if (!$validation->passes()){
-			    	return Redirect::route('public.pagamento')
-							->withInput()
-							->withErrors($validation);
+			    	return Redirect::back()
+									->withInput()
+									->withErrors($validation);
 			    }
 
-			    $profile_info = Profile::where('user_id', '=', $user_id)->get('first_name', 'last_name', 'state', 'telephone')->first();
+			    $profile_info = Profile::where('user_id', $user_id)->get('first_name', 'last_name', 'state', 'telephone')->first();
 
 				$first_name = $profile->first_name;
 				$last_name = $profile->last_name;
@@ -1410,8 +1426,41 @@ class AdminOrderController extends BaseController {
 				list($holder_fname, $holder_surname) = explode(" ", $inputs['name'], 2);
 				$installment = $inputs['installment'];
 
-				$order->total = $total;
+				if($installment == 1){
+					$interest_rate = 0;
+					$card_boletus_rate = Configuration::get('card-tax-1x');
+					$antecipation_rate = Configuration::get('antecipation-tax-1x');
+				}
+				else if($installment == 3){
+					$interest_rate = Configuration::get('interest-rate-3x');
+					$card_boletus_rate = Configuration::get('card-tax-3x');
+					$antecipation_rate = Configuration::get('antecipation-tax-3x');
+					$total_left = $total_left + ($total_left * $interest_rate);
+				}
+				else if($installment == 6){
+					$interest_rate = Configuration::get('interest-rate-6x');
+					$card_boletus_rate = Configuration::get('card-tax-6x');
+					$antecipation_rate = Configuration::get('antecipation-tax-6x');
+					$total_left = $total_left + ($total_left * $interest_rate);
+				}
+				else if($installment == 10){
+					$interest_rate = Configuration::get('interest-rate-10x');
+					$card_boletus_rate = Configuration::get('card-tax-10x');
+					$antecipation_rate = Configuration::get('antecipation-tax-10x');
+					$total_left = $total_left + ($total_left * $interest_rate);
+				}
+				else{
+					$error = 'Número de parcelas inválido.';
+					return Redirect::back()
+								   ->withInput()
+								   ->withErrors($error);
+				}
+
+				$order->total = $total_left;
 				$order->credit_discount = $total - $total_left - $discount_coupon_value;
+				$order->interest_rate = $interest_rate;
+				$order->card_boletus_rate = $card_boletus_rate;
+				$order->antecipation_rate = $antecipation_rate;
 				$order->holder_card = $inputs['name'];
 				$order->first_digits_card = substr($number, 0, 4);
 				$order->cpf = $cpf_cnpj;
@@ -1422,19 +1471,20 @@ class AdminOrderController extends BaseController {
 
 				/////////////////////////////////////
 				/////////////////////////////////////
-				require_once 'admin/braspag/vars.php';
+				require_once app_path().'/braspag/vars.php';
 				/////////////////////////////////////
 				/////////////////////////////////////
 
-				if(validateInstallment($installment, $total, $donation) == false){
-					$error = 'Número de parcelas inválido.';
-					return Redirect::route('public.pagamento')
-							->withErrors($error);
-				}
+				// if(validateInstallment($installment, $total, $donation) == false){
+				// 	$error = 'Número de parcelas inválido.';
+				// 	return Redirect::back()
+				// 				   ->withInput()
+				// 				   ->withErrors($error);
+				// }
 
 				/////////////////////////////////////////////
 				/////////////////////////////////////////////
-		        require_once 'antifraud.php';
+		        require_once app_path().'/braspag/antifraud.php';
 		        /////////////////////////////////////////////
 		        /////////////////////////////////////////////
 
@@ -1470,14 +1520,14 @@ class AdminOrderController extends BaseController {
 	            $request->AntiFraudRequest->CardData->ExpirationMonth = $month;
 	            $request->AntiFraudRequest->CardData->ExpirationYear = $year;
 
-	            $MerchantDefinedData->Field1 = $offers_options[0]->offer_id;
-	            $MerchantDefinedData->Field2 = $offers_options[0]->id;
-	            $MerchantDefinedData->Field3 = $offers_options[0]->voucher_validity_start;
-	            $MerchantDefinedData->Field4 = $offers_options[0]->voucher_validity_end;
-	            $MerchantDefinedData->Field5 = $offers_options[0]->price_with_discount;
-	            $MerchantDefinedData->Field6 = $offers_options[0]->title;
-	            $MerchantDefinedData->Field7 = $offers_options[0]->subtitle;
-	            $MerchantDefinedData->Field8 = $offers_options[0]->percent_off;
+	            $MerchantDefinedData->Field1 = $offers_options{0}->offer_id;
+	            $MerchantDefinedData->Field2 = $offers_options{0}->id;
+	            $MerchantDefinedData->Field3 = $offers_options{0}->voucher_validity_start;
+	            $MerchantDefinedData->Field4 = $offers_options{0}->voucher_validity_end;
+	            $MerchantDefinedData->Field5 = $offers_options{0}->price_with_discount;
+	            $MerchantDefinedData->Field6 = $offers_options{0}->title;
+	            $MerchantDefinedData->Field7 = $offers_options{0}->subtitle;
+	            $MerchantDefinedData->Field8 = $offers_options{0}->percent_off;
 
 	            $request->AntiFraudRequest->MerchantDefinedData = $MerchantDefinedData;
 
@@ -1496,7 +1546,7 @@ class AdminOrderController extends BaseController {
 	            $billToData->State = "CA";
 	            $billToData->Street1 = "1295 Charleston Road";
 	            $billToData->PostalCode = "94043";
-	            $billToData->HttpBrowserCookiesAccepted = false;
+	            // $billToData->HttpBrowserCookiesAccepted = false;
 	            $billToData->IpAddress = get_real_ip();
 	            $request->AntiFraudRequest->BillToData = $billToData;
 
@@ -1514,11 +1564,11 @@ class AdminOrderController extends BaseController {
 	            $itemData->PassengerData->Email = $email;
 	            $itemData->PassengerData->Phone = $passenger_telephone;
 	            $itemData->ProductData->Code = "Default";
-	            $itemData->ProductData->Name = $offers_options[0]->title;
+	            $itemData->ProductData->Name = $offers_options{0}->title;
 	            $itemData->ProductData->Risk = "Low";
 	            $itemData->ProductData->Sku = $braspag_order_id;
 	            $itemData->ProductData->Quantity = $qty_ordered;
-	            $itemData->ProductData->UnitPrice = substr($offers_options[0]->price_with_discount,-2);
+	            $itemData->ProductData->UnitPrice = number_format($offers_options{0}->price_with_discount, 0, '', '');
 	            $itemDataCollection = array($itemData);
 
 	            $request->AntiFraudRequest->ItemDataCollection->ItemData = $itemData;
@@ -1532,6 +1582,7 @@ class AdminOrderController extends BaseController {
 
 	            switch ($AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse->ReasonCode) {
 	              case '100':
+	              case '231':
 	                // $return = 'Operação bem sucedida.';
 	                $returnBD = 'Operação bem sucedida.';
 	                $pagador = 'y';
@@ -1621,7 +1672,7 @@ class AdminOrderController extends BaseController {
 	                $returnBD = 'Algum parâmetro é inválido.';
 	                break;
 	              default:
-	                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 013). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+	                $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 013). Este erro pode ocorrer devido a um navegador desatualizado ou a uma conexão de internet lenta. Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
 	                $returnBD = 'Ocorreu um erro na solicitação.';
 	                break;
 	            }
@@ -1636,8 +1687,9 @@ class AdminOrderController extends BaseController {
 
 					$order->save();
 
-					return Redirect::route('public.pagamento')
-							->withErrors($return);
+					return Redirect::back()
+								   ->withInput()
+								   ->withErrors($return);
 	            }
 	            else{
 					// $order->status = 'pago';
@@ -1649,7 +1701,7 @@ class AdminOrderController extends BaseController {
 
 	            /////////////////////////////////////////////////
 	            /////////////////////////////////////////////////
-		        require_once 'admin/braspag/pagador/Braspag.php';
+		        require_once app_path().'/braspag/pagador/Braspag.php';
 		        /////////////////////////////////////////////////
 		        /////////////////////////////////////////////////
 
@@ -1697,7 +1749,7 @@ class AdminOrderController extends BaseController {
 		        $CreditCard->setCardSecurityCode($code);
 		        $CreditCard->setCurrency('BRL');
 		        $CreditCard->setCountry('BRA');
-		        $CreditCard->setAmount($total_left);
+		        $CreditCard->setAmount(($total_left*100));
 		        $CreditCard->setPaymentPlan( (($installment == 1) ? 0 : 1) );
 		        $CreditCard->setNumberOfPayments($installment);
 		        $CreditCard->setSaveCreditCard(false);
@@ -1880,8 +1932,9 @@ class AdminOrderController extends BaseController {
 		            $order->save();
 
 		            // ERRO, NAO APROVADO, ETC...
-					return Redirect::route('public.pagamento')
-							->withErrors($return);
+					return Redirect::back()
+								   ->withInput()
+								   ->withErrors($return);
 		        }
 		        else{
 		            if($pagadorTransactionType == 1){
@@ -1905,14 +1958,14 @@ class AdminOrderController extends BaseController {
 			////////////////////////////////////////////////////////////////////////////
 			else{
 				//////////////////////////////////////
-				require_once 'admin/braspag/vars.php';
+				require_once app_path().'/braspag/vars.php';
 				//////////////////////////////////////
 
 		        ////////////////////////////////////////
-		        require_once 'admin/braspag/nusoap.php';
+		        require_once app_path().'/braspag/nusoap.php';
 		        ////////////////////////////////////////
 
-		        $profile_info = Profile::where('user_id', '=', $user_id)->get('first_name', 'last_name')->first();
+		        $profile_info = Profile::where('user_id', $user_id)->get('first_name', 'last_name')->first();
 
 				$name = $profile->first_name . ' ' . $profile->last_name;
 
@@ -1926,7 +1979,7 @@ class AdminOrderController extends BaseController {
 		          'merchantId'   => $MerchantId,
 		          'customerName'   => $name,
 		          'orderId'   => $order_id,
-		          'amount'   => $total_left,
+		          'amount'   => number_format($total_left, 2, ',', ''),
 		          'expirationDate' => date('d/m/y', strtotime('+1 day')),
 		          'paymentMethod'   => '06',
 		          'instructions' => 'Este boleto pode ser pago até o dia '.date('d/m/y', strtotime('+1 day')).'. Assim que o pagamento for efetuado e aprovado, seu cupom será liberado em sua conta. Obrigado por comprar no INNBatível!',
@@ -1937,26 +1990,30 @@ class AdminOrderController extends BaseController {
 
 		        if ($client->fault) {
 		        	$error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 039). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-					return Redirect::route('public.pagamento')
-							->withErrors($error);
+					return Redirect::back()
+								   ->withInput()
+								   ->withErrors($error);
 		        } else {
 		          $err = $client->getError();
 		          if ($err) {
 		            $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 040). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-					return Redirect::route('public.pagamento')
-							->withErrors($error);
+					return Redirect::back()
+									->withInput()
+								    ->withErrors($error);
 		          } else {
 		            if($result['CreateBoletoResult']['status'] == NULL){
 		                $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 041). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-						return Redirect::route('public.pagamento')
-							->withErrors($error);
+						return Redirect::back()
+									   ->withInput()
+									   ->withErrors($error);
 		            }
 		          }
 		        }
 
 		        $boletus_url = $result['CreateBoletoResult']['url'];
 
-		        $order->total = $total;
+		        $order->total = $total_left;
+		        $order->card_boletus_rate = Configuration::get('boletus-value');
 		        $order->braspag_id = $result['CreateBoletoResult']['boletoNumber'];
 		        $order->boleto = $boletus_url;
 		        $order->payment_terms = "Boleto";
@@ -1966,14 +2023,20 @@ class AdminOrderController extends BaseController {
 		        $order->save();
 			}
 
+			// status final
+			$status = $order->status;
+
 			// atualizar quantidade de discount_cupons usados, caso $discount != NULL, ou seja, caso o usuário tenha entrado com um cupom de desconto e ele tenha sido válido
 			if($discount){
 				$discount->qty_used++;
-				$discout->save();
+				$discount->save();
 			}
 
-			// criar vouchers (remover o código da criação de vouchers antes de passar pelo antifraud/pagador)
-			Voucher::create($vouchers);
+			foreach ($vouchers as $voucher) {
+				// criar vouchers (remover o código da criação de vouchers antes de passar pelo antifraud/pagador)
+				$voucher['status'] = $status;
+				Voucher::create($voucher);
+			}
 
 			// atualizar creditos do usuario
 			if($user_profile){
@@ -1984,19 +2047,11 @@ class AdminOrderController extends BaseController {
 				$user_profile->save();
 			}
 
-			// inserir creditos por indicação
-			$credit_ind_user = UserCredit::where('new_user_id', '=', $user_id);
-
-			if($credit_ind_user){
-				$indicator_user = User::find($credit_ind_user->user_id);
-				$indicator_user->credit += $credit_ind_user->value;
-				$indicator_user->save();
-
-				$credit_ind_user->delete();
-			}
-
 			// caso a venda tenha sido concretizada
 			if($status == 'pago'){
+				// inserir creditos por indicação
+				$this->creditByIndication($user_id);
+
 				foreach ($products as $product) {
 		        	$products_email .= $product . '<br/>';
 		        }
@@ -2032,9 +2087,9 @@ class AdminOrderController extends BaseController {
 		}
 		else{
 			// ERRO: algum dado invalido
-			return Redirect::route('public.pagamento')
-					->withInput()
-					->withErrors($validation);
+			return Redirect::back()
+						   ->withInput()
+						   ->withErrors($validation);
 		}
 	}
 
