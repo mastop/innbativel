@@ -24,7 +24,7 @@
     $('input.currency').maskMoney({
         thousands: '.',
         decimal:    ','
-    });
+    }).maskMoney('mask');
 
     $(".select2").select2({allowClear: true});
     $("#offers_included").select2({maximumSelectionSize: 5});
@@ -111,6 +111,7 @@
         var div_clone = $('#offerOptionsMain div.offerOptions').last();
         //alert(div_clone.html());
         var div = div_clone.clone().insertAfter(div_clone);
+        div.find('input[type="hidden"]').val('');
         resetOfferOptions();
         $( "div#offerOptionsMain" ).sortable("refresh");
     });
