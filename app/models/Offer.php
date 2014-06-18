@@ -38,7 +38,6 @@ class Offer extends BaseModel {
         'offer_old_img', // Imagem Pré-Reservas
         'newsletter_img', // Imagem Newsletters
         'saveme_img', // Imagem Saveme
-        // 'video', // TODO: remover este campo da tabela
         'display_map', // Exibir mapa?
         'is_product', // Será publicada?
         'is_active', // Oferta ativa?
