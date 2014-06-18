@@ -2,34 +2,11 @@
 
 class XmlServerController extends BaseController {
 
-	public function getSaveme()
-	{
-		// $select = 	[
-		// 				'offers.id','offers.destiny', 'offers.saveme_title',
-		// 				'offer_option.price_original', 'offers_options.price_with_discount',
-		// 				'offers.percent_off', 'offers.saveme_img', 'offers.slug',
-		// 				'offers.starts_on', 'offers.ends_on', 'offers.description',
-		// 				'offers.general_rules', 'offers_option.rules',
-		// 				'offers_saveme.priority', 'saveme.geocode', 'users.name', 'users.site',
-		// 				'users.country', 'users.city', 'users.state', 'users.neighborhood',
-		// 				'users.number', 'users.complement', 'users.zip', 'users.telephone',
-		// 			];
-
-		$now = date('Y-m-d H:i:s');
-
-		$data['offers'] = Offer::with(['saveme', 'offer_option', 'partner', 'destiny'])->where('starts_on','<', $now)->where('ends_on','>', $now)->orderBy('starts_on', 'asc')->get();
-		// $data['offers'] = Offer::with('saveme', 'offer_option', 'partner')->get($select);
-
-		// d($data['offers'][0]->offer_option2);
-
-		return Response::make(View::make('xml.saveme', $data), 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
-	}
-
 	function getCriteo()
 	{
 		$now = date('Y-m-d H:i:s');
 		$data['offers'] =
-		DB::select('SELECT 	o.id, d.name AS destiny, o.saveme_title, o.slug, o.starts_on, o.ends_on, o.cover_img, op.price_original, op.price_with_discount, op.percent_off, op.max_qty, op.voucher_validity_end, p.first_name, p.last_name,
+		DB::select('SELECT 	o.id, d.name AS destiny, o.slug, o.starts_on, o.ends_on, o.cover_img, op.price_original, op.price_with_discount, op.percent_off, op.max_qty, op.voucher_validity_end, p.first_name, p.last_name,
 						(
 						SELECT COUNT( v.id )
 						FROM vouchers AS v

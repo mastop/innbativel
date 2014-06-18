@@ -298,23 +298,6 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::get('genre/clearfield/{id}/{field}', ['as' => 'admin.genre.clearfield', 'uses' => 'AdminGenreController@getClearfield']);
 
 	/*
-	 * Saveme
-	 */
-
-	Route::any('saveme', ['as' => 'admin.saveme', 'uses' => 'AdminSavemeController@anyIndex']);
-
-	Route::get('saveme/create', ['as' => 'admin.saveme.create', 'uses' => 'AdminSavemeController@getCreate']);
-	Route::post('saveme/create', ['as' => 'admin.saveme.save', 'uses' => 'AdminSavemeController@postCreate']);
-
-	Route::any('saveme/edit', function(){ return Redirect::route('admin.saveme'); });
-	Route::get('saveme/edit/{id}', ['as' => 'admin.saveme.edit', 'uses' => 'AdminSavemeController@getEdit']);
-	Route::post('saveme/edit/{id}', ['as' => 'admin.saveme.update', 'uses' => 'AdminSavemeController@postEdit']);
-
-	Route::any('saveme/delete', function(){ return Redirect::route('admin.saveme'); });
-	Route::get('saveme/delete/{id}', ['as' => 'admin.saveme.delete', 'uses' => 'AdminSavemeController@getDelete']);
-	Route::post('saveme/delete/{id}', ['as' => 'admin.saveme.destroy', 'uses' => 'AdminSavemeController@postDelete']);
-
-	/*
 	 * Tellus
 	 */
 

@@ -12,7 +12,7 @@
 		<producturl><![CDATA[http://www.innbativel.com.br/oferta/{{ $offer->slug }}]]></producturl>
 		<smallimage><![CDATA[<?php echo substr($offer->cover_img, 0, -4) . '_t2' . substr($offer->cover_img, -4); ?>]]></smallimage>
 		<price>{{ $offer->price_with_discount }}</price>
-		<description>{{ $offer->saveme_title }}</description>
+		<description>{{ $offer->subtitle }}</description>
 		<instock>{{ $instock_and_recommendable }}</instock>
 		<categoryid1></categoryid1>
 		<bigimage><![CDATA[{{ $offer->cover_img }}]]></bigimage>

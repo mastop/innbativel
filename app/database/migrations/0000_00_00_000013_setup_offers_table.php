@@ -38,14 +38,12 @@ class SetupOffersTable extends Migration {
         $table->tinyInteger('percent_off')->nullable();
 		$table->text('rules')->nullable(); // HTML
 		$table->text('features')->nullable(); // HTML
-		$table->string('saveme_title')->nullable();
 		$table->string('slug')->nullable();
 		$table->dateTime('starts_on')->nullable();
 		$table->dateTime('ends_on')->nullable();
 		$table->string('cover_img')->nullable(); // URL
 		$table->string('offer_old_img')->nullable(); // URL
 		$table->string('newsletter_img')->nullable(); // URL
-		$table->string('saveme_img')->nullable(); // URL
 		$table->boolean('display_map')->default(false);
 		$table->integer('display_order')->default(99); // ordem das ofertas na home, em categorias e em qualquer outro lugar
 		$table->boolean('is_product')->default(false);

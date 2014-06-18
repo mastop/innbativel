@@ -29,7 +29,6 @@ class AjaxController extends BaseController {
         $page = Input::get('page_limit', 10);
         $now = date('Y-m-d H:i:s');
 
-        //$data['offers'] = Offer::with(['saveme', 'offer_option', 'partner', 'destiny'])->where('starts_on','<', $now)->where('ends_on','>', $now)->where('title', 'LIKE', $q)->orderBy('starts_on', 'asc')->get();
         $results = DB::table('offers')
                     ->select(
                     'offers.id as ofid',
@@ -67,7 +66,6 @@ class AjaxController extends BaseController {
             return Response::json();
         }
         //print_r($id);
-        //$data['offers'] = Offer::with(['saveme', 'offer_option', 'partner', 'destiny'])->where('starts_on','<', $now)->where('ends_on','>', $now)->where('title', 'LIKE', $q)->orderBy('starts_on', 'asc')->get();
         $results = DB::table('offers')
                     ->select(
                     'offers.id as ofid',

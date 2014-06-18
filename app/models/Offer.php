@@ -31,13 +31,11 @@ class Offer extends BaseModel {
         'percent_off', // %OFF
         'rules', // Regras
         'features', // Destaques
-        'saveme_title', // Título Saveme
         'starts_on', // Data de Início
         'ends_on', // Data de Término
         'cover_img', // Imagem Principal
         'offer_old_img', // Imagem Pré-Reservas
         'newsletter_img', // Imagem Newsletters
-        'saveme_img', // Imagem Saveme
         'display_map', // Exibir mapa?
         'is_product', // Será publicada?
         'is_active', // Oferta ativa?
@@ -84,10 +82,6 @@ class Offer extends BaseModel {
 
 	public function offer_image(){
 		return $this->hasMany('OfferImage');
-	}
-
-	public function saveme(){
-		return $this->belongsToMany('Saveme', 'offers_saveme', 'offer_id', 'saveme_id')->withPivot('priority');
 	}
 
 	public function group(){
@@ -238,19 +232,5 @@ class Offer extends BaseModel {
         return $value;
         return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
     }
-
-    /**
-     * Formata a imagem do Saveme
-     * @param $value
-     * @return string
-     */
-    public function getSavemeImgAttribute($value)
-    {
-        if(empty($value) || substr($value, 0, 4) == 'http')
-        return $value;
-        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
-    }
-
-
 
 }

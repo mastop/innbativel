@@ -33,8 +33,6 @@ class DatabaseSeeder extends Seeder {
 		$this->call('OffersTableSeeder');
 		$this->call('OffersOptionsTableSeeder');
 		$this->call('OffersImagesTableSeeder');
-		$this->call('SavemesTableSeeder');
-		$this->call('OffersSavemeTableSeeder');
 		$this->call('CommentsTableSeeder');
 		$this->call('DiscountsCouponsTableSeeder');
 		$this->call('OrdersTableSeeder');
