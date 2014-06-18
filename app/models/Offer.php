@@ -44,7 +44,7 @@ class Offer extends BaseModel {
         'is_active', // Oferta ativa?
     ];
 
-	protected $softDelete = false;
+	protected $softDelete = true;
 	public $timestamps = true;
 
 	public static $rules = [
@@ -204,9 +204,50 @@ class Offer extends BaseModel {
         return date('d/m/Y', strtotime($value));
     }
 
+    /**
+     * Formata a imagem principal
+     * @param $value
+     * @return string
+     */
     public function getCoverImgAttribute($value)
     {
-        if(substr($value, 0, 4) == 'http')
+        if(empty($value) || substr($value, 0, 4) == 'http')
+        return $value;
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
+    }
+
+    /**
+     * Formata a imagem de pré-reserva
+     * @param $value
+     * @return string
+     */
+    public function getOfferOldImgAttribute($value)
+    {
+        if(empty($value) || substr($value, 0, 4) == 'http')
+        return $value;
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
+    }
+
+    /**
+     * Formata a imagem de Newsletters
+     * @param $value
+     * @return string
+     */
+    public function getNewsletterImgAttribute($value)
+    {
+        if(empty($value) || substr($value, 0, 4) == 'http')
+        return $value;
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
+    }
+
+    /**
+     * Formata a imagem do Saveme
+     * @param $value
+     * @return string
+     */
+    public function getSavemeImgAttribute($value)
+    {
+        if(empty($value) || substr($value, 0, 4) == 'http')
         return $value;
         return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
     }
