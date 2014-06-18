@@ -232,14 +232,6 @@ class AdminOfferController extends BaseController {
                 // Salva os Feriados
                 $offer->holiday()->sync(Input::get('offers_holidays'));
 
-                // Salva o SaveMe
-                $offers_saveme = Input::get('offers_saveme');
-                if(is_array($offers_saveme)){
-                    foreach($offers_saveme as $v){
-                        $offer->saveme()->attach($v, array('priority' => Input::get('offers_saveme'.$v)));
-                    }
-                }
-
                 // Salva as imagens da Oferta
 
                 $s3access = Configuration::get('s3access');
@@ -338,29 +330,6 @@ class AdminOfferController extends BaseController {
                     $offer->newsletter_img = $newname;
                 }
 
-                // Imagem SaveMe
-                $saveme_img = Input::get('saveme_img');
-
-                if($saveme_img){
-                    // Pega a extensão da imagem
-                    $ext = pathinfo($saveme_img, PATHINFO_EXTENSION);
-                    // Cria um novo nome para a imagem
-                    $newname = "{$offer->slug}-saveme.$ext";
-                    $newpath = "ofertas/{$offer->id}/$newname";
-                    // Copia a imagem para o lugar definitivo
-                    $s3->copyObject(array(
-                        'Bucket'     => $s3bucket,
-                        'Key'        => "$newpath",
-                        'CopySource' => "{$s3bucket}/temp/{$saveme_img}",
-                        'ACL'        => 'public-read',
-                        'CacheControl' => 'max-age=315360000',
-                        'ContentType' => '^',
-                        'Expires'    => $expires
-                    ));
-                    // Coloca o novo nome da imagem em $offer
-                    $offer->saveme_img = $newname;
-                }
-
                 // Demais imagens
                 $offers_images = Input::get('offers_images');
                 if(is_array($offers_images)){
@@ -438,7 +407,6 @@ class AdminOfferController extends BaseController {
 
         $holidays = $offer->holiday()->lists('holiday_id');
         $groups = $offer->group()->lists('group_id');
-        $savesme = $offer->saveme()->lists('priority', 'saveme_id');
         $this->layout->page_title = 'Editando Oferta #'.$offer->id.' '.$offer->title;
         $this->layout->content = View::make('admin.offer.edit', compact('offer', 'policy', 'signature', 'uid', 's3bucket', 's3access', 'expires', 'holidays', 'groups', 'savesme'));
 	}
@@ -458,7 +426,7 @@ class AdminOfferController extends BaseController {
 
             if($offer){
                 // Salva a oferta
-                $offer->update(Input::except(array('cover_img', 'offer_old_img', 'newsletter_img', 'saveme_img')));
+                $offer->update(Input::except(array('cover_img', 'offer_old_img', 'newsletter_img')));
 
                 // Atualiza as opções de venda
                 $offer_options = Input::get('offer_options');

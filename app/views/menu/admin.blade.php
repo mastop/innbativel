@@ -10,7 +10,6 @@
           ['Itens Inclusos', route('admin.included'), false, false, null, 'fire'],
           ['Tags', route('admin.tag'), false, false, null, 'fire'],
           ['Pagamentos', route('admin.order'), false, false, null, 'leaf'],
-          ['Saveme', route('admin.saveme'), false, false, null, 'leaf'],
           ['Indicações', route('admin.indication'), false, false, null, 'leaf'],
           ['Créditos de indicações', route('admin.credit_indication'), false, false, null, 'leaf'],
           ['Categorias', route('admin.category'), false, false, null, 'leaf'],

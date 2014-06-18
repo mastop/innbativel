@@ -22,7 +22,6 @@
 {{ Former::text('title', 'Título')->class('span12') }}
 {{ Former::text('subtitle', 'Subtítulo')->class('span12') }}
 {{ Former::text('subsubtitle', 'Subtítulo 2')->class('span12') }}
-{{ Former::text('saveme_title', 'Título SaveMe')->class('span12') }}
 
 {{ Former::select('destiny_id', 'Destino')
 ->addOption(null)
@@ -100,7 +99,6 @@
 {{HTML::ImageUpload('cover_img', 'Principal')}}
 {{HTML::ImageUpload('offer_old_img', 'Pré-Reservas')}}
 {{HTML::ImageUpload('newsletter_img', 'Newsletter')}}
-{{HTML::ImageUpload('saveme_img', 'Saveme')}}
 {{HTML::ImageUpload('offers_images', 'Demais Imagens', true, $offer->offer_image()->get(['offer_id', 'url'])->lists('url'))}}
 
 
@@ -234,51 +232,6 @@
         </div>
     </div>
 </div>
-
-{{ Former::legend('Saveme') }}
-
-<div class="control-group">
-    <label for="saveme_sudeste" class="control-label"><input type="checkbox" name="saveme_sudeste_chk" id="saveme_sudeste_chk" checked> Sudeste</label>
-    <div class="controls">
-        <input class="span12" id="saveme_sudeste" type="text" name="saveme_sudeste" value="2">
-    </div>
-</div>
-<div class="control-group">
-    <label for="saveme_sul" class="control-label"><input type="checkbox" name="saveme_sul_chk" id="saveme_sul_chk" checked> Sul</label>
-    <div class="controls">
-        <input class="span12" id="saveme_sul" type="text" name="saveme_sul" value="2">
-    </div>
-</div>
-<div class="control-group">
-    <label for="saveme_nordeste" class="control-label"><input type="checkbox" name="saveme_nordeste_chk" id="saveme_nordeste_chk" checked> Nordeste</label>
-    <div class="controls">
-        <input class="span12" id="saveme_nordeste" type="text" name="saveme_nordeste" value="2">
-    </div>
-</div>
-<div class="control-group">
-    <label for="saveme_norte" class="control-label"><input type="checkbox" name="saveme_norte_chk" id="saveme_norte_chk" checked> Norte</label>
-    <div class="controls">
-        <input class="span12" id="saveme_norte" type="text" name="saveme_norte" value="2">
-    </div>
-</div>
-<div class="control-group">
-    <label for="saveme_centrooeste" class="control-label"><input type="checkbox" name="saveme_centrooeste_chk" id="saveme_centrooeste_chk" checked> Centro-Oeste</label>
-    <div class="controls">
-        <input class="span12" id="saveme_centrooeste" type="text" name="saveme_centrooeste" value="2">
-    </div>
-</div>
-<div class="clearfix"></div>
-@foreach (Saveme::orderBy('title')->get() as $saveme)
-<div class="control-group">
-    <div class="controls">
-        <input type="checkbox" name="offers_saveme[]" id="offers_saveme[]" value="{{$saveme->id}}"
-        @if((is_array(Input::get('offers_saveme', Input::old('offers_saveme', array_keys($savesme)))) && in_array($saveme->id, Input::get('offers_saveme', Input::old('offers_saveme', array_keys($savesme))))) or (!is_array(Input::get('offers_saveme', Input::old('offers_saveme', array_keys($savesme))))))
-        checked
-        @endif
-        > <input class="input-small" id="offers_saveme{{$saveme->id}}" type="text" name="offers_saveme{{$saveme->id}}" value="{{Input::get('offers_saveme'.$saveme->id, Input::old('offers_saveme'.$saveme->id, (isset($savesme[$saveme->id])?$savesme[$saveme->id]:2)))}}"> {{$saveme->title}}
-    </div>
-</div>
-@endforeach
 
 {{ Former::hidden('is_active', '')->value(1) }}
 
