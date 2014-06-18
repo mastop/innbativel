@@ -73,14 +73,14 @@ class AuthController extends BaseController {
 				try{
                     if (Auth::attempt(array('email' => Input::get('email'), 'password' => $this->user->setPasswordAttribute(Input::get('password')))))
                     {
-                        return Redirect::intended('dashboard')
+                        return Redirect::back()
                             ->with('success', 'Login efetuado com sucesso!')
                             ->withInput();
                     }
 				}
 				catch (Toddish\Verify\UserNotFoundException $e)
 				{
-					return Redirect::route('login')
+					return Redirect::back()
                         ->with('warning', 'Usuário não encontrado.')
                         ->withInput();
 				}
@@ -93,13 +93,13 @@ class AuthController extends BaseController {
 				}
 				catch (Toddish\Verify\UserDisabledException $e)
 				{
-					return Redirect::route('login')
+					return Redirect::back()
                         ->with('warning', 'Usuário Inativo ou Bloqueado.')
                         ->withInput();
 				}
 				catch (Toddish\Verify\UserDeletedException $e)
 				{
-					return Redirect::route('login')
+					return Redirect::back()
                         ->with('warning', 'Usuário excluído.')
                         ->withInput();
 				}
@@ -113,7 +113,7 @@ class AuthController extends BaseController {
                             Auth::user()->password = Input::get('password');
                             Auth::user()->save();
 
-                            return Redirect::intended('dashboard')
+                            return Redirect::back()
                             ->with('success', 'Login efetuado com sucesso!')
                             ->withInput();
                         }
@@ -151,21 +151,21 @@ class AuthController extends BaseController {
 
 			elseif (Auth::user()->is('parceiro'))
 			{
-				return Redirect::route('admin')
+				return Redirect::route('painel')
 				->with('success', Lang::get('auth.loggin-success'))
 				->with('success', Lang::get('auth.loggin-as-partner'));
 			}
 
 			elseif (Auth::user()->is('cliente'))
 			{
-				return Redirect::route('admin')
+				return Redirect::back()
 				->with('success', Lang::get('auth.loggin-success'))
 				->with('success', Lang::get('auth.loggin-as-customer'));
 			}
 
 			else
 			{
-				return Redirect::route('home')
+				return Redirect::back()
 				->with('success', Lang::get('auth.loggin-success'));
 			}
 
