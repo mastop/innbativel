@@ -114,6 +114,7 @@ class AdminOfferController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Gerenciar Ofertas';
 		$this->layout->content = View::make('admin.offer.list', compact('sort', 'order', 'pag', 'offer'));
 	}
 
@@ -450,35 +451,296 @@ class AdminOfferController extends BaseController {
 
 	public function postEdit($id)
 	{
-		/*
-		 * Permuration
-		 */
-		$inputs = Input::all();
+        if ($this->offer->passes() && $this->offer_option->passes(Input::get('offer_options')[0]))
+        {
+            // Pega a oferta
+            $offer = $this->offer->find($id);
 
-	    $validation = Validator::make($inputs, Offer::$rules);
+            if($offer){
+                // Salva a oferta
+                $offer->update(Input::except(array('cover_img', 'offer_old_img', 'newsletter_img', 'saveme_img')));
 
-		if ($validation->passes())
-		{
-			$offer = $this->offer->find($id);
+                // Atualiza as opções de venda
+                $offer_options = Input::get('offer_options');
 
-			if ($offer)
-			{
-				$cover_img = ImageUpload::createFrom(Input::file('cover_img'), Config::get('upload.offer'));
+                $price_original = 0;
+                $price_with_discount = 0;
+                $percent_off = 0;
 
-				$inputs['cover_img'] = $cover_img;
+                // Coloca em um array os IDs dos offer_option desta oferta
+                $opt_ids = $offer->offer_option()->lists('id');
+                foreach($offer_options as $k => $opt){
+                    $opt['display_order'] = $k;
+                    $opt['offer_id'] = $offer->id;
+                    if(isset($opt['id']) && $opt['id'] > 0){
+                        $offer_option = $this->offer_option->find($opt['id']);
+                        // Atualiza a opção da Oferta
+                        $offer_option->update($opt);
+                        // Remove este offer_option do array $opt_ids
+                        if(in_array($opt['id'], $opt_ids)){
+                            unset($opt_ids[array_search($opt['id'], $opt_ids)]);
+                        }
+                    }else{
+                        $offer_option = $this->offer_option->create($opt);
+                    }
+                    // Verifica os valores de $offer_option para pegar o menor e depois jogar na oferta
+                    if($price_with_discount == 0 || $offer_option->price_with_discount < $price_with_discount){
+                        $price_original = $offer_option->price_original;
+                        $price_with_discount = $offer_option->price_with_discount;
+                        $percent_off = $offer_option->percent_off;
+                    }
+                }
+                // Se sobrou algum ID em $opt_ids, deleta
+                if(count($opt_ids) > 0){
+                    foreach($opt_ids as $oid) $this->offer_option->find($oid)->delete();
+                }
+                // Atualiza a oferta com os menores valores de offer_option
+                $offer->price_original = $price_original;
+                $offer->price_with_discount = $price_with_discount;
+                $offer->percent_off = $percent_off;
 
-				$offer->update($inputs);
-			}
+                // Atualiza os itens inclusos
+                $offers_included = Input::get('offers_included');
+                $included = array();
+                if(is_array($offers_included)){
+                    foreach($offers_included as $k => $v){
+                        $included[$v] = array('display_order' => $k);
+                    }
+                    $offer->included()->sync($included);
+                }else{
+                    $offer->included()->sync(array());
+                }
 
-			return Redirect::route('admin.offer');
-		}
+                // Atualiza as ofertas adicionais
+                $offers_additional = explode(',', Input::get('offers_additional'));
+                $additional = array();
+                if(is_array($offers_additional)){
+                    foreach($offers_additional as $k => $v){
+                        $additional[$v] = array('display_order' => $k);
+                    }
+                    $offer->offer_additional()->sync($additional);
+                }else{
+                    $offer->offer_additional()->sync(array());
+                }
 
-		/*
-		 * Return and display Errors
-		 */
-		return Redirect::route('admin.offer.edit', $id)
-			->withInput()
-			->withErrors($validation);
+                // Atualiza as Tags
+                $offers_tags = explode(',', Input::get('offers_tags'));
+                if(is_array($offers_tags)){
+                    $tags = array();
+                    foreach($offers_tags as $v){
+                        if(is_numeric($v)){ // Se for número, joga no array $tags
+                            $tags[] = $v;
+                        }else{ // Se não for número, cria a tag primeiro e joga no array o ID
+                            $tags[] = Tag::firstOrCreate(array('title' => $v))->id;
+                        }
+                    }
+                    $offer->tag()->sync($tags);
+                }
+
+                // Atualiza os grupos
+                $offers_groups = Input::get('offers_groups');
+                $groups = array();
+                if(is_array($offers_groups)){
+                    foreach($offers_groups as $k => $v){
+                        $groups[$v] = array('display_order' => $k);
+                    }
+                    $offer->group()->sync($groups);
+                }else{
+                    $offer->group()->sync(array());
+                }
+
+                // Atualiza os Feriados
+                $offer->holiday()->sync(Input::get('offers_holidays'));
+
+                // Atualiza as imagens da Oferta
+
+                $s3access = Configuration::get('s3access');
+                $s3secret = Configuration::get('s3secret');
+                $s3region = Configuration::get('s3region');
+                $s3bucket = Configuration::get('s3bucket');
+
+                $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
+
+                $s3 = Aws\S3\S3Client::factory(
+                    array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+                );
+
+                // Imagem Principal
+                $cover_img = Input::get('cover_img');
+
+                if(substr($cover_img, 0, 2) != '//'){
+                    // Deleta a imagem velha
+                    $imagem_velha = "ofertas/{$offer->id}/{$offer->getOriginal('cover_img')}";
+                    $imagem_velha_thumb = "ofertas/{$offer->id}/thumb/{$offer->getOriginal('cover_img')}";
+                    $s3->deleteObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => $imagem_velha
+                    ));
+                    $s3->deleteObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => $imagem_velha_thumb
+                    ));
+
+                    // Envia a nova imagem
+
+                    // Pega a extensão da imagem
+                    $ext = pathinfo($cover_img, PATHINFO_EXTENSION);
+                    // Cria um novo nome para a imagem
+                    $newname = "{$offer->slug}-cover.$ext";
+                    $newpath = "ofertas/{$offer->id}/$newname";
+                    // Copia a imagem para o lugar definitivo
+                    $s3->copyObject(array(
+                        'Bucket'     => $s3bucket,
+                        'Key'        => "$newpath",
+                        'CopySource' => "{$s3bucket}/temp/{$cover_img}",
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => '^',
+                        'Expires'    => $expires
+                    ));
+                    // Coloca o novo nome da imagem em $offer
+                    $offer->cover_img = $newname;
+
+                    // Criando o Thumb da imagem Principal
+                    $result = $s3->getObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key' => "$newpath"
+                    ));
+                    $thumb = Image::make($result['Body'])->resize(537, 224);
+                    $s3->putObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => "ofertas/{$offer->id}/thumb/$newname",
+                        'Body'   => $thumb->encode($ext, 65), // 65 é a Qualidade
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => $result['ContentType'],
+                        'Expires'    => $expires
+                    ));
+                }
+
+                // Imagem de Pré-Reserva
+                $offer_old_img = Input::get('offer_old_img');
+
+                if(substr($offer_old_img, 0, 2) != '//'){
+                    $old_img = $offer->getoriginal('offer_old_img');
+                    if(!empty($old_img)){
+                        // Deleta a Imagem de Pré-Reserva
+                        $imagem_velha = "ofertas/{$offer->id}/{$old_img}";
+                        $s3->deleteObject(array(
+                            'Bucket' => $s3bucket,
+                            'Key'    => $imagem_velha
+                        ));
+                        $offer->offer_old_img = '';
+                    }
+                    if(!empty($offer_old_img)){
+                        // Envia nova Imagem de Pré-Reserva
+
+                        // Pega a extensão da imagem
+                        $ext = pathinfo($offer_old_img, PATHINFO_EXTENSION);
+                        // Cria um novo nome para a imagem
+                        $newname = "{$offer->slug}-old.$ext";
+                        $newpath = "ofertas/{$offer->id}/$newname";
+                        // Copia a imagem para o lugar definitivo
+                        $s3->copyObject(array(
+                            'Bucket'     => $s3bucket,
+                            'Key'        => "$newpath",
+                            'CopySource' => "{$s3bucket}/temp/{$offer_old_img}",
+                            'ACL'        => 'public-read',
+                            'CacheControl' => 'max-age=315360000',
+                            'ContentType' => '^',
+                            'Expires'    => $expires
+                        ));
+                        // Coloca o novo nome da imagem em $offer
+                        $offer->offer_old_img = $newname;
+                    }
+                }
+
+                // Imagem de Newsletter
+                $newsletter_img = Input::get('newsletter_img');
+
+                if(substr($newsletter_img, 0, 2) != '//'){
+                    $old_news = $offer->getoriginal('newsletter_img');
+                    if(!empty($old_news)){
+                        // Deleta a Imagem de Newsletter
+                        $imagem_velha = "ofertas/{$offer->id}/{$old_news}";
+                        $s3->deleteObject(array(
+                            'Bucket' => $s3bucket,
+                            'Key'    => $imagem_velha
+                        ));
+                        $offer->newsletter_img = '';
+                    }
+                    if(!empty($newsletter_img)){
+                        // Envia nova imagem de newsletter
+
+                        // Pega a extensão da imagem
+                        $ext = pathinfo($newsletter_img, PATHINFO_EXTENSION);
+                        // Cria um novo nome para a imagem
+                        $newname = "{$offer->slug}-newsletter.$ext";
+                        $newpath = "ofertas/{$offer->id}/$newname";
+                        // Copia a imagem para o lugar definitivo
+                        $s3->copyObject(array(
+                            'Bucket'     => $s3bucket,
+                            'Key'        => "$newpath",
+                            'CopySource' => "{$s3bucket}/temp/{$newsletter_img}",
+                            'ACL'        => 'public-read',
+                            'CacheControl' => 'max-age=315360000',
+                            'ContentType' => '^',
+                            'Expires'    => $expires
+                        ));
+                        // Coloca o novo nome da imagem em $offer
+                        $offer->newsletter_img = $newname;
+                    }
+                }
+
+                // Demais imagens
+                $offers_images = Input::get('offers_images');
+                $offer->offer_image()->delete(); // Deleta todas as imagens da oferta
+                if(is_array($offers_images)){
+                    foreach($offers_images as $k => $i){
+                        if(!empty($i)){
+                            if(substr($i, 0, 2) == '//'){
+                                $url = pathinfo($i, PATHINFO_BASENAME);
+                                $offer->offer_image()->create(array('url' => $url));
+                            }else{
+                                // Pega a extensão da imagem
+                                $ext = pathinfo($i, PATHINFO_EXTENSION);
+                                // Cria um novo nome para a imagem
+                                $newname = "{$offer->slug}-imagem-$k.$ext";
+                                $newpath = "ofertas/{$offer->id}/$newname";
+                                // Copia a imagem para o lugar definitivo
+                                $s3->copyObject(array(
+                                    'Bucket'     => $s3bucket,
+                                    'Key'        => "$newpath",
+                                    'CopySource' => "{$s3bucket}/temp/{$i}",
+                                    'ACL'        => 'public-read',
+                                    'CacheControl' => 'max-age=315360000',
+                                    'ContentType' => '^',
+                                    'Expires'    => $expires
+                                ));
+                                // Coloca a nova imagem em $offer
+                                $offer->offer_image()->create(array('url' => $newname));
+                            }
+                        }
+                    }
+                }
+                // Update na oferta
+                $offer->save();
+                Session::flash('success', 'Oferta <b>#'.$offer->id.' - '.$offer->title.'</b> atualizada com sucesso.');
+                return Redirect::route('admin.offer');
+            }else{
+                Session::flash('error', 'Oferta <b>#'.$id.'</b> não encontrada.');
+                return Redirect::route('admin.offer');
+            }
+        }
+
+        Session::flash('error', 'Erro ao salvar oferta no banco de dados. Verifique o formulário abaixo e tente novamente.');
+
+        /*
+         * Return and display Errors
+         */
+        return Redirect::route('admin.offer.edit', $id)
+            ->withInput()
+            ->withErrors($this->offer->errors());
 	}
 
 	/**

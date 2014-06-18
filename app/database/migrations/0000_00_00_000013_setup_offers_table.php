@@ -46,7 +46,6 @@ class SetupOffersTable extends Migration {
 		$table->string('offer_old_img')->nullable(); // URL
 		$table->string('newsletter_img')->nullable(); // URL
 		$table->string('saveme_img')->nullable(); // URL
-		$table->string('video')->nullable(); // URL
 		$table->boolean('display_map')->default(false);
 		$table->integer('display_order')->default(99); // ordem das ofertas na home, em categorias e em qualquer outro lugar
 		$table->boolean('is_product')->default(false);
@@ -68,6 +67,11 @@ class SetupOffersTable extends Migration {
 		 * Time Stamps
 		 */
 		$table->timestamps();
+
+        /*
+         * Soft Delete
+         */
+        $table->softDeletes();
 	  });
 
 	}

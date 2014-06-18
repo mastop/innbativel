@@ -83,7 +83,9 @@ class AjaxController extends BaseController {
                     'destinies.name as destname')
                     ->join('offers_options', 'offers.id', '=', 'offers_options.offer_id')
                     ->join('destinies', 'offers.destiny_id', '=', 'destinies.id')
+                    ->join('offers_additional', 'offers_options.id', '=', 'offers_additional.offer_additional_id')
                     ->whereIn('offers_options.id',explode(',', $id))
+                    ->orderBy('offers_additional.display_order', 'asc')
                     ->get();
         $data['count'] = count($results);
         $data['offers'] = $results;

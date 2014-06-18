@@ -50,14 +50,6 @@
         ->destiny_id__noreplace__(function($body) {
             return $body->getFullDestinnyAttribute();
         })
-        ->starts_on__noreplace__(function($body) {
-            $phpdate = strtotime( $body->starts_on );
-            return date( 'd/m/Y H:i:s', $phpdate );
-		})
-        ->ends_on__noreplace__(function($body) {
-            $phpdate = strtotime( $body->ends_on );
-            return date( 'd/m/Y H:i:s', $phpdate );
-		})
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 				Navigation::links([

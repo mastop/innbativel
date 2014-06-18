@@ -41,6 +41,11 @@ class SetupOffersOptionsTable extends Migration {
          * Foreign Keys
          */
 		$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
+
+          /*
+           * Soft Delete
+           */
+        $table->softDeletes();
       });
 
 		// TABELA PIVOT (MANY TO MANY) ENTRE "OFERTAS" (PRODUTOS COMPOSTOS)

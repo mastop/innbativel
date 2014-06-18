@@ -26,7 +26,7 @@ class OfferOption extends BaseModel {
         'display_order', // Ordem
     ];
 
-	protected $softDelete = false;
+	protected $softDelete = true;
 	public $timestamps = false;
 
 	public static $rules = array(

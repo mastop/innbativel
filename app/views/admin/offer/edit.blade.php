@@ -101,7 +101,7 @@
 {{HTML::ImageUpload('offer_old_img', 'Pré-Reservas')}}
 {{HTML::ImageUpload('newsletter_img', 'Newsletter')}}
 {{HTML::ImageUpload('saveme_img', 'Saveme')}}
-{{HTML::ImageUpload('offers_images', 'Demais Imagens', true)}}
+{{HTML::ImageUpload('offers_images', 'Demais Imagens', true, $offer->offer_image()->get(['offer_id', 'url'])->lists('url'))}}
 
 
 {{ Former::legend('Opções de Venda') }}
@@ -290,7 +290,7 @@
 
 
 {{ Former::actions()
-->primary_submit('Criar Oferta')
+->primary_submit('Atualizar Oferta')
 ->inverse_reset('Limpar') }}
 
 {{ Former::close() }}
@@ -398,13 +398,13 @@
         $('input.fileuploaded').each(function(){
             if($(this).val() != ''){
                 // Single file
-                var fileURL = url + 'temp/'+$(this).val();
+                var fileURL = ($(this).val().substring(0, 2) == '//') ? $(this).val() : url + 'temp/'+$(this).val();
                 $(this).parent().find('div.dropzone').css("background-image", "url('"+fileURL+"')").css("background-position", "center center").css("background-repeat", "no-repeat");
                 $(this).parent().find('div.fileremove').show();
                 $(this).parent().find('div.dropinfo').hide();
             }else if($(this).parent().data('img') != undefined){
                 // Multi files
-                var fileURL = url + 'temp/'+$(this).parent().data('img');
+                var fileURL = ($(this).parent().data('img').substring(0, 2) == '//') ? $(this).parent().data('img') : url + 'temp/'+$(this).parent().data('img');
                 $(this).parent().css("background-image", "url('"+fileURL+"')").css("background-position", "center center").css("background-repeat", "no-repeat");
                 $(this).val($(this).parent().data('img'));
                 $(this).parent().fadeIn();
@@ -456,7 +456,7 @@
         containment: 'parent',
         start: function() { $("#offers_additional").select2("onSortStart"); },
         update: function() { $("#offers_additional").select2("onSortEnd"); }
-    });
+    }).sortable('refresh');
     function offerFormatResult(offer) {
         var markup = "<table class='offer-result'><tr>";
         if (offer.cover_img !== undefined) {

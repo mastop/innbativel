@@ -38,13 +38,12 @@ class Offer extends BaseModel {
         'offer_old_img', // Imagem Pré-Reservas
         'newsletter_img', // Imagem Newsletters
         'saveme_img', // Imagem Saveme
-        // 'video', // TODO: remover este campo da tabela
         'display_map', // Exibir mapa?
         'is_product', // Será publicada?
         'is_active', // Oferta ativa?
     ];
 
-	protected $softDelete = false;
+	protected $softDelete = true;
 	public $timestamps = true;
 
 	public static $rules = [
@@ -68,7 +67,7 @@ class Offer extends BaseModel {
 	}
 
 	public function offer_additional(){
-		return $this->belongsToMany('OfferOption', 'offers_additional', 'offer_main_id', 'offer_additional_id');
+		return $this->belongsToMany('OfferOption', 'offers_additional', 'offer_main_id', 'offer_additional_id')->withPivot('display_order')->orderBy('offers_additional.display_order', 'asc');
 	}
 
 	public function offer_option(){
@@ -204,9 +203,50 @@ class Offer extends BaseModel {
         return date('d/m/Y', strtotime($value));
     }
 
+    /**
+     * Formata a imagem principal
+     * @param $value
+     * @return string
+     */
     public function getCoverImgAttribute($value)
     {
-        if(substr($value, 0, 4) == 'http')
+        if(empty($value) || substr($value, 0, 4) == 'http')
+        return $value;
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
+    }
+
+    /**
+     * Formata a imagem de pré-reserva
+     * @param $value
+     * @return string
+     */
+    public function getOfferOldImgAttribute($value)
+    {
+        if(empty($value) || substr($value, 0, 4) == 'http')
+        return $value;
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
+    }
+
+    /**
+     * Formata a imagem de Newsletters
+     * @param $value
+     * @return string
+     */
+    public function getNewsletterImgAttribute($value)
+    {
+        if(empty($value) || substr($value, 0, 4) == 'http')
+        return $value;
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
+    }
+
+    /**
+     * Formata a imagem do Saveme
+     * @param $value
+     * @return string
+     */
+    public function getSavemeImgAttribute($value)
+    {
+        if(empty($value) || substr($value, 0, 4) == 'http')
         return $value;
         return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
     }
