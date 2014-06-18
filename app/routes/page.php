@@ -33,15 +33,19 @@ Route::get('suggest/create', ['as' => 'suggest.create', 'uses' => 'SuggestATripC
 Route::post('suggest/create', ['as' => 'suggest.save', 'uses' => 'SuggestATripController@postCreate']);
 
 Route::group(array('prefix' => 'minha-conta', 'before' => 'auth'), function(){
+    
     /*
 	 * Minha conta
 	 */
     Route::any('/1', ['as' => 'minha-conta', 'uses' => 'PageController@anyMinhaConta', 'after' => 'cache.public']);
 
-    /*
-     * Minha-conta editar
-     */
-    Route::get('editar-conta', ['as' => 'minha-conta.user.edit', 'uses' => 'PainelUserController@getEdit']);
-    Route::post('editar-conta', ['as' => 'minha-conta.user.update', 'uses' => 'PainelUserController@postEdit']);
-
 });
+
+/*
+ * Tell Us
+ */
+
+Route::any('tellus', ['as' => 'tellus', 'uses' => 'TellUsController@anyIndex']);
+
+Route::get('tellus/create', ['as' => 'tellus.create', 'uses' => 'TellUsController@getCreate']);
+Route::post('tellus/create', ['as' => 'tellus.save', 'uses' => 'TellUsController@postCreate']);

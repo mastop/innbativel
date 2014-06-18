@@ -38,18 +38,23 @@ class ProfilesTableSeeder extends DatabaseSeeder
       ],
       [
         'user_id' => 2,
-        'first_name' => 'Daniel',
-        'last_name' => 'Mai',
+        'first_name' => 'Programação',
+        'last_name' => 'Innbatível',
       ],
       [
         'user_id' => 3,
-        'first_name' => 'Alguem Nome',
-        'last_name' => 'Sobrenome',
+        'first_name' => 'Mastop',
+        'last_name' => 'Internet Development',
       ],
       [
         'user_id' => 4,
-        'first_name' => 'Fulano',
-        'last_name' => 'De Tal',
+        'first_name' => 'Comercial',
+        'last_name' => 'Innbatível',
+      ],
+      [
+        'user_id' => 5,
+        'first_name' => 'Financeiro',
+        'last_name' => 'Innbatível',
       ],
     ];
 

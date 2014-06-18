@@ -70,7 +70,7 @@ foreach ($required_paths as $required_path) {
 
 // Macro para adicionar o campo de imagem com upload
 
-HTML::macro('ImageUpload', function($name, $label, $multiple = false)
+HTML::macro('ImageUpload', function($name, $label, $multiple = false, $images = false)
 {
     $filefield = ($multiple) ? '<input id="'.$name.'_file" type="file" name="'.$name.'_file[]" class="fileupload" accept="image/*" multiple>' : '<input id="'.$name.'_file" type="file" name="'.$name.'_file" class="fileupload" accept="image/*">';
     //$hiddenfield = ($multiple) ? '<input id="'.$name.'" type="hidden" name="'.$name.'[]" class="fileuploaded">' : '<input id="'.$name.'" type="hidden" name="'.$name.'" class="fileuploaded">';
@@ -79,14 +79,14 @@ HTML::macro('ImageUpload', function($name, $label, $multiple = false)
     $multipleDiv = '<div class="clearfix" id="'.$name.'"></div><div class="multifiles">
                          {MULTIFILES}
                     </div>';
-    if(!is_array(Input::old($name))){
+    if(!is_array(Input::old($name, $images))){
         $multifiles = '<div class="multifile">
                             '.Button::danger('<span class="icon icon-remove"> Remover</span>', ['class'=>'btn-mini']).'
                             '.$hiddenfield.'
                          </div>';
     }else{
         $multifiles = '';
-        foreach(Input::old($name) as $img){
+        foreach(Input::old($name, $images) as $img){
             $multifiles .= '<div class="multifile" data-img="'.$img.'">
                             '.Button::danger('<span class="icon icon-remove"> Remover</span>', ['class'=>'btn-mini']).'
                             '.$hiddenfield.'
