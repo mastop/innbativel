@@ -68,6 +68,11 @@ class SetupOffersTable extends Migration {
 		 * Time Stamps
 		 */
 		$table->timestamps();
+
+        /*
+         * Soft Delete
+         */
+        $table->softDeletes();
 	  });
 
 	}
