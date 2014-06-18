@@ -50,15 +50,21 @@ class UsersTableSeeder extends DatabaseSeeder
 		'api_key' => 'sadmio0sadh089sa',
 	  ],
 	  [
-		'username' => 'danielmai',
-		'email'    => 'designer@innbativel.com.br',
-		'password' => 'designer',
+		'username' => 'mastop',
+		'email'    => 'mastop@mastop.com.br',
+		'password' => '30bbd156641d2e54f275a64950349585',
+		'api_key' => 'pQqRQXVZ2gG6JV',
+	  ],
+	  [
+		'username' => 'comercial',
+		'email'    => 'comercial@innbativel.com.br',
+		'password' => 'DB24AC',
 		'api_key' => 'sjdsa8hsdia',
 	  ],
 	  [
-		'username' => 'paulosabbaneli',
-		'email'    => 'gerente@innbativel.com.br',
-		'password' => 'manager',
+		'username' => 'financeiro',
+		'email'    => 'financeiro@innbativel.com.br',
+		'password' => 'DB24AC',
 		'api_key' => 'mj09sd0jh09dsha',
 	  ],
 	];
