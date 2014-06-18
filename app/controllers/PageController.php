@@ -9,17 +9,58 @@ class PageController extends BaseController {
     /**
      * Show Home
      */
-	public function anyHome()
-	{
-		$groups = Group::with(['offer.genre', 'offer.genre2', 'offer.offer_option_home', 'offer.included'])
-						->orderBy('display_order', 'asc')
-						->remember(5)
-						->get()->toArray();
+    public function anyHome()
+    {
+        $groups = Group::with(['offer.genre', 'offer.genre2', 'offer.offer_option_home', 'offer.included'])
+                        ->orderBy('display_order', 'asc')
+                        ->remember(5)
+                        ->get()->toArray();
 
-		$banners = Banner::limit(3)->remember(3)->get()->toArray();
+        $banners = Banner::limit(3)->remember(3)->get()->toArray();
 
-		$this->layout->content = View::make('pages.home', compact('groups', 'banners'));
-	}
+        $this->layout->content = View::make('pages.home', compact('groups', 'banners'));
+    }
+
+    /**
+     * Show Offer
+     */
+    public function anyOferta($slug)
+    {
+        $offer = Offer::where('slug', $slug)
+                      ->with(['offer_option', 'offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])
+                      ->first();
+
+        // print('<pre>');
+        // print_r($offer->toArray());
+        // print('</pre>'); die();
+
+        $this->layout->content = View::make('pages.oferta', compact('offer'));
+    }
+
+    /**
+     * Show Termos de uso
+     */
+    public function anyComprar()
+    {
+        $this->layout->comprar = true;
+        $this->layout->content = View::make('pages.comprar');
+    }
+
+    /**
+     * Show Termos de uso
+     */
+    public function anyBusca()
+    {
+        $this->layout->content = View::make('pages.busca');
+    }
+
+    /**
+     * Show Termos de uso
+     */
+    public function anyMinhaConta()
+    {
+        $this->layout->content = View::make('pages.minha-conta');
+    }
 
     /**
      * Show Termos de uso
@@ -116,13 +157,13 @@ class PageController extends BaseController {
 
             Session::flash('success', 'Seu contato foi enviado com sucesso.');
 
-            return Redirect::route('home');
+            return Redirect::back();
         }
 
         /*
          * Return and display Errors
          */
-        return Redirect::route('home')
+        return Redirect::back()
             ->withInput()
             ->withErrors($validation);
     }

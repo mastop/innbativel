@@ -1,52 +1,103 @@
 ;(function($){
 
-    Innbativel = window.Innbativel || {};
+		Innbativel = window.Innbativel || {};
 
-    Innbativel.init = function(){};
+		Innbativel.init = function(){};
+		
+		Innbativel.ready = function(){
 
-    Innbativel.ready = function(){
+			(function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id)) return;
+				js = d.createElement(s); js.id = id;
+				js.src = "//connect.facebook.net/pt_BR/all.js#xfbml=1";
+				fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
 
-    };
+			try {!function(d,s,id){
+				var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+				if(!d.getElementById(id)){js=d.createElement(s);
+					js.id=id;js.src=p+"://platform.twitter.com/widgets.js";
+					fjs.parentNode.insertBefore(js,fjs);
+				}
+			}(document,"script","twitter-wjs");} catch(e){}
 
-    Innbativel.load = function(){
+		};
 
-        $('#printEULA .control.print').click(function () {
-            $('#log').prepend( "daora <br />");
-            var printContents = document.getElementById('printEULA').innerHTML;
-            var originalContents = document.body.innerHTML;
-            document.body.innerHTML = printContents;
-            window.print();
-            document.body.innerHTML = originalContents;
-        });
+		Innbativel.load = function(){
 
-        $('#header-scroll .navMenuCollapse2').collapse({ toggle:false });
-        $('#nav .navMenuCollapse').collapse({ toggle:false });
+			//$('#register').modal('show'); //excluir em produção
 
-        $('#header-scroll .navbar-toggle').on('click', function() {
-            $('.navbar-collapse').css({ maxHeight: $(window).height() - $('.navbar-header').height() + "px" });
-        });
+			// user not logged
+			var userAuth = 0;
 
-        scrollEvents();
+			// login button
+			$('#login .btn').on('click', function (e) {
+				// login confirmed
+				login();
+			});
 
-        $(window).scroll(scrollEvents);
+			// register button
+			$('#register .btn').on('click', function (e) {
+				// login confirmed
+				login();
+			});
 
-        function scrollEvents() {
+			// logout button
+			$('.logout-btn').on('click', function (e) {
+				e.preventDefault();
+				logout();
+			});
 
-            var scrollHeight = $(window).scrollTop();
+			function login() {
+				userAuth = 1;
+				$('.login').addClass('hidden');
+				$('.user-auth').removeClass('hidden');
+			}
+			function logout() {
+				userAuth = 0;
+				$('.login').removeClass('hidden');
+				$('.user-auth').addClass('hidden');
+			}
 
-            if( scrollHeight > 130 ) {
-                $('#header-scroll').removeClass('out');
-                $('#nav .navMenuCollapse').collapse('hide');
-            } else {
-                $('#header-scroll').addClass('out');
-                $('#header-scroll .navMenuCollapse2').collapse('hide');
-            }
+			
+			$('#printEULA .control.print').click(function () { 
+				$('#log').prepend( "daora <br />");
+				var printContents = document.getElementById('printEULA').innerHTML;
+				var originalContents = document.body.innerHTML;
+				document.body.innerHTML = printContents;
+				window.print();
+				document.body.innerHTML = originalContents;
+			});
+			
+			$('#header-scroll .navMenuCollapse2').collapse({ toggle:false });
+			$('#nav .navMenuCollapse').collapse({ toggle:false });
 
-        }
+			$('#header-scroll .navbar-toggle').on('click', function() {
+				$('.navbar-collapse').css({ maxHeight: $(window).height() - $('.navbar-header').height() + "px" });
+			});
+					
+			scrollEvents();
 
-    };
+			$(window).scroll(scrollEvents);
 
-    $(window).on('ready', Innbativel.ready);
-    $(window).on('load', Innbativel.load);
+			function scrollEvents() {
+
+				var scrollHeight = $(window).scrollTop();
+				
+				if( scrollHeight > 130 ) {
+					$('#header-scroll').removeClass('out');
+					$('#nav .navMenuCollapse').collapse('hide');
+				} else {
+					$('#header-scroll').addClass('out');
+					$('#header-scroll .navMenuCollapse2').collapse('hide');
+				}
+				
+			}
+			
+		};
+
+		$(window).on('ready', Innbativel.ready);
+		$(window).on('load', Innbativel.load);
 
 })(jQuery);
