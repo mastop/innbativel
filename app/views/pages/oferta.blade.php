@@ -83,7 +83,7 @@
 			</div> -->
 		
 		<div class="row buy-box-bottom">
-			<form class="buy-form">
+			<form class="buy-form" method="post" action="{{ route('comprar') }}">
 
 				<div itemscope class="col-8 col-sm-8 col-lg-8 clearfix buy-box-top">
 					
@@ -581,7 +581,8 @@
 						<div id="total-price" class="hidden">Total R$ <strong></strong></div>
 						<div id="buy-alert" class="hidden"><span class="entypo chevron-left"></span>Escolha suas opções</div>
 						<div class="tooltip" data-tip="Escolha suas opções antes de comprar">
-							<a id="buy-btn" class="btn disabled">Comprar</a>
+							<button id="buy-btn" class="btn disabled">Comprar</button>
+							<input type="hidden" name="_token" value="{{ csrf_token() }}"/>
 							<!-- <input id="buy-btn" class="btn disabled" type="submit" value="Comprar"> -->
 						</div>
 						<div class="offer-time">

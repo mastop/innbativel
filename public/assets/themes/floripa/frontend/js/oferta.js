@@ -96,7 +96,7 @@
 					$('#total-price').removeClass('hidden');
 					$('#buy-btn')
 						.removeClass('disabled')
-						.attr('href','comprar.html')
+						// .attr('href','comprar.html')
 						.closest('div').removeClass('tooltip');
 					$('#buy-box')
 						.addClass('enabled')

@@ -6,7 +6,7 @@
 
 Route::any('/', ['as' => 'home', 'uses' => 'PageController@anyHome', 'after' => 'cache.public']);
 Route::any('/oferta/{slug}', ['as' => 'oferta', 'uses' => 'PageController@anyOferta', 'after' => 'cache.public']);
-Route::get('/comprar/1', ['as' => 'comprar', 'uses' => 'PageController@anyComprar', 'after' => 'cache.public']);
+Route::any('/comprar/1', ['as' => 'comprar', 'uses' => 'PageController@anyComprar', 'after' => 'cache.public']);
 Route::any('/busca/1', ['as' => 'busca', 'uses' => 'PageController@anyBusca', 'after' => 'cache.public']);
 Route::any('/termos-de-uso', ['as' => 'termos-de-uso', 'uses' => 'PageController@anyTermosDeUso', 'after' => 'cache.public']);
 Route::any('/politica-de-privacidade', ['as' => 'politica-de-privacidade', 'uses' => 'PageController@anyPoliticaDePrivacidade', 'after' => 'cache.public']);
