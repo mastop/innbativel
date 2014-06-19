@@ -49,3 +49,6 @@ Route::any('tellus', ['as' => 'tellus', 'uses' => 'TellUsController@anyIndex']);
 
 Route::get('tellus/create', ['as' => 'tellus.create', 'uses' => 'TellUsController@getCreate']);
 Route::post('tellus/create', ['as' => 'tellus.save', 'uses' => 'TellUsController@postCreate']);
+
+Route::get('{slug}', ['as' => 'category.offer', 'uses' => 'CategoryController@anyCategory', 'after' => 'cache.public']);//->where('slug', '[A-Za-z]+');
+
