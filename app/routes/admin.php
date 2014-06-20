@@ -361,21 +361,6 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::post('suggest/delete/{id}', ['as' => 'admin.suggest.destroy', 'uses' => 'AdminSuggestATripController@postDelete']);
 
 	/*
-	 * User Indication
-	 */
-
-	Route::any('indication', ['as' => 'admin.indication', 'uses' => 'AdminUserIndicationController@anyIndex']);
-
-	Route::get('indication/create', ['as' => 'admin.indication.create', 'uses' => 'AdminUserIndicationController@getCreate']);
-	Route::post('indication/create', ['as' => 'admin.indication.save', 'uses' => 'AdminUserIndicationController@postCreate']);
-
-	/*
-	 * User Credit
-	 */
-
-	Route::any('credit_indication', ['as' => 'admin.credit_indication', 'uses' => 'AdminUserCreditController@anyIndex']);
-
-	/*
 	 * Destinos
 	 */
 

@@ -915,19 +915,6 @@ class AdminOrderController extends BaseController {
 	//     return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' rejeitado com sucesso.');
 	// }
 
-	private function creditByIndication($user_id){
-		// inserir creditos por indicação
-		$credit_ind_user = UserCredit::where('new_user_id', $user_id)->first();
-
-		if($credit_ind_user){
-			$indicator_user = Profile::where('user_id', $credit_ind_user->user_id)->first();
-			$indicator_user->credit += $credit_ind_user->value;
-			$indicator_user->save();
-
-			$credit_ind_user->delete();
-		}
-	}
-
 	public function getApprove($id, $braspag_order_id, $comment){
 		$order = Order::where('id', $id)->first();
 		if($order->braspag_order_id != $braspag_order_id){
@@ -1081,7 +1068,6 @@ class AdminOrderController extends BaseController {
 	        	$new_status = 'pago';
 	        	$this->updateOrder($order, $new_status, $comment);
 	        	$this->sendTransactionalEmail($order, $new_status);
-	        	$this->creditByIndication($order->user_id);
 	        }
 	        else{
 	        	$error = 'Erro #24';
@@ -1190,10 +1176,6 @@ class AdminOrderController extends BaseController {
 		$order->save();
 
 		Voucher::where('order_id', $order_id)->update(array('status' => $status));
-
-		if($status == 'pago'){
-			$this->creditByIndication($user_id);
-		}
 
 		$this->sendTransactionalEmail($order, $status);
 
@@ -2049,8 +2031,6 @@ class AdminOrderController extends BaseController {
 
 			// caso a venda tenha sido concretizada
 			if($status == 'pago'){
-				// inserir creditos por indicação
-				$this->creditByIndication($user_id);
 
 				foreach ($products as $product) {
 		        	$products_email .= $product . '<br/>';
