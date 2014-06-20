@@ -17,7 +17,7 @@ class DiscountsCouponsTableSeeder extends DatabaseSeeder
 	  ],
 	  [
 	    'user_id' => null,
-	    'offer_id' => 3,
+	    'offer_id' => 2003,
 	    'display_code' => 'RELAMPAGO',
 	    'value' => 100.00,
 	    'qty' => 10,

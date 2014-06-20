@@ -31,7 +31,7 @@ class OrdersTableSeeder extends DatabaseSeeder
     $orders = [
       [
         'id' => 1,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SD78-NHD0-SD81-ZCY5',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -52,7 +52,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 2,
-        'user_id' => 2,
+        'user_id' => 100002,
         'braspag_order_id' => '9080-CDS8-DSA9-8967',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -72,7 +72,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 3,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'LOS9-8SDA-HASD-O9U8',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -91,7 +91,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 4,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'LOS9-8SDA-HASD-O9U8',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -110,7 +110,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 5,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SD78-NHD0-SD81-ZCY5',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -130,7 +130,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 6,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SD78-NHD0-SD81-ZCY5',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -148,7 +148,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 7,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SD78-NHD0-SD81-ZCY5',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -167,7 +167,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 8,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'PED8-34MD-SLL3-SPD9',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -187,7 +187,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 9,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SDNM-FGB7-DSF2-34FZ',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -207,7 +207,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 10,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SDNM-FGB7-DSF2-34FZ',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -227,7 +227,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 11,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SDNM-FGB7-DSF2-34FZ',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -247,7 +247,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 12,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SDNM-FGB7-DSF2-34FZ',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -267,7 +267,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 13,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SDNM-FGB7-DSF2-34FZ',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -287,7 +287,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 14,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SDNM-FGB7-DSF2-34FZ',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
@@ -307,7 +307,7 @@ class OrdersTableSeeder extends DatabaseSeeder
       ],
       [
         'id' => 15,
-        'user_id' => 1,
+        'user_id' => 100001,
         'braspag_order_id' => 'SDNM-FGB7-DSF2-34FZ',
         'antifraud_id' => '1234-1234-1234-1234',
         'braspag_id' => '1234-1234-1234-1234',
