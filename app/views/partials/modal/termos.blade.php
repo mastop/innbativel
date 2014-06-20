@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-sm modal-combo-">
         <div class="modal-content">
             <div class="modal-header">
-                <img src="assets/images/logo.png">
+                <img src="//innbativel.s3.amazonaws.com/logo.png">
             </div>
             <div class="modal-body">
                 <h4>​Termos e Condições de Uso​</h4>​

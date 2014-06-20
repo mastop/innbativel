@@ -39,7 +39,7 @@
 		<br>
 		<p>
 			<a href="https://www.ebitempresa.com.br/bitrate/pesquisa1.asp?empresa=1407475">
-			    <img src="http://innb.s3.amazonaws.com/1402943476.gif">
+			    <img src="//innbativel.s3.amazonaws.com/pesquisa-ebit.gif">
 			</a> 
 		</p>
 

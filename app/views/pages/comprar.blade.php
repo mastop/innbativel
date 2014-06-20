@@ -132,7 +132,7 @@
 							<div class="price">R$<strong>299</strong></div>
 						</li>
 						<li class="donation">
-							<figure><img src="assets/images/ecoa.jpg" title="Ajude o planeta"></figure>
+							<figure><img src="http://innbativel.s3.amazonaws.com/ecoa.jpg" title="Ajude o planeta"></figure>
 							<div class="offer-combo">
 								<strong>Contribua para um mundo melhor.</strong><br/>
 								Doe apenas <strong>R$ 1</strong>. Sua atitude transforma vidas!
@@ -655,7 +655,7 @@
 		<div class="modal-dialog modal-sm modal-combo">
 			<div class="modal-content">
 				<div class="modal-header">
-					<img src="assets/images/ecoa.jpg">
+					<img src="http://innbativel.s3.amazonaws.com/ecoa.jpg">
 					<h4 class="modal-title">ECOA - Construindo sustentabilidade e democracia</h4>
 				</div>
 				<div class="modal-body">

@@ -415,7 +415,7 @@
         if (offer.cover_img !== undefined) {
             markup += "<td class='offer-image'><img src='" + offer.cover_img + "' style='max-width:100px;'/></td>";
         }else{
-            markup += "<td class='offer-image'><img src='{{asset('assets/themes/floripa/backend/img/logo.png')}}'/></td>";
+            markup += "<td class='offer-image'><img src='//innbativel.s3.amazonaws.com/logo-backend.png'/></td>";
         }
         markup += "<td class='offer-info'><div class='offer-title'><b>#"+offer.ofid+"</b> " + offer.offer_title + " ( "+offer.destname+" )</div>";
         if (offer.optitle !== undefined) {

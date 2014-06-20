@@ -21,7 +21,7 @@
 
 	<header id="top">
 		<div class="fixed">
-			<a href="{{ route('home') }}" title="" class="logo"><img src="{{ asset('assets/themes/floripa/backend/img/logo.png') }}" alt="" /></a>
+			<a href="{{ route('home') }}" title="" class="logo"><img src="//innbativel.s3.amazonaws.com/logo-backend.png" alt="" /></a>
 			@include('menu.top')
 		</div>
 	</header>

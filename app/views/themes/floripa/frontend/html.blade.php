@@ -62,7 +62,7 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="{{ route('home') }}">
-                    <img class="logo" alt="INNbatível" src="{{ asset('assets/images/logo.png') }}">
+                    <img class="logo" alt="INNbatível" src="//innbativel.s3.amazonaws.com/logo.png">
                 </a>
                 @if(!isset($comprar))
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navMenuCollapse">
@@ -102,7 +102,7 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="{{ route('home') }}">
-                    <img class="logo" alt="INNbatível" src="{{ asset('assets/images/logo.png') }}">
+                    <img class="logo" alt="INNbatível" src="//innbativel.s3.amazonaws.com/logo.png">
                 </a>
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navMenuCollapse2">
                     <span class="icon-bar"></span>
