@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="{{ $html_classes }}" lang="{{ Config::get('app.locale') }}" dir="ltr">
+<html class="{{ isset($html_classes) ? $html_classes : '' }}" lang="{{ Config::get('app.locale') }}" dir="ltr">
 <head>
 
 	<meta charset="utf-8" />
@@ -42,8 +42,8 @@
     @yield('javascript')
 </head>
 
-<body class="{{ $body_classes }}">
-    
+<body class="{{ isset($body_classes) ? $body_classes : '' }}">
+
     @include('partials.messages')
 
     <div id="header" class="navbar navbar-default navbar-fixed-top {{ (isset($comprar)) ? ' border-bottom' : '' }}">
