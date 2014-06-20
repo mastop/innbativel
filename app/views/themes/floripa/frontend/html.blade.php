@@ -42,7 +42,7 @@
     @yield('javascript')
 </head>
 
-<body class="{{ isset($body_classes) ? $body_classes : '' }}">
+<body class="innbativel frontend no-sidebar {{ isset($body_classes) ? $body_classes : '' }}">
 
     @include('partials.messages')
 
