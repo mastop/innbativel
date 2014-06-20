@@ -31,6 +31,14 @@ class SetupOffersImagesTable extends Migration {
          */
 		$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
       });
+        /*
+         * Valor de auto incremento inicial = 10001
+         */
+        $statement = "
+                        ALTER TABLE offers_images AUTO_INCREMENT = 10001;
+                    ";
+
+        DB::unprepared($statement);
     }
 
     /**
