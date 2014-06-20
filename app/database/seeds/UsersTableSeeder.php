@@ -72,6 +72,10 @@ class UsersTableSeeder extends DatabaseSeeder
 	foreach ($users as $user)
 	{
 	  $created = User::create($user);
+      $EmailArray = explode('@', $user['email']);
+      $nome = ucfirst($EmailArray[0]);
+      $sobrenome = ucfirst(substr($EmailArray[1], 0, strpos($EmailArray[1], '.')));
+      $created->profile()->create(array('first_name' => $nome, 'last_name' => $sobrenome));
 	}
   }
 }
