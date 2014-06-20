@@ -632,9 +632,27 @@
 					}
 				},
 				submitHandler: function(form) {
-					//form.submit();
-					$('#contact').modal('hide');
-					$('#contactResponse').modal('show');
+					$.ajax({
+						type: "POST",
+						dataType: 'json',
+						url: $(form).attr('action'),
+						data: $(form).serialize(),
+						success: function(data){
+							if(data.error == 0){
+								$('#contact').modal('hide');
+								$('#contactResponse').modal('show');
+							}
+							else{
+								alert(data.message)
+							}
+						},
+						error: function(data) {
+							alert('Houve um erro interno. Por favor, tente novamente mais tarde. Se o erro persistir, envie-nos um e-mail para faleconosco@innbativel.com.br');
+						},
+						headers: {
+							'X-CSRF-Token': $(form).find('input[name="_token"]').val()
+						}
+					});
 				}
 			});
 

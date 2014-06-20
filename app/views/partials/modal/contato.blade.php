@@ -52,6 +52,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-4 col-md-8">
+                            <input type="hidden" name="url" value="{{ Request::url() }}"/>
                             <button type="submit" class="btn btn-primary">Enviar</button>
                         </div>
                     </div>
