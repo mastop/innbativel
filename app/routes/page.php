@@ -6,8 +6,8 @@
 
 Route::any('/', ['as' => 'home', 'uses' => 'PageController@anyHome', 'after' => 'cache.public']);
 Route::any('/oferta/{slug}', ['as' => 'oferta', 'uses' => 'PageController@anyOferta', 'after' => 'cache.public']);
-Route::any('/comprar/1', ['as' => 'comprar', 'uses' => 'PageController@anyComprar', 'after' => 'cache.public']);
-Route::any('/busca/1', ['as' => 'busca', 'uses' => 'PageController@anyBusca', 'after' => 'cache.public']);
+Route::any('/comprar', ['as' => 'comprar', 'uses' => 'PageController@anyComprar', 'after' => 'cache.public']);
+Route::any('/busca', ['as' => 'busca', 'uses' => 'PageController@anyBusca', 'after' => 'cache.public']);
 Route::any('/termos-de-uso', ['as' => 'termos-de-uso', 'uses' => 'PageController@anyTermosDeUso', 'after' => 'cache.public']);
 Route::any('/politica-de-privacidade', ['as' => 'politica-de-privacidade', 'uses' => 'PageController@anyPoliticaDePrivacidade', 'after' => 'cache.public']);
 Route::any('/quem-somos', ['as' => 'quem-somos', 'uses' => 'PageController@anyQuemSomos', 'after' => 'cache.public']);
@@ -37,7 +37,7 @@ Route::group(array('prefix' => 'minha-conta', 'before' => 'auth'), function(){
     /*
 	 * Minha conta
 	 */
-    Route::any('/1', ['as' => 'minha-conta', 'uses' => 'PageController@anyMinhaConta', 'after' => 'cache.public']);
+    Route::any('/', ['as' => 'minha-conta', 'uses' => 'PageController@anyMinhaConta', 'after' => 'cache.public']);
 
 });
 
@@ -49,3 +49,6 @@ Route::any('tellus', ['as' => 'tellus', 'uses' => 'TellUsController@anyIndex']);
 
 Route::get('tellus/create', ['as' => 'tellus.create', 'uses' => 'TellUsController@getCreate']);
 Route::post('tellus/create', ['as' => 'tellus.save', 'uses' => 'TellUsController@postCreate']);
+
+Route::get('{slug}', ['as' => 'category.offer', 'uses' => 'CategoryController@anyCategory', 'after' => 'cache.public']);//->where('slug', '[A-Za-z]+');
+

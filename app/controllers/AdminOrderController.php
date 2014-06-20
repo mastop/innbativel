@@ -1377,7 +1377,7 @@ class AdminOrderController extends BaseController {
 				$order->credit_discount = $total - $discount_coupon_value;
 				$order->payment_terms = 'Créditos e/ou cupom de disconto';
 				$order->history .= '<br/>'.date('d/m/Y h:i:s').' - Pagamento feito completamente com créditos do usuário e/ou cupom de disconto';
-
+				
 				$order->save();
 			}
 
