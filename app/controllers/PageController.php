@@ -18,6 +18,7 @@ class PageController extends BaseController {
 
         $banners = Banner::limit(3)->remember(3)->get()->toArray();
 
+        $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.home', compact('groups', 'banners'));
     }
 
@@ -43,6 +44,7 @@ class PageController extends BaseController {
     public function anyComprar()
     {
         $this->layout->comprar = true;
+        $this->layout->body_classes = 'innbativel frontend no-sidebar checkout-page';
         $this->layout->content = View::make('pages.comprar');
     }
 
@@ -51,6 +53,7 @@ class PageController extends BaseController {
      */
     public function anySucesso($status, $boletus_url = null)
     {
+        $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.sucesso', ['status' => $status, 'boletus_url' => $boletus_url]);
     }
 
@@ -59,6 +62,7 @@ class PageController extends BaseController {
      */
     public function anyBusca()
     {
+        $this->layout->body_classes = 'innbativel frontend no-sidebar search-page';
         $this->layout->content = View::make('pages.busca');
     }
 
@@ -67,6 +71,7 @@ class PageController extends BaseController {
      */
     public function anyMinhaConta()
     {
+        $this->layout->body_classes = 'navbar navbar-default navbar-fixed-top out';
         $this->layout->content = View::make('pages.minha-conta');
     }
 
@@ -75,6 +80,7 @@ class PageController extends BaseController {
      */
     public function anyTermosDeUso()
     {
+        $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.termos-de-uso');
     }
 
@@ -83,6 +89,7 @@ class PageController extends BaseController {
      */
     public function anyPoliticaDePrivacidade()
     {
+        $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.politica-de-privacidade');
     }
 
@@ -91,6 +98,7 @@ class PageController extends BaseController {
      */
     public function anyQuemSomos()
     {
+        $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.quem-somos');
     }
 
@@ -99,6 +107,7 @@ class PageController extends BaseController {
      */
     public function anyAcaoSocial()
     {
+        $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.acao-social');
     }
 
@@ -107,6 +116,7 @@ class PageController extends BaseController {
      */
     public function anyImprensa()
     {
+        $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.imprensa');
     }
 
@@ -115,6 +125,7 @@ class PageController extends BaseController {
      */
     public function anyFaleConosco()
     {
+        $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.fale-conosco');
     }
 

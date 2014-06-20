@@ -3,19 +3,26 @@
 <head>
 
 	<meta charset="utf-8" />
-	<title>{{ $seo['title'] }}</title>
+	<title>{{ $title }}</title>
 
     @if (App::environment() == 'elastic')
             {{-- Impede que o site seja indexado pelos bots de busca, apenas no ambiente "elastic" --}}
         <meta name="robots" content="noindex">
     @endif
 
+    <meta name="title" content="{{ isset($title) ? $title : $seo['metatag']['title'] }}" />
+    <meta name="description" content="{{ isset($description) ? $description : $seo['metatag']['description'] }}" />
 	<meta name="author" content="{{ $seo['metatag']['author'] }}" />
 	<meta name="keywords" content="{{ $seo['metatag']['keywords'] }}" />
-	<meta name="description" content="{{ $seo['metatag']['description'] }}" />
 	<meta name="csrf-token" content="{{ csrf_token() }}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="alternate" hreflang="{{ Config::get('app.locale') }}" href="{{ URL::current() }}" />
+    
+    <meta property="og:title" content="{{ isset($title) ? $title : $seo['metatag']['title'] }}" />
+    <meta property="og:description" content="{{ isset($description) ? $description : $seo['metatag']['description'] }}" />
+    <meta property="og:url" content="{{ Request::url() }}" />
+    <meta property="og:image" content="{{ isset($image) ? $image : $seo['metatag']['image'] }}" />
+	
+    <link rel="alternate" hreflang="{{ Config::get('app.locale') }}" href="{{ URL::current() }}" />
 	<link rel="canonical" href="{{ URL::current() }}" />
 	<link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
 
