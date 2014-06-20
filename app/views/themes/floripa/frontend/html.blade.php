@@ -3,7 +3,7 @@
 <head>
 
 	<meta charset="utf-8" />
-	<title>{{ $title }}</title>
+	<title>{{ isset($title) ? $title : $seo['metatag']['title'] }}</title>
 
     @if (App::environment() == 'elastic')
             {{-- Impede que o site seja indexado pelos bots de busca, apenas no ambiente "elastic" --}}
@@ -43,7 +43,7 @@
 </head>
 
 <body class="{{ $body_classes }}">
-
+    
     @include('partials.messages')
 
     <div id="header" class="navbar navbar-default navbar-fixed-top {{ (isset($comprar)) ? ' border-bottom' : '' }}">
