@@ -13,7 +13,7 @@ class OffersTableSeeder extends DatabaseSeeder
 		'genre_id' => 1,
 		'category_id' => 1,
 		'genre2_id' => 2,
-		'partner_id' => 1,
+		'partner_id' => 100001,
 		'ngo_id' => 5,
 		'destiny_id' => 1,
 		'starts_on' => date('Y-m-d H:i:s',strtotime("-1 days")),
@@ -25,7 +25,7 @@ class OffersTableSeeder extends DatabaseSeeder
 		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-hp-01.jpg',
 		'category_id' => 1,
 		'genre_id' => 3,
-		'partner_id' => 2,
+		'partner_id' => 100002,
 		'ngo_id' => 5,
 		'destiny_id' => 1,
 		'starts_on' => date('Y-m-d H:i:s',strtotime("-1 days")),
@@ -38,7 +38,7 @@ class OffersTableSeeder extends DatabaseSeeder
 		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-hp-02.jpg',
 		'category_id' => 1,
 		'genre_id' => 4,
-		'partner_id' => 1,
+		'partner_id' => 100001,
 		'ngo_id' => 5,
 		'destiny_id' => 1,
 		'starts_on' => date('Y-m-d H:i:s',strtotime("-1 days")),
@@ -50,7 +50,7 @@ class OffersTableSeeder extends DatabaseSeeder
 		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-pi-01.jpg',
 		'category_id' => 1,
 		'genre_id' => 5,
-		'partner_id' => 2,
+		'partner_id' => 100002,
 		'ngo_id' => 5,
 		'destiny_id' => 1,
 		'starts_on' => date('Y-m-d H:i:s',strtotime("-1 days")),
@@ -62,7 +62,7 @@ class OffersTableSeeder extends DatabaseSeeder
 		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-pi-02.jpg',
 		'category_id' => 1,
 		'genre_id' => 6,
-		'partner_id' => 1,
+		'partner_id' => 100001,
 		'ngo_id' => 5,
 		'destiny_id' => 1,
 		'starts_on' => date('Y-m-d H:i:s',strtotime("-1 days")),
@@ -74,7 +74,7 @@ class OffersTableSeeder extends DatabaseSeeder
 		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-pn-01.jpg',
 		'category_id' => 1,
 		'genre_id' => 7,
-		'partner_id' => 2,
+		'partner_id' => 100002,
 		'ngo_id' => 5,
 		'destiny_id' => 1,
 		'starts_on' => date('Y-m-d H:i:s',strtotime("-1 days")),
@@ -86,7 +86,7 @@ class OffersTableSeeder extends DatabaseSeeder
 		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-pn-02.jpg',
 		'category_id' => 1,
 		'genre_id' => 8,
-		'partner_id' => 1,
+		'partner_id' => 100001,
 		'ngo_id' => 5,
 		'destiny_id' => 1,
 		'starts_on' => date('Y-m-d H:i:s',strtotime("-1 days")),
@@ -98,7 +98,7 @@ class OffersTableSeeder extends DatabaseSeeder
 		'cover_img' => 'http://innbativel.brace.io/assets/uploads/oferta-home-de-01.jpg',
 		'category_id' => 1,
 		'genre_id' => 6,
-		'partner_id' => 2,
+		'partner_id' => 100002,
 		'ngo_id' => 5,
 		'destiny_id' => 1,
 		'starts_on' => date('Y-m-d H:i:s',strtotime("-1 days")),
@@ -111,7 +111,7 @@ class OffersTableSeeder extends DatabaseSeeder
 		'category_id' => 1,
 		'genre_id' => 9,
 		'genre2_id' => 10,
-		'partner_id' => 1,
+		'partner_id' => 100001,
 		'ngo_id' => 5,
 		'destiny_id' => 1,
 		'starts_on' => date('Y-m-d H:i:s',strtotime("-1 days")),
@@ -124,7 +124,7 @@ class OffersTableSeeder extends DatabaseSeeder
 	  $o = Offer::create($offer);
 
 	  switch($o->id){
-		case 1: 
+		case 2001:
 			$o->group()->attach(1, array('display_order' => $o->id)); 
 
 			$o->included()->attach(65, array('display_order' => 1));
@@ -132,56 +132,56 @@ class OffersTableSeeder extends DatabaseSeeder
 			$o->included()->attach(58, array('display_order' => 3));
 			$o->included()->attach(50, array('display_order' => 4));
 			break;
-		case 2:
+		case 2002:
 			$o->group()->attach(2, array('display_order' => $o->id)); 
 
 			$o->included()->attach(53, array('display_order' => 1));
 			$o->included()->attach(59, array('display_order' => 2));
 			$o->included()->attach(50, array('display_order' => 3));
 			break;
-		case 3:
+		case 2003:
 			$o->group()->attach(2, array('display_order' => $o->id)); 
 
 			$o->included()->attach(53, array('display_order' => 1));
 			$o->included()->attach(60, array('display_order' => 2));
 			$o->included()->attach(50, array('display_order' => 3));
 			break;
-		case 4:
+		case 2004:
 			$o->group()->attach(3, array('display_order' => $o->id)); 
 
 			$o->included()->attach(65, array('display_order' => 1));
 			$o->included()->attach(54, array('display_order' => 2));
 			$o->included()->attach(59, array('display_order' => 3));
 			break;
-		case 5:
+		case 2005:
 			$o->group()->attach(3, array('display_order' => $o->id)); 
 
 			$o->included()->attach(65, array('display_order' => 1));
 			$o->included()->attach(54, array('display_order' => 2));
 			$o->included()->attach(57, array('display_order' => 3));
 			break;
-		case 6: 
+		case 2006:
 			$o->group()->attach(4, array('display_order' => $o->id)); 
 
 			$o->included()->attach(65, array('display_order' => 1));
 			$o->included()->attach(54, array('display_order' => 2));
 			$o->included()->attach(59, array('display_order' => 3));
 			break;
-		case 7:
+		case 2007:
 			$o->group()->attach(4, array('display_order' => $o->id)); 
 
 			$o->included()->attach(65, array('display_order' => 1));
 			$o->included()->attach(54, array('display_order' => 2));
 			$o->included()->attach(59, array('display_order' => 3));
 			break;
-		case 8:
+		case 2008:
 			$o->group()->attach(5, array('display_order' => $o->id)); 
 
 			$o->included()->attach(65, array('display_order' => 1));
 			$o->included()->attach(54, array('display_order' => 2));
 			$o->included()->attach(58, array('display_order' => 3));
 			break;
-		case 9:
+		case 2009:
 			$o->group()->attach(5, array('display_order' => $o->id)); 
 
 			$o->included()->attach(53, array('display_order' => 1));

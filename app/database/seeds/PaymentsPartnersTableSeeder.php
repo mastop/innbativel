@@ -33,12 +33,12 @@ class PaymentsPartnersTableSeeder extends DatabaseSeeder
     $payments_partners = [
     	[
     		'payment_id' => 1,
-    		'partner_id' => 1,
+    		'partner_id' => 100001,
     		'total' => 2000,
     	],
     	[
     		'payment_id' => 2,
-    		'partner_id' => 2,
+    		'partner_id' => 100002,
     		'total' => 2000,
     	],
     ];

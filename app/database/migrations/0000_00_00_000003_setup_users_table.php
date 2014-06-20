@@ -41,6 +41,14 @@ class SetupUsersTable extends Migration {
          */
         $table->timestamps();
       });
+        /*
+         * Valor de auto incremento inicial = 100001
+         */
+        $statement = "
+                        ALTER TABLE users AUTO_INCREMENT = 100001;
+                    ";
+
+        DB::unprepared($statement);
     }
 
     /**

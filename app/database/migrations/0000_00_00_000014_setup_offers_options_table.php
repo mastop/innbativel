@@ -48,6 +48,15 @@ class SetupOffersOptionsTable extends Migration {
         $table->softDeletes();
       });
 
+        /*
+         * Valor de auto incremento inicial = 3001
+         */
+        $statement = "
+                        ALTER TABLE offers_options AUTO_INCREMENT = 3001;
+                    ";
+
+        DB::unprepared($statement);
+
 		// TABELA PIVOT (MANY TO MANY) ENTRE "OFERTAS" (PRODUTOS COMPOSTOS)
       Schema::create('offers_additional', function($table)
       {

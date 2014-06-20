@@ -90,7 +90,7 @@ return array(
 		'cluster' => true,
 
 		'default' => array(
-			'host'     => 'innbativel.vel2nk.0001.use1.cache.amazonaws.com',
+			'host'     => 'innbativel.a0udbp.0001.sae1.cache.amazonaws.com',
 			'port'     => 6379,
 			'database' => 'innbativel',
 		),

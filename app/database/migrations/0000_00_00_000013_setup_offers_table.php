@@ -71,6 +71,14 @@ class SetupOffersTable extends Migration {
          */
         $table->softDeletes();
 	  });
+        /*
+         * Valor de auto incremento inicial = 2001
+         */
+        $statement = "
+                        ALTER TABLE offers AUTO_INCREMENT = 2001;
+                    ";
+
+        DB::unprepared($statement);
 
 	}
 
