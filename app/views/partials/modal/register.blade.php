@@ -9,7 +9,7 @@
 <div class="modal-body">
 <div class="form-group">
     <div class="col-md-offset-2 col-md-8">
-        <a class="img-link" href="https://www.facebook.com/dialog/oauth?client_id=145684162279488&amp;redirect_uri=https%3A%2F%2Finnbativel.com.br%2Flogin-facebook-valida.php&amp;state=c3c19d3dc77284e5e9579f5f317548a9&amp;scope=email%2C+user_birthday%2C+user_hometown"><img src="assets/images/fb-register.png" alt="Faça login com sua conta do Facebook"></a>
+        <a class="img-link" href="https://www.facebook.com/dialog/oauth?client_id=145684162279488&amp;redirect_uri=https%3A%2F%2Finnbativel.com.br%2Flogin-facebook-valida.php&amp;state=c3c19d3dc77284e5e9579f5f317548a9&amp;scope=email%2C+user_birthday%2C+user_hometown"><img src="//innbativel.s3.amazonaws.com/fb-register.png" alt="Faça login com sua conta do Facebook"></a>
     </div>
 </div>
 <hr>

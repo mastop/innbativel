@@ -1,7 +1,7 @@
 <div id="widget-selos-checkout">
     <h4><span class="entypo lock"></span>Compre com Segurança</h4>
     <div id="selo-bandeiras" class="inline-block">
-        <figure><img src="assets/images/bandeiras.png" alt="Bandeiras de Cartão de Crédito" width="212" height="83"></figure>
+        <figure><img src="//innbativel.s3.amazonaws.com/bandeiras.png" alt="Bandeiras de Cartão de Crédito" width="212" height="83"></figure>
     </div>
     <div class="outros-selos inline-block">
         <div id="selo-ebit">
@@ -20,12 +20,12 @@
         </div>
         <div id="selo-embratur">
             <figure>
-                <img src="assets/images/embratur.png" alt="Embratur" width="140" height="19">
+                <img src="//innbativel.s3.amazonaws.com/embratur.png" alt="Embratur" width="140" height="19">
             </figure>
         </div>
         <div id="selo-site-sustentavel">
             <a href="http://www.sitesustentavel.com.br/certificado/list?url=innbativel.com.br" title="Site Sustentável" target="_blank">
-                <img src="assets/images/site-sustentavel.png" alt="Site Sustentável" width="142" height="40">
+                <img src="//innbativel.s3.amazonaws.com/site-sustentavel.png" alt="Site Sustentável" width="142" height="40">
             </a>
         </div>
     </div>

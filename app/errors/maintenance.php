@@ -25,6 +25,7 @@ App::error(function(Exception $exception, $code)
 
   if (Config::getEnvironment() == 'production' || Config::getEnvironment() == 'elastic')
   {
+      $this->layout->body_classes = 'innbativel frontend no-sidebar';
       switch ($code) {
           case 403:
           case 404:

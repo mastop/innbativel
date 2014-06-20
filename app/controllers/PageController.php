@@ -18,6 +18,7 @@ class PageController extends BaseController {
 
         $banners = Banner::limit(3)->remember(3)->get()->toArray();
 
+        $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.home', compact('groups', 'banners'));
     }
 
@@ -43,7 +44,16 @@ class PageController extends BaseController {
     public function anyComprar()
     {
         $this->layout->comprar = true;
+        $this->layout->body_classes = 'checkout-page';
         $this->layout->content = View::make('pages.comprar');
+    }
+
+    /**
+     * Show Termos de uso
+     */
+    public function anySucesso($status, $boletus_url = null)
+    {
+        $this->layout->content = View::make('pages.sucesso', ['status' => $status, 'boletus_url' => $boletus_url]);
     }
 
     /**
@@ -51,6 +61,7 @@ class PageController extends BaseController {
      */
     public function anyBusca()
     {
+        $this->layout->body_classes = 'search-page';
         $this->layout->content = View::make('pages.busca');
     }
 

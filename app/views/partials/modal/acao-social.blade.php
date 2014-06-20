@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-sm modal-combo-">
         <div class="modal-content">
             <div class="modal-header">
-                <img src="{{ asset('assets/images/ecoa.jpg') }}">
+                <img src="//innbativel.s3.amazonaws.com/ecoa.jpg">
                 <h4 class="modal-title">ECOA - Construindo sustentabilidade e democracia</h4>
             </div>
             <div class="modal-body">

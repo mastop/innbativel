@@ -15,7 +15,7 @@
 			</div>
 		</div>
 	    <a href="{{ route('login.facebook') }}">
-	        <img alt="Acesse via Facebook" src="{{ asset('assets/images/facebook-connect.png') }}">
+	        <img alt="Acesse via Facebook" src="//innbativel.s3.amazonaws.com/facebook-connect.png">
 	    </a>
 	    <br /><br />
 		<div class="well">

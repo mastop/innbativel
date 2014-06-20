@@ -2044,7 +2044,7 @@ class AdminOrderController extends BaseController {
 					$message->to(Auth::user()->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra finalizada com sucesso');
 				});
 
-				return Redirect::route('public.success', array('status' => $status));
+				return Redirect::route('sucesso', array('status' => $status));
 			}
 			else if($status == 'pendente' AND isset($boletus_url)){
 				foreach ($products as $product) {
@@ -2059,10 +2059,10 @@ class AdminOrderController extends BaseController {
 					$message->to(Auth::user()->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra finalizada com sucesso');
 				});
 
-				return Redirect::route('public.success', array('status' => $status, 'boletus_url' => $boletus_url));
+				return Redirect::route('sucesso', array('status' => $status, 'boletus_url' => $boletus_url));
 			}
 			else{
-				return Redirect::route('public.success', array('status' => $status));
+				return Redirect::route('sucesso', array('status' => $status));
 			}
 		}
 		else{
