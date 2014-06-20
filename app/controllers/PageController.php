@@ -49,6 +49,14 @@ class PageController extends BaseController {
     /**
      * Show Termos de uso
      */
+    public function anySucesso($status, $boletus_url = null)
+    {
+        $this->layout->content = View::make('pages.sucesso', ['status' => $status, 'boletus_url' => $boletus_url]);
+    }
+
+    /**
+     * Show Termos de uso
+     */
     public function anyBusca()
     {
         $this->layout->content = View::make('pages.busca');
