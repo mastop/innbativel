@@ -9,7 +9,16 @@ p.id_usuario AS user_id,
 p.order_id AS braspag_order_id, 
 p.antifraud_id AS antifraud_id, 
 p.braspag_id AS braspag_id, 
-p.status AS status,
+(CASE
+	WHEN (p.status = 'iniciado') THEN 'pendente'
+    WHEN (p.status = 'aprovado') THEN 'pago'
+    WHEN (p.status = 'rejeitado') THEN 'cancelado'
+    WHEN (p.status = 'estornado') THEN 'cancelado'
+    WHEN (p.status = 'nao_finalizado') THEN 'cancelado'
+    WHEN (p.status = 'nao_pago') THEN 'cancelado'
+    WHEN (p.status = 'abortado') THEN 'cancelado'
+    ELSE p.status
+END) AS status,
 p.valor_total_com_desconto AS total, 
 p.desconto AS credit_discount, 
 p.cpf AS cpf, 
@@ -17,10 +26,10 @@ p.telefone AS telephone,
 p.presente AS is_gift, 
 p.forma_pgto AS payment_terms, 
 p.url_boleto AS boleto, 
-p.data_captura AS capture_date, 
+DATE_FORMAT(p.data_captura, '%Y-%m-%d %H:%i:%s') AS capture_date, 
 p.historico AS history, 
-p.data AS created_at,
-p.datahora AS updated_at
+DATE_FORMAT(p.data, '%Y-%m-%d %H:%i:%s') AS created_at,
+DATE_FORMAT(p.datahora, '%Y-%m-%d %H:%i:%s') AS updated_at
 
 FROM pagamentos p 
 
@@ -56,12 +65,12 @@ f.presente AS is_gift,
 '' AS boleto, 
 '' AS capture_date, 
 '' AS history, 
-f.data AS created_at,
-f.data AS updated_at
+DATE_FORMAT(f.data, '%Y-%m-%d %H:%i:%s') AS created_at,
+DATE_FORMAT(f.data, '%Y-%m-%d %H:%i:%s') AS updated_at
 
 FROM faturas f
 
-WHERE faturas.id < 78059
+WHERE f.id < 78059
 
 LIMIT 30
 

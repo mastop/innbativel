@@ -1,9 +1,9 @@
 SELECT
 
 per.id AS id, 
-per.inicio AS sales_from, 
-per.fim AS sales_to, 
-per.data_pagamento AS date
+DATE_FORMAT(per.inicio, '%Y-%m-%d %H:%i:%s') AS sales_from, 
+DATE_FORMAT(per.fim, '%Y-%m-%d %H:%i:%s') AS sales_to, 
+DATE_FORMAT(per.data_pagamento, '%Y-%m-%d') AS date
 
 FROM periodos AS per
 

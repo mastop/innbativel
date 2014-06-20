@@ -7,7 +7,16 @@ ov.usado AS used,
 ov.numero AS display_code, 
 ov.nome AS name, 
 ov.email_voucher AS email,
-p.status AS status
+(CASE
+	WHEN (p.status = 'iniciado') THEN 'pendente'
+    WHEN (p.status = 'aprovado') THEN 'pago'
+    WHEN (p.status = 'rejeitado') THEN 'cancelado'
+    WHEN (p.status = 'estornado') THEN 'cancelado'
+    WHEN (p.status = 'nao_finalizado') THEN 'cancelado'
+    WHEN (p.status = 'nao_pago') THEN 'cancelado'
+    WHEN (p.status = 'abortado') THEN 'cancelado'
+    ELSE p.status
+END) AS status
 
 FROM ofertas_vouchers AS ov
 

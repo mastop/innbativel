@@ -6,7 +6,7 @@ id AS user_id,
 facebook_id,
 SUBSTRING_INDEX(nome, ' ', 1) AS first_name,
 SUBSTRING(nome,LOCATE(' ', nome)) AS last_name,
-DATE_FORMAT(data_nascimento , '%d/%m/%Y') AS birthday,
+DATE_FORMAT(data_nascimento , '%Y-%m-%d') AS birthday,
 cpf,
 telefone AS telephone,
 '' AS telephone2,
@@ -24,6 +24,7 @@ cep AS zip,
 '' AS site,
 '' AS coordinates,
 NOW() AS created_at
+
 FROM usuarios
 
 UNION
@@ -52,6 +53,7 @@ cnpj AS cnpj,
 site,
 coordenadas AS coordinates,
 NOW() AS created_at
+
 FROM empresas
 
 INTO OUTFILE "/tmp/profiles.csv"
