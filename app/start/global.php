@@ -79,7 +79,7 @@ HTML::macro('ImageUpload', function($name, $label, $multiple = false, $images = 
     $multipleDiv = '<div class="clearfix" id="'.$name.'"></div><div class="multifiles">
                          {MULTIFILES}
                     </div>';
-    if(!is_array(Input::old($name, $images))){
+    if(!is_array(Input::old($name, $images)) || count(Input::old($name, $images)) == 0){
         $multifiles = '<div class="multifile">
                             '.Button::danger('<span class="icon icon-remove"> Remover</span>', ['class'=>'btn-mini']).'
                             '.$hiddenfield.'
