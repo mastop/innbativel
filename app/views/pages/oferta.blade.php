@@ -106,7 +106,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {{$additional->offer->format_features}}
+                                                {{$additional->offer->popup_features}}
                                             </p>
                                             <p>Escolha a quantidade na página de pagamento.</p>
                                             <div class="prices-info">
@@ -148,7 +148,7 @@
 								</ul>
 							</div>
 						</div>
-						<div class="offer-remain">12 cupons vendidos</div>
+						<div class="offer-remain">{{$offer->sold}} cupons vendidos</div>
 						<!-- <div class="offer-remain">Restam 12</div> -->
 					</div>
 				</div>

@@ -21,7 +21,6 @@
 
 {{ Former::text('title', 'Título')->class('span12') }}
 {{ Former::text('subtitle', 'Subtítulo')->class('span12') }}
-{{ Former::text('subsubtitle', 'Subtítulo 2')->class('span12') }}
 
 {{ Former::select('destiny_id', 'Destino')
 ->addOption(null)
@@ -46,7 +45,7 @@
 
 
 {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques da Oferta') }}
-{{-- Former::textarea('summary', 'Descrição Resumida')->rows(5)->columns(20)->class('span12') --}}
+{{ Former::textarea('popup_features', 'Destaques Popup')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques que aparecerão como Popup')}}
 {{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira as Regras da Oferta') }}
 
 
@@ -65,11 +64,9 @@
 {{ Former::stacked_radios('category_id', 'Categoria')->radios(Category::getAllArray()) }}
 
 {{ Former::checkbox('display_map', '')
-->text('Exibir mapa na oferta')
-->check() }}
+->text('Exibir mapa na oferta')}}
 {{ Former::checkbox('is_available', '')
-->text('Oferta será publicada')
-->check() }}
+->text('Oferta será publicada')}}
 {{ Former::checkbox('is_product', '')
 ->text('É um <b>produto</b>?') }}
 
@@ -229,8 +226,9 @@
         </div>
     </div>
 </div>
-
-{{ Former::hidden('is_active', '')->value(1) }}
+{{ Former::text('sold', 'Itens Vendidos')->class('span12') }}
+{{ Former::checkbox('is_active', '')
+->text('Oferta Ativa do Site')}}
 
 
 

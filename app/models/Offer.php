@@ -25,12 +25,12 @@ class Offer extends BaseModel {
         'tell_us_id', // Id do depoimento do cliente
         'title', // Título
         'subtitle', // SubTítulo
-        'subsubtitle', // SubTítulo 2
         'price_original', // Preço Original
         'price_with_discount', // Preço Com Desconto
         'percent_off', // %OFF
         'rules', // Regras
         'features', // Destaques
+        'popup_features', // Destaques Popup
         'starts_on', // Data de Início
         'ends_on', // Data de Término
         'cover_img', // Imagem Principal
@@ -38,6 +38,7 @@ class Offer extends BaseModel {
         'display_map', // Exibir mapa?
         'is_product', // Será publicada?
         'is_active', // Oferta ativa?
+        'sold', // Itens Vendidos
     ];
 
 	protected $softDelete = true;
@@ -171,6 +172,17 @@ class Offer extends BaseModel {
     public function setGenre2IdAttribute($value)
     {
         $this->attributes['genre2_id'] = $value ?: null;
+    }
+
+    /**
+     * Esta função é necessária para substituir string vazia por NULL.
+     * Sem esta função, vai dar erro no SQL por causa da foreign key associada a tell_us_id
+     * @param $value
+     * @return void
+     */
+    public function setTellUsIdAttribute($value)
+    {
+        $this->attributes['tell_us_id'] = $value ?: null;
     }
 
     /**

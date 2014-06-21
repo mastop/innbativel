@@ -17,7 +17,6 @@
 
         {{ Former::text('title', 'Título')->class('span12') }}
         {{ Former::text('subtitle', 'Subtítulo')->class('span12') }}
-        {{ Former::text('subsubtitle', 'Subtítulo 2')->class('span12') }}
 
         {{ Former::select('destiny_id', 'Destino')
         ->addOption(null)
@@ -42,7 +41,7 @@
 
 
         {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques da Oferta') }}
-        {{-- Former::textarea('summary', 'Descrição Resumida')->rows(5)->columns(20)->class('span12') --}}
+        {{ Former::textarea('popup_features', 'Destaques Popup')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques que aparecerão como Popup')}}
         {{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira as Regras da Oferta') }}
 
 
@@ -225,6 +224,7 @@
             </div>
         </div>
 
+        {{ Former::text('sold', 'Itens Vendidos')->class('span12')->value(rand(12,33)) }}
         {{ Former::hidden('is_active', '')->value(1) }}
 
 
