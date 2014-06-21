@@ -88,7 +88,7 @@ class AdminOfferController extends BaseController {
 		 */
 		$offer = $offer
 			->with(['partner', 'destiny'])
-			->select(['id', 'title', 'destiny_id', 'starts_on', 'ends_on'])
+			->select(['id', 'slug', 'title', 'destiny_id', 'starts_on', 'ends_on'])
 			->whereExists(function($query){
                 if (Input::has('destiny')) {
 					$query->select(DB::raw(1))
