@@ -21,7 +21,6 @@
 
 {{ Former::text('title', 'Título')->class('span12') }}
 {{ Former::text('subtitle', 'Subtítulo')->class('span12') }}
-{{ Former::text('subsubtitle', 'Subtítulo 2')->class('span12') }}
 
 {{ Former::select('destiny_id', 'Destino')
 ->addOption(null)
@@ -46,7 +45,7 @@
 
 
 {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques da Oferta') }}
-{{-- Former::textarea('summary', 'Descrição Resumida')->rows(5)->columns(20)->class('span12') --}}
+{{ Former::textarea('popup_features', 'Destaques Popup')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques que aparecerão como Popup')}}
 {{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira as Regras da Oferta') }}
 
 
@@ -65,11 +64,9 @@
 {{ Former::stacked_radios('category_id', 'Categoria')->radios(Category::getAllArray()) }}
 
 {{ Former::checkbox('display_map', '')
-->text('Exibir mapa na oferta')
-->check() }}
+->text('Exibir mapa na oferta')}}
 {{ Former::checkbox('is_available', '')
-->text('Oferta será publicada')
-->check() }}
+->text('Oferta será publicada')}}
 {{ Former::checkbox('is_product', '')
 ->text('É um <b>produto</b>?') }}
 
@@ -117,9 +114,8 @@
             {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12 currency PriceWithDiscount required')->required()->prepend('R$') }}
             {{ Former::text('offer_options[0][percent_off]', 'Total do Desconto')->class('span4 TotalDiscount required')->required()->append('% OFF')->value('0') }}
             {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12 currency TotalTransfer required')->required()->prepend('R$') }}
-            {{ Former::text('offer_options[0][min_qty]', 'Estoque Mínimo')->class('span4')->append('compradores')->value('0') }}
-            {{ Former::text('offer_options[0][max_qty]', 'Estoque Máximo')->class('span4')->append('compradores')->value('0') }}
-            {{ Former::text('offer_options[0][max_qty_per_buyer]', 'Máximo por Cliente')->class('span4')->append('compras')->value('0') }}
+            {{ Former::text('offer_options[0][min_qty]', 'Limite Boleto')->class('span4')->append('compras')->value('0') }}
+            {{ Former::text('offer_options[0][max_qty]', 'Limite Total')->class('span4')->append('compras')->value('0') }}
             {{ Former::text('offer_options[0][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker required')->required() }}
             {{ Former::text('offer_options[0][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker required')->required() }}
             {{ Former::button('Remover esta Opção de Venda')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
@@ -143,9 +139,8 @@
             {{ Former::text('offer_options['.$k.'][price_with_discount]', 'Preço com Desconto')->class('span12 currency PriceWithDiscount required')->required()->prepend('R$')->value($offer_options['price_with_discount']) }}
             {{ Former::text('offer_options['.$k.'][percent_off]', 'Total do Desconto')->class('span4 TotalDiscount required')->required()->append('% OFF')->value($offer_options['percent_off']) }}
             {{ Former::text('offer_options['.$k.'][transfer]', 'Repasse ao Parceiro')->class('span12 currency TotalTransfer required')->required()->prepend('R$')->value($offer_options['transfer']) }}
-            {{ Former::text('offer_options['.$k.'][min_qty]', 'Estoque Mínimo')->class('span4')->append('compradores')->value($offer_options['min_qty']) }}
-            {{ Former::text('offer_options['.$k.'][max_qty]', 'Estoque Máximo')->class('span4')->append('compradores')->value($offer_options['max_qty']) }}
-            {{ Former::text('offer_options['.$k.'][max_qty_per_buyer]', 'Máximo por Cliente')->class('span4')->append('compras')->value($offer_options['max_qty_per_buyer']) }}
+            {{ Former::text('offer_options['.$k.'][min_qty]', 'Limite Boleto')->class('span4')->append('compradores')->value($offer_options['min_qty']) }}
+            {{ Former::text('offer_options['.$k.'][max_qty]', 'Limite Total')->class('span4')->append('compradores')->value($offer_options['max_qty']) }}
             {{ Former::text('offer_options['.$k.'][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker required')->required()->value($offer_options['voucher_validity_start']) }}
             {{ Former::text('offer_options['.$k.'][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker required')->required()->value($offer_options['voucher_validity_end']) }}
             {{ Former::button('Remover esta Opção de Venda')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
@@ -231,8 +226,9 @@
         </div>
     </div>
 </div>
-
-{{ Former::hidden('is_active', '')->value(1) }}
+{{ Former::text('sold', 'Itens Vendidos')->class('span12') }}
+{{ Former::checkbox('is_active', '')
+->text('Oferta Ativa do Site')}}
 
 
 

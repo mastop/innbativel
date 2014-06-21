@@ -68,7 +68,7 @@
 	        {{ Table::open() }}
 			{{ Table::headers('Código', 'Status', 'Validado (usado)?', 'Cupom válido de', 'até', 'Código de rastreamento', 'Oferta', 'Opção escolhida', 'Ações') }}
 			{{ Table::body($order->offer_option_offer)
-				->ignore(['id', 'offer_id', 'title', 'subtitle', 'price_original', 'price_with_discount', 'transfer', 'min_qty', 'max_qty', 'max_qty_per_buyer', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'display_order', 'pivot', 'offer'])
+				->ignore(['id', 'offer_id', 'title', 'subtitle', 'price_original', 'price_with_discount', 'transfer', 'min_qty', 'max_qty', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'display_order', 'pivot', 'offer'])
 				->display_code(function($body) {
 					if(isset($body->pivot)){
 						return $body->pivot->id.'-'.$body->pivot->display_code;

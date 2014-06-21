@@ -3,7 +3,6 @@
 /public/assets/cdn
 /public/assets/images
 /public/assets/uploads
-/public/assets/vendor
 /public/packages/*
 /app/storage/*
 .DS_Store

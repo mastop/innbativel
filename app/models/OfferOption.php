@@ -19,7 +19,6 @@ class OfferOption extends BaseModel {
         'transfer', // Repasse ao Parceiro
         'min_qty', // Estoque Mínimo
         'max_qty', // Estoque Máximo
-        'max_qty_per_buyer', // Máximo por cliente
         'percent_off', // %OFF
         'voucher_validity_start', // Início Validade Cupom
         'voucher_validity_end', // Fim Validade Cupom
@@ -35,7 +34,6 @@ class OfferOption extends BaseModel {
 	 'price_with_discount' => 'required',
 	 'min_qty' => 'required|integer',
 	 'max_qty' => 'required|integer',
-	 'max_qty_per_buyer' => 'required|integer',
 	 'percent_off' => 'integer|max:100',
 	 'voucher_validity_start' => 'required',
 	 'voucher_validity_end' => 'required',
