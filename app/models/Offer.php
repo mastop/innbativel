@@ -127,6 +127,35 @@ class Offer extends BaseModel {
         return $this->belongsToMany('Tag', 'offers_tags', 'offer_id', 'tag_id');
     }
 
+    /**
+     * Retorna a URL da oferta, como $offer->url
+     * @return string
+     */
+    public function getUrlAttribute(){
+        return route('oferta', $this->slug);
+    }
+
+    /**
+     * Retorna a descrição da oferta formatada, como $offer->format_features
+     * @return string
+     */
+    public function getFormatFeaturesAttribute(){
+        if($this->features == ''){
+            return;
+        }
+        $search = array(
+            'Regulamento da Oferta',
+            'Fale Conosco',
+            'mapa'
+        );
+        $replace = array(
+            '<a href="#regulation" class="tooltip" data-tip="Veja o Regulamento da Oferta" data-toggle="modal">Regulamento da Oferta</a>',
+            '<a href="#contact" class="tooltip" data-tip="Entre em contato" data-toggle="modal">Fale Conosco</a>',
+            '<a href="#map" class="tooltip" data-tip="Veja a localização" data-toggle="modal">Mapa</a>'
+        );
+        return str_ireplace($search, $replace, $this->features);
+    }
+
 	public function getFullDestinnyAttribute(){
         $destiny = Destiny::find($this->destiny_id);
 		//return $destiny->city.'-'.$destiny->state_id;
