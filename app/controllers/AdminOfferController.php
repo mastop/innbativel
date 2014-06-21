@@ -203,6 +203,7 @@ class AdminOfferController extends BaseController {
                 $offers_additional = explode(',', Input::get('offers_additional'));
                 if(is_array($offers_additional)){
                     foreach($offers_additional as $k => $v){
+                        if(empty($v)) continue;
                         $offer->offer_additional()->attach($v, array('display_order' => $k));
                     }
                 }
@@ -212,6 +213,7 @@ class AdminOfferController extends BaseController {
                 if(is_array($offers_tags)){
                     $tags = array();
                     foreach($offers_tags as $v){
+                        if(empty($v)) continue;
                         if(is_numeric($v)){ // Se for número, joga no array $tags
                             $tags[] = $v;
                         }else{ // Se não for número, cria a tag primeiro e joga no array o ID
@@ -332,6 +334,11 @@ class AdminOfferController extends BaseController {
                         }
                     }
                 }
+                // Salva as flags is_active, display_map, is_available, is_product
+                $offer->is_active = Input::get('is_active', 0);
+                $offer->display_map = Input::get('display_map', 0);
+                $offer->is_available = Input::get('is_available', 0);
+                $offer->is_product = Input::get('is_product', 0);
                 // Update na oferta
                 $offer->save();
                 Session::flash('success', 'Oferta <b>#'.$offer->id.' - '.$offer->title.'</b> criada com sucesso.');
@@ -461,6 +468,7 @@ class AdminOfferController extends BaseController {
                 $additional = array();
                 if(is_array($offers_additional)){
                     foreach($offers_additional as $k => $v){
+                        if(empty($v)) continue;
                         $additional[$v] = array('display_order' => $k);
                     }
                     $offer->offer_additional()->sync($additional);
@@ -473,6 +481,7 @@ class AdminOfferController extends BaseController {
                 if(is_array($offers_tags)){
                     $tags = array();
                     foreach($offers_tags as $v){
+                        if(empty($v)) continue;
                         if(is_numeric($v)){ // Se for número, joga no array $tags
                             $tags[] = $v;
                         }else{ // Se não for número, cria a tag primeiro e joga no array o ID
@@ -495,7 +504,7 @@ class AdminOfferController extends BaseController {
                 }
 
                 // Atualiza os Feriados
-                $offer->holiday()->sync(Input::get('offers_holidays'));
+                $offer->holiday()->sync(Input::get('offers_holidays', array()));
 
                 // Atualiza as imagens da Oferta
 
@@ -631,6 +640,11 @@ class AdminOfferController extends BaseController {
                         }
                     }
                 }
+                // Salva as flags is_active, display_map, is_available, is_product
+                $offer->is_active = Input::get('is_active', 0);
+                $offer->display_map = Input::get('display_map', 0);
+                $offer->is_available = Input::get('is_available', 0);
+                $offer->is_product = Input::get('is_product', 0);
                 // Update na oferta
                 $offer->save();
                 Session::flash('success', 'Oferta <b>#'.$offer->id.' - '.$offer->title.'</b> atualizada com sucesso.');
