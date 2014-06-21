@@ -93,7 +93,6 @@
         {{-- Macro ImageUpload() está definida em app/start/global.php --}}
 
         {{HTML::ImageUpload('cover_img', 'Principal')}}
-        {{HTML::ImageUpload('offer_old_img', 'Pré-Reservas')}}
         {{HTML::ImageUpload('newsletter_img', 'Newsletter')}}
         {{HTML::ImageUpload('offers_images', 'Demais Imagens', true)}}
 

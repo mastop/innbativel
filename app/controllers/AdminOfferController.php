@@ -284,29 +284,6 @@ class AdminOfferController extends BaseController {
                     ));
                 }
 
-                // Imagem de Pré-Reserva
-                $offer_old_img = Input::get('offer_old_img');
-
-                if($offer_old_img){
-                    // Pega a extensão da imagem
-                    $ext = pathinfo($offer_old_img, PATHINFO_EXTENSION);
-                    // Cria um novo nome para a imagem
-                    $newname = "{$offer->slug}-old.$ext";
-                    $newpath = "ofertas/{$offer->id}/$newname";
-                    // Copia a imagem para o lugar definitivo
-                    $s3->copyObject(array(
-                        'Bucket'     => $s3bucket,
-                        'Key'        => "$newpath",
-                        'CopySource' => "{$s3bucket}/temp/{$offer_old_img}",
-                        'ACL'        => 'public-read',
-                        'CacheControl' => 'max-age=315360000',
-                        'ContentType' => '^',
-                        'Expires'    => $expires
-                    ));
-                    // Coloca o novo nome da imagem em $offer
-                    $offer->offer_old_img = $newname;
-                }
-
                 // Imagem de Newsletter
                 $newsletter_img = Input::get('newsletter_img');
 
@@ -426,7 +403,7 @@ class AdminOfferController extends BaseController {
 
             if($offer){
                 // Salva a oferta
-                $offer->update(Input::except(array('cover_img', 'offer_old_img', 'newsletter_img')));
+                $offer->update(Input::except(array('cover_img', 'newsletter_img')));
 
                 // Atualiza as opções de venda
                 $offer_options = Input::get('offer_options');
@@ -584,43 +561,6 @@ class AdminOfferController extends BaseController {
                         'ContentType' => $result['ContentType'],
                         'Expires'    => $expires
                     ));
-                }
-
-                // Imagem de Pré-Reserva
-                $offer_old_img = Input::get('offer_old_img');
-
-                if(substr($offer_old_img, 0, 2) != '//'){
-                    $old_img = $offer->getoriginal('offer_old_img');
-                    if(!empty($old_img)){
-                        // Deleta a Imagem de Pré-Reserva
-                        $imagem_velha = "ofertas/{$offer->id}/{$old_img}";
-                        $s3->deleteObject(array(
-                            'Bucket' => $s3bucket,
-                            'Key'    => $imagem_velha
-                        ));
-                        $offer->offer_old_img = '';
-                    }
-                    if(!empty($offer_old_img)){
-                        // Envia nova Imagem de Pré-Reserva
-
-                        // Pega a extensão da imagem
-                        $ext = pathinfo($offer_old_img, PATHINFO_EXTENSION);
-                        // Cria um novo nome para a imagem
-                        $newname = "{$offer->slug}-old.$ext";
-                        $newpath = "ofertas/{$offer->id}/$newname";
-                        // Copia a imagem para o lugar definitivo
-                        $s3->copyObject(array(
-                            'Bucket'     => $s3bucket,
-                            'Key'        => "$newpath",
-                            'CopySource' => "{$s3bucket}/temp/{$offer_old_img}",
-                            'ACL'        => 'public-read',
-                            'CacheControl' => 'max-age=315360000',
-                            'ContentType' => '^',
-                            'Expires'    => $expires
-                        ));
-                        // Coloca o novo nome da imagem em $offer
-                        $offer->offer_old_img = $newname;
-                    }
                 }
 
                 // Imagem de Newsletter
