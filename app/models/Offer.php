@@ -34,7 +34,6 @@ class Offer extends BaseModel {
         'starts_on', // Data de Início
         'ends_on', // Data de Término
         'cover_img', // Imagem Principal
-        'offer_old_img', // Imagem Pré-Reservas
         'newsletter_img', // Imagem Newsletters
         'display_map', // Exibir mapa?
         'is_product', // Será publicada?
