@@ -378,6 +378,23 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::post('destiny/delete/{id}', ['as' => 'admin.destiny.destroy', 'uses' => 'AdminDestinyController@postDelete']);
 
 	/*
+	 * Feriados
+	 */
+
+	Route::any('holiday', ['as' => 'admin.holiday', 'uses' => 'AdminHolidayController@anyIndex']);
+
+	Route::get('holiday/create', ['as' => 'admin.holiday.create', 'uses' => 'AdminHolidayController@getCreate']);
+	Route::post('holiday/create', ['as' => 'admin.holiday.save', 'uses' => 'AdminHolidayController@postCreate']);
+
+	Route::any('holiday/edit', function(){ return Redirect::route('admin.holiday'); });
+	Route::get('holiday/edit/{id}', ['as' => 'admin.holiday.edit', 'uses' => 'AdminHolidayController@getEdit']);
+	Route::post('holiday/edit/{id}', ['as' => 'admin.holiday.update', 'uses' => 'AdminHolidayController@postEdit']);
+
+	Route::any('holiday/delete', function(){ return Redirect::route('admin.holiday'); });
+	Route::get('holiday/delete/{id}', ['as' => 'admin.holiday.delete', 'uses' => 'AdminHolidayController@getDelete']);
+	Route::post('holiday/delete/{id}', ['as' => 'admin.holiday.destroy', 'uses' => 'AdminHolidayController@postDelete']);
+
+	/*
 	 * Included
 	 */
 
