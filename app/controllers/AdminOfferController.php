@@ -46,7 +46,7 @@ class AdminOfferController extends BaseController {
 		 */
 
 
-    	$pag = Input::get('pag', 25);
+    	$pag = Input::get('pag', 50);
 
 		/*
 		 * Sort filter
@@ -108,7 +108,7 @@ class AdminOfferController extends BaseController {
 				'genre_id' => Input::get('genre_id'),
 				'starts_on' => Input::get('starts_on'),
 				'ends_on' => Input::get('ends_on'),
-				'pag' => Input::get('pag'),
+				'pag' => $pag,
 			]);
 
 		/*

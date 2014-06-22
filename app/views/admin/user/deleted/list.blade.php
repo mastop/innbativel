@@ -66,7 +66,7 @@
 		  	Navigation::links([
 				['Ver', route('admin.user.deleted.view', $body['id'])],
 				['Editar', route('admin.user.deleted.edit', $body['id'])],
-				['Reaivar Usuário', route('admin.user.deleted.restore', $body['id'])],
+				['Reativar Usuário', route('admin.user.deleted.restore', $body['id'])],
 				['Excluir Permanentemente', route('admin.user.deleted.delete', $body['id'])],
 		    ])
 		)->pull_right()->split();

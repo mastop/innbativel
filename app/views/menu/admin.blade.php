@@ -3,6 +3,7 @@
           [Navigation::HEADER, 'Menu Administrativo', false, false, null, 'tasks'],
           ['Dashboard', route('admin'), false, false, null, 'home'],
           ['Usuários', route('admin.user'), false, false, null, 'user'],
+          ['Parceiros', route('admin.partner'), false, false, null, 'user'],
           ['Papéis', route('admin.role'), false, false, null, 'book'],
           ['Permissões', route('admin.perm'), false, false, null, 'leaf'],
           ['Ofertas', route('admin.offer'), false, false, null, 'fire'],

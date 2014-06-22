@@ -2,8 +2,10 @@
 
 return [
 	'default' => 'Página Atual',
+	'deleted' => 'Excluídos',
 	'admin' => 'Administração',
 	'user' => 'Usuários',
+	'partner' => 'Parceiros',
 	'create' => 'Criar',
 	'view' => 'Visualizar',
 	'edit' => 'Edição',

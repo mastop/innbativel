@@ -55,7 +55,7 @@ class PainelPaymentController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100', '1000', '10000']) ? Input::get('pag') : '100';
+        $pag = Input::get('pag', 50);
 
 		/*
 		 * Sort filter
@@ -133,7 +133,7 @@ class PainelPaymentController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100', '1000', '10000']) ? Input::get('pag') : '100';
+        $pag = Input::get('pag', 50);
 
 		/*
 		 * Sort filter

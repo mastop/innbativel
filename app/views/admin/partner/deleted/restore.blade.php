@@ -13,7 +13,7 @@
         </div>
 
         {{ Former::actions()
-          ->danger_submit('Reativar Usuário')
+          ->danger_submit('Reativar Parceiro')
           ->primary_link('Cancelar', route('admin.partner')) }}
 
         {{ Former::close() }}
