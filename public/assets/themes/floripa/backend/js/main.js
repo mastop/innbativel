@@ -1,4 +1,4 @@
-;(function($){
+$(function () {
     innbativel = window.innbativel || {};
 
     innbativel.init = function(){
@@ -51,4 +51,9 @@
     // 	.on('load', innbativel.load)
     // 	.on('resize', innbativel.resize);
 
-})(jQuery);
+    // Muda os itens por página automaticamente sem precisar enviar o formulário
+    $('#pag').change(function(){
+        $(this).closest('form').submit();
+    });
+
+});
