@@ -61,7 +61,7 @@ class AdminUserController extends BaseController {
 		 * Paginate
 		 */
 
-		$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+        $pag = Input::get('pag', 50);
 
 		/*
 		 * Sort filter
@@ -93,6 +93,7 @@ class AdminUserController extends BaseController {
 							  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.Input::get('name').'%"');
 					}
 				})
+                ->whereNotIn('id', Role::where('name', '=', 'parceiro')->first()->users()->lists('id')) // Sem Parceiros
 				->orderBy($sort, $order)->paginate($pag)->appends([
 					'sort' => $sort,
 					'order' => $order,
@@ -104,6 +105,7 @@ class AdminUserController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Gerenciar Usuários';
 		$this->layout->content = View::make('admin.user.list', compact('sort', 'order', 'pag', 'user'));
 	}
 
@@ -165,7 +167,7 @@ class AdminUserController extends BaseController {
 				$data['userArray'][$key] = '~ '. Lang::get('messages.undefined'). ' ~';
 			}
 		}
-
+        $this->layout->page_title = 'Visualizar Usuário #'.$id;
 		$this->layout->content = View::make('admin.user.view', $data);
 	}
 
@@ -180,7 +182,7 @@ class AdminUserController extends BaseController {
 		}
 
 		Former::populateField('roles', $roles);
-
+        $this->layout->page_title = 'Criar Usuário';
 		$this->layout->content = View::make('admin.user.create', compact('roles'));
 	}
 
@@ -257,6 +259,7 @@ class AdminUserController extends BaseController {
 		Former::populate($user);
 		Former::populateField('roles', $roles);
 
+        $this->layout->page_title = 'Editando Usuário #'.$user->id.' '.$user->profile->first_name;
 		$this->layout->content = View::make('admin.user.edit', compact('user', 'roles'));
 	}
 
@@ -357,7 +360,7 @@ class AdminUserController extends BaseController {
 				$data['userArray'][Lang::get('user.'. $key)] = $value;
 			}
 		}
-
+        $this->layout->page_title = 'Excluir Usuário #'.$user->id.' '.$user->profile->first_name;
 		$this->layout->content = View::make('admin.user.delete', $data);
 	}
 
@@ -425,6 +428,7 @@ class AdminUserController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Gerenciar Usuários Excluídos';
 		$this->layout->content = View::make('admin.user.deleted.list', compact('sort', 'order', 'pag', 'user'));
 	}
 
@@ -486,7 +490,7 @@ class AdminUserController extends BaseController {
 				$data['userArray'][$key] = '~ '. Lang::get('messages.undefined'). ' ~';
 			}
 		}
-
+        $this->layout->page_title = 'Visualizar Usuário Excluído';
 		$this->layout->content = View::make('admin.user.deleted.view', $data);
 	}
 
@@ -510,7 +514,7 @@ class AdminUserController extends BaseController {
 
 		Former::populate($user);
 		Former::populateField('roles', $roles);
-
+        $this->layout->page_title = 'Editando Usuário Excluído #'.$user->id.' '.$user->profile->first_name;
 		$this->layout->content = View::make('admin.user.deleted.edit', compact('user', 'roles'));
 	}
 
@@ -606,7 +610,7 @@ class AdminUserController extends BaseController {
 				$data['userArray'][Lang::get('user.'. $key)] = $value;
 			}
 		}
-
+        $this->layout->page_title = 'Excluir PERMANENTEMENTE Usuário #'.$user->id.' '.$user->profile->first_name;
 		$this->layout->content = View::make('admin.user.deleted.delete', $data);
 	}
 
@@ -639,7 +643,7 @@ class AdminUserController extends BaseController {
 				$data['userArray'][Lang::get('user.'. $key)] = $value;
 			}
 		}
-
+        $this->layout->page_title = 'Reativar Usuário #'.$user->id.' '.$user->profile->first_name;
 		$this->layout->content = View::make('admin.user.deleted.restore', $data);
 	}
 

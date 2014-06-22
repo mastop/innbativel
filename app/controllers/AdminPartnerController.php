@@ -62,7 +62,7 @@ class AdminPartnerController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+        $pag = Input::get('pag', 50);
 
 		/*
 		 * Sort filter
@@ -95,12 +95,7 @@ class AdminPartnerController extends BaseController {
 			                  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name) LIKE "%'.Input::get('name').'%"');
 		            }
 		         })
-		         ->whereExists(function($query){
-					$query->select(DB::raw(1))
-		                  ->from('role_user')
-		                  ->whereRaw('role_user.user_id = users.id')
-		                  ->whereRaw('role_user.role_id = 9');
-		         })
+                 ->whereIn('id', Role::where('name', '=', 'parceiro')->first()->users()->lists('id')) // Só Parceiros
 				 ->orderBy($sort, $order)->paginate($pag)->appends([
 					'sort' => $sort,
 					'order' => $order,
@@ -111,6 +106,7 @@ class AdminPartnerController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Gerenciar Parceiros';
 		$this->layout->content = View::make('admin.partner.list', compact('sort', 'order', 'pag', 'partner'));
 	}
 
@@ -174,11 +170,13 @@ class AdminPartnerController extends BaseController {
 			}
 		}
 
+        $this->layout->page_title = 'Visualizar Parceiro #'.$id;
 		$this->layout->content = View::make('admin.partner.view', $data);
 	}
 
 	public function getCreate()
 	{
+        $this->layout->page_title = 'Criar Parceiro';
 		$this->layout->content = View::make('admin.partner.create');
 	}
 
@@ -258,7 +256,7 @@ class AdminPartnerController extends BaseController {
 		}
 
         Former::populate($partner);
-
+        $this->layout->page_title = 'Editando Parceiro #'.$partner->id.' '.$partner->profile->company_name;
 		$this->layout->content = View::make('admin.partner.edit', compact('partner'));
 	}
 
@@ -310,7 +308,7 @@ class AdminPartnerController extends BaseController {
 				}
 			}
 
-			Session::flash('success', 'Usuário <em>#'. $partner->id .' - '. $partner->email .'</em> atualizado.');
+			Session::flash('success', 'Parceiro <em>#'. $partner->id .' - '. $partner->email .'</em> atualizado.');
 
 			return Redirect::route('admin.partner');
 		}
@@ -332,7 +330,7 @@ class AdminPartnerController extends BaseController {
 			return Redirect::route('admin.partner');
 		}
 
-		Session::flash('error', 'Você tem certeza que deleja excluir este usuário? Esta operação não poderá ser desfeita.');
+		Session::flash('error', 'Você tem certeza que deleja excluir este parceiro? Esta operação não poderá ser desfeita.');
 
 		$data['partnerData'] = $partner->toArray();
 		$data['partnerArray'] = null;
@@ -343,7 +341,7 @@ class AdminPartnerController extends BaseController {
 				$data['partnerArray'][Lang::get('partner.'. $key)] = $value;
 			}
 		}
-
+        $this->layout->page_title = 'Excluir Parceiro #'.$partner->id.' '.$partner->profile->company_name;
 		$this->layout->content = View::make('admin.partner.delete', $data);
 	}
 
@@ -352,7 +350,7 @@ class AdminPartnerController extends BaseController {
 		$partner = $this->partner->find($id);
 		$partner->delete();
 
-		Session::flash('success', 'Usuário excluído com sucesso.');
+		Session::flash('success', 'Parceiro excluído com sucesso.');
 
 		return Redirect::route('admin.partner');
 	}
@@ -393,12 +391,7 @@ class AdminPartnerController extends BaseController {
 		 * Finally Obj
 		 */
 		$partner = $partner
-		->whereExists(function($query){
-			$query->select(DB::raw(1))
-                  ->from('role_user')
-                  ->whereRaw('role_user.user_id = users.id')
-                  ->whereRaw('role_user.role_id = 9');
-        })
+        ->whereIn('id', Role::where('name', '=', 'parceiro')->first()->users()->onlyTrashed()->lists('id')) // Só Parceiros
 		->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
@@ -409,6 +402,7 @@ class AdminPartnerController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Gerenciar Parceiros Excluídos';
 		$this->layout->content = View::make('admin.partner.deleted.list', compact('sort', 'order', 'pag', 'partner'));
 	}
 
@@ -470,7 +464,7 @@ class AdminPartnerController extends BaseController {
 				$data['partnerArray'][$key] = '~ '. Lang::get('messages.undefined'). ' ~';
 			}
 		}
-
+        $this->layout->page_title = 'Visualizar Parceiro Excluído';
 		$this->layout->content = View::make('admin.partner.deleted.view', $data);
 	}
 
@@ -494,7 +488,7 @@ class AdminPartnerController extends BaseController {
 
         Former::populate($partner);
         Former::populateField('roles', $roles);
-
+        $this->layout->page_title = 'Editando Parceiro Excluído #'.$partner->id.' '.$partner->profile->company_name;
 		$this->layout->content = View::make('admin.partner.deleted.edit', compact('partner', 'roles'));
 	}
 
@@ -579,7 +573,7 @@ class AdminPartnerController extends BaseController {
 			return Redirect::route('admin.partner');
 		}
 
-		Session::flash('error', 'Você tem certeza que deleja excluir este usuário? Esta operação não poderá ser desfeita.');
+		Session::flash('error', 'Você tem certeza que deleja excluir este parceiro? Esta operação não poderá ser desfeita.');
 
 		$data['partnerData'] = $partner->toArray();
 		$data['partnerArray'] = null;
@@ -590,7 +584,7 @@ class AdminPartnerController extends BaseController {
 				$data['partnerArray'][Lang::get('partner.'. $key)] = $value;
 			}
 		}
-
+        $this->layout->page_title = 'Excluir PERMANENTEMENTE Parceiro #'.$partner->id.' '.$partner->profile->company_name;
 		$this->layout->content = View::make('admin.partner.deleted.delete', $data);
 	}
 
@@ -598,7 +592,7 @@ class AdminPartnerController extends BaseController {
 	{
 		$this->partner->onlyTrashed()->find($id)->forceDelete();
 
-		Session::flash('success', 'Usuário excluído com sucesso.');
+		Session::flash('success', 'Parceiro excluído com sucesso.');
 
 		return Redirect::route('admin.partner.deleted');
 	}
@@ -612,7 +606,7 @@ class AdminPartnerController extends BaseController {
 			return Redirect::route('admin.partner');
 		}
 
-		Session::flash('error', 'Você tem certeza que deleja reativar este usuário?');
+		Session::flash('error', 'Você tem certeza que deleja reativar este parceiro?');
 
 		$data['partnerData'] = $partner->toArray();
 		$data['partnerArray'] = null;
@@ -623,7 +617,7 @@ class AdminPartnerController extends BaseController {
 				$data['partnerArray'][Lang::get('partner.'. $key)] = $value;
 			}
 		}
-
+        $this->layout->page_title = 'Reativar Parceiro #'.$partner->id.' '.$partner->profile->company_name;
 		$this->layout->content = View::make('admin.partner.deleted.restore', $data);
 	}
 
@@ -631,7 +625,7 @@ class AdminPartnerController extends BaseController {
 	{
 		$this->partner->onlyTrashed()->find($id)->restore();
 
-		Session::flash('success', 'Usuário reativado com sucesso.');
+		Session::flash('success', 'Parceiro reativado com sucesso.');
 
 		return Redirect::route('admin.partner.deleted');
 	}
