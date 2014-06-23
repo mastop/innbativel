@@ -17,10 +17,17 @@
 	<meta name="csrf-token" content="{{ csrf_token() }}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <meta property="og:title" content="{{ isset($title) ? $title : $seo['metatag']['title'] }}" />
+    <meta property="og:title" content="{{ isset($title) ? $title: $seo['metatag']['title'] }}" />
     <meta property="og:description" content="{{ isset($description) ? $description : $seo['metatag']['description'] }}" />
     <meta property="og:url" content="{{ Request::url() }}" />
     <meta property="og:image" content="{{ isset($image) ? $image : $seo['metatag']['image'] }}" />
+    <meta property="fb:app_id" content="{{ Configuration::get('fb_app') }}" />
+    @foreach(explode(',', Configuration::get('fb_admins')) as $adm)
+        <meta property="fb:admins" content="{{ $adm }}"/>
+    @endforeach
+    <meta property="og:type" content="{{ isset($og_type) ? $og_type : 'website' }}" />
+    <meta property="og:locale" content="pt_BR" />
+
 	
     <link rel="alternate" hreflang="{{ Config::get('app.locale') }}" href="{{ URL::current() }}" />
 	<link rel="canonical" href="{{ URL::current() }}" />
@@ -40,6 +47,7 @@
     <script src="{{ asset('assets/vendor/contador/contador.js') }}"></script>
     <script src="{{ asset('assets/vendor/fotorama/fotorama.js') }}"></script>
     @yield('javascript')
+    {{ Configuration::get('script_head') }}
 </head>
 
 <body class="innbativel frontend no-sidebar {{ isset($body_classes) ? $body_classes : '' }}">
@@ -191,5 +199,6 @@
             </div>
         </div>
     </footer>
+    {{ Configuration::get('script_body') }}
 </body>
 </html>
