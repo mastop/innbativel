@@ -15,7 +15,7 @@ Route::filter('auth', function()
 {
   if (Auth::guest())
   {
-    $destination = Request::getPathInfo();
+    $destination = Input::get('destination', Request::getPathInfo());
 
 	  Session::flash('warning', 'Você precisa logar no site para acessar está página ou arquivo.');
 

@@ -35,6 +35,11 @@ class PageController extends BaseController {
         // print_r($offer->toArray());
         // print('</pre>'); die();
 
+        // SEO
+        $this->layout->title = $offer->destiny->name.' - '.$offer->title;
+        $this->layout->description = $offer->subtitle;
+        $this->layout->image = $offer->thumb;
+
         $this->layout->content = View::make('pages.oferta', compact('offer'));
     }
 

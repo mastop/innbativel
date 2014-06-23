@@ -273,4 +273,13 @@ class Offer extends BaseModel {
         return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
     }
 
+    /**
+     * Retorna o thumb da oferta, como $offer->thumb
+     * @return string
+     */
+    public function getThumbAttribute()
+    {
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/thumb/'.$this->getOriginal('cover_img');
+    }
+
 }
