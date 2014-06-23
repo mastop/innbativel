@@ -17,7 +17,7 @@
                 return true;
             });
             // Se a oferta só tem uma opção, checa ela
-            if($('input[name="opt"]').length == 1){
+            if($('input[name="opt[]"]').length == 1){
                 $('#opt0').click();
             }
 
