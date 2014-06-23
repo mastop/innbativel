@@ -13,10 +13,10 @@
 		  <div itemscope class="offer-spotlight offer-grid-item col-7 col-sm-7 col-lg-7 clearfix">
 		    <a href="oferta/{{ $offer['slug'] }}" class="offer-grid-inner clearfix">
 		      @if(isset($offer['genre']))
-		      <div class="offer-label">{{ $offer['genre']['icon'] . $offer['genre']['title'] }}</div>
+		      <div class="offer-label"><span class="entypo {{ $offer['genre']['icon'] }}"></span> {{ $offer['genre']['title'] }}</div>
 		      @endif
 		      @if(isset($offer['genre2']))
-		      <div class="offer-label">{{ $offer['genre2']['icon'] . $offer['genre2']['title'] }}</div>
+		      <div class="offer-label"><span class="entypo {{ $offer['genre2']['icon'] }}"></span>{{ $offer['genre2']['title'] }}</div>
 		      @endif
 		      <figure>
 		        <img src="{{ $offer['cover_img'] }}" alt="{{ $offer['subtitle'] }}">
@@ -109,10 +109,10 @@
 		  <div itemscope class="offer-grid-item col-6 col-sm-6 col-lg-6 clearfix">
 		    <a href="oferta/{{ $offer['slug'] }}" class="offer-grid-inner clearfix">
 		      @if(isset($offer['genre']))
-		      <div class="offer-label">{{ $offer['genre']['icon'] . $offer['genre']['title'] }}</div>
+		      <div class="offer-label"><span class="entypo {{ $offer['genre']['icon'] }}"></span> {{ $offer['genre']['title'] }}</div>
 		      @endif
 		      @if(isset($offer['genre2']))
-		      <div class="offer-label">{{ $offer['genre2']['icon'] . $offer['genre2']['title'] }}</div>
+		      <div class="offer-label"><span class="entypo {{ $offer['genre2']['icon'] }}"></span> {{ $offer['genre2']['title'] }}</div>
 		      @endif
 		      <figure>
 		        <img src="{{ $offer['cover_img'] }}" alt="{{ $offer['subtitle'] }}">

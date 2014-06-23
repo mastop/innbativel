@@ -39,9 +39,9 @@
 				<div itemscope class="col-8 col-sm-8 col-lg-8 clearfix buy-box-top">
 					
 					<!-- <div class="offer-label"><span class="entypo clock"></span>Período Limitado</div> -->
-					<div class="offer-label">{{$offer->genre->icon}}{{$offer->genre->title}}</div>
+					<div class="offer-label"><span class="entypo {{ $offer->genre->icon }}"></span> {{$offer->genre->title}}</div>
                     @if($offer->genre2_id > 0)
-					<div class="offer-label">{{$offer->genre2->icon}}{{$offer->genre2->title}}</div>
+					<div class="offer-label"><span class="entypo {{ $offer->genre2->icon }}"></span> {{$offer->genre2->title}}</div>
                     @endif
 					<div id="fotorama" class="fotorama" data-width="100%" data-ratio="600/250" data-nav="thumbs" data-thumbwidth="90" data-thumbheight="50" data-loop="true" data-autoplay="3000" data-transition="slide" data-arrows="true" data-click="false" data-swipe="true">
                         <a href="{{$offer->cover_img}}">
@@ -69,7 +69,7 @@
                         @foreach($offer->offer_option()->get() as $k => $option)
 						<li>
 							<label>
-								<input type="checkbox" id="opt{{$k}}" name="opt" value="{{intval($option->price_with_discount)}}">
+								<input type="checkbox" id="opt{{$k}}" name="opt" data-price="{{intval($option->price_with_discount)}}" value="{{$option->id}}">
 								<div>
 									<small>{{$k + 1}} - {{$option->title}}</small>
 									<span>{{$option->subtitle}}</span>
@@ -87,7 +87,7 @@
                         @foreach($offer->offer_additional as $k => $additional)
                         <li>
                             <label>
-                                <input type="checkbox" id="combo{{$k}}" name="add" value="{{intval($additional->price_with_discount)}}">
+                                <input type="checkbox" id="combo{{$k}}" name="add" data-price="{{intval($additional->price_with_discount)}}" value="{{$additional->id}}">
                                 <figure><img src="{{$additional->offer->cover_img}}"></figure>
                                 <div class="offer-combo">
                                     <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
@@ -152,6 +152,7 @@
 						<!-- <div class="offer-remain">Restam 12</div> -->
 					</div>
 				</div>
+            <input type="hidden" value="{{$offer->id}}" name="offer">
 			</form>
 		</div>
 

@@ -56,4 +56,15 @@ $(function () {
         $(this).closest('form').submit();
     });
 
+    function formatIcon(o) {
+        return "<span class='entypo " + o.id + "' style='margin-top:10px'></span>" + o.text;
+    }
+    function formatIconSelection(o) {
+        return "<span class='entypo " + o.id + "' style='margin-top:13px'></span>" + o.text;
+    }
+    $("#icon").select2({
+        formatResult: formatIcon,
+        formatSelection: formatIconSelection,
+        escapeMarkup: function(m) { return m; }
+    });
 });

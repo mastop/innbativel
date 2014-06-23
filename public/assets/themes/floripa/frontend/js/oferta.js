@@ -89,7 +89,7 @@
 				totalPrice = 0;
 				
 				$('.buy-form input[type=checkbox]:checked').each( function(index) {
-					totalPrice = (parseFloat(totalPrice) + parseFloat($(this).val())).toFixed(2);
+					totalPrice = (parseFloat(totalPrice) + parseFloat($(this).data('price'))).toFixed(2);
 				});
 				
 				var printPrice;

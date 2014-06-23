@@ -295,8 +295,6 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	Route::get('genre/delete/{id}', ['as' => 'admin.genre.delete', 'uses' => 'AdminGenreController@getDelete']);
 	Route::post('genre/delete/{id}', ['as' => 'admin.genre.destroy', 'uses' => 'AdminGenreController@postDelete']);
 
-	Route::get('genre/clearfield/{id}/{field}', ['as' => 'admin.genre.clearfield', 'uses' => 'AdminGenreController@getClearfield']);
-
 	/*
 	 * Tellus
 	 */
