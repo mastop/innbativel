@@ -159,7 +159,7 @@
 			<div class="col-8 col-sm-8 col-lg-8">
 				
 				<h3>Comentários</h3>
-				<div class="fb-comments" data-href="{{$offer->url}}" data-numposts="5" data-colorscheme="light"></div>
+				<div class="fb-comments" data-href="{{$offer->url}}" data-numposts="5" data-colorscheme="light" data-width="100%"></div>
 
 			</div>
 
