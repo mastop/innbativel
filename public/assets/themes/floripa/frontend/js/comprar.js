@@ -216,7 +216,7 @@
 
 			// modal donation no
 			$('#donation-info .btn-default').on('click', function (e) {
-				$('#donation').val('0').change();;
+				$('#donation').val('0').change();
 			});
 
 			$('.checkout-itens select').on('change', updatePrice);
@@ -301,6 +301,9 @@
 				window.print();
 				document.body.innerHTML = originalContents;
 			});
+            if( $('li').parents('.checkout-combo').length == 0 ){
+                $('.checkout-combo').slideToggle('500');
+            }
 
 		};
 

@@ -69,7 +69,7 @@
                         @foreach($offer->offer_option()->get() as $k => $option)
 						<li>
 							<label>
-								<input type="checkbox" id="opt{{$k}}" name="opt" data-price="{{intval($option->price_with_discount)}}" value="{{$option->id}}">
+								<input type="checkbox" id="opt{{$k}}" name="opt[]" data-price="{{intval($option->price_with_discount)}}" value="{{$option->id}}">
 								<div>
 									<small>{{$k + 1}} - {{$option->title}}</small>
 									<span>{{$option->subtitle}}</span>
@@ -87,8 +87,8 @@
                         @foreach($offer->offer_additional as $k => $additional)
                         <li>
                             <label>
-                                <input type="checkbox" id="combo{{$k}}" name="add" data-price="{{intval($additional->price_with_discount)}}" value="{{$additional->id}}">
-                                <figure><img src="{{$additional->offer->cover_img}}"></figure>
+                                <input type="checkbox" id="combo{{$k}}" name="add[]" data-price="{{intval($additional->price_with_discount)}}" value="{{$additional->id}}">
+                                <figure><img src="{{$additional->offer->thumb}}"></figure>
                                 <div class="offer-combo">
                                     <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
                                     <p>{{$additional->subtitle}}</p>

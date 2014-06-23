@@ -12,7 +12,7 @@
 			</div>
 
 			<div class="col-4 col-sm-4 col-lg-4 offer-back">
-				<a href="javascript:window.history.back();" class="tooltip" data-tip="Escolha outras opções">Voltar para a Oferta</a>
+				<a href="{{$offer->url}}" class="tooltip" data-tip="Escolha outras opções">Voltar para a Oferta</a>
 			</div>
 
 		</div>
@@ -22,115 +22,104 @@
 			<div class="row">
 
 				<div class="col-12 col-sm-12 col-lg-12 clearfix">
-					
-					<ul class="buy-itens buy-combo checkout-combo nocheck">
-						<h3>Inclua também <span class="glyphicon glyphicon-chevron-down"></span></h3>
-						<li data-price="41">
-							<figure><img src="assets/uploads/camarao.jpg"></figure>
-							<div class="offer-combo">
-								<a href="#combo1-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">Sequência de Camarão para 2 Pessoas</a>
-								<div class="more-info"><a href="#combo1-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">veja<strong>&plus;</strong></a></div>
-							</div>
-							<div class="buttons">
-								<button class="btn btn-include"><span class="glyphicon glyphicon-plus"></span>incluir</button>
-								<button class="btn btn-remove">remover</button>
-							</div>
-							<div class="quantity">Quantidade<br/>
-								<select id="combo1-quantity" name="combo1-quantity">
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="6">6</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
-									<option value="9">9</option>
-									<option value="10">10</option>
-								</select>
-							</div>
-							<div class="price">R$<strong>41</strong></div>
-						</li>
-						<li data-price="29">
-							<figure><img src="assets/uploads/oferta-home-pg-01.jpg"></figure>
-							<div class="offer-combo">
-								<a href="#combo2-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">Tirolesa em Florianópolis</a>
-								<div class="more-info"><a href="#combo2-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">veja<strong>&plus;</strong></a></div>
-							</div>
-							<div class="buttons">
-								<button class="btn btn-include"><span class="glyphicon glyphicon-plus"></span>incluir</button>
-								<button class="btn btn-remove">remover</button>
-							</div>
-							<div class="quantity">Quantidade<br/>
-								<select id="combo2-quantity" name="combo2-quantity">
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="6">6</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
-									<option value="9">9</option>
-									<option value="10">10</option>
-								</select>
-							</div>
-							<div class="price">R$<strong>29</strong></div>
-						</li>
-						<li data-price="59">
-							<figure><img src="assets/uploads/logo-snowland.png"></figure>
-							<div class="offer-combo">
-								<a href="#combo3-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">Ingresso Snowland<span class="entypo chevron-right"></span>Adulto</a>
-								<div class="more-info"><a href="#combo3-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">veja<strong>&plus;</strong></a></div>
-							</div>
-							<div class="buttons">
-								<button class="btn btn-include"><span class="glyphicon glyphicon-plus"></span>incluir</button>
-								<button class="btn btn-remove">remover</button>
-							</div>
-							<div class="quantity">Quantidade<br/>
-								<select id="combo3-quantity" name="combo3-quantity">
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="6">6</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
-									<option value="9">9</option>
-									<option value="10">10</option>
-								</select>
-							</div>
-							<div class="price">R$<strong>59</strong></div>
-						</li>
-					</ul>
+                    <ul class="buy-itens buy-combo checkout-combo nocheck">
+                        <h3>Inclua também <span class="glyphicon glyphicon-chevron-down"></span></h3>
+                    @if($offer->offer_additional->toArray() && count($offer->offer_additional->toArray()) > count($add))
+                        @foreach($offer->offer_additional as $k => $additional)
+                            @if(!in_array($additional->id, $add))
+                                <li data-price="{{intval($additional->price_with_discount)}}">
+                                    <figure><img src="{{$additional->offer->thumb}}" alt="{{$additional->offer->title}}"></figure>
+                                    <div class="offer-combo">
+                                        <a href="#combo{{$additional->id}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
+                                        <div class="more-info"><a href="#combo{{$additional->id}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">veja<strong>&plus;</strong></a></div>
+                                    </div>
+                                    <div class="buttons">
+                                        <button class="btn btn-include"><span class="glyphicon glyphicon-plus"></span>incluir</button>
+                                        <button class="btn btn-remove">remover</button>
+                                    </div>
+                                    <div class="quantity">Quantidade<br/>
+                                        <select id="combo{{$additional->id}}-quantity" name="add-quantity[{{$additional->id}}]">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
+                                    <div class="price">R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
+                                </li>
+                            @endif
+                        @endforeach
+					@endif
+                    </ul>
 
 					<ul class="buy-itens checkout-itens nocheck">
 
 						<h3>Sua compra <span class="glyphicon glyphicon-chevron-down"></span></h3>
-						<li data-price="299">
-							<figure><img src="assets/uploads/oferta-home-destaque.jpg"></figure>
-							<div class="offer-combo">
-								<strong>Feriado em Florianópolis</strong><br/>
-								2 diárias de maio a dezembro
-								<div class="more-info"><a href="#regulation" class="tooltip" data-tip="Veja o Regulamento" data-toggle="modal">Regulamento</a></div>
-							</div>
-							<div class="quantity">Quantidade<br/>
-								<select id="item1-quantity" name="item1-quantity">
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="6">6</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
-									<option value="9">9</option>
-									<option value="10">10</option>
-								</select>
-							</div>
-							<div class="price">R$<strong>299</strong></div>
-						</li>
+                        @foreach($offer->offer_option()->get() as $k => $option)
+                            @if(in_array($option->id, $opt))
+                                <li data-price="{{intval($option->price_with_discount)}}">
+                                    <figure><img src="{{$offer->thumb}}"></figure>
+                                    <div class="offer-combo">
+                                        <strong>{{$offer->destiny->name}} - {{$offer->title}}</strong><br/>
+                                        {{$option->title}}
+                                        <div class="more-info"><a href="#regulation" class="tooltip" data-tip="Veja o Regulamento" data-toggle="modal">Regulamento</a></div>
+                                    </div>
+                                    <div class="quantity">Quantidade<br/>
+                                        <select id="item{{$option->id}}-quantity" name="opt-quantity[{{$option->id}}]">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
+                                    <div class="price">R$<strong>{{intval($option->price_with_discount)}}</strong></div>
+                                </li>
+                            @endif
+                        @endforeach
+                        @if($offer->offer_additional->toArray() && count($add) > 0)
+                            @foreach($offer->offer_additional as $k => $additional)
+                                @if(in_array($additional->id, $add))
+                                    <li data-price="{{intval($additional->price_with_discount)}}">
+                                        <figure><img src="{{$additional->offer->thumb}}" alt="{{$additional->offer->title}}"></figure>
+                                        <div class="offer-combo">
+                                            <a href="#combo{{$additional->id}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
+                                            <div class="more-info"><a href="#combo{{$additional->id}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">veja<strong>&plus;</strong></a></div>
+                                        </div>
+                                        <div class="buttons">
+                                            <button class="btn btn-include"><span class="glyphicon glyphicon-plus"></span>incluir</button>
+                                            <button class="btn btn-remove">remover</button>
+                                        </div>
+                                        <div class="quantity">Quantidade<br/>
+                                            <select id="combo{{$additional->id}}-quantity" name="add-quantity[{{$additional->id}}]">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                            </select>
+                                        </div>
+                                        <div class="price">R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
+                                    </li>
+                                @endif
+                            @endforeach
+                        @endif
 						<li class="donation">
 							<figure><img src="http://innbativel.s3.amazonaws.com/ecoa.jpg" title="Ajude o planeta"></figure>
 							<div class="offer-combo">
@@ -552,104 +541,9 @@
 		</div>
 	</div>
 
-	<div id="combo1-info" class="modal fade" tabindex="-1">
-		<div class="modal-dialog modal-sm modal-combo combo-control">
-			<div class="modal-content">
-				<div class="modal-header">
-					<div class="percent-off tooltip" data-tip="Economize 50%"><strong>50</strong>OFF</div>
-					<img src="assets/uploads/camarao.jpg">
-					<h4 class="modal-title">Sequência de Camarão para 2 Pessoas</h4>
-				</div>
-				<div class="modal-body">
-					<p>
-						A Sequência inclui: Camarão ao Alho e Óleo, Camarão ao Bafo, Camarão à Milanesa, Bolinho de Siri, Filé Peixe ao Molho de Camarão, Pirão, Salada e Batata Frita.
-					</p>
-					<p>
-						Restaurante de frente para o mar, na praia da Barra da Lagoa.
-					</p>
-					<p>
-						O Restaurante oferece cadeiras, espreguiçadeiras, guarda-sóis na areia, ducha de água doce e amplo estacionamento. Convide alguém especial, os amigos ou a família!
-					</p>
-					<div class="prices-info">
-						<div class="prices clearfix">
-							<div class="price price-original">De <span>R$83,80</span></div>
-							<div class="price price-discount">Por R$<strong>41,90</strong></div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="entypo cross"></span>Não, obrigado</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal"><span class="entypo check"></span>Sim, eu quero</button>
-				</div>
-			</div>
-		</div>
-	</div>
 
-	<div id="combo2-info" class="modal fade" tabindex="-1">
-		<div class="modal-dialog modal-sm modal-combo combo-control">
-			<div class="modal-content">
-				<div class="modal-header">
-					<div class="percent-off tooltip" data-tip="Economize 50%"><strong>50</strong>OFF</div>
-					<img src="assets/uploads/oferta-home-pg-01.jpg">
-					<h4 class="modal-title">Tirolesa em Florianópolis</h4>
-				</div>
-				<div class="modal-body">
-					<p>
-						Tirolesa com vista panorâmica para a Praia Mole a partir de R$29! Ingresso para até 2 saltos + foto + vídeo. Na compra de pacote com 2 saltos você poderá levar um acompanhante.
-					</p>
-					<p>
-						Única Tirolesa com acesso à rampa de salto com elevador. Sala de recepção com ambiente climatizado para seu maior conforto.
-					</p>
-					<p>
-						Aventure-se com segurança, equipamentos adequados e guias qualificados e experientes. Menores de idade deverão estar acompanhados pelo responsável ou com autorização dos mesmos.
-					</p>
-					<p>Escolha a quantidade na página de pagamento.</p>
-					<div class="prices-info">
-						<div class="prices clearfix">
-							<div class="price price-original">De <span>R$60</span></div>
-							<div class="price price-discount">Por R$<strong>29</strong></div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="entypo cross"></span>Não, obrigado</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal"><span class="entypo check"></span>Sim, eu quero</button>
-				</div>
-			</div>
-		</div>
-	</div>
 
-	<div id="combo3-info" class="modal fade" tabindex="-1">
-		<div class="modal-dialog modal-sm modal-combo combo-control">
-			<div class="modal-content">
-				<div class="modal-header">
-					<img src="assets/uploads/logo-snowland.png">
-					<h4 class="modal-title">Ingresso Snowland<span class="entypo chevron-right"></span>Adulto</h4>
-				</div>
-				<div class="modal-body">
-					<p>
-						Ingressos adulto para o Snowland Parque de Neve, em Gramado. Inclui acesso com tempo ilimitado à montanha de neve (ski, snowboard, airboarding e mais) + aluguel de roupa de neve + patinação no gelo.
-					</p>
-					<p>
-						Ski, Snowboard, Airboard, Snowplay, Tubing, Mecatrônicos, Escola de neve, Pista de Patinação, Hot Café, Área de alimentação e diversas lojas no vilarejo alpino e muito mais!
-					</p>
-					<p>
-						Acesso ao Vilarejo para o dia todo; 01 Aluguel de Roupas de Neve para 1 Pessoa (calça, jaqueta, capacete); 01 Par de Luvas; 01 Aluguel de Bota de Neve; 01 Acesso a montanha de neve, sem limite de tempo, incluindo as atrações: Snowplay; Tubing (acima de 7 anos); Airboarding (acima dos 10 anos); Glacial; SnowArena; 01 Bônus do Snowland e do INNBatível: 30 minutos de Patinação no gelo (para maiores de 6 anos).
-					</p>
-					<p>Escolha a quantidade na página de pagamento.</p>
-					<div class="prices-info">
-						<div class="prices clearfix">
-							<div class="price price-discount">Por R$<strong>59</strong></div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="entypo cross"></span>Não, obrigado</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal"><span class="entypo check"></span>Sim, eu quero</button>
-				</div>
-			</div>
-		</div>
-	</div>
+
 
 	<div id="donation-info" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-sm modal-combo">
@@ -745,4 +639,34 @@
 			</div>
 		</div>
 	</div>
+    @foreach($offer->offer_additional as $k => $additional)
+        <!-- Infos de {{$additional->title}}-->
+        <div id="combo{{$additional->id}}-info" class="modal fade" tabindex="-1">
+            <div class="modal-dialog modal-sm modal-combo combo-control">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="percent-off tooltip" data-tip="Economize {{$additional->percent_off}}%"><strong>{{$additional->percent_off}}</strong>OFF</div>
+                        <img src="{{$additional->offer->cover_img}}" alt="{{$additional->title}}">
+                        <h4 class="modal-title">{{$additional->offer->title}} <span class="entypo chevron-right"></span>{{$additional->title}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            {{$additional->offer->popup_features}}
+                        </p>
+                        <div class="prices-info">
+                            <div class="prices clearfix">
+                                <div class="price price-original">De <span>R${{intval($additional->price_original)}},00</span></div>
+                                <div class="price price-discount">Por R$<strong>{{intval($additional->price_with_discount)}},00</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="entypo cross"></span>Não, obrigado</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="entypo check"></span>Sim, eu quero</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Infos de {{$additional->title}}-->
+    @endforeach
 @stop
