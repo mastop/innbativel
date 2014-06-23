@@ -34,7 +34,7 @@
 		</div>
 		
 		<div class="row buy-box-bottom">
-			<form class="buy-form" method="post" action="{{ route('comprar') }}">
+			<form class="buy-form" id="buy-form" method="post" action="{{ route('comprar') }}">
 
 				<div itemscope class="col-8 col-sm-8 col-lg-8 clearfix buy-box-top">
 					
@@ -87,7 +87,7 @@
                         @foreach($offer->offer_additional as $k => $additional)
                         <li>
                             <label>
-                                <input type="checkbox" id="combo{{$k}}" name="opt" value="{{intval($additional->price_with_discount)}}">
+                                <input type="checkbox" id="combo{{$k}}" name="add" value="{{intval($additional->price_with_discount)}}">
                                 <figure><img src="{{$additional->offer->cover_img}}"></figure>
                                 <div class="offer-combo">
                                     <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
