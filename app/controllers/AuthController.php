@@ -131,7 +131,7 @@ class AuthController extends BaseController {
 
 		if($auth){
 
-			$destination = Session::get('destination');
+			$destination = Input::get('destination', Session::get('destination'));
 
 			if (!is_null($destination))
 			{
@@ -196,8 +196,18 @@ class AuthController extends BaseController {
 
 	public function postRequest()
 	{
-		$credentials = array('email' => Input::get('email'));
-		return Password::remind($credentials);
+		$credentials = array('email' => Input::get('email', Input::get('passRecoverEmail')));
+        $ret = [];
+        try{
+            Password::remind($credentials);
+            $ret['error'] = 0;
+            $ret['message'] = 'Senha enviada por e-mail';
+        }catch (Exception $v){
+            $ret['error'] = 1;
+            //$ret['message'] = $v->getMessage();
+            $ret['message'] = 'E-mail não encontrado';
+        }
+		return Response::json($ret);
 	}
 
 	public function getReset($token)

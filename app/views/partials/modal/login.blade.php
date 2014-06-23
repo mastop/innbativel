@@ -29,6 +29,7 @@
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-8">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="destination" value="{{ Route::getCurrentRoute()->getPath() }}"/>
                             <button type="submit" class="btn">Entrar</button>
                             <a href="#pass-recover" class="pass-recover" data-toggle="modal" data-dismiss="modal">Esqueci minha senha</a>
                         </div>
