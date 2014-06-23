@@ -35,10 +35,10 @@
 	{{ Table::open() }}
 	{{ Table::headers('Nome', 'Ícone', 'Ações') }}
 	{{ Table::body($genre)
-		->ignore(['id', 'icon_url', 'created_at', 'updated_at'])
-		->image(function($body) {
-			if(isset($body->icon_url)){
-				return '<img src="'.$body->icon_url.'"/>';
+		->ignore(['id', 'created_at', 'updated_at'])
+		->icon(function($body) {
+			if(isset($body->icon)){
+				return '<span class="entypo entypo-'.$body->icon.'"></span>';
 			}
 			return '--';
 		})
