@@ -21,9 +21,13 @@
     <meta property="og:description" content="{{ isset($description) ? $description : $seo['metatag']['description'] }}" />
     <meta property="og:url" content="{{ Request::url() }}" />
     <meta property="og:image" content="{{ isset($image) ? $image : $seo['metatag']['image'] }}" />
-    <meta property="fb:admins" content="{{ Configuration::get('fb_admins') }}"/>
     <meta property="fb:app_id" content="{{ Configuration::get('fb_app') }}" />
+    @foreach(explode(',', Configuration::get('fb_admins')) as $adm)
+        <meta property="fb:admins" content="{{ $adm }}"/>
+    @endforeach
     <meta property="og:type" content="{{ isset($og_type) ? $og_type : 'website' }}" />
+    <meta property="og:author" content="{{ $seo['metatag']['author'] }}" />
+    <meta property="og:locale" content="pt_BR" />
 
 	
     <link rel="alternate" hreflang="{{ Config::get('app.locale') }}" href="{{ URL::current() }}" />
