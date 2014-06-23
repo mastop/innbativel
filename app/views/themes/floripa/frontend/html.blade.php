@@ -26,7 +26,6 @@
         <meta property="fb:admins" content="{{ $adm }}"/>
     @endforeach
     <meta property="og:type" content="{{ isset($og_type) ? $og_type : 'website' }}" />
-    <meta property="og:author" content="{{ $seo['metatag']['author'] }}" />
     <meta property="og:locale" content="pt_BR" />
 
 	
