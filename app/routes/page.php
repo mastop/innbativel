@@ -7,7 +7,7 @@
 Route::any('/', ['as' => 'home', 'uses' => 'PageController@anyHome', 'after' => 'cache.public']);
 Route::any('/status', ['as' => 'status', 'uses' => 'PageController@anyStatus', 'after' => 'cache.public']);
 Route::any('/oferta/{slug}', ['as' => 'oferta', 'uses' => 'PageController@anyOferta', 'after' => 'cache.public']);
-Route::any('/comprar', ['as' => 'comprar', 'uses' => 'PageController@anyComprar', 'after' => 'cache.public', 'https']);
+Route::any('/comprar', ['as' => 'comprar', 'uses' => 'PageController@anyComprar', 'after' => 'cache.public']);
 Route::post('/cupom', ['as' => 'valida-cupom', 'uses' => 'PageController@postValidateCoupon', 'after' => 'cache.public']);
 Route::any('/sucesso/{status}/{boletus_url?}', ['as' => 'sucesso', 'uses' => 'PageController@anySucesso', 'after' => 'cache.public']);
 Route::any('/busca', ['as' => 'busca', 'uses' => 'PageController@anyBusca', 'after' => 'cache.public']);
