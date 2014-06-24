@@ -22,7 +22,7 @@ App::before(function($request)
     // Set TimeZone
 	date_default_timezone_set('America/Sao_Paulo');
     // Força o HTTPS
-    if( ! Request::secure() && App::environment() === 'local' && Request::path() != 'status')
+    if( ! Request::secure() && App::environment() !== 'local' && Request::path() != 'status')
     {
         return Redirect::secure(Request::path());
     }
