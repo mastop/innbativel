@@ -36,10 +36,16 @@
 	{{ Table::open() }}
 	{{ Table::headers('ID', 'Nome', 'Descrição', 'Imagem', 'Ações') }}
 	{{ Table::body($ngo)
-		->ignore(['img', 'created_at', 'updated_at'])
+		->ignore(['img','description', 'created_at', 'updated_at'])
+        ->desc(function($body) {
+        if(isset($body->description)){
+        return substr($body->description, 0, 90).'...';
+        }
+        return '--';
+        })
 		->image(function($body) {
 			if(isset($body->img)){
-				return '<img src="'.$body->img.'"/>';
+				return '<img src="'.$body->thumb.'"/>';
 			}
 			return '--';
 		})
