@@ -611,7 +611,7 @@
 				},
 				submitHandler: function(form) {
 					form.submit();
-					$('#login').modal('hide');
+					//$('#login').modal('hide');
 					// carregar minha-conta
 				}
 			});

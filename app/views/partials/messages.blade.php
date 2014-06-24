@@ -1,4 +1,4 @@
-<div class="messages-wrapper">
+<div class="messages-wrapper container">
     <div id="messages">
         @if (count($errors) > 0)
             {{ Alert::error('Existem erros de preenchimento, verifique o formulário a baixo.') }}
