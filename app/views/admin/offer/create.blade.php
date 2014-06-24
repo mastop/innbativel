@@ -34,6 +34,7 @@
         ->data_placeholder('Selecione uma ONG')
         ->fromQuery(Ngo::orderBy('name')->get(), 'name')
         ->class('span12 select2')
+        ->select(5)
         }}
 
         {{ Former::text('starts_on', 'Início da Oferta')->class('span12 datepicker') }}
