@@ -74,15 +74,15 @@
         {{ Former::select('genre_id', 'Gênero 1')
         ->addOption(null)
         ->data_placeholder('Selecione um Gênero')
-        ->fromQuery(Genre::orderBy('title')->get())
-        ->class('span12 select2')
+        ->fromQuery(Genre::getAllArray())
+        ->class('span12')
         }}
 
         {{ Former::select('genre2_id', 'Gênero 2')
         ->addOption(null)
         ->data_placeholder('Selecione um Gênero')
-        ->fromQuery(Genre::orderBy('title')->get())
-        ->class('span12 select2')
+        ->fromQuery(Genre::getAllArray())
+        ->class('span12')
         }}
 
 

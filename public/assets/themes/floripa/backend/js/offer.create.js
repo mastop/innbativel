@@ -246,4 +246,18 @@
         if(optionEmpty) return false;
         return true;
     });
+    $("#genre_id, #genre2_id").select2({
+        allowClear: true,
+        formatResult: formatGenre,
+        formatSelection: selectGenre,
+        escapeMarkup: function(m) { return m; }
+    });
+    function formatGenre(data) {
+        var originalOption = data.element;
+        return "<span class='entypo entypo-"+$(originalOption).data('icon')+"' style='margin-top:10px'></span>" + data.text;
+    }
+    function selectGenre(data) {
+        var originalOption = data.element;
+        return "<span class='entypo entypo-"+$(originalOption).data('icon')+"' style='margin-top:13px'></span>" + data.text;
+    }
 })(jQuery);
