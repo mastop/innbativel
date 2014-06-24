@@ -39,7 +39,7 @@ class PageController extends BaseController {
         $this->layout->title = $offer->destiny->name.' - '.$offer->title;
         $this->layout->description = $offer->subtitle.' A partir de R$ '.intval($offer->price_with_discount).' com '.$offer->percent_off.'% OFF!';
         $this->layout->og_type = 'article';
-        $this->layout->image = 'http:'.$offer->thumb;
+        $this->layout->image = 'https:'.$offer->thumb;
 
         $this->layout->content = View::make('pages.oferta', compact('offer'));
     }
@@ -73,6 +73,40 @@ class PageController extends BaseController {
         $this->layout->comprar = true;
         $this->layout->body_classes = 'checkout-page';
         $this->layout->content = View::make('pages.comprar', compact('offer', 'opt', 'add'));
+    }
+    public function postValidateCoupon(){
+        $this->layout = 'format.ajax';
+        $display_code = Input::get('promoCode');
+        $offers_options_ids = Input::get('opt', array());
+        $offers = OfferOption::whereIn('id', $offers_options_ids)->get(['offer_id']);
+        $offer_ids = [];
+
+        foreach ($offers as $o) {
+            $offer_ids[] = $o->offer_id;
+        }
+
+        $discount_coupon = DiscountCoupon::where('display_code', '=', $display_code)
+            ->where( function ( $query ) use ( $offer_ids )
+            {
+                $query->whereIn('offer_id', $offer_ids)
+                    ->orWhereNull('offer_id');
+            })
+            ->where( function ( $query )
+            {
+                $query->where('user_id', '=', Auth::user()->id)
+                    ->orWhereNull('user_id');
+            })
+            ->where('starts_on', '<=', date('Y-m-d H:i:s'))
+            ->where('ends_on', '>=', date('Y-m-d H:i:s'))
+            ->get(['id', 'value', 'qty_used', 'qty'])
+            ->first()
+        ;
+        if(isset($discount_coupon) && $discount_coupon->qty_used < $discount_coupon->qty){
+            return Response::json($discount_coupon);
+        }
+        else{
+            return Response::json(array("id"=>0,"value"=>0,"qty_used"=>0,"qty"=>0));
+        }
     }
 
     /**
