@@ -392,7 +392,7 @@ class AdminOfferController extends BaseController {
         $holidays = $offer->holiday()->lists('holiday_id');
         $groups = $offer->group()->lists('group_id');
         $this->layout->page_title = 'Editando Oferta #'.$offer->id.' '.$offer->title;
-        $this->layout->content = View::make('admin.offer.edit', compact('offer', 'policy', 'signature', 'uid', 's3bucket', 's3access', 'expires', 'holidays', 'groups', 'savesme'));
+        $this->layout->content = View::make('admin.offer.edit', compact('offer', 'policy', 'signature', 'uid', 's3bucket', 's3access', 'expires', 'holidays', 'groups'));
 	}
 
 	/**
@@ -680,7 +680,7 @@ class AdminOfferController extends BaseController {
 			return Redirect::route('admin.offer');
 		}
 
-		Session::flash('error', 'Você tem certeza que deleja excluir esta offeruração? Esta operação não poderá ser desfeita.');
+		Session::flash('error', 'Você tem certeza que deleja excluir esta oferta? Esta operação não poderá ser desfeita.');
 
 		$data['offerData'] = $offer->toArray();
 		$data['offerArray'] = null;

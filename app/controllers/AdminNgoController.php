@@ -82,6 +82,7 @@ class AdminNgoController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Gerenciar ONGs';
 		$this->layout->content = View::make('admin.ngo.list', compact('sort', 'order', 'pag', 'ngo'));
 	}
 
@@ -96,8 +97,25 @@ class AdminNgoController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $s3access = Configuration::get('s3access');
+        $s3secret = Configuration::get('s3secret');
+        $s3region = Configuration::get('s3region');
+        $s3bucket = Configuration::get('s3bucket');
 
-		$this->layout->content = View::make('admin.ngo.create');
+        $s3 = Aws\S3\S3Client::factory(
+            array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+        );
+
+        $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
+
+        $postObject = new Aws\S3\Model\PostObject($s3, $s3bucket, array('acl' => 'public-read', 'Cache-Control' => 'max-age=315360000', 'Content-Type' => '^', 'Expires' => $expires, "success_action_status" => "200"));
+        $form = $postObject->prepareData()->getFormInputs();
+        $policy = $form['policy'];
+        $signature = $form['signature'];
+        $uid = uniqid();
+
+        $this->layout->page_title = 'Criar ONG';
+		$this->layout->content = View::make('admin.ngo.create', compact('policy', 'signature', 'uid', 's3bucket', 's3access', 'expires'));
 	}
 
 	/**
@@ -108,32 +126,73 @@ class AdminNgoController extends BaseController {
 
 	public function postCreate()
 	{
-		$inputs = Input::all();
+        if ($this->ngo->passes())
+        {
+            // Cria a ONG
+            $ngo = $this->ngo->create(Input::all());
+            if($ngo->id){
+                $s3access = Configuration::get('s3access');
+                $s3secret = Configuration::get('s3secret');
+                $s3region = Configuration::get('s3region');
+                $s3bucket = Configuration::get('s3bucket');
 
-		$rules = [
-        	'name' => 'required',
-        	'description' => 'required',
-        	'img' => 'required',
-		];
+                $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
 
-	    $validation = Validator::make($inputs, $rules);
+                $s3 = Aws\S3\S3Client::factory(
+                    array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+                );
+                // Imagem Principal
+                $img = Input::get('img');
 
-		if ($validation->passes())
-		{
-			$img = ImageUpload::createFrom(Input::file('img'), Config::get('upload.ngo'));
-			$inputs['img'] = $img;
+                if($img){
+                    // Pega a extensão da imagem
+                    $ext = pathinfo($img, PATHINFO_EXTENSION);
+                    // Cria um novo nome para a imagem
+                    $newname = "{$ngo->id}.$ext";
+                    $newpath = "ongs/{$ngo->id}/$newname";
+                    // Copia a imagem para o lugar definitivo
+                    $s3->copyObject(array(
+                        'Bucket'     => $s3bucket,
+                        'Key'        => "$newpath",
+                        'CopySource' => "{$s3bucket}/temp/{$img}",
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => '^',
+                        'Expires'    => $expires
+                    ));
+                    // Coloca o novo nome da imagem em $ngo
+                    $ngo->img = $newname;
 
-			$this->ngo->create($inputs);
+                    // Criando o Thumb da imagem
+                    $result = $s3->getObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key' => "$newpath"
+                    ));
+                    $thumb = Image::make($result['Body'])->resize(100, 50);
+                    $s3->putObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => "ongs/{$ngo->id}/thumb/$newname",
+                        'Body'   => $thumb->encode($ext, 65), // 65 é a Qualidade
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => $result['ContentType'],
+                        'Expires'    => $expires
+                    ));
+                }
+                // Update na ONG
+                $ngo->save();
+                Session::flash('success', 'ONG <b>#'.$ngo->id.' - '.$ngo->name.'</b> criada com sucesso.');
+                return Redirect::route('admin.ngo');
+            }
+        }
+        Session::flash('error', 'Erro ao salvar ONG no banco de dados. Verifique o formulário abaixo e tente novamente.');
 
-			return Redirect::route('admin.ngo');
-		}
-
-		/*
-		 * Return and display Errors
-		 */
-		return Redirect::route('admin.ngo.create')
-			->withInput()
-			->withErrors($validation);
+        /*
+         * Return and display Errors
+         */
+        return Redirect::route('admin.ngo.create')
+            ->withInput()
+            ->withErrors($this->ngo->errors());
 	}
 
 	/**
@@ -148,14 +207,34 @@ class AdminNgoController extends BaseController {
 
 		if (is_null($ngo))
 		{
+            Session::flash('error', 'ONG #'.$id.' não encontrada.');
 			return Redirect::route('admin.ngo');
 		}
+
+        $s3access = Configuration::get('s3access');
+        $s3secret = Configuration::get('s3secret');
+        $s3region = Configuration::get('s3region');
+        $s3bucket = Configuration::get('s3bucket');
+
+        $s3 = Aws\S3\S3Client::factory(
+            array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+        );
+
+        $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
+
+        $postObject = new Aws\S3\Model\PostObject($s3, $s3bucket, array('acl' => 'public-read', 'Cache-Control' => 'max-age=315360000', 'Content-Type' => '^', 'Expires' => $expires, "success_action_status" => "200"));
+        $form = $postObject->prepareData()->getFormInputs();
+        $policy = $form['policy'];
+        $signature = $form['signature'];
+        $uid = uniqid();
+
+        $this->layout->page_title = 'Editando ONG #'.$ngo->id.' '.$ngo->name;
 
 		/*
 		 * Layout / View
 		 */
 
-		$this->layout->content = View::make('admin.ngo.edit', compact('ngo'));
+		$this->layout->content = View::make('admin.ngo.edit', compact('ngo', 'policy', 'signature', 'uid', 's3bucket', 's3access', 'expires'));
 	}
 
 	/**
@@ -166,40 +245,95 @@ class AdminNgoController extends BaseController {
 
 	public function postEdit($id)
 	{
-		/*
-		 * Permuration
-		 */
-		$inputs = Input::all();
+        if ($this->ngo->passes())
+        {
+            // Pega a oferta
+            $ngo = $this->ngo->find($id);
+            if($ngo){
+                // Salva a ong
+                $ngo->update(Input::except(array('img')));
 
-		$rules = [
-        	'name' => 'required',
-        	'description' => 'required',
-        	'img' => 'required',
-		];
+                // Atualiza a imagem da Ong
 
-	    $validation = Validator::make($inputs, $rules);
+                $s3access = Configuration::get('s3access');
+                $s3secret = Configuration::get('s3secret');
+                $s3region = Configuration::get('s3region');
+                $s3bucket = Configuration::get('s3bucket');
 
-		if ($validation->passes())
-		{
-			$ngo = $this->ngo->find($id);
+                $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
 
-			if ($ngo)
-			{
-				$img = ImageUpload::createFrom(Input::file('img'), Config::get('upload.ngo'));
-				$inputs['img'] = $img;
+                $s3 = Aws\S3\S3Client::factory(
+                    array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+                );
 
-				$ngo->update($inputs);
-			}
+                $img = Input::get('img');
 
-			return Redirect::route('admin.ngo');
-		}
+                if(substr($img, 0, 2) != '//'){
+                    // Deleta a imagem velha
+                    $imagem_velha = "ongs/{$ngo->id}/{$ngo->getOriginal('img')}";
+                    $imagem_velha_thumb = "ongs/{$ngo->id}/thumb/{$ngo->getOriginal('img')}";
+                    $s3->deleteObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => $imagem_velha
+                    ));
+                    $s3->deleteObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => $imagem_velha_thumb
+                    ));
 
-		/*
-		 * Return and display Errors
-		 */
-		return Redirect::route('admin.ngo.edit', $id)
-			->withInput()
-			->withErrors($validation);
+                    // Envia a nova imagem
+
+                    // Pega a extensão da imagem
+                    $ext = pathinfo($img, PATHINFO_EXTENSION);
+                    // Cria um novo nome para a imagem
+                    $newname = "{$ngo->id}.$ext";
+                    $newpath = "ongs/{$ngo->id}/$newname";
+                    // Copia a imagem para o lugar definitivo
+                    $s3->copyObject(array(
+                        'Bucket'     => $s3bucket,
+                        'Key'        => "$newpath",
+                        'CopySource' => "{$s3bucket}/temp/{$img}",
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => '^',
+                        'Expires'    => $expires
+                    ));
+                    // Coloca o novo nome da imagem em $ngo
+                    $ngo->img = $newname;
+
+                    // Criando o Thumb da imagem
+                    $result = $s3->getObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key' => "$newpath"
+                    ));
+                    $thumb = Image::make($result['Body'])->resize(100, 50);
+                    $s3->putObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => "ongs/{$ngo->id}/thumb/$newname",
+                        'Body'   => $thumb->encode($ext, 65), // 65 é a Qualidade
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => $result['ContentType'],
+                        'Expires'    => $expires
+                    ));
+                }
+                // Update na Ong
+                $ngo->save();
+                Session::flash('success', 'ONG <b>#'.$ngo->id.' - '.$ngo->name.'</b> atualizada com sucesso.');
+                return Redirect::route('admin.ngo');
+            }else{
+                Session::flash('error', 'ONG <b>#'.$id.'</b> não encontrada.');
+                return Redirect::route('admin.ngo');
+            }
+        }
+        Session::flash('error', 'Erro ao salvar ONG no banco de dados. Verifique o formulário abaixo e tente novamente.');
+
+        /*
+         * Return and display Errors
+         */
+        return Redirect::route('admin.ngo.edit', $id)
+            ->withInput()
+            ->withErrors($this->ngo->errors());
 	}
 
 	/**
@@ -212,10 +346,11 @@ class AdminNgoController extends BaseController {
 	{
 		$ngo = $this->ngo->find($id);
 
-		if (is_null($ngo))
-		{
-			return Redirect::route('admin.ngo');
-		}
+        if (is_null($ngo))
+        {
+            Session::flash('error', 'ONG #'.$id.' não encontrada.');
+            return Redirect::route('admin.ngo');
+        }
 
 		Session::flash('error', 'Você tem certeza que deleja excluir esta ONG? Esta operação não poderá ser desfeita.');
 
@@ -230,6 +365,8 @@ class AdminNgoController extends BaseController {
 		 * Layout / View
 		 */
 
+        $this->layout->page_title = 'Excluir ONG #'.$ngo->id.' '.$ngo->name;
+
 		$this->layout->content = View::make('admin.ngo.delete', $data);
 	}
 
@@ -241,35 +378,41 @@ class AdminNgoController extends BaseController {
 
 	public function postDelete($id)
 	{
-		$this->ngo->find($id)->delete();
+        $ngo = $this->ngo->find($id);
+
+        if (is_null($ngo))
+        {
+            Session::flash('error', 'ONG #'.$id.' não encontrada.');
+            return Redirect::route('admin.ngo');
+        }
+
+        $s3access = Configuration::get('s3access');
+        $s3secret = Configuration::get('s3secret');
+        $s3region = Configuration::get('s3region');
+        $s3bucket = Configuration::get('s3bucket');
+
+        $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
+
+        $s3 = Aws\S3\S3Client::factory(
+            array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+        );
+
+        // Deleta a imagem
+        $imagem = "ongs/{$ngo->id}/{$ngo->getOriginal('img')}";
+        $imagem_thumb = "ongs/{$ngo->id}/thumb/{$ngo->getOriginal('img')}";
+        $s3->deleteObject(array(
+            'Bucket' => $s3bucket,
+            'Key'    => $imagem
+        ));
+        $s3->deleteObject(array(
+            'Bucket' => $s3bucket,
+            'Key'    => $imagem_thumb
+        ));
+
+		$ngo->delete();
 
 		Session::flash('success', 'ONG excluída com sucesso.');
 
 		return Redirect::route('admin.ngo');
 	}
-
-	public function getClearfield($id, $field)
-	{
-		$ngo = $this->ngo->find($id);
-
-		if (is_null($ngo) || !isset($ngo))
-		{
-			return Redirect::route('admin.ngo.edit', $id);
-		}
-
-		$toDelete = $ngo->{$field};
-
-		$path = public_path() . $toDelete;
-		if (File::exists($path)) {
-			File::delete($path);
-		}
-
-		$ngo->{$field} = null;
-		$ngo->save();
-
-		Session::flash('success', 'O campo '. $field .' pode ser editado agora.');
-
-		return Redirect::route('admin.ngo.edit', $id);
-	}
-
 }

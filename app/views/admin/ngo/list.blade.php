@@ -39,7 +39,7 @@
 		->ignore(['img', 'created_at', 'updated_at'])
 		->image(function($body) {
 			if(isset($body->img)){
-				return '<img src="'.$body->img.'"/>';
+				return '<img src="'.$body->thumb.'"/>';
 			}
 			return '--';
 		})
