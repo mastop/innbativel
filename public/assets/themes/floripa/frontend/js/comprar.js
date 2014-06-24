@@ -4,21 +4,19 @@
 
 		Innbativel.init = function(){};
 		
-		Innbativel.ready = function(){
+		Innbativel.load = function(){
 		
 		};
 
-		Innbativel.load = function(){
+		Innbativel.ready = function(){
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
 
 			//$('#modal-payment-boleto').modal('show'); //excluir em produção
-
-			// user not logged
-			var userAuth = 0;
-
-			// open modal login on load page if user not logged
-			if( !userAuth ){
-				$('#login').modal('show');
-			}
 
 			// login button
 			$('#login .btn').on('click', function (e) {
@@ -130,7 +128,7 @@
 					// hide empty combo list
 					hideEmptyComboList();
 				});
-				
+
 				// fade alternative
 				// thisItem.fadeOut( '500', function() {
 				// 	thisItem.insertAfter(thisTarget).stop().fadeTo('500', 1, function() {
@@ -224,23 +222,36 @@
 			
 			// promo code
 			var promoCodeDiscount = 0;
-			$('#btn-promo-code').on('click', function (e) {
-				e.preventDefault();
-				var promoCodeInput = $('#input-promo-code').val();
-				//alert(promoCodeInput);
-				// ajax requisition: send promoCodeInput, validate promoCode, get promoCodeDiscount
-				var promoCode = '12345';			
-				// validation
-				if( promoCodeInput != promoCode ){
-					promoCodeDiscount = 0;
-					$('#promocode-modal').modal('show');
-				}
-				if( promoCodeInput == promoCode ){
-					promoCodeDiscount = 50;
-					updatePrice();
-				}
-				
-			});
+
+            $('#btn-promo-code').on('click', function (e) {
+                e.preventDefault();
+                if($("#input-promo-code").val() == '') return false;
+                $.ajax({
+                    type: "POST",
+                    url: validaCupomURL,
+                    data: $('#buy-form').serialize(),
+                    success: function(data){
+                        if(data.value > 0){
+                            promoCodeDiscount = data.value;
+                            updatePrice();
+                        }else{
+                            promoCodeDiscount = 0;
+                            updatePrice();
+                            $('#promocode-modal').modal('show');
+                            $("#input-promo-code").val('');
+                        }
+                    },
+                    headers: {
+                        'X-CSRF-Token': $('#buy-form').find('input[name="_token"]').val()
+                    }
+                });
+            });
+            $("#input-promo-code").keyup(function(e){
+                if(e.keyCode == 13){
+                    $("#btn-promo-code").click();
+                    return false;
+                }
+            });
 
 			var totalPrice = 0;
 
@@ -307,7 +318,7 @@
 
 		};
 
-		$(window).on('ready', Innbativel.ready);
+		$(document).on('ready', Innbativel.ready);
 		$(window).on('load', Innbativel.load);
 
 })(jQuery);

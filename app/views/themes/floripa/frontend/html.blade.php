@@ -52,8 +52,6 @@
 
 <body class="innbativel frontend no-sidebar {{ isset($body_classes) ? $body_classes : '' }}">
 
-    @include('partials.messages')
-
     <div id="header" class="navbar navbar-default navbar-fixed-top {{ (isset($comprar)) ? ' border-bottom' : '' }}">
         <div class="topbar">
             <div class="container">
@@ -105,7 +103,7 @@
                     <a class="btn-login" href="{{ route('logout') }}" data-toggle="modal" title="Sair de sua conta INNBatível">Sair <span class="entypo logout"></span></a>
                     <a class="btn-login" href="{{ route('minha-conta') }}" title="Acesse sua conta INNBatível">Minha conta <span class="entypo user"></span></a>
                 @else
-                    <a class="btn-login" href="{{ route('login') }}" data-toggle="modal" title="Entre com sua conta INNBatível">Entrar <span class="entypo login"></span></a>
+                    <a class="btn-login" href="#login" data-toggle="modal" title="Entre com sua conta INNBatível">Entrar <span class="entypo login"></span></a>
                     <a href="https://www.facebook.com/dialog/oauth?client_id=145684162279488&amp;redirect_uri=https%3A%2F%2Finnbativel.com.br%2Flogin-facebook-valida.php&amp;state=8bbb0e68cf6d535aac3a58cf2c254be8&amp;scope=email%2C+user_birthday%2C+user_hometown" title="Entre com sua conta do Facebook"><span class="entypo facebook"></span></a>
                 @endif
             </div>
@@ -158,7 +156,7 @@
 		</div>
 	</nav>
     @endif
-
+    @include('partials.messages')
 	@yield('content')
 
 	<div id="pre-footer" class="clearfix">

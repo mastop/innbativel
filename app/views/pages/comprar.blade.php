@@ -18,7 +18,7 @@
 		</div>
 		
 		
-		<form class="buy-form">
+		<form class="buy-form" id="buy-form">
 			<div class="row">
 
 				<div class="col-12 col-sm-12 col-lg-12 clearfix">
@@ -34,7 +34,7 @@
                                         <div class="more-info"><a href="#combo{{$additional->id}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">veja<strong>&plus;</strong></a></div>
                                     </div>
                                     <div class="buttons">
-                                        <button class="btn btn-include"><span class="glyphicon glyphicon-plus"></span>incluir</button>
+                                        <button class="btn btn-include" tabindex="-1"><span class="glyphicon glyphicon-plus"></span>incluir</button>
                                         <button class="btn btn-remove">remover</button>
                                     </div>
                                     <div class="quantity">Quantidade<br/>
@@ -57,6 +57,7 @@
                         @endforeach
 					@endif
                     </ul>
+                    <div class="clearfix"></div>
 
 					<ul class="buy-itens checkout-itens nocheck">
 
@@ -83,6 +84,7 @@
                                             <option value="9">9</option>
                                             <option value="10">10</option>
                                         </select>
+                                        <input type="hidden" name="opt[]" value="{{$option->id}}">
                                     </div>
                                     <div class="price">R$<strong>{{intval($option->price_with_discount)}}</strong></div>
                                 </li>
@@ -121,7 +123,7 @@
                             @endforeach
                         @endif
 						<li class="donation">
-							<figure><img src="http://innbativel.s3.amazonaws.com/ecoa.jpg" title="Ajude o planeta"></figure>
+							<figure><img src="{{$offer->ngo->thumb}}" title="{{$offer->ngo->name}}"></figure>
 							<div class="offer-combo">
 								<strong>Contribua para um mundo melhor.</strong><br/>
 								Doe apenas <strong>R$ 1</strong>. Sua atitude transforma vidas!
@@ -135,14 +137,16 @@
 							</div>
 							<div class="price"><span>R$<strong>1</strong></span></div>
 						</li>
+                        @if(Auth::user() && Auth::user()->profile->credit > 0)
 						<!-- no credits, data-credits="0" -->
-						<li data-credits="30" class="green">
+						<li data-credits="{{Auth::user()->profile->credit}}" class="green">
 							<div class="offer-combo">
 								<strong>Seus créditos</strong><br/>
 								Você tem créditos que serão abatidos do total da compra
 							</div>
 							<div class="price discount">- R$<strong></strong></div>
 						</li>
+                        @endif
 						<li class="promocode green">
 							<div class="offer-combo">
 								<strong>Cupom de Desconto</strong><br/>
@@ -160,9 +164,10 @@
 							<div class="offer-combo">
 								<strong>Total:</strong><br/>
 							</div>
-							<div id="total-price" class="price">R$<strong>270</strong></div>
+							<div id="total-price" class="price">R$<strong>0</strong></div>
 						</li>
 						<li class="payment">
+                            <div style="text-align: left"><a href="{{$offer->url}}" class="tooltip" data-tip="Escolha outras opções">Voltar para a Oferta</a></div>
 							<div class="offer-combo">
 								<strong>Pagamento:</strong><br/>
 							</div>
@@ -178,43 +183,9 @@
 				</div>
 		
 			</div>
+            <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="offer" value="{{ $offer->id }}"/>
 		</form>
-	</div>
-
-	<div id="modal-payment-confirmed" class="modal fade" tabindex="-1">
-		<div class="modal-dialog modal-sm modal-stylized">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title"><span class="entypo check"></span>Compra finalizada</h4>
-				</div>
-				<form id="contactForm" class="form-horizontal" name="contactForm" method="post" action="send_form_contact.php">
-					<div class="modal-body">
-						<p>
-							<strong>Obrigado por comprar no INNBatível!</strong>
-						</p>
-						<p>
-							Assim que o pagamento for aprovado, seu cupom estará disponível em sua conta.
-						</p>
-						<p>
-							Por favor, responda<a href="https://www.ebitempresa.com.br/bitrate/pesquisa1.asp?empresa=1407475" target="_blank">esta pesquisa</a>e ajude-nos a melhorar nosso atendimento e tornar sua experiência de compras cada vez melhor.<br></p>
-						</p>
-						<p>
-							<a href="https://www.ebitempresa.com.br/bitrate/pesquisa1.asp?empresa=1407475" target="_blank">
-								<img border="0" name="banner" src="https://www.ebitempresa.com.br/bitrate/banners/b1407475.gif" alt="O que você achou desta loja?" width="468" height="60"></a>
-						</p>
-						<p>
-							Você será redirecionado para sua conta.
-						</p>
-						<!-- <div class="form-group">
-							<div class="col-md-offset-3 col-md-7">
-								<button type="submit" class="btn btn-default" data-dismiss="modal">Acessar minha conta</button>
-							</div>
-						</div> -->
-					</div>
-				</form>
-			</div>
-		</div>
 	</div>
 
 	<div id="modal-payment-card" class="modal fade" tabindex="-1">
@@ -334,45 +305,12 @@
 									<div id="collapse-payment-card-eula" class="panel-collapse collapse">
 										<div id="print-payment-card-eula" class="panel-body">
 											<!-- <a href="javascript:window.print();" class="control">​Imprimir</a> -->
-											<a href="#" class="control print">​Imprimir</a>
-											<a href="#" target="_blank" class="control">Download</a>
+											<!-- <a href="#" class="control print">​Imprimir</a>
+											<a href="#" target="_blank" class="control">Download</a> -->
 											<h4>Ragulamento da Oferta</h4>
-											<ul>
-												<li>Utilize seu cupom de 20/03/14 a 21/12/14 (exceto P&aacute;scoa), mediante disponibilidade.&nbsp;</li>
-												<li>Ao clicar em &ldquo;comprar&rdquo; escolha a op&ccedil;&atilde;o:</li>
-											</ul>
-											<p><strong>Op&ccedil;&atilde;o 1:</strong> 2 di&aacute;rias durante a semana (exceto feriados prolongados) de R$664 por R$199.</p>
-											<p><strong>Op&ccedil;&atilde;o 2:</strong> 2 di&aacute;rias de sexta a domingo (exceto feriados prolongados) de R$664 por R$249.</p>
-											<p><strong>Op&ccedil;&atilde;o 3:</strong> 3 di&aacute;rias de sexta a domingo (exceto feriados prolongados) de R$996 por R$359.</p>
-											<p><strong>Op&ccedil;&atilde;o 4:</strong> 3 di&aacute;rias no feriado do Dia do Trabalho de R$996 por R$359.</p>
-											<p><strong>Op&ccedil;&atilde;o 5:</strong> 3 di&aacute;rias no feriado de Corpus Christi de R$996 por R$359.</p>
-											<ul>
-												<li>V&aacute;lido exclusivamente para 2 pessoas. Incluso caf&eacute; da manh&atilde;.</li>
-												<li>Sem limite de compra. Compre quantos cupons quiser.</li>
-												<li><strong>N&atilde;o inclui taxa de servi&ccedil;o</strong><strong>&nbsp;e despesas extras como consumo de frigobar, liga&ccedil;&otilde;es telef&ocirc;nicas, restaurante, </strong><strong>estacionamento</strong><strong> e outros consumos n&atilde;o citados na oferta, a ser pago no </strong><strong>check-out.</strong></li>
-												<li>1 crian&ccedil;a com at&eacute; 10 anos possui hospedagem cortesia (no mesmo apartamento dos pais).</li>
-												<li>Check-in a partir das 14h e check-out at&eacute; as 12h. Late check-out permitido, mediante disponibilidade e consulta pr&eacute;via.</li>
-												<li>Para hospedagem de mais pessoas ou aquisi&ccedil;&atilde;o de di&aacute;ria extra, consulte o hotel.</li>
-											</ul>
-											<p><span style="text-decoration: underline;">Reservas</span></p>
-											<ul>
-												<li>Fa&ccedil;a sua reserva atrav&eacute;s do e-mail <a href="mailto:reservas@praiamole.com.br" target="_blank">reservas@praiamole.com.br</a> informando o c&oacute;digo do cupom.</li>
-												<li>A confirma&ccedil;&atilde;o da reserva est&aacute; condicionada &agrave; disponibilidade do hotel para a oferta.</li>
-												<li>&Eacute; permitido fazer 1 reagendamento com, no m&iacute;nimo, 7 dias de anteced&ecirc;ncia.</li>
-												<li>O n&atilde;o comparecimento &agrave; data reservada, sem pr&eacute;vio aviso, invalidar&aacute; o cupom, sem direito a reembolso.</li>
-												<li><strong>Para esclarecer d&uacute;vidas ou obter informa&ccedil;&otilde;es ligue: </strong><strong>(48) 3239-7500.</strong></li>
-												<li>Todos os servi&ccedil;os de compra coletiva s&atilde;o n&atilde;o reembols&aacute;veis e n&atilde;o reutiliz&aacute;veis em outras datas ou servi&ccedil;os.</li>
-											</ul>
-											<p><span style="text-decoration: underline;">Cupom</span></p>
-											<ul>
-												<li><strong>Ap&oacute;s a autoriza&ccedil;&atilde;o do pagamento, o seu cupom estar&aacute; dispon&iacute;vel na sua conta. Para resgat&aacute;-lo basta entrar com seu login e senha cadastrados no site.</strong></li>
-												<li>N&atilde;o h&aacute; n&uacute;mero m&iacute;nimo de compradores para a valida&ccedil;&atilde;o desta oferta.</li>
-												</ul>
-												<p><span style="text-decoration: underline;">Pol&iacute;tica de Cancelamento</span></p>
-												<ul>
-												<li>Cancelamento GR&Aacute;TIS: Se cancelado com at&eacute; 14 dias ap&oacute;s a compra, n&atilde;o ser&aacute; cobrada qualquer penalidade. Ser&aacute; restitu&iacute;do 100% do valor pago ou transformado em cr&eacute;ditos para uso no INNBat&iacute;vel. Para solicitar o cancelamento, entre em contato com o INNBat&iacute;vel atrav&eacute;s do e-mail <a href="mailto:faleconosco@innbativel.com.br">faleconosco@innbativel.com.br</a>.</li>
-												<li>Ap&oacute;s os 14 dias, o cancelamento resultar&aacute; na perda total do cupom (n&atilde;o haver&aacute; reembolso).</li>
-											</ul>
+											<p>
+                                                {{$offer->rules}}
+											</p>
 											<h4>​Termos e Condições de Uso​</h4>​
 											<p>
 												AO CLICAR O BOTÃO “ACEITO” DA PÁGINA DE REGISTRO, O USUÁRIO ESTARÁ DECLARANDO TER LIDO E ACEITO INTEGRALMENTE, SEM QUALQUER RESERVA, ESTE CONTRATO QUE TEM COMO PARTES O USUÁRIO (“USUÁRIO”) E A ASN SERVICOS DE INFORMACOES DIGITAIS NA WEB LTDA., INSCRITA NO CNPJ SOB O Nº 12.784.420/0001-95 (“INNBATÍVEL”), LOCALIZADA NA ROD. ARMANDO CALIL BULOS, Nº 5405, FLORIANÓPOLIS - SC. ALÉM DISSO, O USUÁRIO ESTARÁ DECLARANDO QUE É MAIOR DE IDADE OU EMANCIPADO E QUE GOZA DE PLENA CAPACIDADE CIVIL E PENAL. CASO NÃO CONCORDE COM ESTE CONTRATO, O USUÁRIO NÃO DEVERÁ UTILIZAR O SITE.</p>
@@ -541,29 +479,52 @@
 		</div>
 	</div>
 
-
-
-
+    <div id="modal-payment-confirmed" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-stylized">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span class="entypo check"></span>Compra finalizada</h4>
+                </div>
+                <form id="contactForm" class="form-horizontal" name="contactForm" method="post" action="send_form_contact.php">
+                    <div class="modal-body">
+                        <p>
+                            <strong>Obrigado por comprar no INNBatível!</strong>
+                        </p>
+                        <p>
+                            Assim que o pagamento for aprovado, seu cupom estará disponível em sua conta.
+                        </p>
+                        <p>
+                            Por favor, responda<a href="https://www.ebitempresa.com.br/bitrate/pesquisa1.asp?empresa=1407475" target="_blank">esta pesquisa</a>e ajude-nos a melhorar nosso atendimento e tornar sua experiência de compras cada vez melhor.<br></p>
+                        </p>
+                        <p>
+                            <a href="https://www.ebitempresa.com.br/bitrate/pesquisa1.asp?empresa=1407475" target="_blank">
+                                <img border="0" name="banner" src="https://www.ebitempresa.com.br/bitrate/banners/b1407475.gif" alt="O que você achou desta loja?" width="468" height="60"></a>
+                        </p>
+                        <p>
+                            Você será redirecionado para sua conta.
+                        </p>
+                        <!-- <div class="form-group">
+                            <div class="col-md-offset-3 col-md-7">
+                                <button type="submit" class="btn btn-default" data-dismiss="modal">Acessar minha conta</button>
+                            </div>
+                        </div> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 	<div id="donation-info" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-sm modal-combo">
 			<div class="modal-content">
 				<div class="modal-header">
-					<img src="http://innbativel.s3.amazonaws.com/ecoa.jpg">
-					<h4 class="modal-title">ECOA - Construindo sustentabilidade e democracia</h4>
+					<img src="{{$offer->ngo->img}}">
+					<h4 class="modal-title">{{$offer->ngo->name}}</h4>
 				</div>
 				<div class="modal-body">
 					<p>
-						A ECOA foi criada em 1989, em Campo Grande - MS, por um grupo de pesquisadores de diversas áreas profissionais, dentre elas as de biologia, comunicação, arquitetura, ciências sociais, engenharia e educação, para estabelecer um espaço de reflexão, debates e formulações e também desenvolver projetos e políticas públicas para a conservação ambiental e a sustentabilidade tanto no meio urbano quanto no rural. Nesta perspectiva o Pantanal e a bacia hidrográfica do rio da Prata foram identificados como as regiões prioritárias, sendo que no caso Pantanal concentraram-se as ações de base comunitária, o que indica, também, uma das razões para a criação da organização.
-					</p>
-					<p>
-						A Ecoa associa investigação cientifica e ação política no sentido amplo do termo, envolvendo comunidades, instituições de ensino e pesquisa, instituições governamentais e outras organizações não governamentais.  Como ferramentas promovem campanhas e processos de diálogos multisetoriais para criar espaços de reflexão, negociação e decisão frente a questões prioritárias para a conservação ambiental e a sustentabilidade.
-					</p>
-					<p>
-						Uma das principais características da instituição são o permanente suporte para o surgimento e desenvolvimento de redes, fóruns, articulações e organizações locais no Brasil e em outros países.
-					</p>
-					<p>
-						É membro da União Internacional para a Conservação da Natureza (IUCN) e o Ponto Focal do Comitê Holandês da IUCN para a bacia do rio da Prata. É a Secretaria Executiva da Rede Pantanal de Ongs e Movimentos Sociais. É membro da coordenação da Articulação Frente  a Infraestrutura e Energia na América do Sul, da  Aliança Sistema Paraná Paraguai de Áreas Úmidas, da RedeBio e da Rede de Conhecimento sobre Bicombustíveis. Faz parte também do Conselho do Centro de Pesquisas do Pantanal (CPP) e outras redes nacionais e internacionais.
+                        {{$offer->ngo->description}}
 					</p>
 				</div>
 				<div class="modal-footer">
@@ -582,42 +543,9 @@
 					<h3 class="modal-title"><span class="entypo text-doc"></span>Regulamento da Oferta</h3>
 				</div>
 				<div class="modal-body">
-					<ul>
-						<li>Utilize seu cupom de 20/03/14 a 21/12/14 (exceto P&aacute;scoa), mediante disponibilidade.&nbsp;</li>
-						<li>Ao clicar em &ldquo;comprar&rdquo; escolha a op&ccedil;&atilde;o:</li>
-					</ul>
-					<p><strong>Op&ccedil;&atilde;o 1:</strong> 2 di&aacute;rias durante a semana (exceto feriados prolongados) de R$664 por R$199.</p>
-					<p><strong>Op&ccedil;&atilde;o 2:</strong> 2 di&aacute;rias de sexta a domingo (exceto feriados prolongados) de R$664 por R$249.</p>
-					<p><strong>Op&ccedil;&atilde;o 3:</strong> 3 di&aacute;rias de sexta a domingo (exceto feriados prolongados) de R$996 por R$359.</p>
-					<p><strong>Op&ccedil;&atilde;o 4:</strong> 3 di&aacute;rias no feriado do Dia do Trabalho de R$996 por R$359.</p>
-					<p><strong>Op&ccedil;&atilde;o 5:</strong> 3 di&aacute;rias no feriado de Corpus Christi de R$996 por R$359.</p>
-					<ul>
-						<li>V&aacute;lido exclusivamente para 2 pessoas. Incluso caf&eacute; da manh&atilde;.</li>
-						<li>Sem limite de compra. Compre quantos cupons quiser.</li>
-						<li><strong>N&atilde;o inclui taxa de servi&ccedil;o</strong><strong>&nbsp;e despesas extras como consumo de frigobar, liga&ccedil;&otilde;es telef&ocirc;nicas, restaurante, </strong><strong>estacionamento</strong><strong> e outros consumos n&atilde;o citados na oferta, a ser pago no </strong><strong>check-out.</strong></li>
-						<li>1 crian&ccedil;a com at&eacute; 10 anos possui hospedagem cortesia (no mesmo apartamento dos pais).</li>
-						<li>Check-in a partir das 14h e check-out at&eacute; as 12h. Late check-out permitido, mediante disponibilidade e consulta pr&eacute;via.</li>
-						<li>Para hospedagem de mais pessoas ou aquisi&ccedil;&atilde;o de di&aacute;ria extra, consulte o hotel.</li>
-					</ul>
-					<p><span style="text-decoration: underline;">Reservas</span></p>
-					<ul>
-						<li>Fa&ccedil;a sua reserva atrav&eacute;s do e-mail <a href="mailto:reservas@praiamole.com.br" target="_blank">reservas@praiamole.com.br</a> informando o c&oacute;digo do cupom.</li>
-						<li>A confirma&ccedil;&atilde;o da reserva est&aacute; condicionada &agrave; disponibilidade do hotel para a oferta.</li>
-						<li>&Eacute; permitido fazer 1 reagendamento com, no m&iacute;nimo, 7 dias de anteced&ecirc;ncia.</li>
-						<li>O n&atilde;o comparecimento &agrave; data reservada, sem pr&eacute;vio aviso, invalidar&aacute; o cupom, sem direito a reembolso.</li>
-						<li><strong>Para esclarecer d&uacute;vidas ou obter informa&ccedil;&otilde;es ligue: </strong><strong>(48) 3239-7500.</strong></li>
-						<li>Todos os servi&ccedil;os de compra coletiva s&atilde;o n&atilde;o reembols&aacute;veis e n&atilde;o reutiliz&aacute;veis em outras datas ou servi&ccedil;os.</li>
-					</ul>
-					<p><span style="text-decoration: underline;">Cupom</span></p>
-					<ul>
-						<li><strong>Ap&oacute;s a autoriza&ccedil;&atilde;o do pagamento, o seu cupom estar&aacute; dispon&iacute;vel na sua conta. Para resgat&aacute;-lo basta entrar com seu login e senha cadastrados no site.</strong></li>
-						<li>N&atilde;o h&aacute; n&uacute;mero m&iacute;nimo de compradores para a valida&ccedil;&atilde;o desta oferta.</li>
-						</ul>
-						<p><span style="text-decoration: underline;">Pol&iacute;tica de Cancelamento</span></p>
-						<ul>
-						<li>Cancelamento GR&Aacute;TIS: Se cancelado com at&eacute; 14 dias ap&oacute;s a compra, n&atilde;o ser&aacute; cobrada qualquer penalidade. Ser&aacute; restitu&iacute;do 100% do valor pago ou transformado em cr&eacute;ditos para uso no INNBat&iacute;vel. Para solicitar o cancelamento, entre em contato com o INNBat&iacute;vel atrav&eacute;s do e-mail <a href="mailto:faleconosco@innbativel.com.br">faleconosco@innbativel.com.br</a>.</li>
-						<li>Ap&oacute;s os 14 dias, o cancelamento resultar&aacute; na perda total do cupom (n&atilde;o haver&aacute; reembolso).</li>
-					</ul>
+					<p>
+                        {{$offer->rules}}
+					</p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="entypo check"></span>Concordo</button>
@@ -669,4 +597,30 @@
         </div>
         <!-- /Infos de {{$additional->title}}-->
     @endforeach
+    @if(!Auth::check())
+    <script>
+        $(function(){
+            // user not logged
+            userAuth = 0;
+
+            // open modal login on load page if user not logged
+            $('#login').modal('show');
+            $('#login').on('hidden.bs.modal', function (e) {
+                window.location.href = "{{$offer->url}}";
+            })
+        });
+    </script>
+    @else
+    <script>
+        $(function(){
+            // user not logged
+            userAuth = 1;
+        });
+    </script>
+    @endif
+<script>
+    $(function(){
+        validaCupomURL = "{{route('valida-cupom')}}";
+    });
+</script>
 @stop
