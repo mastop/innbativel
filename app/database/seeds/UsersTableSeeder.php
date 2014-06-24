@@ -21,8 +21,21 @@ class UsersTableSeeder extends DatabaseSeeder
 	$interpreter->addObserver(function(array $columns) use ($pdo) {
 		try{
 			$columns[6] = $columns[5] = Str::slug(substr($columns[2], 0, 10)) . '-' . $columns[0];
-			$stmt = $pdo->prepare('INSERT INTO users (id, salt, email, password, created_at, username, api_key) VALUES (?, ?, ?, ?, ?, ?, ?)');
-	    	if(!$stmt->execute($columns)){ print_r($columns); print_r($stmt->errorInfo()); }
+			
+			// $stmt = $pdo->prepare('INSERT INTO users (id, salt, email, password, created_at, username, api_key) VALUES (?, ?, ?, ?, ?, ?, ?)');
+	  //   	if(!$stmt->execute($columns)){ print_r($columns); print_r($stmt->errorInfo()); }
+	    	
+	    	$user = [
+	    		'id' => $columns[0],
+	    		'salt' => $columns[1],
+	    		'email' => $columns[2],
+	    		'password' => $columns[3],
+	    		'created_at' => $columns[4],
+	    		'username' => $columns[5],
+	    		'api_key' => $columns[6],
+	    	];
+
+	    	User::create($user);
 		}
 		catch (Exception $e) {
 			print_r($columns);

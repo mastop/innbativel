@@ -23,25 +23,7 @@ class OffersOptionsTableSeeder extends DatabaseSeeder
 
     $interpreter->addObserver(function(array $columns) use ($pdo) {
         try{
-        	// o último item contém o id dos included, separados por "|" ... é necessário removê-los dessa array e armazená-los,
-        	// pois iremos inserí-los na sua devida tabela depois de inserir a opção de oferta
-        	$codigos_inclusos = array_pop($columns);
-
-    		$stmt = $pdo->prepare('INSERT INTO offers_options (id, offer_id, title, price_with_discount, max_qty, max_qty_per_buyer, min_qty, voucher_validity_start, voucher_validity_end, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-            if(!$stmt->execute($columns)){ print_r($columns); print_r($stmt->errorInfo()); }
-
-            $id = $columns[0];
-            $codigos_inclusos = explode("|", $codigos_inclusos);
-
-            $included = '';
-
-            foreach ($codigos_inclusos as $order => $code) {
-            	$included .= '($id, $code, $order),';
-            }
-
-            $included = substr_replace($included, "", -1);
-
-            $stmt = $pdo->prepare('INSERT INTO offers_options_included (offer_option_id, included_id, display_order) VALUES $included');
+    		$stmt = $pdo->prepare('INSERT INTO offers_options (id, offer_id, title, price_with_discount, max_qty, min_qty, voucher_validity_start, voucher_validity_end, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
             if(!$stmt->execute($columns)){ print_r($columns); print_r($stmt->errorInfo()); }
         }
         catch (Exception $e) {
