@@ -239,6 +239,10 @@ DirectoryIndex index.php index.html index.htm app.php app.html app.htm default.p
     RewriteEngine On
     RewriteBase /
 
+    # Força o SSL
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+
 		# Prevent Apache from returning a 404 error for a rewrite if a directory
 		# with the same name does not exist.
 	  Options -MultiViews
