@@ -19,8 +19,4 @@
         {{ Former::close() }}
 
     </div>
-
-    {{ HTML::script('assets/vendor/tinymce/tinymce.min.js') }}
-    <script type="text/javascript">tinymce.init({forced_root_block : "", selector:'textarea'});</script>
-
 @stop

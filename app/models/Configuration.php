@@ -21,7 +21,8 @@ class Configuration extends BaseModel {
 
         $val = Cache::rememberForever('conf.'.$name, function() use ($name)
         {
-            return Configuration::where('name', $name)->first()->value;
+            $conf = Configuration::where('name', $name)->first();
+            return ($conf) ? $conf->value : '';
         });
         return $val;
     }

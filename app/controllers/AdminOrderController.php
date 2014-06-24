@@ -53,7 +53,7 @@ class AdminOrderController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '10';
+        $pag = Input::get('pag', 50);
 
 		/*
 		 * Sort filter
@@ -164,7 +164,7 @@ class AdminOrderController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '10';
+        $pag = Input::get('pag', 50);
 
 		/*
 		 * Sort filter
@@ -481,7 +481,7 @@ class AdminOrderController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+        $pag = Input::get('pag', 50);
 
 		/*
 		 * Sort filter
@@ -1216,7 +1216,7 @@ class AdminOrderController extends BaseController {
 
 	public function teste(){
 		$offers_options = OfferOption::with(['offer', 'used_vouchers'])
-									->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty', 'max_qty_per_buyer'])
+									->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty'])
 									->toArray();
 		
 		print('<pre>');
@@ -1285,13 +1285,13 @@ class AdminOrderController extends BaseController {
 				$qties[] = $qty;
 			}
 
-			$offers_options = OfferOption::whereIn('id', $ids)->with(['offer', 'qty_sold'])->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty', 'max_qty_per_buyer']);
+			$offers_options = OfferOption::whereIn('id', $ids)->with(['offer', 'qty_sold'])->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty']);
 
 			// save the items the user ordered and calculate total
 			foreach ($offers_options as $offer_option) {
 				$qty_ordered = array_shift($qties); // pega o primeiro elemento de $qties e joga no final do próprio array $qties, além de obter o valor manipulado em si, claro
 				$qty_sold = isset($offer_option->qty_sold{0})?$offer_option->qty_sold{0}->qty:0;
-				$max_qty_allowed = min($offer_option->max_qty_per_buyer, ($offer_option->max_qty - $offer_option->min_qty - $qty_sold));
+				$max_qty_allowed = $offer_option->max_qty - $qty_sold;
 
 				if($qty_ordered > $max_qty_allowed){
 					// ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque

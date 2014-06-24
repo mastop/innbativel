@@ -569,8 +569,22 @@
 				},
 				submitHandler: function(form) {
 					//form.submit();
-					$('#pass-recover').modal('hide');
-					$('#passRecoverResponse').modal('show');
+                    $.ajax({
+                        type: "POST",
+                        url: $(form).attr('action'),
+                        data: $(form).serialize(),
+                        success: function(data){
+                            if(data.error > 0){
+                                $('<label></label>').attr('class', 'error').attr('for', 'passRecoverEmail').attr('generated', 'true').text(data.message).insertAfter($('#passRecoverForm input[type=email]')).show();
+                            }else{
+                                $('#pass-recover').modal('hide');
+                                $('#passRecoverResponse').modal('show');
+                            }
+                        },
+                        headers: {
+                            'X-CSRF-Token': $(form).find('input[name="_token"]').val()
+                        }
+                    });
 				}
 			});
 
@@ -596,7 +610,7 @@
 					}
 				},
 				submitHandler: function(form) {
-					//form.submit();
+					form.submit();
 					$('#login').modal('hide');
 					// carregar minha-conta
 				}

@@ -56,7 +56,7 @@ class SuggestATripController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+        $pag = Input::get('pag', 50);
 
 		/*
 		 * Sort filter

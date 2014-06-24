@@ -25,20 +25,20 @@ class Offer extends BaseModel {
         'tell_us_id', // Id do depoimento do cliente
         'title', // Título
         'subtitle', // SubTítulo
-        'subsubtitle', // SubTítulo 2
         'price_original', // Preço Original
         'price_with_discount', // Preço Com Desconto
         'percent_off', // %OFF
         'rules', // Regras
         'features', // Destaques
+        'popup_features', // Destaques Popup
         'starts_on', // Data de Início
         'ends_on', // Data de Término
         'cover_img', // Imagem Principal
-        'offer_old_img', // Imagem Pré-Reservas
         'newsletter_img', // Imagem Newsletters
         'display_map', // Exibir mapa?
         'is_product', // Será publicada?
         'is_active', // Oferta ativa?
+        'sold', // Itens Vendidos
     ];
 
 	protected $softDelete = true;
@@ -128,6 +128,35 @@ class Offer extends BaseModel {
         return $this->belongsToMany('Tag', 'offers_tags', 'offer_id', 'tag_id');
     }
 
+    /**
+     * Retorna a URL da oferta, como $offer->url
+     * @return string
+     */
+    public function getUrlAttribute(){
+        return route('oferta', $this->slug);
+    }
+
+    /**
+     * Retorna a descrição da oferta formatada, como $offer->format_features
+     * @return string
+     */
+    public function getFormatFeaturesAttribute(){
+        if($this->features == ''){
+            return;
+        }
+        $search = array(
+            'Regulamento da Oferta',
+            'Fale Conosco',
+            'mapa'
+        );
+        $replace = array(
+            '<a href="#regulation" class="tooltip" data-tip="Veja o Regulamento da Oferta" data-toggle="modal">Regulamento da Oferta</a>',
+            '<a href="#contact" class="tooltip" data-tip="Entre em contato" data-toggle="modal">Fale Conosco</a>',
+            '<a href="#map" class="tooltip" data-tip="Veja a localização" data-toggle="modal">Mapa</a>'
+        );
+        return str_ireplace($search, $replace, $this->features);
+    }
+
 	public function getFullDestinnyAttribute(){
         $destiny = Destiny::find($this->destiny_id);
 		//return $destiny->city.'-'.$destiny->state_id;
@@ -143,6 +172,17 @@ class Offer extends BaseModel {
     public function setGenre2IdAttribute($value)
     {
         $this->attributes['genre2_id'] = $value ?: null;
+    }
+
+    /**
+     * Esta função é necessária para substituir string vazia por NULL.
+     * Sem esta função, vai dar erro no SQL por causa da foreign key associada a tell_us_id
+     * @param $value
+     * @return void
+     */
+    public function setTellUsIdAttribute($value)
+    {
+        $this->attributes['tell_us_id'] = $value ?: null;
     }
 
     /**
@@ -231,6 +271,15 @@ class Offer extends BaseModel {
         if(empty($value) || substr($value, 0, 4) == 'http')
         return $value;
         return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/'.$value;
+    }
+
+    /**
+     * Retorna o thumb da oferta, como $offer->thumb
+     * @return string
+     */
+    public function getThumbAttribute()
+    {
+        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/thumb/'.$this->getOriginal('cover_img');
     }
 
 }

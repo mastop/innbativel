@@ -4,11 +4,22 @@
 
 		Innbativel.init = function(){};
 		
-		Innbativel.ready = function(){
+		Innbativel.load = function(){
 		
 		};
 
-		Innbativel.load = function(){
+		Innbativel.ready = function(){
+            // Só envia o form de comprar se o botão 'comprar' estiver liberado
+            $( "#buy-form" ).submit(function( e ) {
+                if($('#buy-btn').hasClass('disabled')){
+                    return false;
+                }
+                return true;
+            });
+            // Se a oferta só tem uma opção, checa ela
+            if($('input[name="opt[]"]').length == 1){
+                $('#opt0').click();
+            }
 
 			//$('#emailShare').modal('show'); //excluir em produção
 
@@ -55,8 +66,6 @@
 					$('html, body').animate({
 						scrollTop: $('.buy-form h3').offset().top - 130
 					}, 800, function() {
-						$('#buy-box').addClass('arrow');
-						$('#buy-alert').removeClass('hidden');
 						scrolling = false;
 					});
 				}
@@ -80,7 +89,7 @@
 				totalPrice = 0;
 				
 				$('.buy-form input[type=checkbox]:checked').each( function(index) {
-					totalPrice = (parseFloat(totalPrice) + parseFloat($(this).val())).toFixed(2);
+					totalPrice = (parseFloat(totalPrice) + parseFloat($(this).data('price'))).toFixed(2);
 				});
 				
 				var printPrice;
@@ -169,11 +178,6 @@
 				
 			function scrollEvents() {
 
-				if( $('#buy-box').hasClass('arrow') && scrolling ) {
-					$('#buy-box').removeClass('arrow');
-					$('#buy-alert').addClass('hidden');
-				};
-
 				scrolling = true;
 
 				windowScrollTop = $('.buy-box-top').offset().top;
@@ -204,6 +208,14 @@
 					$('.buy-box-container').removeClass('align-bottom');
 				}
 
+                if( $('#buy-btn').hasClass('disabled') && scrollHeight >= ($('.buy-form h3').offset().top - 140) ) {
+                    $('#buy-alert').removeClass('hidden');
+                    $('#buy-box').addClass('arrow');
+                }else{
+                    $('#buy-alert').addClass('hidden');
+                    $('#buy-box').removeClass('arrow');
+                }
+
 				//$('#log').prepend( "2) "+scrollHeight+" , "+windowScrollBottom+", "+viewableOffset+"<br />" );
 				//$('#log').prepend( "1) "+scrollHeight+", "+windowScrollTop+", "+viewableOffset+"<br />" );
 				
@@ -211,7 +223,7 @@
 
 		};
 
-		$(window).on('ready', Innbativel.ready);
+		$(document).on('ready', Innbativel.ready);
 		$(window).on('load', Innbativel.load);
 
 })(jQuery);

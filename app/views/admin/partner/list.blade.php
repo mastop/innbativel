@@ -3,10 +3,10 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Lista de Usuários</h6>
+			<h6>Lista de Parceiros</h6>
 	        <div class="nav pull-right">
-	            <a href="{{ route('admin.partner.deleted') }}" title="Usuários Excluídos" class="dropdown-toggle navbar-icon"><i class="icon-filter"></i></a>
-	            <a href="{{ route('admin.partner.create') }}" title="Criar Usuário" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
+	            <a href="{{ route('admin.partner.deleted') }}" title="Parceiros Excluídos" class="dropdown-toggle navbar-icon"><i class="icon-filter"></i></a>
+	            <a href="{{ route('admin.partner.create') }}" title="Criar Parceiro" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
 	        </div>
 		</div>
 	</div>
@@ -36,7 +36,7 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('ID', 'E-mail', 'Nome', 'Cidade', 'Tipo', 'Criado', 'Ações') }}
+{{ Table::headers('ID', 'E-mail', 'Nome', 'Razão Social', 'Cidade', 'Criado', 'Ações') }}
 {{ Table::body($partner)
 	->ignore(['profile', 'roles', 'created_at'])
 	->nome(function($partner) {
@@ -45,20 +45,17 @@
 		}
 		return 'Não cadastrado.';
 	})
+    ->razao(function($partner) {
+		if(isset($partner['profile']['company_name'])) {
+			return $partner['profile']['company_name'];
+		}
+		return 'Não cadastrado.';
+	})
 	->cidade(function($partner) {
 		if(isset($partner['profile']['city'])) {
 			return $partner['profile']['city'];
 		}
 		return 'Não cadastrado.';
-	})
-	->tipo(function($partner) {
-		$ret = '';
-
-		foreach ($partner['roles'] as $key => $value) {
-			$ret .= '<span class="comma-sep">'. $value['description'] .'</span>';
-		}
-
-		return $ret;
 	})
 	->criado(function($partner) {
 		return $partner->created_at->formatLocalized('%d/%m/%Y %H:%I:%S');

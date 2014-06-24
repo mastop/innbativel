@@ -17,10 +17,17 @@
 	<meta name="csrf-token" content="{{ csrf_token() }}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <meta property="og:title" content="{{ isset($title) ? $title : $seo['metatag']['title'] }}" />
+    <meta property="og:title" content="{{ isset($title) ? $title: $seo['metatag']['title'] }}" />
     <meta property="og:description" content="{{ isset($description) ? $description : $seo['metatag']['description'] }}" />
     <meta property="og:url" content="{{ Request::url() }}" />
     <meta property="og:image" content="{{ isset($image) ? $image : $seo['metatag']['image'] }}" />
+    <meta property="fb:app_id" content="{{ Configuration::get('fb_app') }}" />
+    @foreach(explode(',', Configuration::get('fb_admins')) as $adm)
+        <meta property="fb:admins" content="{{ $adm }}"/>
+    @endforeach
+    <meta property="og:type" content="{{ isset($og_type) ? $og_type : 'website' }}" />
+    <meta property="og:locale" content="pt_BR" />
+
 	
     <link rel="alternate" hreflang="{{ Config::get('app.locale') }}" href="{{ URL::current() }}" />
 	<link rel="canonical" href="{{ URL::current() }}" />
@@ -40,6 +47,7 @@
     <script src="{{ asset('assets/vendor/contador/contador.js') }}"></script>
     <script src="{{ asset('assets/vendor/fotorama/fotorama.js') }}"></script>
     @yield('javascript')
+    {{ Configuration::get('script_head') }}
 </head>
 
 <body class="innbativel frontend no-sidebar {{ isset($body_classes) ? $body_classes : '' }}">
@@ -53,6 +61,9 @@
                 @if(Auth::check())
                 <a class="btn-login" href="{{ route('minha-conta') }}" title="Acesse sua conta INNBatível">Minha conta <span class="entypo user"></span></a>
                 <a class="btn-login" href="{{ route('logout') }}" data-toggle="modal" title="Sair de sua conta INNBatível">Sair <span class="entypo logout"></span></a>
+                    @if(Auth::user()->is('administrador'))
+                        <a class="btn-login" href="{{ route('admin') }}" title="Acesse a Administração">Admin <span class="entypo key"></span></a>
+                    @endif
                 @else
                 <a class="btn-login" href="#login" data-toggle="modal" title="Entre com sua conta INNBatível">Entrar <span class="entypo login"></span></a>
                 <a href="https://www.facebook.com/dialog/oauth?client_id=145684162279488&amp;redirect_uri=https%3A%2F%2Finnbativel.com.br%2Flogin-facebook-valida.php&amp;state=8bbb0e68cf6d535aac3a58cf2c254be8&amp;scope=email%2C+user_birthday%2C+user_hometown" title="Entre com sua conta do Facebook" class="btn-login login"><span class="entypo facebook"></span></a>
@@ -129,11 +140,11 @@
                         </div>
                     </li>
                     <li><a href="#newsletter" data-toggle="modal">Receba ofertas por <strong>email</strong> <span class="entypo mail"></span></a></li>
-                    <li><a href="hoteis-e-pousadas">Hot&eacute;is &amp; Pousadas</a></li>
-                    <li><a href="pacotes-nacionais">Pacotes Nacionais</a></li>
-                    <li><a href="pacotes-internacionais">Pacotes Internacionais</a></li>
-                    <li><a href="feriados" class="single-line"><span>Feriados</span></a></li>
-                    <li><a href="passeios-gastronomia">Passeios &amp; Gatronomia</a></li>
+                    <li><a href="{{url('hoteis-e-pousadas')}}">Hot&eacute;is &amp; Pousadas</a></li>
+                    <li><a href="{{url('pacotes-nacionais')}}">Pacotes Nacionais</a></li>
+                    <li><a href="{{url('pacotes-internacionais')}}">Pacotes Internacionais</a></li>
+                    <li><a href="{{url('feriados')}}" class="single-line"><span>Feriados</span></a></li>
+                    <li><a href="{{url('passeios-gastronomia')}}">Passeios &amp; Gatronomia</a></li>
                 </ul>
             </div>
         </div>
@@ -181,40 +192,13 @@
     <footer id="footer" class="clearfix">
         <div class="container">
             @if(!isset($comprar))
-            <div id="menu-footer">
-                <ul id="menu-viaje">
-                    <li><strong>Viaje</strong></li>
-                    <li><a href="hoteis-e-pousadas">Hot&eacute;is &amp; Pousadas</a></li>
-                    <li><a href="pacotes-nacionais">Pacotes Nacionais</a></li>
-                    <li><a href="pacotes-internacionais">Pacotes Internacionais</a></li>
-                    <li><a href="feriados">Feriados</a></li>
-                    <li><a href="passeios-gastronomia">Passeios &amp; Gatronomia</a></li>
-                </ul>
-                <ul id="menu-participe">
-                    <li><strong>Participe</strong></li>
-                    <li><a href="#faq" data-toggle="modal">Perguntas Frequentes</a></li>
-                    <li><a href="#parceiro" data-toggle="modal">Seja Nosso Parceiro</a></li>
-                    <li><a href="#sugira" data-toggle="modal">Sugira uma Viagem</a></li>
-                    <li><a href="#conte-pra-gente" data-toggle="modal">Conte pra Gente</a></li>
-                    <!-- <li><a href="#">Indique e Ganhe</a></li> -->
-                </ul>
-                <ul id="menu-institucional">
-                    <li><strong>Institucional</strong></li>
-                    <!-- <li><a href="#faq" data-toggle="modal">Ajuda</a></li> -->
-                    <li><a href="#contact" data-toggle="modal">Fale Conosco</a></li>
-                    <li><a href="#quem-somos" data-toggle="modal">Quem Somos</a></li>
-                    <li><a href="#acao-social" data-toggle="modal">Ação Social</a></li>
-                    <li><a href="#trabalhe-conosco" data-toggle="modal">Trabalhe Conosco</a></li>
-                    <li><a href="#press" data-toggle="modal">Imprensa</a></li>
-                    <li><a href="#termos" data-toggle="modal">Termos e Condições de Uso</a></li>
-                    <li><a href="#politica" data-toggle="modal">Política de Privacidade</a></li>
-                </ul>
-            </div>
+                @include('menu.footer')
             @endif
             <div id="copyright-and-legal">
                 <p>ASN Serviços de Informações Digitais na Web LTDA., CNPJ n° 12.784.420/0001-95, Rod. Armando Calil Bulos, nº 5405, Florianópolis – SC</p>
             </div>
         </div>
     </footer>
+    {{ Configuration::get('script_body') }}
 </body>
 </html>

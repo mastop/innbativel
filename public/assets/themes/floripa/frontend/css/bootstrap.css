@@ -8428,13 +8428,27 @@ h1, h2, h3, h4, h5, h6,
 	}
 }
 
-.offer-page h2,
-.search-page h2 {
+.offer-page h1{
+    font-size: 18px;
+    color: #333;
+    margin-top: 10px;
+}
+.search-page h1 {
 	color: #004286;
 	margin-top: 10px;
 }
-.offer-page p.subsubtitle {
+.offer-page p.destiny_title {
+	color: #004286;
+	margin-top: 10px;
+    font-size:30px;
+    font-family: "Cabin", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    line-height: 1.1;
+}
+.offer-page h2 {
 	margin: 0;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
 }
 .offer-page .social-share {
 	/*margin-top: 20px;*/
@@ -9741,3 +9755,5 @@ table.user-data th,
 	-webkit-transform: rotateX(180deg);
 	background-color: #000;
 }
+
+.fb-comments, .fb-comments span, .fb-comments iframe[style] {width: 100% !important;}

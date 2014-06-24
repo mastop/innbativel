@@ -43,13 +43,13 @@ class AdminGenreController extends BaseController {
 		 * Paginate
 		 */
 
-    	$pag = in_array(Input::get('pag'), ['5', '10', '25', '50', '100']) ? Input::get('pag') : '5';
+        $pag = Input::get('pag', 50);
 
 		/*
 		 * Sort filter
 		 */
 
-    	$sort = in_array(Input::get('sort'), ['name']) ? Input::get('sort') : 'id';
+    	$sort = in_array(Input::get('sort'), ['title']) ? Input::get('sort') : 'id';
 
 		/*
 		 * Order filter
@@ -60,8 +60,8 @@ class AdminGenreController extends BaseController {
 		/*
 		 * Search filters
 		 */
-		if (Input::has('name')) {
-			$genre = $genre->where('name', 'like', '%'. Input::get('name') .'%');
+		if (Input::has('title')) {
+			$genre = $genre->where('title', 'like', '%'. Input::get('title') .'%');
 		}
 
 		/*
@@ -71,12 +71,13 @@ class AdminGenreController extends BaseController {
 			'sort' => $sort,
 			'order' => $order,
 			'pag' => $pag,
-			'name' => Input::get('name'),
+			'title' => Input::get('title'),
 		]);
 
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Gerenciar Gêneros';
 		$this->layout->content = View::make('admin.genre.list', compact('sort', 'order', 'pag', 'genre'));
 	}
 
@@ -91,7 +92,7 @@ class AdminGenreController extends BaseController {
 		/*
 		 * Layout / View
 		 */
-
+        $this->layout->page_title = 'Criar Gênero';
 		$this->layout->content = View::make('admin.genre.create');
 	}
 
@@ -106,18 +107,19 @@ class AdminGenreController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-        	'name' => 'required',
-        	'icon_url' => 'required',
+        	'title' => 'required',
+        	'icon' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
-			$img = ImageUpload::createFrom(Input::file('icon_url'), Config::get('upload.genre'));
-			$inputs['icon_url'] = $img;
+			$inputs['icon'] = str_replace('entypo-', '', $inputs['icon']);
 
 			$this->genre->create($inputs);
+
+            Session::flash('success', 'Gênero criado com sucesso.');
 
 			return Redirect::route('admin.genre');
 		}
@@ -148,7 +150,7 @@ class AdminGenreController extends BaseController {
 		/*
 		 * Layout / View
 		 */
-
+        $this->layout->page_title = 'Editando Gênero #'.$genre->id.' '.$genre->title;
 		$this->layout->content = View::make('admin.genre.edit', compact('genre'));
 	}
 
@@ -166,8 +168,8 @@ class AdminGenreController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-        	'name' => 'required',
-        	'icon_url' => 'required',
+        	'title' => 'required',
+        	'icon' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -178,11 +180,10 @@ class AdminGenreController extends BaseController {
 
 			if ($genre)
 			{
-				$img = ImageUpload::createFrom(Input::file('icon_url'), Config::get('upload.genre'));
-				$inputs['icon_url'] = $img;
-
+                $inputs['icon'] = str_replace('entypo-', '', $inputs['icon']);
 				$genre->update($inputs);
 			}
+            Session::flash('success', 'Gênero alterado com sucesso.');
 
 			return Redirect::route('admin.genre');
 		}
@@ -207,8 +208,12 @@ class AdminGenreController extends BaseController {
 
 		if (is_null($genre))
 		{
+            Session::flash('error', 'Gênero #'.$id.' não encontrado.');
 			return Redirect::route('admin.genre');
-		}
+		}elseif($id == 1){
+            Session::flash('error', 'O gênero de ID #1 não pode ser excluído.');
+            return Redirect::route('admin.genre');
+        }
 
 		Session::flash('error', 'Você tem certeza que deleja excluir esta Gênero? Esta operação não poderá ser desfeita.');
 
@@ -222,7 +227,7 @@ class AdminGenreController extends BaseController {
 		/*
 		 * Layout / View
 		 */
-
+        $this->layout->page_title = 'Excluir Gênero #'.$genre->id.' '.$genre->title;
 		$this->layout->content = View::make('admin.genre.delete', $data);
 	}
 
@@ -234,35 +239,14 @@ class AdminGenreController extends BaseController {
 
 	public function postDelete($id)
 	{
+        // Troca os gêneros das ofertas que usam o gênero que está sendo deletado
+        Offer::where('genre_id', '=', $id)->update(array('genre_id' => 1));
+        Offer::where('genre2_id', '=', $id)->update(array('genre2_id' => null));
 		$this->genre->find($id)->delete();
 
-		Session::flash('success', 'Gênero excluída com sucesso.');
+		Session::flash('success', 'Gênero excluído com sucesso.');
 
 		return Redirect::route('admin.genre');
-	}
-
-	public function getClearfield($id, $field)
-	{
-		$genre = $this->genre->find($id);
-
-		if (is_null($genre) || !isset($genre))
-		{
-			return Redirect::route('admin.genre.edit', $id);
-		}
-
-		$toDelete = $genre->{$field};
-
-		$path = public_path() . $toDelete;
-		if (File::exists($path)) {
-			File::delete($path);
-		}
-
-		$genre->{$field} = null;
-		$genre->save();
-
-		Session::flash('success', 'O campo '.$field.' pode ser editado agora.');
-
-		return Redirect::route('admin.genre.edit', $id);
 	}
 
 }

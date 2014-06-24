@@ -35,6 +35,12 @@ class PageController extends BaseController {
         // print_r($offer->toArray());
         // print('</pre>'); die();
 
+        // SEO
+        $this->layout->title = $offer->destiny->name.' - '.$offer->title;
+        $this->layout->description = $offer->subtitle.' A partir de R$ '.intval($offer->price_with_discount).' com '.$offer->percent_off.'% OFF!';
+        $this->layout->og_type = 'article';
+        $this->layout->image = 'http:'.$offer->thumb;
+
         $this->layout->content = View::make('pages.oferta', compact('offer'));
     }
 
@@ -43,9 +49,30 @@ class PageController extends BaseController {
      */
     public function anyComprar()
     {
+        $oId = Input::get('offer');
+        $opt = Input::get('opt');
+        $add = Input::get('add', array());
+
+        if($oId && $opt){
+            Session::put('oId', $oId);
+            Session::put('opt', $opt);
+            Session::put('add', $add);
+        }elseif(Session::has('oId')){
+            $oId = Session::get('oId');
+            $opt = Session::get('opt');
+            $add = Session::get('add');
+        }
+
+        $offer = Offer::with(['offer_option', 'offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])->find((int)$oId);
+
+        if(!$offer || !$opt){
+            Session::flash('error', 'Oferta não encontrada');
+            return Redirect::route('home');
+        }
+
         $this->layout->comprar = true;
         $this->layout->body_classes = 'checkout-page';
-        $this->layout->content = View::make('pages.comprar');
+        $this->layout->content = View::make('pages.comprar', compact('offer', 'opt', 'add'));
     }
 
     /**

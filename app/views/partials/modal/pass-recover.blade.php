@@ -5,7 +5,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title"><span class="entypo flashlight"></span>Esqueceu sua senha?</h4>
             </div>
-            <form id="passRecoverForm" class="form-horizontal" name="passRecoverForm" method="post" action="send_form_pass_recover.php" novalidate="novalidate">
+            <form id="passRecoverForm" class="form-horizontal" name="passRecoverForm" method="post" action="{{route('password.request')}}" novalidate="novalidate">
                 <div class="modal-body">
                     <p>
                         Digite seu email cadastrado para recuperar sua senha.<br>
@@ -18,7 +18,9 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-3 col-md-8">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
                             <button type="submit" class="btn">Recuperar senha</button>
+                            <a href="#login" class="login" data-toggle="modal" data-dismiss="modal">Voltar</a>
                         </div>
                     </div>
                 </div>
