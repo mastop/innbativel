@@ -21,7 +21,6 @@ class ProfilesTableSeeder extends DatabaseSeeder
   	$interpreter->addObserver(function(array $columns) use ($pdo) {
       try{
     		$stmt = $pdo->prepare('INSERT INTO profiles (id, user_id, facebook_id, first_name, last_name, birthday, cpf, telephone, telephone2, img, credit, city, state, street, number, complement, neighborhood, zip, company_name, cnpj, site, coordinates) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
         if(!$stmt->execute($columns)){ print_r($columns); print_r($stmt->errorInfo()); }
       }
       catch (Exception $e) {

@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder {
 		// $this->call('HolidaysTableSeeder');
 		// $this->call('GroupsTableSeeder');
 		// $this->call('CategoriesTableSeeder');
-		$this->call('OffersTableSeeder');
+		// $this->call('OffersTableSeeder');
 		// $this->call('OffersOptionsTableSeeder');
 		// $this->call('OffersImagesTableSeeder');
 		// $this->call('CommentsTableSeeder');

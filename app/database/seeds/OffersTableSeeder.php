@@ -19,7 +19,7 @@ class OffersTableSeeder extends DatabaseSeeder
 
     $interpreter->addObserver(function(array $columns) use ($pdo) {
       try{
-        $stmt = $pdo->prepare('INSERT INTO offers (id, partner_id, ngo_id, subtitle, title, features, general_rules, starts_on, ends_on, cover_img, offer_old_img, newsletter_img, saveme_img, video, slug, display_order, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt = $pdo->prepare('INSERT INTO offers (id, partner_id, ngo_id, category_id, title, subtitle, features, destiny_id, rules, starts_on, ends_on, slug, display_order, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
         if(!$stmt->execute($columns)){ print_r($columns); print_r($stmt->errorInfo()); }
       }
       catch (Exception $e) {

@@ -1,7 +1,7 @@
 SELECT
 
 con.id AS id, 
-con.id_empresa AS partner_id, 
+(70000 + con.id_empresa) AS partner_id, 
 con.razao_social AS company_name, 
 con.cnpj AS cnpj, 
 con.nome_fantasia AS trading_name, 

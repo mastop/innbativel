@@ -2,7 +2,7 @@ SELECT
 
 pe.id AS id, 
 pe.id_periodo AS payment_id, 
-(7000 + pe.id_empresa) AS partner_id, 
+(70000 + pe.id_empresa) AS partner_id, 
 DATE_FORMAT(pe.pago_em, '%Y-%m-%d %H:%i:%s') AS paid_on, 
 pe.total AS total 
 
