@@ -31,16 +31,32 @@
 		@if(Auth::check() && $sidebar)
 		<div id="sidebar">
 			<div class="sidebar-tabs">
-				<ul class="tabs-nav two-items">
-					<li><a href="#general" title=""><i class="icon-reorder"></i></a></li>
-					<li><a href="#stuff" title=""><i class="icon-cogs"></i></a></li>
+				<ul class="tabs-nav three-items">
+					@if(Auth::user()->is('administrador'))
+                        <li><a href="#admin" title=""><i class="icon-key"></i></a></li>
+                    @endif
+                    @if(Auth::user()->is('parceiro'))
+                        <li><a href="#partner" title=""><i class="icon-user"></i></a></li>
+                    @endif
+                    @if(Auth::user()->is('programador'))
+                        <li><a href="#stuff" title=""><i class="icon-cogs"></i></a></li>
+                    @endif
 				</ul>
-				<div id="general">
+                @if(Auth::user()->is('administrador'))
+				<div id="admin">
 					@include('menu.admin')
 				</div>
+                @endif
+                @if(Auth::user()->is('parceiro'))
+                <div id="partner">
+                    @include('menu.partner')
+                </div>
+                @endif
+                @if(Auth::user()->is('programador'))
 				<div id="stuff">
 					@include('menu.god')
 				</div>
+                @endif
 			</div>
 		</div>
 		@endif
