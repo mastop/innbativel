@@ -25,6 +25,7 @@ App::before(function($request)
     $request->setTrustedProxies(array($request->server->get('REMOTE_ADDR')));
     $request->setTrustedHeaderName(\Symfony\Component\HttpFoundation\Request::HEADER_CLIENT_IP, 'X-Forwarded-For');
     $request->setTrustedHeaderName(\Symfony\Component\HttpFoundation\Request::HEADER_CLIENT_PROTO, 'X-Forwarded-Proto');
+    $request->setTrustedHeaderName(\Symfony\Component\HttpFoundation\Request::HEADER_CLIENT_PORT, 'X-Forwarded-Port');
 });
 
 // App::after(function($request, $response){});

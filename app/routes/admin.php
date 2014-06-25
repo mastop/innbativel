@@ -1,6 +1,6 @@
 <?php
 
-Route::group(array('prefix' => 'admin', 'before' => 'auth|perm'), function(){
+Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), function(){
 	/*
 	 * Dashboard
 	 */
