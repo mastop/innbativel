@@ -11,19 +11,26 @@
 
 //     $pdo = new PDO('mysql:host='.Config::get('database.connections.mysql.host').';dbname='.Config::get('database.connections.mysql.database'), Config::get('database.connections.mysql.username'), Config::get('database.connections.mysql.password'));
 
-// 	$config = new LexerConfig()->setToCharset('UTF-8');
-// 	$lexer = new Lexer($config); //ISO8591 ou UTF-8
+//     $config = new LexerConfig();
+//     $config->setFromCharset('UTF-8');
+//     $config->setToCharset('LATIN1');
+//   	$lexer = new Lexer($config);
 
-// 	$interpreter = new Interpreter();
+//     $interpreter = new Interpreter();
+      // $interpreter->unstrict();
 
-// 	$faq = new Faq;
+//   	$interpreter->addObserver(function(array $columns) use ($pdo) {
+        // try{
+//   	    $stmt = $pdo->prepare('INSERT INTO faqs (question, answer, group_title) VALUES (?, ?, ?)');
+//   	    if(!$stmt->execute($columns)){ print_r($columns); print_r($stmt->errorInfo()); }
+        // }
+        // catch (Exception $e) {
+        //   print_r($columns);
+        //   print_r($e->getMessage()."\n");
+        // }
+//   	});
 
-// 	$interpreter->addObserver(function(array $columns) use ($pdo) {
-// 	    $stmt = $pdo->prepare('INSERT INTO faqs (id, question, answer, group_title) VALUES (?, ?, ?, ?)');
-// 	    if(!$stmt->execute($columns)) print_r($stmt->errorInfo());
-// 	});
-
-// 	$lexer->parse(app_path().'/database/seeds/assets/faqs.csv', $interpreter);
+//   	$lexer->parse(app_path().'/database/seeds/assets/ImportacaoBDNovo/faqs.csv', $interpreter);
 
 //   }
 // }

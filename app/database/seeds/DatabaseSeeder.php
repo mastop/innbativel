@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('ConfigurationsTableSeeder');
 		$this->call('BannersTableSeeder');
 		$this->call('UsersTableSeeder');
+		$this->call('ProfilesTableSeeder');
 		$this->call('RolesTableSeeder');
 		$this->call('PermissionsTableSeeder');
 		$this->call('PermRoleUsersTableSeeder');
@@ -29,22 +30,22 @@ class DatabaseSeeder extends Seeder {
 		$this->call('CategoriesTableSeeder');
 		$this->call('OffersTableSeeder');
 		$this->call('OffersOptionsTableSeeder');
-		$this->call('OffersImagesTableSeeder');
-		$this->call('CommentsTableSeeder');
-		$this->call('DiscountsCouponsTableSeeder');
-		$this->call('OrdersTableSeeder');
-		$this->call('VouchersTableSeeder');
-		$this->call('FaqsTableSeeder');
-		$this->call('TellUsTableSeeder');
-		$this->call('PartnersTestimoniesTableSeeder');
-		$this->call('SuggestATripTableSeeder');
-		$this->call('ContractsTableSeeder');
-		$this->call('ContractsOptionsTableSeeder');
-		$this->call('PaymentsTableSeeder');
-		$this->call('PaymentsPartnersTableSeeder');
-		$this->call('TransactionsTableSeeder');
-		$this->call('TransactionsVouchersTableSeeder');
-		$this->call('Triggers');
+		// $this->call('OffersImagesTableSeeder');
+		// $this->call('CommentsTableSeeder');
+		// $this->call('DiscountsCouponsTableSeeder');
+		// $this->call('OrdersTableSeeder');
+		// $this->call('VouchersTableSeeder');
+		// $this->call('FaqsTableSeeder');
+		// $this->call('TellUsTableSeeder');
+		// $this->call('PartnersTestimoniesTableSeeder');
+		// $this->call('SuggestATripTableSeeder');
+		// $this->call('ContractsTableSeeder');
+		// $this->call('ContractsOptionsTableSeeder');
+		// $this->call('PaymentsTableSeeder');
+		// $this->call('PaymentsPartnersTableSeeder');
+		// $this->call('TransactionsTableSeeder');
+		// $this->call('TransactionsVouchersTableSeeder');
+		// $this->call('Triggers');
 	}
 
 }
