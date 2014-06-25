@@ -21,6 +21,13 @@ class PageController extends BaseController {
         $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.home', compact('groups', 'banners'));
     }
+    /**
+     * Show Home
+     */
+    public function anyStatus()
+    {
+        return 'OK';
+    }
 
     /**
      * Show Offer

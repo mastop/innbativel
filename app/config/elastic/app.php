@@ -26,6 +26,6 @@ return array(
 	|
 	*/
 
-	'url' => 'http://viaja.ca',
+	'url' => 'https://viaja.ca',
 
 );

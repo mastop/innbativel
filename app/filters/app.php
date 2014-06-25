@@ -21,11 +21,11 @@ App::before(function($request)
 
     // Set TimeZone
 	date_default_timezone_set('America/Sao_Paulo');
-    // Força o HTTPS
-    if( ! Request::secure() && App::environment() !== 'local')
-    {
-        return Redirect::secure(Request::path());
-    }
+    // Para funcionar na Amazon
+    $request->setTrustedProxies(array($request->server->get('REMOTE_ADDR')));
+    $request->setTrustedHeaderName(\Symfony\Component\HttpFoundation\Request::HEADER_CLIENT_IP, 'X-Forwarded-For');
+    $request->setTrustedHeaderName(\Symfony\Component\HttpFoundation\Request::HEADER_CLIENT_PROTO, 'X-Forwarded-Proto');
+    $request->setTrustedHeaderName(\Symfony\Component\HttpFoundation\Request::HEADER_CLIENT_PORT, 'X-Forwarded-Port');
 });
 
 // App::after(function($request, $response){});

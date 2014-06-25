@@ -86,7 +86,7 @@ return array(
 
 	'redis' => array(
 
-		'cluster' => true,
+		'cluster' => false,
 
 		'default' => array(
 			'host'     => 'innbativel.a0udbp.0001.sae1.cache.amazonaws.com',
