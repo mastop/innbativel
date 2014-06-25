@@ -20,7 +20,7 @@ class VouchersTableSeeder extends DatabaseSeeder
 
     $interpreter->addObserver(function(array $columns) use ($pdo) {
       try{
-        $stmt = $pdo->prepare('INSERT INTO vouchers (id, order_offer_id, used, display_code, name, email, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $stmt = $pdo->prepare('INSERT INTO vouchers (id, order_id, offer_option_id, used, display_code, name, email, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
         if(!$stmt->execute($columns)){ print_r($columns); print_r($stmt->errorInfo()); }
       }
       catch (Exception $e) {
