@@ -5,4 +5,4 @@
 //     return View::make('emails.auth.reminder', compact('token'));
 // });
 
-Route::post ('/fale-conosco/enviar',             ['as' => 'contact.send',    'uses' => 'PageController@postFaleConosco']);
+Route::post ('/fale-conosco/enviar',             ['https', 'as' => 'contact.send',    'uses' => 'PageController@postFaleConosco']);
