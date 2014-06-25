@@ -209,9 +209,9 @@ class PageController extends BaseController {
             $telefone = $inputs['contactPhone'];
             $celuar = $inputs['contactCelular'];
             $msg = $inputs['contactMessage'];
+            $url = $inputs['url'];
 
-
-            $data = array('name' => $name, 'email' => $email, 'telefone' => $telefone, 'celuar' => $celuar, 'msg' => $msg);
+            $data = array('name' => $name, 'email' => $email, 'telefone' => $telefone, 'celuar' => $celuar, 'msg' => $msg, 'url' => $url);
 
             // ENVIO DE EMAIL PARA O USUÁRIO INFORMANDO QUE FOI RECEBIDO SEU CONTATO
             Mail::send('emails.contact.reply', $data,
@@ -234,17 +234,16 @@ class PageController extends BaseController {
             );
             // FIM E-MAIL
 
-            Session::flash('success', 'Seu contato foi enviado com sucesso.');
-
-            return Redirect::back();
+            // Session::flash('success', 'Seu contato foi enviado com sucesso.');
+            $this->layout = 'format.ajax';
+            return Response::json(['error' => 0]);
         }
 
         /*
          * Return and display Errors
          */
-        return Redirect::back()
-            ->withInput()
-            ->withErrors($validation);
+        $this->layout = 'format.ajax';
+        return Response::json(['error' => 1, 'message' => 'Ocorreu um erro. Por favor verifique os dados prencidos e tente novamente.']);
     }
 }
 

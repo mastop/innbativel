@@ -9,13 +9,13 @@ class NgosTableSeeder extends DatabaseSeeder
         'id' => 5,
         'name' => 'ECOA',
         'description' => 'Ajude o planeta!',
-        'img' => '/assets/uploads/images/ngos/img/ecoa-23-anos.jpg',
+        'img' => '//innbativel.s3.amazonaws.com/ecoa.jpg',
       ],
       [
         'id' => 6,
         'name' => 'CARE',
         'description' => 'Ajude o planeta!',
-        'img' => '/assets/uploads/images/ngos/img/ecoa-23-anos.jpg',
+        'img' => '//innbativel.s3.amazonaws.com/ecoa.jpg',
       ],
     ];
 
