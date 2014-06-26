@@ -93,9 +93,9 @@
 
 {{-- Macro ImageUpload() está definida em app/start/global.php --}}
 
-{{HTML::ImageUpload('cover_img', 'Principal')}}
-{{HTML::ImageUpload('newsletter_img', 'Newsletter')}}
-{{HTML::ImageUpload('offers_images', 'Demais Imagens', true, $offer->offer_image()->get(['offer_id', 'url'])->lists('url'))}}
+{{HTML::ImageUpload('cover_img', 'Principal', false, false, '753x314')}}
+{{HTML::ImageUpload('newsletter_img', 'Newsletter', false, false, '280x117')}}
+{{HTML::ImageUpload('offers_images', 'Demais Imagens', true, $offer->offer_image()->get(['offer_id', 'url'])->lists('url'), '753x314')}}
 
 
 {{ Former::legend('Opções de Venda') }}
