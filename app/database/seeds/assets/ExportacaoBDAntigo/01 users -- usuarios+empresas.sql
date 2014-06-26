@@ -22,6 +22,8 @@ NOW() AS created_at
 
 FROM empresas e
 
+ORDER BY id
+
 INTO OUTFILE "/tmp/users.csv"
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";
