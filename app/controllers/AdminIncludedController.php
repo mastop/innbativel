@@ -82,6 +82,7 @@ class AdminIncludedController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Gerenciar Itens Inclusos';
 		$this->layout->content = View::make('admin.included.list', compact('sort', 'order', 'pag', 'included'));
 	}
 
@@ -110,16 +111,19 @@ class AdminIncludedController extends BaseController {
 	{
 		$inputs = Input::all();
 
-		$rules = [
-        	'title' => 'required',
-        	'description' => 'required',
-		];
+        $rules = [
+            'title' => 'required',
+            'icon' => 'required',
+        ];
 
 	    $validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
+            $inputs['icon'] = str_replace('entypo-', '', $inputs['icon']);
 			$this->included->create($inputs);
+
+            Session::flash('success', 'Item Incluso criado com sucesso.');
 
 			return Redirect::route('admin.included');
 		}
@@ -150,7 +154,7 @@ class AdminIncludedController extends BaseController {
 		/*
 		 * Layout / View
 		 */
-
+        $this->layout->page_title = 'Editando Item Incluso #'.$included->id.' '.$included->title;
 		$this->layout->content = View::make('admin.included.edit', compact('included'));
 	}
 
@@ -169,7 +173,7 @@ class AdminIncludedController extends BaseController {
 
 		$rules = [
         	'title' => 'required',
-        	'description' => 'required',
+        	'icon' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -180,9 +184,10 @@ class AdminIncludedController extends BaseController {
 
 			if ($included)
 			{
+                $inputs['icon'] = str_replace('entypo-', '', $inputs['icon']);
 				$included->update($inputs);
 			}
-
+            Session::flash('success', 'Item Incluso alterado com sucesso.');
 			return Redirect::route('admin.included');
 		}
 
@@ -206,6 +211,7 @@ class AdminIncludedController extends BaseController {
 
 		if (is_null($included))
 		{
+            Session::flash('error', 'Item Incluso #'.$id.' não encontrado.');
 			return Redirect::route('admin.included');
 		}
 
@@ -221,7 +227,7 @@ class AdminIncludedController extends BaseController {
 		/*
 		 * Layout / View
 		 */
-
+        $this->layout->page_title = 'Excluir Item Incluso #'.$included->id.' '.$included->title;
 		$this->layout->content = View::make('admin.included.delete', $data);
 	}
 

@@ -47,7 +47,7 @@
 
 
         {{ Former::multiselect('offers_included', 'Inclusos')
-        ->fromQuery(Included::orderBy('title')->get())
+        ->fromQuery(Included::getAllArray())
         ->data_placeholder('Selecione os Itens Inclusos')
         ->class('span12') }}
 

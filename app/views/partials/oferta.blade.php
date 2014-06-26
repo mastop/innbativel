@@ -10,7 +10,7 @@
     <div class="content clearfix">
         <div class="info row" itemscope="" itemprop="offers">
             @foreach ($offer->included as $included)
-            <div class="col-lg-2 tooltip" data-tip="{{ $included->description }}"><span class="entypo {{ $included->icon }}"></span> {{ $included->title }}</div>
+            <div class="col-lg-2 @if($included->description) tooltip" data-tip="{{ $included->description }}@endif"><span class="entypo {{ $included->icon }}"></span> {{ $included->title }}</div>
             @endforeach
         </div>
         <div class="options clearfix">
