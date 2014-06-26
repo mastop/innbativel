@@ -27,7 +27,11 @@ class Category extends Eloquent {
 
   public function offer()
   {
-      return $this->hasMany('Offer', 'category_id');
+      return $this->hasMany('Offer', 'category_id')
+          ->where('offers.starts_on', '<=', Carbon::now()->toDateTimeString())
+          ->where('offers.ends_on'  , '>=', Carbon::now()->toDateTimeString())
+          ->where('offers.is_available'  , '=', 1)
+          ->where('offers.is_active'  , '=', 1);
   }
 
   public function scopeMenu($query)

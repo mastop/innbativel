@@ -12,7 +12,10 @@ class CategoryController extends BaseController {
         if (is_null($category)) {
             return App::abort(404);
         }
-        $offers = Offer::where('category_id', '=', $category->id)->get();
+        $offers = $category->offer()->orderBy('created_at', 'desc')
+            ->remember(5)
+            ->get();
+        $offers->load('genre', 'genre2', 'destiny', 'included');
 
         $this->layout->content = View::make('category.offers', compact('offers', 'category'));
     }

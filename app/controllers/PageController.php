@@ -11,10 +11,10 @@ class PageController extends BaseController {
      */
     public function anyHome()
     {
-        $groups = Group::with(['offer.genre', 'offer.genre2', 'offer.offer_option_home', 'offer.included'])
+        $groups = Group::with(['offer.genre', 'offer.genre2', 'offer.destiny', 'offer.included'])
                         ->orderBy('display_order', 'asc')
                         ->remember(5)
-                        ->get()->toArray();
+                        ->get();
 
         $banners = Banner::where('is_active', '=', 1)->limit(5)->remember(3)->get();
 
