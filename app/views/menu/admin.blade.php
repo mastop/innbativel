@@ -3,6 +3,7 @@
     Navigation::links([
           [Navigation::HEADER, 'Menu Administrativo', false, false, null, 'tasks'],
           ['Dashboard', route('admin'), false, false, null, 'home'],
+          ['Banners', route('admin.banner'), false, false, null, 'image'],
           ['Usuários', route('admin.user'), false, false, null, 'user'],
           ['Parceiros', route('admin.partner'), false, false, null, 'user'],
           ['Papéis', route('admin.role'), false, false, null, 'book'],
@@ -32,6 +33,7 @@
     Navigation::links([
         [Navigation::HEADER, 'Menu', false, false, null, 'tasks'],
         ['Dashboard', route('admin'), false, false, null, 'home'],
+        ['Banners', route('admin.banner'), false, false, null, 'image'],
         ['Usuários', route('admin.user'), false, false, null, 'user'],
         ['Parceiros', route('admin.partner'), false, false, null, 'user'],
         ['Ofertas', route('admin.offer'), false, false, null, 'fire'],
@@ -57,6 +59,7 @@
     Navigation::links([
         [Navigation::HEADER, 'Menu', false, false, null, 'tasks'],
         ['Dashboard', route('admin'), false, false, null, 'home'],
+        ['Banners', route('admin.banner'), false, false, null, 'image'],
         ['Usuários', route('admin.user'), false, false, null, 'user'],
         ['Parceiros', route('admin.partner'), false, false, null, 'user'],
         ['Ofertas', route('admin.offer'), false, false, null, 'fire'],

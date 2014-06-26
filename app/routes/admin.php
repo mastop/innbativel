@@ -276,7 +276,23 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::get('ngo/delete/{id}', ['as' => 'admin.ngo.delete', 'uses' => 'AdminNgoController@getDelete']);
 	Route::post('ngo/delete/{id}', ['as' => 'admin.ngo.destroy', 'uses' => 'AdminNgoController@postDelete']);
 
-	Route::get('ngo/clearfield/{id}/{field}', ['as' => 'admin.ngo.clearfield', 'uses' => 'AdminNgoController@getClearfield']);
+
+	/*
+	 * Banners
+	 */
+
+	Route::any('banner', ['as' => 'admin.banner', 'uses' => 'AdminBannerController@anyIndex']);
+
+	Route::get('banner/create', ['as' => 'admin.banner.create', 'uses' => 'AdminBannerController@getCreate']);
+	Route::post('banner/create', ['as' => 'admin.banner.save', 'uses' => 'AdminBannerController@postCreate']);
+
+	Route::any('banner/edit', function(){ return Redirect::route('admin.banner'); });
+	Route::get('banner/edit/{id}', ['as' => 'admin.banner.edit', 'uses' => 'AdminBannerController@getEdit']);
+	Route::post('banner/edit/{id}', ['as' => 'admin.banner.update', 'uses' => 'AdminBannerController@postEdit']);
+
+	Route::any('banner/delete', function(){ return Redirect::route('admin.banner'); });
+	Route::get('banner/delete/{id}', ['as' => 'admin.banner.delete', 'uses' => 'AdminBannerController@getDelete']);
+	Route::post('banner/delete/{id}', ['as' => 'admin.banner.destroy', 'uses' => 'AdminBannerController@postDelete']);
 
 	/*
 	 * Genres

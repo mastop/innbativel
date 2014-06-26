@@ -70,7 +70,7 @@ foreach ($required_paths as $required_path) {
 
 // Macro para adicionar o campo de imagem com upload
 
-HTML::macro('ImageUpload', function($name, $label, $multiple = false, $images = false)
+HTML::macro('ImageUpload', function($name, $label, $multiple = false, $images = false, $placeholder = null)
 {
     $filefield = ($multiple) ? '<input id="'.$name.'_file" type="file" name="'.$name.'_file[]" class="fileupload" accept="image/*" multiple>' : '<input id="'.$name.'_file" type="file" name="'.$name.'_file" class="fileupload" accept="image/*">';
     //$hiddenfield = ($multiple) ? '<input id="'.$name.'" type="hidden" name="'.$name.'[]" class="fileuploaded">' : '<input id="'.$name.'" type="hidden" name="'.$name.'" class="fileuploaded">';
@@ -101,6 +101,7 @@ HTML::macro('ImageUpload', function($name, $label, $multiple = false, $images = 
                     <div class="dropinfo">
                         '.$text.'
                         <p>(ou clique)</p>
+                        '.(($placeholder) ? '<p class="placeholder">'.$placeholder.'</p>' : '').'
                     </div>
                     <div class="progress" style="display: none">
                         <div class="bar progress-bar-success"></div>
