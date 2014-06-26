@@ -30,4 +30,8 @@ return [
 	'login' => 'Login do Usuário',
 	'role' => 'Papél de Usuário',
 	'config' => 'Configurações',
+	'banner' => 'Banners',
+	'payment' => 'Pagamentos aos Parceiros',
+	'transaction' => 'Transações',
+	'contract' => 'Contratos',
 ];
