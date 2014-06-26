@@ -146,11 +146,13 @@ class Offer extends BaseModel {
         }
         $search = array(
             'Regulamento da Oferta',
+            'Regras',
             'Fale Conosco',
             'mapa'
         );
         $replace = array(
             '<a href="#regulation" class="tooltip" data-tip="Veja o Regulamento da Oferta" data-toggle="modal">Regulamento da Oferta</a>',
+            '<a href="#regulation" class="tooltip" data-tip="Veja o Regulamento da Oferta" data-toggle="modal">Regras</a>',
             '<a href="#contact" class="tooltip" data-tip="Entre em contato" data-toggle="modal">Fale Conosco</a>',
             '<a href="#map" class="tooltip" data-tip="Veja a localização" data-toggle="modal">Mapa</a>'
         );
