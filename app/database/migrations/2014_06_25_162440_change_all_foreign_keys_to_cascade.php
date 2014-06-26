@@ -242,8 +242,8 @@ class ChangeAllForeignKeysToCascade extends Migration {
 		Schema::table('payments_partners', function($table)
 		{
 
-			DB::statement('ALTER TABLE payments_partners CHANGE partner_id INT(10) UNSIGNED NULL');
-			DB::statement('ALTER TABLE payments_partners CHANGE payment_id INT(10) UNSIGNED NULL');
+			DB::statement('ALTER TABLE payments_partners CHANGE partner_id partner_id INT(10) UNSIGNED NULL');
+			DB::statement('ALTER TABLE payments_partners CHANGE payment_id payment_id INT(10) UNSIGNED NULL');
 
 			$table->dropForeign('payments_partners_partner_id_foreign');
 			$table->dropForeign('payments_partners_payment_id_foreign');
@@ -514,8 +514,8 @@ class ChangeAllForeignKeysToCascade extends Migration {
 		Schema::table('payments_partners', function($table)
 		{
 
-			DB::statement('ALTER TABLE payments_partners CHANGE partner_id INT(10) UNSIGNED NULL');
-			DB::statement('ALTER TABLE payments_partners CHANGE payment_id INT(10) UNSIGNED NULL');
+			DB::statement('ALTER TABLE payments_partners CHANGE partner_id partner_id INT(10) UNSIGNED NULL');
+			DB::statement('ALTER TABLE payments_partners CHANGE payment_id payment_id INT(10) UNSIGNED NULL');
 
 			$table->dropForeign('payments_partners_partner_id_foreign');
 			$table->dropForeign('payments_partners_payment_id_foreign');
