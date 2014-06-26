@@ -36,6 +36,12 @@
 	{{ Table::open() }}
 	{{ Table::headers('ID', 'Título', 'Descrição', 'Ícone', 'Ações') }}
 	{{ Table::body($included)
+        ->icon(function($body) {
+            if(isset($body->icon)){
+                return '<span class="entypo entypo-'.$body->icon.'"></span>';
+            }
+            return '--';
+        })
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 				Navigation::links([

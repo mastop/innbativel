@@ -5,7 +5,7 @@ return array(
 
     // The Super Admin role
     // (returns true for all permissions)
-    'super_admin' => 'programador',
+    'super_admin' => 'administrador',
 
     // DB prefix for tables
     'prefix' => ''

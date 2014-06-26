@@ -115,3 +115,9 @@ HTML::macro('ImageUpload', function($name, $label, $multiple = false, $images = 
             </div>
         </div>';
 });
+
+// Estendendo o Blade para suportar @break e @continue
+Blade::extend(function($value)
+{
+    return preg_replace('/(\s*)@(break|continue)(\s*)/', '$1<?php $2; ?>$3', $value);
+});

@@ -2482,11 +2482,17 @@ dl.listing dt { clear: left; width: 15%; text-align: right; }
     border: 2px dashed #D5D5D5;
     position: relative;
     cursor: pointer;
-    padding-top: 40px;
+    padding-top: 55px;
 }
 .dropzone p.placeholder{
-    color: #3c85ba;
     font-size: 1.5em;
+    position: absolute;
+    top: 0;
+    padding: 10px;
+    border-bottom-right-radius: 15px;
+    background: #D5D5D5;
+    color: #FFF;
+
 }
 .dropzone.in {
     width: 600px;

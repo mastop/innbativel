@@ -47,7 +47,7 @@
 
 
         {{ Former::multiselect('offers_included', 'Inclusos')
-        ->fromQuery(Included::orderBy('title')->get())
+        ->fromQuery(Included::getAllArray())
         ->data_placeholder('Selecione os Itens Inclusos')
         ->class('span12') }}
 
@@ -92,9 +92,9 @@
 
         {{-- Macro ImageUpload() está definida em app/start/global.php --}}
 
-        {{HTML::ImageUpload('cover_img', 'Principal')}}
-        {{HTML::ImageUpload('newsletter_img', 'Newsletter')}}
-        {{HTML::ImageUpload('offers_images', 'Demais Imagens', true)}}
+        {{HTML::ImageUpload('cover_img', 'Principal', false, false, '753x314')}}
+        {{HTML::ImageUpload('newsletter_img', 'Newsletter', false, false, '280x117')}}
+        {{HTML::ImageUpload('offers_images', 'Demais Imagens', true, false, '753x314')}}
 
 
         {{ Former::legend('Opções de Venda') }}
