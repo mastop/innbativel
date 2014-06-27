@@ -165,7 +165,7 @@ class AdminContractController extends BaseController {
 		}
 
 		$email = $contract->partner->email;
-		$name = $contract->partner->first_name.(isset($contract->partner->last_name)?' '.$contract->partner->last_name:'');
+		$name = $contract->partner->profile->first_name.(isset($contract->partner->profile->last_name)?' '.$contract->partner->profile->last_name:'');
 
 		$data = array('name' => $name, 'id' => $id);
 

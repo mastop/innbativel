@@ -56,11 +56,11 @@ tr.grey {
 
 <h3>Empresa</h3>
 
-<p><label>Nome: {{ $contract->partner->first_name.(isset($contract->partner->last_name)?(' '.$contract->partner->last_name):'') }}</label></p>
+<p><label>Nome: {{ $contract->partner->profile->first_name.(isset($contract->partner->profile->last_name)?(' '.$contract->partner->profile->last_name):'') }}</label></p>
 
 <h3>Consultor INNBatível</h3>
 
-<p><label>Nome: {{ $contract->consultant->first_name.(isset($contract->consultant->last_name)?(' '.$contract->consultant->last_name):'') }}</label></p>
+<p><label>Nome: {{ $contract->consultant->profile->first_name.(isset($contract->consultant->profile->last_name)?(' '.$contract->consultant->profile->last_name):'') }}</label></p>
 
 <h3>Dados do contratante</h3>
 

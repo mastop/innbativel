@@ -79,14 +79,14 @@
 				return '--';
 			})
 			->voucherr(function($data) {
-				if(isset($data->voucher)){
-					return $data->voucher->id.'-'.$data->voucher->display_code.'-'.$data->voucher->offer_option_offer->offer->id;
+				if(isset($data->voucher) && isset($data->voucher->offer_option_offer)){
+					return $data->voucher->id.'-'.$data->voucher->display_code.'-'.$data->voucher->offer_option_offer->offer_id;
 				}
 				return '--';
 			})
 			->offer(function($data) {
 				if(isset($data->voucher->offer_option_offer->offer->id)){
-					return link_to_route('offer', $data->voucher->offer_option_offer->offer->id.' | '.$data->voucher->offer_option_offer->offer->title, ['slug' => $data->voucher->offer_option_offer->offer->slug]).' ('.$data->voucher->offer_option_offer->title.')';
+					return link_to_route('oferta', $data->voucher->offer_option_offer->offer->id.' | '.$data->voucher->offer_option_offer->offer->destiny->name, ['slug' => $data->voucher->offer_option_offer->offer->slug]).' ('.$data->voucher->offer_option_offer->title.')';
 				}
 				return '--';
 			})

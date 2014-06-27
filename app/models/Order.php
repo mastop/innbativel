@@ -55,7 +55,9 @@ class Order extends Eloquent {
 
   public function offer_option_offer(){
     return $this->belongsToMany('OfferOption', 'vouchers', 'order_id', 'offer_option_id')
-                ->with(['offer'])
+                ->with(['offer' => function($query){
+                  $query->withTrashed();
+                }])
                 ->withPivot('id', 'status', 'used', 'display_code', 'name', 'email', 'tracking_code');
   }
 
