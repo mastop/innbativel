@@ -31,7 +31,7 @@ class Order extends Eloquent {
   }
 
   public function discount_coupon(){
-  	return $this->belongsTo('DiscountCoupon', 'coupon_id');
+  	return $this->belongsTo('DiscountCoupon', 'coupon_id')->withTrashed();
   }
 
   public function voucher(){
