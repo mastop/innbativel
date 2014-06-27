@@ -7320,6 +7320,7 @@ h1, h2, h3, h4, h5, h6,
 }
 .checkout-page .outros-selos {
 	display: inline-block;
+    float: right;
 }
 .checkout-page .outros-selos > div {
 	margin-left: 20px !important;
@@ -7356,10 +7357,6 @@ h1, h2, h3, h4, h5, h6,
 #selo-embratur {
 	background: #fff;
 	display: inline-block;
-}
-#selo-site-sustentavel {
-	display: inline-block;
-	margin-top: 5px;
 }
 
 #widget-facebook {
@@ -7398,9 +7395,6 @@ h1, h2, h3, h4, h5, h6,
 	}
 	#selo-embratur {
 		margin-top: 5px;
-	}
-	#selo-site-sustentavel {
-		display: block;
 	}
 	#widget-facebook {
 		margin: 12px 0 0 0;
@@ -7883,7 +7877,7 @@ h1, h2, h3, h4, h5, h6,
 		margin: 5px 4px 8px;
 	}
 	.offer-spotlight .offer-grid-inner .info .tooltip {
-		font-size: 1.2em;
+		font-size: 1.1em;
 	}
 	.offer-spotlight .offer-grid-inner .options {
 		margin: 7px 0 11px 7px;
@@ -8012,7 +8006,7 @@ h1, h2, h3, h4, h5, h6,
 	color: #737480;
 	/*border: 1px solid red;*/
 	font-family: Cabin, 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	font-size: 1em;
+	font-size: 0.9em;
 	font-weight: 500;
 	display: inline-block;
 }

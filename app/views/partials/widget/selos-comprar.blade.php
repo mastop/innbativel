@@ -23,10 +23,8 @@
                 <img src="//innbativel.s3.amazonaws.com/embratur.png" alt="Embratur" width="140" height="19">
             </figure>
         </div>
-        <div id="selo-site-sustentavel">
-            <a href="http://www.sitesustentavel.com.br/certificado/list?url=innbativel.com.br" title="Site Sustentável" target="_blank">
-                <img src="//innbativel.s3.amazonaws.com/site-sustentavel.png" alt="Site Sustentável" width="142" height="40">
-            </a>
+        <div id="selo-footer">
+            &nbsp;
         </div>
     </div>
 </div>
