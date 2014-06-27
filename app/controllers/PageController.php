@@ -11,15 +11,22 @@ class PageController extends BaseController {
      */
     public function anyHome()
     {
-        $groups = Group::with(['offer.genre', 'offer.genre2', 'offer.offer_option_home', 'offer.included'])
+        $groups = Group::with(['offer.genre', 'offer.genre2', 'offer.destiny', 'offer.included'])
                         ->orderBy('display_order', 'asc')
                         ->remember(5)
-                        ->get()->toArray();
+                        ->get();
 
-        $banners = Banner::limit(3)->remember(3)->get()->toArray();
+        $banners = Banner::where('is_active', '=', 1)->limit(5)->remember(3)->get();
 
         $this->layout->body_classes = 'innbativel frontend no-sidebar';
         $this->layout->content = View::make('pages.home', compact('groups', 'banners'));
+    }
+    /**
+     * Show Home
+     */
+    public function anyStatus()
+    {
+        return 'OK';
     }
 
     /**
@@ -237,6 +244,25 @@ class PageController extends BaseController {
          */
         $this->layout = 'format.ajax';
         return Response::json(['error' => 1, 'message' => 'Ocorreu um erro. Por favor verifique os dados prencidos e tente novamente.']);
+    }
+    /**
+     * Redireciona até a página do Banner
+     */
+    public function getBanner($ban)
+    {
+        // Decodifica o ID do Banner
+        $encoded = $ban;
+        $offset = ord($encoded[0]) - 79;
+        $encoded = substr($encoded, 1);
+        for ($i = 0, $len = strlen($encoded); $i < $len; ++$i) {
+            $encoded[$i] = ord($encoded[$i]) - $offset - 65;
+        }
+        $banner = Banner::find((int) $encoded);
+        if($banner->is_active){
+            // Incrementa os cliques
+            $banner->increment('clicks');
+        }
+        return Redirect::to($banner->link);
     }
 }
 

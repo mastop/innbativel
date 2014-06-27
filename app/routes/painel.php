@@ -1,6 +1,6 @@
 <?php
 
-Route::group(array('prefix' => 'painel', 'before' => 'auth|perm'), function(){
+Route::group(array('https', 'prefix' => 'painel', 'before' => 'auth|perm'), function(){
 	/*
 	 * Painel dashboard
 	 */

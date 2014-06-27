@@ -295,14 +295,20 @@ class AdminOfferController extends BaseController {
                     // Cria um novo nome para a imagem
                     $newname = "{$offer->slug}-newsletter.$ext";
                     $newpath = "ofertas/{$offer->id}/$newname";
-                    // Copia a imagem para o lugar definitivo
-                    $s3->copyObject(array(
-                        'Bucket'     => $s3bucket,
-                        'Key'        => "$newpath",
-                        'CopySource' => "{$s3bucket}/temp/{$newsletter_img}",
+
+                    // Pega a imagem para redimensionar
+                    $result = $s3->getObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key' => "temp/{$newsletter_img}"
+                    ));
+                    $thumb = Image::make($result['Body'])->resize(280, 117);
+                    $s3->putObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => "$newpath",
+                        'Body'   => $thumb->encode($ext, 65), // 65 é a Qualidade
                         'ACL'        => 'public-read',
                         'CacheControl' => 'max-age=315360000',
-                        'ContentType' => '^',
+                        'ContentType' => $result['ContentType'],
                         'Expires'    => $expires
                     ));
                     // Coloca o novo nome da imagem em $offer
@@ -594,14 +600,19 @@ class AdminOfferController extends BaseController {
                         // Cria um novo nome para a imagem
                         $newname = "{$offer->slug}-newsletter.$ext";
                         $newpath = "ofertas/{$offer->id}/$newname";
-                        // Copia a imagem para o lugar definitivo
-                        $s3->copyObject(array(
-                            'Bucket'     => $s3bucket,
-                            'Key'        => "$newpath",
-                            'CopySource' => "{$s3bucket}/temp/{$newsletter_img}",
+                        // Pega a imagem para redimensionar
+                        $result = $s3->getObject(array(
+                            'Bucket' => $s3bucket,
+                            'Key' => "temp/{$newsletter_img}"
+                        ));
+                        $thumb = Image::make($result['Body'])->resize(280, 117);
+                        $s3->putObject(array(
+                            'Bucket' => $s3bucket,
+                            'Key'    => "$newpath",
+                            'Body'   => $thumb->encode($ext, 65), // 65 é a Qualidade
                             'ACL'        => 'public-read',
                             'CacheControl' => 'max-age=315360000',
-                            'ContentType' => '^',
+                            'ContentType' => $result['ContentType'],
                             'Expires'    => $expires
                         ));
                         // Coloca o novo nome da imagem em $offer
