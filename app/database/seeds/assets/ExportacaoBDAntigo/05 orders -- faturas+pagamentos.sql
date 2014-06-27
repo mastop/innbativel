@@ -10,9 +10,14 @@ p.order_id AS braspag_order_id,
 p.antifraud_id AS antifraud_id, 
 p.braspag_id AS braspag_id, 
 (CASE
-        WHEN (f.status = 0 OR f.status = '0') THEN 'pendente'
-        WHEN (f.status = 1 OR f.status = '1') THEN 'pago'
-        ELSE 'cancelado'
+    WHEN (p.status = 'iniciado') THEN 'pendente'
+    WHEN (p.status = 'aprovado') THEN 'pago'
+    WHEN (p.status = 'rejeitado') THEN 'cancelado'
+    WHEN (p.status = 'estornado') THEN 'cancelado'
+    WHEN (p.status = 'nao_finalizado') THEN 'cancelado'
+    WHEN (p.status = 'nao_pago') THEN 'cancelado'
+    WHEN (p.status = 'abortado') THEN 'cancelado'
+    ELSE p.status
 END) AS status,
 p.valor_total_com_desconto AS total, 
 p.desconto AS credit_discount, 
@@ -27,8 +32,7 @@ DATE_FORMAT(p.data, '%Y-%m-%d %H:%i:%s') AS created_at,
 DATE_FORMAT(p.datahora, '%Y-%m-%d %H:%i:%s') AS updated_at
 
 FROM pagamentos p 
-LEFT JOIN faturas f ON p.id = f.id_pagamento
-WHERE f.id >= 78059
+WHERE p.id_usuario IN (SELECT id FROM usuarios)
 
 #///////////
 UNION ALL
@@ -65,8 +69,9 @@ DATE_FORMAT(f.data, '%Y-%m-%d %H:%i:%s') AS updated_at
 
 FROM faturas f
 
-WHERE f.id < 78059
+WHERE f.id < 78059 AND f.id_usuario IN (SELECT id FROM usuarios)
 
 INTO OUTFILE "/tmp/orders.csv"
+CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";

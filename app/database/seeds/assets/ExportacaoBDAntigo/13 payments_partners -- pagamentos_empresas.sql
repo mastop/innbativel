@@ -9,5 +9,6 @@ pe.total AS total
 FROM pagamentos_empresas AS pe
 
 INTO OUTFILE "/tmp/payments_partners.csv"
+CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";

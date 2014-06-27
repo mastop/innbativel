@@ -2,7 +2,10 @@ SELECT
 
 t.id AS id, 
 (t.id_pagamento + 78059) AS order_id, 
-t.status AS status, 
+(CASE
+    WHEN (t.status = 'aprovado') THEN 'pagamento'
+    ELSE 'cancelamento'
+END) AS status, 
 p.valor_total_com_desconto AS total, 
 p.desconto AS credit_discount, 
 DATE_FORMAT(p.datahora, '%Y-%m-%d %H:%i:%s') AS created_at, 
@@ -15,5 +18,6 @@ LEFT JOIN
 pagamentos p ON p.id = t.id_pagamento 
 
 INTO OUTFILE "/tmp/transactions.csv"
+CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";

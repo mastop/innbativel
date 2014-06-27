@@ -8,5 +8,6 @@ DATE_FORMAT(per.data_pagamento, '%Y-%m-%d') AS date
 FROM periodos AS per
 
 INTO OUTFILE "/tmp/payments.csv"
+CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";

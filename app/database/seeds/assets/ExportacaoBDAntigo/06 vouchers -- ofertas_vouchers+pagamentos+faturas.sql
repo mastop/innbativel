@@ -2,8 +2,11 @@ SELECT
 
 ov.id AS id, 
 (ov.id_pagamento + 78059) AS order_id,
-COALESCE(ov.id_tipo_apto, (ov.id + 3000)) AS offer_option_id,
-ov.usado AS used, 
+COALESCE(ov.id_tipo_apto, (p.id_compra + 3000)) AS offer_option_id,
+(CASE
+    WHEN (ov.usado = 's') THEN 1
+    ELSE 'cancelado'
+END) AS used, 
 ov.numero AS display_code, 
 ov.nome AS name, 
 ov.email_voucher AS email,
@@ -30,14 +33,17 @@ SELECT
 
 ov.id AS id, 
 ov.id_compra AS order_id,
-COALESCE(ov.id_tipo_apto, (ov.id + 3000)) AS offer_option_id,
-ov.usado AS used, 
+COALESCE(ov.id_tipo_apto, (f.id_compra + 3000)) AS offer_option_id,
+(CASE
+    WHEN (ov.usado = 's') THEN 1
+    ELSE 'cancelado'
+END) AS used, 
 ov.numero AS display_code, 
 ov.nome AS name, 
 ov.email_voucher AS email,
 (CASE
     WHEN (f.status = 0 OR f.status = '0') THEN 'pendente'
-    WHEN (f.status = 1 OR f.status = '1') THEN 'aprovado'
+    WHEN (f.status = 1 OR f.status = '1') THEN 'pago'
     ELSE 'cancelado'
 END) AS status
 
@@ -48,5 +54,6 @@ LEFT JOIN faturas f ON f.id = ov.id_compra
 WHERE ov.id < 114435
 
 INTO OUTFILE "/tmp/vouchers.csv"
+CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";
