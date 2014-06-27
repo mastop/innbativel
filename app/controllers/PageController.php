@@ -129,8 +129,9 @@ class PageController extends BaseController {
      */
     public function anyBusca()
     {
+        $q = Input::get('q');
         $this->layout->body_classes = 'search-page';
-        $this->layout->content = View::make('pages.busca');
+        $this->layout->content = View::make('pages.busca', compact('q'));
     }
 
     /**
