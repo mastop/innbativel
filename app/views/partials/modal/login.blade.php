@@ -9,7 +9,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-8">
-                            <a class="img-link" href="https://www.facebook.com/dialog/oauth?client_id=145684162279488&amp;redirect_uri=https%3A%2F%2Finnbativel.com.br%2Flogin-facebook-valida.php&amp;state=8bbb0e68cf6d535aac3a58cf2c254be8&amp;scope=email%2C+user_birthday%2C+user_hometown"><img src="//innbativel.s3.amazonaws.com/fb-login.png" alt="Faça login com sua conta do Facebook"></a>
+                            <a class="img-link" href="{{ route('login.facebook') }}"><img src="//innbativel.s3.amazonaws.com/fb-login.png" alt="Faça login com sua conta do Facebook"></a>
                         </div>
                     </div>
                     <hr>
@@ -29,7 +29,7 @@
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-8">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
-                            <input type="hidden" name="destination" value="{{ Request::path() }}"/>
+                            <input type="hidden" name="destination" value="{{ Input::get('destination', Request::path()) }}"/>
                             <button type="submit" class="btn">Entrar</button>
                             <a href="#pass-recover" class="pass-recover" data-toggle="modal" data-dismiss="modal">Esqueci minha senha</a>
                         </div>
@@ -42,3 +42,24 @@
         </div>
     </div>
 </div>
+@if($message = Session::get('error', Session::get('warning')))
+<div id="login-error" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-sm text-center">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 class="modal-title">Atenção</h4><br/>
+                <p>
+                    {{$message}}
+                </p><br/>
+                <button type="submit" class="btn" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+@if(Input::get('destination'))
+<script>
+    $('#login').modal('show');
+    $('#login-error').modal('show');
+</script>
+@endif

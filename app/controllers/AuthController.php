@@ -16,9 +16,11 @@ class AuthController extends BaseController {
 		if (Auth::check())
 		{
 			return Redirect::route('home');
-		}
+		}else{
+            return Redirect::route('home', array('destination' => Input::get('destination', '/minha-conta')));
+        }
 
-		$this->layout->content = View::make('auth.login');
+		//$this->layout->content = View::make('auth.login');
 	}
 
 	public function postLogin()
@@ -120,7 +122,7 @@ class AuthController extends BaseController {
                     }
                     catch (Toddish\Verify\UserPasswordIncorrectException $e)
                     {
-					    return Redirect::route('login')
+					    return Redirect::route('home', array('destination' => Input::get('destination', Session::get('destination'))))
                             ->with('warning', 'Usuário e/ou senha incorretos.')
                             ->withInput();
                     }
@@ -257,7 +259,7 @@ class AuthController extends BaseController {
 			$user->password = $password;
 			$user->save();
 
-			return Redirect::route('login')->with('Success', 'Your password has been reset');
+			return Redirect::route('home', array('destination' => '/minha-conta'))->with('warning', 'Sua senha foi alterada');
 		});
 	}
 
@@ -385,7 +387,7 @@ class AuthController extends BaseController {
 		else
 		{
 			$login = $facebook->getLoginUrl([
-				'scope' => 'email',
+				'scope' => 'email,user_birthday,user_hometown',
 				'redirect_uri' => URL::route('login.facebook', null, true),
 			]);
 
@@ -523,9 +525,9 @@ class AuthController extends BaseController {
 
                 // Redirect to the register page
                 return //Redirect::route('home')
-                    Redirect::route('login')
+                    Redirect::route('home', array('destination' => '/minha-conta'))
                     ->withInput()
-                    ->withErrors('success', 'Seu cadastro foi feito com sucesso!');
+                    ->withErrors('warning', 'Seu cadastro foi feito com sucesso!');
             }
 		}
 
