@@ -56,6 +56,17 @@ class Offer extends BaseModel {
         'genre_id' => 'required|integer',
 	 ];
 
+    public static function query()
+    {
+        $now = date('Y-m-d H:i:s');
+        $query = parent::query();
+        $query->where('offers.starts_on','<', $now)
+                ->where('offers.ends_on','>', $now)
+                ->where('offers.is_available','=', 1)
+                ->where('offers.is_active','=', 1);
+        return $query;
+    }
+
 	public function order(){
 		return $this->hasMany('Order');
 	}
@@ -69,10 +80,6 @@ class Offer extends BaseModel {
 	}
 
 	public function offer_option(){
-		return $this->hasMany('OfferOption')->orderBy('display_order', 'asc');
-	}
-
-	public function offer_option_home(){
 		return $this->hasMany('OfferOption')->orderBy('display_order', 'asc');
 	}
 
@@ -146,11 +153,13 @@ class Offer extends BaseModel {
         }
         $search = array(
             'Regulamento da Oferta',
+            'Regras',
             'Fale Conosco',
             'mapa'
         );
         $replace = array(
             '<a href="#regulation" class="tooltip" data-tip="Veja o Regulamento da Oferta" data-toggle="modal">Regulamento da Oferta</a>',
+            '<a href="#regulation" class="tooltip" data-tip="Veja o Regulamento da Oferta" data-toggle="modal">Regras</a>',
             '<a href="#contact" class="tooltip" data-tip="Entre em contato" data-toggle="modal">Fale Conosco</a>',
             '<a href="#map" class="tooltip" data-tip="Veja a localização" data-toggle="modal">Mapa</a>'
         );
@@ -280,6 +289,32 @@ class Offer extends BaseModel {
     public function getThumbAttribute()
     {
         return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/thumb/'.$this->getOriginal('cover_img');
+    }
+    /**
+     * Retorna a data mínima para o uso da oferta, como $offer->min_date
+     * @return string
+     */
+    function getMinDateAttribute(){
+        $dateMin = $this->offer_option->lists('voucher_validity_start');
+        $dateStart = strtotime('+1 year');
+        array_walk($dateMin, function($value) use(&$dateStart){
+            $voucher_validity_start = strtotime(str_replace('/', '-', $value));
+            if($voucher_validity_start <= $dateStart) $dateStart = $voucher_validity_start;
+        });
+        return $dateStart;
+    }
+    /**
+     * Retorna a data limite para o uso da oferta, como $offer->max_date
+     * @return string
+     */
+    function getMaxDateAttribute(){
+        $dateMax = $this->offer_option->lists('voucher_validity_end');
+        $dateEnd = time();
+        array_walk($dateMax, function($value) use(&$dateEnd){
+            $voucher_validity_end = strtotime(str_replace('/', '-', $value));
+            if($voucher_validity_end >= $dateEnd) $dateEnd = $voucher_validity_end;
+        });
+        return $dateEnd;
     }
 
 }

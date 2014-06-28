@@ -26,6 +26,10 @@ App::before(function($request)
     $request->setTrustedHeaderName(\Symfony\Component\HttpFoundation\Request::HEADER_CLIENT_IP, 'X-Forwarded-For');
     $request->setTrustedHeaderName(\Symfony\Component\HttpFoundation\Request::HEADER_CLIENT_PROTO, 'X-Forwarded-Proto');
     $request->setTrustedHeaderName(\Symfony\Component\HttpFoundation\Request::HEADER_CLIENT_PORT, 'X-Forwarded-Port');
+    if(!Request::secure())
+    {
+        return Redirect::secure(Request::path());
+    }
 });
 
 // App::after(function($request, $response){});

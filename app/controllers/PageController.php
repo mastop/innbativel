@@ -129,8 +129,78 @@ class PageController extends BaseController {
      */
     public function anyBusca()
     {
+        $q = Input::get('q');
+        $qArray = explode(' ', $q);
+        $tags = Tag::whereIn('title', $qArray)->lists('id');
+        $offers = Offer::query()
+            ->select('offers.*')
+            ->leftJoin('offers_options', 'offers.id', '=', 'offers_options.offer_id')
+            ->leftJoin('destinies', 'offers.destiny_id', '=', 'destinies.id')
+            ->leftJoin('offers_tags', 'offers.id', '=', 'offers_tags.offer_id')
+            ->where(function($query) use ($q, $tags){
+                $query->orWhere('offers.title','like', "%$q%")
+                    ->orWhere('destinies.name','like', "%$q%")
+                    ->orWhere('offers_options.title','like', "%$q%");
+                if(count($tags) > 0) $query->orWhereIn('offers_tags.tag_id', $tags);
+            })
+            ->orderBy('offers.display_order', 'asc')
+            ->orderBy('offers.ends_on', 'asc')
+            ->take(50)->distinct()->get(); // Repare que não deixamos o usuário fuçar em mais do que 50 ofertas por busca
+        $offers->load('holiday', 'category', 'genre', 'genre2', 'destiny', 'included', 'offer_option');
+        $total = count($offers);
+        $categories = [];
+        $destinies = [];
+        $holidays = [];
+        $dateStart = strtotime('+1 year');
+        $dateEnd = time();
+        $dates = [];
+        $months = [
+            1 => 'Jan',
+            2 => 'Fev',
+            3 => 'Mar',
+            3 => 'Mar',
+            4 => 'Abr',
+            5 => 'Mai',
+            6 => 'Jun',
+            7 => 'Jul',
+            8 => 'Ago',
+            9 => 'Set',
+            10 => 'Out',
+            11 => 'Nov',
+            12 => 'Dez',
+        ];
+        if($total > 0){
+            foreach($offers as $offer){
+                // Categorias
+                $categories[$offer->category->id]['slug'] = $offer->category->slug;
+                $categories[$offer->category->id]['title'] = $offer->category->title;
+                $categories[$offer->category->id]['total'] = (!isset($categories[$offer->category->id]['total'])) ? 1 : $categories[$offer->category->id]['total'] + 1;
+                // Destinos
+                $destinies[$offer->destiny->id]['name'] = $offer->destiny->name;
+                $destinies[$offer->destiny->id]['total'] = (!isset($destinies[$offer->destiny->id]['total'])) ? 1 : $destinies[$offer->destiny->id]['total'] + 1;
+                // Feriados
+                foreach($offer->holiday as $h){
+                    $holidays[$h->id]['title'] = $h->title;
+                    $holidays[$h->id]['total'] = (!isset($holidays[$h->id]['total'])) ? 1 : $holidays[$h->id]['total'] + 1;
+                }
+                // Datas
+                $dateMin = $offer->min_date;
+                if($dateMin <= $dateStart) $dateStart = $dateMin;
+                $dateMax = $offer->max_date;
+                if($dateMax >= $dateEnd) $dateEnd = $dateMax;
+            }
+            // Para formar o filtro de datas
+            $dateEnd = strtotime('+1 month', $dateEnd);
+            while ($dateStart <= $dateEnd) {
+                $dates[date('Ym', $dateStart)] = $months[date('n', $dateStart)].' '.date('Y', $dateStart);
+                $dateStart = strtotime('+1 month', $dateStart);
+            }
+        }
+        $this->layout->title = $q.' - INNBatível';
+        $this->layout->description = 'No INNBatível você encontra as melhores ofertas de '.$q.', com preços INNBatíveis!';
+        $this->layout->og_type = 'article';
         $this->layout->body_classes = 'search-page';
-        $this->layout->content = View::make('pages.busca');
+        $this->layout->content = View::make('pages.busca', compact('offers', 'q', 'total', 'categories', 'destinies', 'holidays', 'dates'));
     }
 
     /**
