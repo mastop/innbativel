@@ -215,7 +215,14 @@ class PageController extends BaseController {
      */
     public function anyMinhaConta()
     {
-        $this->layout->content = View::make('pages.minha-conta');
+        $vouchers = Voucher::with('offer_option_offer', 'offer_option.offer')->whereExists(function($query){
+            $query->select(DB::raw(1))
+                ->from('orders')
+                ->whereRaw('orders.id = vouchers.order_id')
+                ->whereRaw('orders.user_id = '.Auth::user()->id);
+        })->get();
+        $this->layout->title = 'Minha Conta no INNBatível';
+        $this->layout->content = View::make('pages.minha-conta', compact('vouchers'));
     }
 
     /**

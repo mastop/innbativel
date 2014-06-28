@@ -16,63 +16,60 @@
 				
 				<ul class="buy-itens buy-combo checkout-combo nocheck cupoms">
 					<h3>Meus cupons <span class="glyphicon glyphicon-chevron-down"></span></h3>
-					
-					<li>
-						<figure><img src="assets/uploads/camarao.jpg"></figure>
-						<div class="offer-combo cupom">
-							<a href="#combo1-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">Sequência de Camarão para 1 Pessoa</a>
-						</div>
-						<div>
-							<div class="text-center">25/03/2014 a 31/10/2014</div>
-							<div class="text-center">1 cupom</div>
-							<div class="text-center">Aguardando</div>
-							<div class="buttons">
-								<a href="https://www.pagador.com.br/post/pagador/reenvia.asp/ea60e3e1-8e48-4ecd-93c7-0b98313b575a" target="_blank" title="Gere o boleto para pagamento" class="btn btn-include">Boleto</a>
-							</div>
-						</div>
-					</li>
-
-					<li>
-						<figure><img src="assets/uploads/camarao.jpg"></figure>
-						<div class="offer-combo cupom">
-							<a href="#combo1-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">Sequência de Frutos do Mar para 2 Pessoas</a>
-						</div>
-						<div>
-							<div class="text-center">25/03/2014 a 31/10/2014</div>
-							<div class="text-center">1 cupom</div>
-							<div class="text-center">Disponível</div>
-							<div class="buttons">
-								<a href="https://www.pagador.com.br/post/pagador/reenvia.asp/ea60e3e1-8e48-4ecd-93c7-0b98313b575a" target="_blank" title="Gere o boleto para pagamento" class="btn btn-include">Abrir</a>
-							</div>
-						</div>
-					</li>
-
-					<li>
-						<figure><img src="assets/uploads/camarao.jpg"></figure>
-						<div class="offer-combo cupom">
-							<a href="#combo1-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">Sequência de Camarão para 4 Pessoas</a>
-						</div>
-						<div>
-							<div class="text-center">25/03/2014 a 31/10/2014</div>
-							<div class="text-center">1 cupom</div>
-							<div class="text-center">Finalizado</div>
-							<div class="buttons">
-								<!-- <a href="https://www.pagador.com.br/post/pagador/reenvia.asp/ea60e3e1-8e48-4ecd-93c7-0b98313b575a" target="_blank" title="Gere o boleto para pagamento" class="btn btn-include">Boleto</a> -->
-							</div>
-						</div>
-					</li>
-
+					@if(count($vouchers) > 0)
+                        @foreach($vouchers as $voucher)
+                            <li>
+                                <figure><img src="{{$voucher->offer_option_offer->offer->thumb}}"></figure>
+                                <div class="offer-combo cupom">
+                                    <a href="#combo{{$voucher->id}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$voucher->offer_option_offer->offer->destiny->name}} <span class="entypo chevron-right"></span> {{$voucher->offer_option_offer->title}}</a>
+                                </div>
+                                <div>
+                                    <div class="text-center">{{$voucher->offer_option_offer->voucher_validity_start}} a {{$voucher->offer_option_offer->voucher_validity_end}}</div>
+                                    <div class="text-center">&nbsp;</div>
+                                    <div class="text-center">
+                                        @if($voucher->used == 1)
+                                        Utilizado
+                                        @elseif(($voucher->status != 'pendente' && $voucher->status != 'pago') || $voucher->offer_option_offer->is_expired)
+                                        Finalizado
+                                        @elseif($voucher->status == 'pendente')
+                                        Aguardando
+                                        @else
+                                        Disponível
+                                        @endif
+                                    </div>
+                                    <div class="buttons">
+                                        @if($voucher->used == 1)
+                                        <!-- Qual botão vai aqui? -->
+                                        @elseif(($voucher->status != 'pendente' && $voucher->status != 'pago') || $voucher->offer_option_offer->is_expired)
+                                        <!-- Aqui não vai nada? -->
+                                        @elseif($voucher->status == 'pendente' && $voucher->order->payment_terms == 'Boleto')
+                                            @if($voucher->order->payment_terms == 'Boleto')
+                                        <a href="https://www.pagador.com.br/post/pagador/reenvia.asp/{{$voucher->order->braspag_order_id}}" target="_blank" title="Gere o boleto para pagamento" class="btn btn-include">Boleto</a>
+                                            @else
+                                                Aguardando aprovação do pagamento
+                                            @endif
+                                        @else
+                                            <a href="{{--route('cupom', ['id'=>$voucher->id])--}}" target="_blank" title="Acesse o seu voucher" class="btn btn-include">Abrir</a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </li>
+                        @endforeach
+                    @else
+                    <li>Não há cupons disponíveis.</li>
+                    @endif
 				</ul>
 
 				<br/>
-
+                @if(Auth::user() && Auth::user()->profile->credit > 0)
 				<div class="user-credits">
 					Meus créditos <span class="glyphicon glyphicon-chevron-right"></span>
 					<div>
 						<!-- você não tem créditos -->
-						você tem <strong>R$ 50</strong> em créditos
+						você tem <strong>R$ {{Auth::user()->profile->credit}}</strong> em créditos
 					</div>
 				</div>
+                @endif
 
 				<br/>
 
@@ -102,37 +99,33 @@
 
 		</div>
 	</div>
-	
-	<div id="combo1-info" class="modal fade" tabindex="-1">
+    @foreach($vouchers as $voucher)
+	<div id="combo{{$voucher->id}}-info" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-sm modal-combo combo-control">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close over-img" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<img src="assets/uploads/camarao.jpg">
-					<h4 class="modal-title">Sequência de Camarão para 2 Pessoas</h4>
+					<img src="{{$voucher->offer_option_offer->offer->thumb}}" alt="{{$voucher->offer_option_offer->offer->title}}">
+					<h4 class="modal-title">{{$voucher->offer_option_offer->offer->destiny->name}} <span class="entypo chevron-right"></span> {{$voucher->offer_option_offer->title}}</h4>
 				</div>
 				<div class="modal-body">
 					<p>
-						A Sequência inclui: Camarão ao Alho e Óleo, Camarão ao Bafo, Camarão à Milanesa, Bolinho de Siri, Filé Peixe ao Molho de Camarão, Pirão, Salada e Batata Frita.
-					</p>
-					<p>
-						Restaurante de frente para o mar, na praia da Barra da Lagoa.
-					</p>
-					<p>
-						O Restaurante oferece cadeiras, espreguiçadeiras, guarda-sóis na areia, ducha de água doce e amplo estacionamento. Convide alguém especial, os amigos ou a família!
+                        {{$voucher->offer_option_offer->offer->popup_features}}
 					</p>
 				</div>
 			</div>
 		</div>
 	</div>
+    @endforeach
 
 	<script type="text/javascript">
 		//turn to inline mode
 		$.fn.editable.defaults.mode = 'inline';
 
 		$(document).ready(function() {
-			$('#username').editable();
-			$('#userphone').editable();
+            $('.editable').editable({
+                url:   '{{ajax-myaccount}}'
+            });
 		});
 
 		$(function(){
