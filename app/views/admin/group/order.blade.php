@@ -2,6 +2,7 @@
 
 <div class="well widget row-fluid">
 
+    {{ Former::inline_open(route('admin.group.save_order')) }}
     <div id="TabContainer">
         <ul>
             @foreach ($groups as $group)
@@ -15,7 +16,13 @@
                     <div class="span10">
                         {{ Former::framework('Nude') }}
                         {{ Former::hidden('group['.$group->id.']')
+                                 ->value($group->offer_ids)
                                  ->id('group'.$group->id)
+                                 ->class('span12') }}
+
+                        {{ Former::hidden('group_id'.$group->id)
+                                 ->value($group->id)
+                                 ->id('group_id'.$group->id)
                                  ->class('span12') }}
                     </div>
                     <div class="span1">
@@ -26,6 +33,9 @@
             @endforeach
         </ul>
     </div>
+    {{ Former::submit('Salvar') }}
+
+    {{ Former::close() }}
     
 </div>
 
@@ -42,7 +52,7 @@
             minimumInputLength: 1,
             multiple: true,
             ajax: {
-                url: "{{route('ajax-offer')}}",
+                url: "{{route('ajax-offers-groups')}}",
                 dataType: 'jsonp',
                 data: function (term, page) {
                     return {
@@ -59,10 +69,12 @@
                 // Esta função transforma o id em um objeto que o select2 pode renderizar
                 // usando o formatSelection
                 var id=$(element).val();
+                var group_id=$('#group_id{{ $group->id }}').val();
                 if (id!=="") {
-                    $.ajax("{{route('ajax-offer')}}", {
+                    $.ajax("{{route('ajax-offer-groups')}}", {
                         data: {
-                            'id': id
+                            'id': id,
+                            'group_id': group_id
                         },
                         dataType: "jsonp"
                     }).done(function(data) { callback(data.offers); });
@@ -85,16 +97,15 @@
 
     function offerFormatResult(offer) {
         var markup = "<table class='offer-result'><tr>";
+        var offerIMGURL = '//{{Configuration::get("s3url")}}/ofertas/'+offer.id+'/'+offer.cover_img;
         if (offer.cover_img !== undefined) {
-            markup += "<td class='offer-image'><img src='" + offer.cover_img + "' style='max-width:100px;'/></td>";
+            markup += "<td class='offer-image'><img src='" + offerIMGURL + "' style='max-width:100px;'/></td>";
         }else{
             markup += "<td class='offer-image'><img src='//innbativel.s3.amazonaws.com/logo-backend.png'/></td>";
         }
-        markup += "<td class='offer-info'><div class='offer-title'><b>#"+offer.ofid+"</b> " + offer.offer_title + " ( "+offer.destname+" )</div>";
-        if (offer.optitle !== undefined) {
-            markup += "<div class='offer-sub'>Opção: " + offer.optitle + " - "+offer.opsubtitle+" - R$ "+offer.price_with_discount+"</div>";
-        }
-        else if (offer.percent_off !== undefined) {
+        markup += "<td class='offer-info'><div class='offer-title'><b>#"+offer.id+"</b> " + offer.offer_title + " ( "+offer.destname+" )</div>";
+        markup += "<div class='offer-sub'>"+offer.offer_subtitle+" - R$ "+offer.price_with_discount+"</div>";
+        if (offer.percent_off !== undefined) {
             markup += "<div class='offer-percent_off'>" + offer.percent_off + "% OFF</div>";
         }
         markup += "</td></tr></table>";
@@ -102,7 +113,7 @@
     }
 
     function offerFormatSelection(offer) {
-        return "<b>#"+offer.ofid+"</b> " + offer.offer_title + " ( "+offer.destname+" ) - Opção: " + offer.optitle;
+        return "<b>#"+offer.id+"</b> " + offer.offer_title + " ( "+offer.destname+" ) - R$ " + offer.price_with_discount;
     }
 
 </script>

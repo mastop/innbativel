@@ -96,8 +96,19 @@ class AdminGroupController extends BaseController {
 		 */
 		$groups = $this->group
 					   ->with(['offer'])
+					   ->orderBy('display_order', 'asc')
 					   ->get();
-		// ->get()->toArray(); print('<pre>'); print_r($group); print('</pre>'); die();
+		// print('<pre>'); print_r($groups->toArray()); print('</pre>'); die();
+
+		foreach ($groups as $key => &$group) {
+			$offer_ids = null;
+
+			foreach ($group->offer as $offer) {
+				$offer_ids[] = $offer->id;
+			}
+
+			$group->offer_ids = isset($offer_ids) ? implode(',', $offer_ids) : '';
+		}
 
 		/*
 		 * Layout / View
@@ -108,41 +119,41 @@ class AdminGroupController extends BaseController {
 
 	public function postOrder()
 	{
-		$inputs = Input::all();
+		$groups = Input::get('group');
 		$group_display_order = 1;
 
-		foreach ($inputs['group'] as $group_id => $offer_ids) {
-			$offer_ids = explode(',', $offer_ids);
-			$offer_display_order = 1;
+		DB::delete('DELETE FROM offers_groups');
 
-			foreach ($offer_ids as $offer_id) {
-				$offer = Offer::find($id);
-				
-				if($offer){
-					// detach offers from all groups that's in
-					DB::delete('DELETE FROM offers_groups WHERE offer_id = ?',[$id]);
+		foreach ($groups as $group_id => $offer_ids) {
+			if(isset($offer_ids)){
+				$offer_ids = explode(',', $offer_ids);
+				$offer_display_order = 1;
 
-					// attach it to new group
-					$offer->group()->attach($group_id, array('display_order' => $offer_display_order));
+				foreach ($offer_ids as $offer_id) {
+					$offer = Offer::find($offer_id);
 					
-					$offer->display_order = $offer_display_order;
-					$offer->save();
+					if($offer){
+						$offer->group()->attach($group_id, ['display_order' => $offer_display_order]);
+						
+						$offer->save();
 
-					$offer_display_order++;
+						$offer_display_order++;
+					}
 				}
-			}
 
-			$group = Group::find($group_id);
+				$group = Group::find($group_id);
 
-			if($group){
-				$group->display_order = $group_display_order;
-				$group->save();
+				if($group){
+					$group->display_order = $group_display_order;
+					$group->save();
 
-				$group_display_order++;
+					$group_display_order++;
+				}
 			}
 		}
 
-		return Redirect::route('admin.group');
+		Session::flash('success', 'Grupos populados e ordenados com sucesso.');
+		return Redirect::route('admin.group.order');
 	}
 
 	/**
