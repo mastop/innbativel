@@ -18,7 +18,6 @@
 		</div>
 		
 		
-		<form class="buy-form" id="buy-form">
 			<div class="row">
 
 				<div class="col-12 col-sm-12 col-lg-12 clearfix">
@@ -58,7 +57,7 @@
 					@endif
                     </ul>
                     <div class="clearfix"></div>
-
+                    <form class="buy-form" id="buy-form" action="{{route('pagar')}}" method="post">
 					<ul class="buy-itens checkout-itens nocheck">
 
 						<h3>Sua compra <span class="glyphicon glyphicon-chevron-down"></span></h3>
@@ -179,13 +178,14 @@
 							</div>
 						</li>
 					</ul>
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+                        <input type="hidden" name="offer" value="{{ $offer->id }}"/>
+                        <input type="hidden" name="payment_type" value=""/>
+                    </form>
 
 				</div>
 		
 			</div>
-            <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
-            <input type="hidden" name="offer" value="{{ $offer->id }}"/>
-		</form>
 	</div>
 
 	<div id="modal-payment-card" class="modal fade" tabindex="-1">
@@ -195,7 +195,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title"><span class="entypo credit-card"></span>Pagamento por Cartão de Crédito</h4>
 				</div>
-				<form id="paymentCardForm" class="form-horizontal" name="paymentCardForm" method="post" action="send_form_payment_card.php">
+				<form id="paymentCardForm" class="form-horizontal" name="paymentCardForm" method="post">
 					<div class="modal-body">
 						<p>
 							Preencha com os dados do cartão para finalizar sua compra.<br/>
@@ -286,11 +286,14 @@
 								<label class="control-label col-md-2" for="paymentCardInstallment">Parcelas</label>
 								<div class="col-md-5">
 									<select id="paymentCardInstallment" class="form-control" name="paymentCardInstallment">
-										<option value="1">&nbsp;&nbsp;1x R$200,00</option>
-										<option value="2">&nbsp;&nbsp;3x R$ &nbsp;68,00</option>
-										<option value="3">&nbsp;&nbsp;6x R$ &nbsp;36,00</option>
-										<option value="4">10x R$ &nbsp;22,00</option>
+										<option value="1">&nbsp;&nbsp;1x R$00,00</option>
+										<option value="3">&nbsp;&nbsp;3x R$ &nbsp;00,00</option>
+										<option value="6">&nbsp;&nbsp;6x R$ &nbsp;00,00</option>
+										<option value="10">10x R$ &nbsp;00,00</option>
 									</select>
+								</div>
+                                <div class="col-md-4">
+									<label class="control-label" id="paymentCardTotal">Total: <strong>R$ </strong></label>
 								</div>
 							</div>
 						<div class="form-group">
@@ -465,7 +468,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-3" for="paymentBoletoPhone">Seu telefone</label>
 							<div class="col-md-8">
-								<input type="text" class="form-control" id="paymentBoletoPhone" name="paymentBoletoPhone" placeholder="Digite seu telefone de contato com DDD"/>
+								<input type="text" class="form-control" id="paymentBoletoPhone" name="paymentBoletoPhone" placeholder="Digite seu telefone de contato com DDD" value="{{Auth::user()->profile->telephone}}"/>
 							</div>
 						</div>
 						<div class="form-group">
@@ -478,42 +481,6 @@
 			</div>
 		</div>
 	</div>
-
-    <div id="modal-payment-confirmed" class="modal fade" tabindex="-1">
-        <div class="modal-dialog modal-sm modal-stylized">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title"><span class="entypo check"></span>Compra finalizada</h4>
-                </div>
-                <form id="contactForm" class="form-horizontal" name="contactForm" method="post" action="send_form_contact.php">
-                    <div class="modal-body">
-                        <p>
-                            <strong>Obrigado por comprar no INNBatível!</strong>
-                        </p>
-                        <p>
-                            Assim que o pagamento for aprovado, seu cupom estará disponível em sua conta.
-                        </p>
-                        <p>
-                            Por favor, responda<a href="https://www.ebitempresa.com.br/bitrate/pesquisa1.asp?empresa=1407475" target="_blank">esta pesquisa</a>e ajude-nos a melhorar nosso atendimento e tornar sua experiência de compras cada vez melhor.<br></p>
-                        </p>
-                        <p>
-                            <a href="https://www.ebitempresa.com.br/bitrate/pesquisa1.asp?empresa=1407475" target="_blank">
-                                <img border="0" name="banner" src="https://www.ebitempresa.com.br/bitrate/banners/b1407475.gif" alt="O que você achou desta loja?" width="468" height="60"></a>
-                        </p>
-                        <p>
-                            Você será redirecionado para sua conta.
-                        </p>
-                        <!-- <div class="form-group">
-                            <div class="col-md-offset-3 col-md-7">
-                                <button type="submit" class="btn btn-default" data-dismiss="modal">Acessar minha conta</button>
-                            </div>
-                        </div> -->
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
 	<div id="donation-info" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-sm modal-combo">
@@ -619,8 +586,9 @@
     </script>
     @endif
 <script>
-    $(function(){
-        validaCupomURL = "{{route('valida-cupom')}}";
-    });
+    validaCupomURL = "{{route('valida-cupom')}}";
+    calc3x = {{Configuration::get('interest-rate-3x')}};
+    calc6x = {{Configuration::get('interest-rate-6x')}};
+    calc10x = {{Configuration::get('interest-rate-10x')}};
 </script>
 @stop

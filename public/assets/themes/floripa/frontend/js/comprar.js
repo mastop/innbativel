@@ -57,6 +57,18 @@
 					$('#cc-flag').addClass(flag);
 				}
 			}
+            $("#paymentCardInstallment").on('change', function(){
+                if($(this).val() == 1){
+                    $('#paymentCardTotal strong').text('R$ '+printPrice);
+                }else if($(this).val() == 3){
+                    valorTotal = ( parseFloat(totalPrice) + ( parseFloat(totalPrice) * parseFloat(calc3x) ) );
+                }else if($(this).val() == 6){
+                    valorTotal = ( parseFloat(totalPrice) + ( parseFloat(totalPrice) * parseFloat(calc6x) ) );
+                }else{
+                    valorTotal = ( parseFloat(totalPrice) + ( parseFloat(totalPrice) * parseFloat(calc10x) ) );
+                }
+                $('#paymentCardTotal strong').text('R$ '+parseFloat(valorTotal).toFixed(2).replace(".", ","));
+            });
 
 			// $('#modal-payment-card .btn-primary').on('click', function (e) {
 			// 	e.preventDefault();
@@ -300,6 +312,25 @@
 				var printPrice;
 				if( totalPrice ){
 					printPrice = totalPrice.replace(".", ",");
+                    // Ajusta as parcelas e juros
+                    $("#paymentCardInstallment option").each(function(i){
+                        if($(this).val() == 1){
+                            $(this).text(' 1x R$ '+printPrice);
+                            if($(this).is(':selected')) $('#paymentCardTotal strong').text('R$ '+printPrice);
+                        }else if($(this).val() == 3){
+                            valorMensal = ( parseFloat(totalPrice) + ( parseFloat(totalPrice) * parseFloat(calc3x) ) ) / 3;
+                            $(this).text(' 3x R$ '+valorMensal.toFixed(2).replace(".", ","));
+                            if($(this).is(':selected')) $('#paymentCardTotal strong').text('R$ '+parseFloat(valorMensal*3).toFixed(2).replace(".", ","));
+                        }else if($(this).val() == 6){
+                            valorMensal = ( parseFloat(totalPrice) + ( parseFloat(totalPrice) * parseFloat(calc6x) ) ) / 6;
+                            $(this).text(' 6x R$ '+valorMensal.toFixed(2).replace(".", ","));
+                            if($(this).is(':selected')) $('#paymentCardTotal strong').text('R$ '+parseFloat(valorMensal*6).toFixed(2).replace(".", ","));
+                        }else{
+                            valorMensal = ( parseFloat(totalPrice) + ( parseFloat(totalPrice) * parseFloat(calc10x) ) ) / 10;
+                            $(this).text(' 10x R$ '+valorMensal.toFixed(2).replace(".", ","));
+                            if($(this).is(':selected')) $('#paymentCardTotal strong').text('R$ '+parseFloat(valorMensal*10).toFixed(2).replace(".", ","));
+                        }
+                    });
 				}
 				$('#total-price strong').html(printPrice);
 			}

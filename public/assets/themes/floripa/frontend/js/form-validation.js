@@ -333,9 +333,11 @@
 					}
 				},
 				submitHandler: function(form) {
-					//form.submit();
-					$('#modal-payment-boleto').modal('hide');
-					$('#modal-payment-confirmed').modal('show');
+                    $.each ( $('#paymentBoletoForm input').serializeArray(), function ( i, obj ) {
+                        $('<input type="hidden">').prop( obj ).appendTo( $('#buy-form') );
+                    } );
+                    $('#buy-form input[name="payment_type"]').val('boletus');
+                    $('#buy-form').submit();
 				}
 			});
 
@@ -411,9 +413,11 @@
 					}
 				},
 				submitHandler: function(form) {
-					//form.submit();
-					$('#modal-payment-card').modal('hide');
-					$('#modal-payment-confirmed').modal('show');
+                    $.each ( $('#paymentCardForm input, #paymentCardForm select').serializeArray(), function ( i, obj ) {
+                        $('<input type="hidden">').prop( obj ).appendTo( $('#buy-form') );
+                    } );
+                    $('#buy-form input[name="payment_type"]').val('credit_card');
+                    $('#buy-form').submit();
 				}
 			});
 

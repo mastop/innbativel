@@ -81,6 +81,10 @@ class PageController extends BaseController {
         $this->layout->body_classes = 'checkout-page';
         $this->layout->content = View::make('pages.comprar', compact('offer', 'opt', 'add'));
     }
+
+    public function postPagar(){
+        dd(Input::all());
+    }
     public function postValidateCoupon(){
         $this->layout = 'format.ajax';
         $display_code = Input::get('promoCode');
@@ -130,6 +134,9 @@ class PageController extends BaseController {
     public function anyBusca()
     {
         $q = Input::get('q');
+        if(empty($q)){
+            return Redirect::route('home')->with('error', 'Digite um termo para sua busca');
+        }
         $qArray = explode(' ', $q);
         $tags = Tag::whereIn('title', $qArray)->lists('id');
         $offers = Offer::query()
