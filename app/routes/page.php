@@ -97,6 +97,7 @@ Route::group(array('https', 'prefix' => 'minha-conta', 'before' => 'auth'), func
 	 * Minha conta
 	 */
     Route::any('/', ['as' => 'minha-conta', 'uses' => 'PageController@anyMinhaConta', 'after' => 'cache.public']);
+    Route::any('/trocarsenha', ['as' => 'trocar-senha', 'uses' => 'PageController@postTrocarSenha', 'after' => 'cache.public']);
 
 });
 

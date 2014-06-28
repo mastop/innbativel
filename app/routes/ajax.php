@@ -5,6 +5,7 @@
 Route::group(array('https'), function()
 {
 Route::get('ajax/search/recomendations', ['uses' => 'AjaxController@getSearchRecomendations', 'after' => 'cache.public']);
+Route::post('ajax/myaccount', ['as' => 'ajax-myaccount', 'uses' => 'AjaxController@postMyAccount', 'after' => 'cache.public']);
 Route::get('ajax/search/offers.json', ['as' => 'ajax-offers', 'uses' => 'AjaxController@getSearchOffers', 'after' => 'cache.public']);
 Route::get('ajax/search/offer.json', ['as' => 'ajax-offer', 'uses' => 'AjaxController@getSearchOffer', 'after' => 'cache.public']);
 Route::get('ajax/search/offers-groups.json', ['as' => 'ajax-offers-groups', 'uses' => 'AjaxController@getSearchOffersGroups', 'after' => 'cache.public']);
