@@ -252,6 +252,16 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::get('coupon/delete/{id}', ['as' => 'admin.coupon.delete', 'uses' => 'AdminCouponController@getDelete']);
 	Route::post('coupon/delete/{id}', ['as' => 'admin.coupon.destroy', 'uses' => 'AdminCouponController@postDelete']);
 
+	Route::any('coupon/delete', function(){ return Redirect::route('admin.coupon'); });
+	Route::get('coupon/delete/{id}', ['as' => 'admin.coupon.delete', 'uses' => 'AdminCouponController@getDelete']);
+	Route::post('coupon/delete/{id}', ['as' => 'admin.coupon.destroy', 'uses' => 'AdminCouponController@postDelete']);
+
+	Route::any('coupon/deleted', ['as' => 'admin.coupon.deleted', 'uses' => 'AdminCouponController@anyDeleted']);
+
+	Route::any('coupon/deleted/restore', function(){ return Redirect::route('admin.coupon.deleted'); });
+	Route::get('coupon/deleted/restore/{id}', ['as' => 'admin.coupon.deleted.restore', 'uses' => 'AdminCouponController@getDeletedRestore']);
+	Route::post('coupon/deleted/restore/{id}', ['as' => 'admin.coupon.deleted.reactivate', 'uses' => 'AdminCouponController@postDeletedRestore']);
+
 	/*
 	 * comment
 	 */
@@ -424,6 +434,26 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::any('included/delete', function(){ return Redirect::route('admin.included'); });
 	Route::get('included/delete/{id}', ['as' => 'admin.included.delete', 'uses' => 'AdminIncludedController@getDelete']);
 	Route::post('included/delete/{id}', ['as' => 'admin.included.destroy', 'uses' => 'AdminIncludedController@postDelete']);
+
+	/*
+	 * Group
+	 */
+
+	Route::any('group', ['as' => 'admin.group', 'uses' => 'AdminGroupController@anyIndex']);
+
+	Route::get('group/order', ['as' => 'admin.group.order', 'uses' => 'AdminGroupController@getOrder']);
+	Route::post('group/order', ['as' => 'admin.group.save_order', 'uses' => 'AdminGroupController@postOrder']);
+
+	Route::get('group/create', ['as' => 'admin.group.create', 'uses' => 'AdminGroupController@getCreate']);
+	Route::post('group/create', ['as' => 'admin.group.save', 'uses' => 'AdminGroupController@postCreate']);
+
+	Route::any('group/edit', function(){ return Redirect::route('admin.group'); });
+	Route::get('group/edit/{id}', ['as' => 'admin.group.edit', 'uses' => 'AdminGroupController@getEdit']);
+	Route::post('group/edit/{id}', ['as' => 'admin.group.update', 'uses' => 'AdminGroupController@postEdit']);
+
+	Route::any('group/delete', function(){ return Redirect::route('admin.group'); });
+	Route::get('group/delete/{id}', ['as' => 'admin.group.delete', 'uses' => 'AdminGroupController@getDelete']);
+	Route::post('group/delete/{id}', ['as' => 'admin.included.destroy', 'uses' => 'AdminGroupController@postDelete']);
 
 	/*
 	 * Tags
