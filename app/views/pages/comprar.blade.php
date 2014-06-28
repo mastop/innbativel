@@ -468,7 +468,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-3" for="paymentBoletoPhone">Seu telefone</label>
 							<div class="col-md-8">
-								<input type="text" class="form-control" id="paymentBoletoPhone" name="paymentBoletoPhone" placeholder="Digite seu telefone de contato com DDD" value="{{Auth::user()->profile->telephone}}"/>
+								<input type="text" class="form-control" id="paymentBoletoPhone" name="paymentBoletoPhone" placeholder="Digite seu telefone de contato com DDD" @if(Auth::user()) value="{{Auth::user()->profile->telephone}}" @endif/>
 							</div>
 						</div>
 						<div class="form-group">
