@@ -49,7 +49,7 @@
                                                 Aguardando aprovação do pagamento
                                             @endif
                                         @else
-                                            <a href="{{--route('cupom', ['id'=>$voucher->id])--}}" target="_blank" title="Acesse o seu voucher" class="btn btn-include">Abrir</a>
+                                            <a href="{{route('cupom', ['id'=>$voucher->display_code])}}" target="_blank" title="Acesse o seu voucher" class="btn btn-include">Abrir</a>
                                         @endif
                                     </div>
                                 </div>
@@ -124,7 +124,7 @@
 
 		$(document).ready(function() {
             $('.editable').editable({
-                url:   '{{ajax-myaccount}}'
+                url:   '{{route("ajax-myaccount")}}'
             });
 		});
 

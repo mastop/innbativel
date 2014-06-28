@@ -387,7 +387,8 @@
             if (id!=="") {
                 $.ajax("{{route('ajax-offer')}}", {
                     data: {
-                        'id': id
+                        'id': id,
+                        'offer_id': {{ $offer->id }}
                     },
                     dataType: "jsonp"
                 }).done(function(data) { callback(data.offers); });
