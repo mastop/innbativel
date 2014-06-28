@@ -387,7 +387,8 @@
             if (id!=="") {
                 $.ajax("{{route('ajax-offer')}}", {
                     data: {
-                        'id': id
+                        'id': id,
+                        'offer_id': {{ $offer->id }}
                     },
                     dataType: "jsonp"
                 }).done(function(data) { callback(data.offers); });
@@ -407,8 +408,9 @@
     }).sortable('refresh');
     function offerFormatResult(offer) {
         var markup = "<table class='offer-result'><tr>";
+        var offerIMGURL = '//{{Configuration::get("s3url")}}/ofertas/'+offer.ofid+'/'+offer.cover_img;
         if (offer.cover_img !== undefined) {
-            markup += "<td class='offer-image'><img src='" + offer.cover_img + "' style='max-width:100px;'/></td>";
+            markup += "<td class='offer-image'><img src='" + offerIMGURL + "' style='max-width:100px;'/></td>";
         }else{
             markup += "<td class='offer-image'><img src='//innbativel.s3.amazonaws.com/logo-backend.png'/></td>";
         }

@@ -62,13 +62,14 @@ class AjaxController extends BaseController {
     public function getSearchOffer()
     {
         $id = Input::get('id');
-        if(!$id){
+        $offer_id = Input::get('offer_id');
+        if(!$id || !$offer_id){
             return Response::json();
         }
         //print_r($id);
         $results = DB::table('offers')
                     ->select(
-                    'offers.id as id',
+                    'offers.id as ofid',
                     'offers.title as offer_title',
                     'offers.cover_img',
 
@@ -83,6 +84,7 @@ class AjaxController extends BaseController {
                     ->join('destinies', 'offers.destiny_id', '=', 'destinies.id')
                     ->join('offers_additional', 'offers_options.id', '=', 'offers_additional.offer_additional_id')
                     ->whereIn('offers_options.id',explode(',', $id))
+                    ->where('offers_additional.offer_main_id', $offer_id)
                     ->orderBy('offers_additional.display_order', 'asc')
                     ->get();
         $data['count'] = count($results);
