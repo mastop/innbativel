@@ -119,6 +119,10 @@ class Offer extends BaseModel {
 		return $this->belongsTo('User', 'partner_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
 	}
 
+    public function partner2(){
+        return $this->belongsTo('User', 'partner_id')->with(['profile']);
+    }
+
 	public function tell_us(){
 		return $this->belongsTo('TellUs', 'tell_us_id');
 	}

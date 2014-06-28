@@ -37,9 +37,26 @@ class User extends BaseUser {
      *
      * @return string
      */
-    public function fullName()
+    public function getFullNameAttribute()
     {
         return isset($this->profile) ? $this->profile->first_name . ' ' . $this->profile->last_name : $this->username;
+    }
+
+    public function getFullAddressAttribute(){
+        // RUA, NUMERO, COMPLEMENTO, BAIRRO, CIDADE, ESTADO
+        if(isset($this->profile)){
+            $street = (isset($this->profile->street) && $this->profile->street != '' && $this->profile->street != 'NULL') ? $this->profile->street : '';
+            $number = (isset($this->profile->number) && $this->profile->number != '' && $this->profile->number != 'NULL') ? ', ' . $this->profile->number : '';
+            $complement = (isset($this->profile->complement) && $this->profile->complement != '' && $this->profile->complement != 'NULL') ? ', ' . $this->profile->complement : '';
+            $neighborhood = (isset($this->profile->neighborhood) && $this->profile->neighborhood != '' && $this->profile->neighborhood != 'NULL') ? ', ' . $this->profile->neighborhood : '';
+            $city = (isset($this->profile->city) && $this->profile->city != '' && $this->profile->city != 'NULL') ? ', ' . $this->profile->city : '';
+            $state = (isset($this->profile->state) && $this->profile->state != '' && $this->profile->state != 'NULL') ? ', ' . $this->profile->state : '';
+
+            return $street . $number . $complement . $neighborhood . $city . $state;
+        }
+        else{
+            return '';
+        }
     }
 
 	public function profile()

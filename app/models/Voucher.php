@@ -33,10 +33,24 @@ class Voucher extends Eloquent {
                 ->with(['user']);
   }
 
+  public function order_buyer(){
+    return $this->belongsTo('Order', 'order_id')
+                ->with(['buyer']);
+  }
+
   public function offer_option_offer(){
     return $this->belongsTo('OfferOption', 'offer_option_id')
                 ->with(['offer' => function($query){
-                  $query->withTrashed();
+                    $query->withTrashed();
+                }])
+                ->withTrashed();
+  }
+
+  public function offer_partner(){
+    return $this->belongsTo('OfferOption', 'offer_option_id')
+                ->with(['offer' => function($query){
+                    $query->withTrashed()
+                          ->with(['partner2']);
                 }])
                 ->withTrashed();
   }

@@ -11,7 +11,8 @@ Route::group(array('https', 'after' => 'cache.public'), function()
     Route::any('/', ['as' => 'home', 'uses' => 'PageController@anyHome']);
     Route::any('/oferta/{slug}', ['as' => 'oferta', 'uses' => 'PageController@anyOferta']);
     Route::any('/comprar', ['as' => 'comprar', 'uses' => 'PageController@anyComprar']);
-    Route::post('/cupom', ['as' => 'valida-cupom', 'uses' => 'PageController@postValidateCoupon']);
+    Route::post('/cupom-de-desconto', ['as' => 'valida-cupom', 'uses' => 'PageController@postValidateCoupon']);
+    Route::any('/cupom/{id}', ['as' => 'cupom', 'uses' => 'PageController@getViewVoucher']);
     Route::any('/sucesso/{status}/{boletus_url?}', ['as' => 'sucesso', 'uses' => 'PageController@anySucesso']);
     Route::any('/busca', ['as' => 'busca', 'uses' => 'PageController@anyBusca']);
     Route::any('/termos-de-uso', ['as' => 'termos-de-uso', 'uses' => 'PageController@anyTermosDeUso']);
