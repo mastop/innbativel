@@ -3,7 +3,7 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Lista de Cupons de Desconto</h6>
+			<h6>Lista de Cupons de Desconto Desativados</h6>
 	        <div class="nav pull-right">
 	        	<a href="{{ route('admin.coupon.deleted') }}" title="Cupons de desconto desativados" class="dropdown-toggle navbar-icon"><i class="icon-filter"></i></a>
 	            <a href="{{ route('admin.coupon.create') }}" title="Criar Cupom de Desconto" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
@@ -12,13 +12,13 @@
 	</div>
 	<div class="datatable-header">
 		<div class="dataTables_filter">
-			{{ Former::inline_open(route('admin.coupon')) }}
+			{{ Former::inline_open(route('admin.coupon.deleted')) }}
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('display_code')->class('input-medium')->placeholder('Código')->label('Código') }}
 			{{ Former::date('starts_on')->class('input-medium')->placeholder('Data início')->label('Data início') }}
 			{{ Former::date('ends_on')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
 			{{ Former::submit('Enviar') }}
-			{{ Former::link('Limpar Filtros', route('admin.coupon')) }}
+			{{ Former::link('Limpar Filtros', route('admin.coupon.deleted')) }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
@@ -84,8 +84,7 @@
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 				Navigation::links([
-					['Editar', route('admin.coupon.edit', $body['id'])],
-					['Desativar', route('admin.coupon.delete', $body['id'])],
+					['Reativar', route('admin.coupon.deleted.restore', $body['id'])],
 				])
 			)->pull_right()->split();
 		})

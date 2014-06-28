@@ -13,7 +13,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 	 */
 	public function up()
 	{
-		
+
 		Schema::table('role_user', function($table)
 		{
 
@@ -31,7 +31,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('offers_included_offer_id_foreign');
 			$table->dropForeign('offers_included_included_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
 			$table->foreign('included_id')->references('id')->on('included')->onDelete('cascade')->onUpdate('cascade');
 
@@ -42,7 +42,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('comments_offer_id_foreign');
 			$table->dropForeign('comments_user_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
 
@@ -56,7 +56,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('contracts_partner_id_foreign');
 			$table->dropForeign('contracts_consultant_id_foreign');
-		
+
 			$table->foreign('partner_id')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade'); // significa que se eu deletar um parceiro (usuario), NAO vai deletar o contrato, vai apenas deixar sem parceiro
 			$table->foreign('consultant_id')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
 
@@ -65,7 +65,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 		Schema::table('contract_options', function($table)
 		{
 			$table->dropForeign('contract_options_contract_id_foreign');
-		
+
 			$table->foreign('contract_id')->references('id')->on('contracts')->onDelete('cascade')->onUpdate('cascade');
 
 		});
@@ -88,7 +88,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
             $table->dropForeign('offers_destiny_id_foreign');
             $table->dropForeign('offers_ngo_id_foreign');
             $table->dropForeign('offers_tell_us_id_foreign');
-		
+
 			$table->foreign('partner_id')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
 			$table->foreign('category_id')->references('id')->on('categories')->onDelete('set null')->onUpdate('cascade');
 			$table->foreign('genre_id')->references('id')->on('genres')->onDelete('set null')->onUpdate('cascade');
@@ -104,10 +104,10 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('offers_groups_offer_id_foreign');
 			$table->dropForeign('offers_groups_group_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
 			$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade')->onUpdate('cascade');
-		
+
 		});
 
 		Schema::table('offers_holidays', function($table)
@@ -115,10 +115,10 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('offers_holidays_offer_id_foreign');
 			$table->dropForeign('offers_holidays_holiday_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
 			$table->foreign('holiday_id')->references('id')->on('holidays')->onDelete('cascade')->onUpdate('cascade');
-		
+
 		});
 
 		Schema::table('discount_coupons', function($table)
@@ -129,17 +129,17 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('discount_coupons_user_id_foreign');
 			$table->dropForeign('discount_coupons_offer_id_foreign');
-		
+
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('set null')->onUpdate('cascade');
-		
+
 		});
 
 		Schema::table('offers_options', function($table)
 		{
 
 			$table->dropForeign('offers_options_offer_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
 
 		});
@@ -149,19 +149,19 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('offers_additional_offer_main_id_foreign');
 			$table->dropForeign('offers_additional_offer_additional_id_foreign');
-		
+
 			$table->foreign('offer_main_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
 			$table->foreign('offer_additional_id')->references('id')->on('offers_options')->onDelete('cascade')->onUpdate('cascade');
-		
+
 		});
 
 		Schema::table('offers_images', function($table)
 		{
 
 			$table->dropForeign('offers_images_offer_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
-		
+
 		});
 
 		Schema::table('permission_role', function($table)
@@ -169,7 +169,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('permission_role_permission_id_foreign');
 			$table->dropForeign('permission_role_role_id_foreign');
-		
+
 			$table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade')->onUpdate('cascade');
 			$table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade')->onUpdate('cascade');
 
@@ -179,9 +179,9 @@ class ChangeAllForeignKeysToCascade extends Migration {
 		{
 
 			$table->dropForeign('profiles_user_id_foreign');
-			
+
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-		
+
 		});
 
 		Schema::table('orders', function($table)
@@ -192,7 +192,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('orders_user_id_foreign');
 			$table->dropForeign('orders_coupon_id_foreign');
-		
+
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
 			$table->foreign('coupon_id')->references('id')->on('discount_coupons')->onDelete('set null')->onUpdate('cascade');
 
@@ -207,7 +207,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 			$table->dropForeign('transactions_vouchers_voucher_id_foreign');
 			$table->dropForeign('transactions_vouchers_transaction_id_foreign');
 			$table->dropForeign('transactions_vouchers_payment_partner_id_foreign');
-		
+
 			$table->foreign('voucher_id')->references('id')->on('vouchers')->onDelete('set null')->onUpdate('cascade');
 			$table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('set null')->onUpdate('cascade');
 			$table->foreign('payment_partner_id')->references('id')->on('payments_partners')->onDelete('set null')->onUpdate('cascade');
@@ -222,10 +222,10 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('vouchers_offer_option_id_foreign');
 			$table->dropForeign('vouchers_order_id_foreign');
-		
+
 			$table->foreign('offer_option_id')->references('id')->on('offers_options')->onDelete('set null')->onUpdate('cascade');
 			$table->foreign('order_id')->references('id')->on('orders')->onDelete('set null')->onUpdate('cascade');
-		
+
 		});
 
 		Schema::table('transactions', function($table)
@@ -234,7 +234,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 			DB::statement('ALTER TABLE transactions CHANGE order_id order_id INT(10) UNSIGNED NULL');
 
 			$table->dropForeign('transactions_order_id_foreign');
-		
+
 			$table->foreign('order_id')->references('id')->on('orders')->onDelete('set null')->onUpdate('cascade');
 
 		});
@@ -247,7 +247,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('payments_partners_partner_id_foreign');
 			$table->dropForeign('payments_partners_payment_id_foreign');
-		
+
 			$table->foreign('partner_id')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
 			$table->foreign('payment_id')->references('id')->on('payments')->onDelete('set null')->onUpdate('cascade');
 
@@ -258,10 +258,10 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('destinies_sorts_of_destiny_destiny_id_foreign');
 			$table->dropForeign('destinies_sorts_of_destiny_sort_of_destiny_id_foreign');
-		
+
 			$table->foreign('destiny_id')->references('id')->on('destinies')->onDelete('cascade')->onUpdate('cascade');
 			$table->foreign('sort_of_destiny_id')->references('id')->on('sorts_of_destiny')->onDelete('cascade')->onUpdate('cascade');
-		
+
 		});
 
 		Schema::table('offers_tags', function($table)
@@ -269,10 +269,10 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('offers_tags_offer_id_foreign');
 			$table->dropForeign('offers_tags_tag_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
 			$table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade')->onUpdate('cascade');
-		
+
 		});
 
 	}
@@ -284,7 +284,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 	 */
 	public function down()
 	{
-		
+
 		Schema::table('role_user', function($table)
 		{
 
@@ -301,7 +301,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('offers_included_offer_id_foreign');
 			$table->dropForeign('offers_included_included_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
 			$table->foreign('included_id')->references('id')->on('included')->onDelete('cascade');
 
@@ -312,7 +312,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('comments_offer_id_foreign');
 			$table->dropForeign('comments_user_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
@@ -326,7 +326,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('contracts_partner_id_foreign');
 			$table->dropForeign('contracts_consultant_id_foreign');
-		
+
 			$table->foreign('partner_id')->references('id')->on('users');
 			$table->foreign('consultant_id')->references('id')->on('users');
 
@@ -336,7 +336,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 		{
 
 			$table->dropForeign('contract_options_contract_id_foreign');
-		
+
 			$table->foreign('contract_id')->references('id')->on('contracts')->onDelete('cascade');
 
 		});
@@ -359,7 +359,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
             $table->dropForeign('offers_destiny_id_foreign');
             $table->dropForeign('offers_ngo_id_foreign');
             $table->dropForeign('offers_tell_us_id_foreign');
-		
+
 			$table->foreign('partner_id')->references('id')->on('users');
 			$table->foreign('category_id')->references('id')->on('categories');
 			$table->foreign('genre_id')->references('id')->on('genres');
@@ -375,10 +375,10 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('offers_groups_offer_id_foreign');
 			$table->dropForeign('offers_groups_group_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
 			$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
-		
+
 		});
 
 		Schema::table('offers_holidays', function($table)
@@ -386,10 +386,10 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('offers_holidays_offer_id_foreign');
 			$table->dropForeign('offers_holidays_holiday_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
 			$table->foreign('holiday_id')->references('id')->on('holidays')->onDelete('cascade');
-		
+
 		});
 
 		Schema::table('discount_coupons', function($table)
@@ -400,17 +400,17 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('discount_coupons_user_id_foreign');
 			$table->dropForeign('discount_coupons_offer_id_foreign');
-		
+
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
-		
+
 		});
 
 		Schema::table('offers_options', function($table)
 		{
 
 			$table->dropForeign('offers_options_offer_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
 
 		});
@@ -420,19 +420,19 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('offers_additional_offer_main_id_foreign');
 			$table->dropForeign('offers_additional_offer_additional_id_foreign');
-		
+
 			$table->foreign('offer_main_id')->references('id')->on('offers')->onDelete('cascade');
 			$table->foreign('offer_additional_id')->references('id')->on('offers_options')->onDelete('cascade');
-		
+
 		});
 
 		Schema::table('offers_images', function($table)
 		{
 
 			$table->dropForeign('offers_images_offer_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('district');
-		
+
 		});
 
 		Schema::table('permission_role', function($table)
@@ -440,7 +440,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('permission_role_permission_id_foreign');
 			$table->dropForeign('permission_role_role_id_foreign');
-		
+
 			$table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
 			$table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
 
@@ -450,9 +450,9 @@ class ChangeAllForeignKeysToCascade extends Migration {
 		{
 
 			$table->dropForeign('profiles_user_id_foreign');
-		
+
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-		
+
 		});
 
 		Schema::table('orders', function($table)
@@ -463,7 +463,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('orders_user_id_foreign');
 			$table->dropForeign('orders_coupon_id_foreign');
-		
+
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->foreign('coupon_id')->references('id')->on('discount_coupons');
 
@@ -479,7 +479,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 			$table->dropForeign('transactions_vouchers_voucher_id_foreign');
 			$table->dropForeign('transactions_vouchers_transaction_id_foreign');
 			$table->dropForeign('transactions_vouchers_payment_partner_id_foreign');
-		
+
 			$table->foreign('voucher_id')->references('id')->on('vouchers');
 			$table->foreign('transaction_id')->references('id')->on('transactions');
 			$table->foreign('payment_partner_id')->references('id')->on('payments_partners');
@@ -494,10 +494,10 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('vouchers_offer_option_id_foreign');
 			$table->dropForeign('vouchers_order_id_foreign');
-		
+
 			$table->foreign('offer_option_id')->references('id')->on('offers_options')->onDelete('cascade');
 			$table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-		
+
 		});
 
 		Schema::table('transactions', function($table)
@@ -506,7 +506,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 			DB::statement('ALTER TABLE transactions CHANGE order_id order_id INT(10) UNSIGNED');
 
 			$table->dropForeign('transactions_order_id_foreign');
-		
+
 			$table->foreign('order_id')->references('id')->on('orders');
 
 		});
@@ -519,7 +519,7 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('payments_partners_partner_id_foreign');
 			$table->dropForeign('payments_partners_payment_id_foreign');
-		
+
 			$table->foreign('partner_id')->references('id')->on('users');
 			$table->foreign('payment_id')->references('id')->on('payments');
 
@@ -530,10 +530,10 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('destinies_sorts_of_destiny_destiny_id_foreign');
 			$table->dropForeign('destinies_sorts_of_destiny_sort_of_destiny_id_foreign');
-		
+
 			$table->foreign('destiny_id')->references('id')->on('destinies')->onDelete('cascade');
 			$table->foreign('sort_of_destiny_id')->references('id')->on('sorts_of_destiny')->onDelete('cascade');
-		
+
 		});
 
 		Schema::table('offers_tags', function($table)
@@ -541,10 +541,10 @@ class ChangeAllForeignKeysToCascade extends Migration {
 
 			$table->dropForeign('offers_tags_offer_id_foreign');
 			$table->dropForeign('offers_tags_tag_id_foreign');
-		
+
 			$table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
 			$table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
-		
+
 		});
 
 	}

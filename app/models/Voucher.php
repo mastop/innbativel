@@ -35,7 +35,10 @@ class Voucher extends Eloquent {
 
   public function offer_option_offer(){
     return $this->belongsTo('OfferOption', 'offer_option_id')
-                ->with('offer');
+                ->with(['offer' => function($query){
+                  $query->withTrashed();
+                }])
+                ->withTrashed();
   }
 
   public function offer_option(){

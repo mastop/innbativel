@@ -9,6 +9,7 @@ class PainelController extends BaseController {
 
     public function getDashboard()
     {
+    	$this->layout->page_title = "Painel da Empresa Parceira";
         $this->layout->content = View::make('painel.dash.index');
     }
 }

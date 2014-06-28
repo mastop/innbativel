@@ -14,14 +14,14 @@
 
         <div class="control-group required">
             <label for="partner" class="control-label">Nome</label>
-            <div class="controls">{{ $contract->partner->first_name.(isset($contract->partner->last_name)?(' '.$contract->partner->last_name):'') }}</div>
+            <div class="controls">{{ $contract->partner->profile->first_name.(isset($contract->partner->profile->last_name)?(' '.$contract->partner->profile->last_name):'') }}</div>
         </div>
 
         <div class="control-group"><h1>Consultor</h1></div>
 
         <div class="control-group required">
             <label for="consultant" class="control-label">Nome</label>
-            <div class="controls">{{ $contract->consultant->first_name.(isset($contract->consultant->last_name)?(' '.$contract->consultant->last_name):'') }}</div>
+            <div class="controls">{{ $contract->consultant->profile->first_name.(isset($contract->consultant->profile->last_name)?(' '.$contract->consultant->profile->last_name):'') }}</div>
         </div>
 
         <div class="control-group"><h1>Dados do contratante</h1></div>

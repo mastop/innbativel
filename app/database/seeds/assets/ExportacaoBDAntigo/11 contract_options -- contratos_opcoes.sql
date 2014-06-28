@@ -12,5 +12,6 @@ co.maximo AS max_qty
 FROM contratos_opcoes AS co
 
 INTO OUTFILE "/tmp/contract_options.csv"
+CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";

@@ -63,7 +63,7 @@ class AdminOrderController extends BaseController {
 		/*
 		 * Order filter
 		 */
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+    	$order = Input::get('order') === 'asc' ? 'asc' : 'desc';
 
 
 		/*
@@ -94,7 +94,7 @@ class AdminOrderController extends BaseController {
 			$orderData = $orderData->where('created_at', '<=', Input::get('date_end'));
 		}
 
-		$orderArray = $orderData->with(['user', 'offer'])
+		$orderArray = $orderData->with(['buyer', 'offer_option_offer'])
 								->whereExists(function($query){
 					                if (Input::has('offer_id')) {
 										$query->select(DB::raw(1))
@@ -137,9 +137,10 @@ class AdminOrderController extends BaseController {
 									'name' => Input::get('name'),
 									'email' => Input::get('email'),
 								]);
+								// ->limit(25)->get(); print('<pre>'); print_r($orderArray->toArray()); print('</pre>'); die();
 
 		foreach ($orderArray as $key => &$value) {
-			if(isset($value['offer'])){
+			if(isset($value['offer_option_offer'])){
 				$braspag_order_id = $value->braspag_order_id;
 				$id = $value->id;
 

@@ -48,11 +48,11 @@ class Contract extends Eloquent {
   }
 
   public function consultant(){
-    return $this->belongsTo('User', 'consultant_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
+    return $this->belongsTo('User', 'consultant_id')->with('profile');
   }
 
   public function partner(){
-  	return $this->belongsTo('User', 'partner_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
+  	return $this->belongsTo('User', 'partner_id')->with('profile');
   }
 
 }

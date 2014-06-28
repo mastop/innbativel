@@ -9,7 +9,7 @@
         {{ Former::populate($coupon) }}
 
         {{ Former::text('display_code', 'Código')->class('span12') }}
-        {{ Former::text('value', 'Valor')->class('span12') }}
+        {{ Former::uneditable('value', 'Valor')->class('span12') }}
         {{ Former::number('qty', 'Quantidade máxima')->class('span12') }}
         {{ Former::date('starts_on', 'Data início')->class('span12') }}
         {{ Former::date('ends_on', 'Data fim')->class('span12') }}
