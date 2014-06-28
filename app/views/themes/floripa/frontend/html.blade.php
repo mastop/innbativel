@@ -85,7 +85,7 @@
                 <div class="clearfix super-search">
                     <form accept-charset="utf-8" class="form-inline" method="GET" action="{{ route('busca') }}">
                         <div class="control-group required">
-                            <div class="search-controls"><input required="" type="text" name="search" placeholder="Para onde você quer ir?"><button class="btn"><span class="entypo search"></span></button></div>
+                            <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{Input::get('q')}}"><button class="btn"><span class="entypo search"></span></button></div>
                         </div>
                     </form>
                 </div>
@@ -121,7 +121,7 @@
                 <div class="clearfix super-search">
                     <form accept-charset="utf-8" class="form-inline" method="GET" action="{{ route('busca') }}">
                         <div class="control-group required">
-                            <div class="search-controls"><input required="" type="text" name="search" placeholder="Para onde você quer ir?"><button class="btn"><span class="entypo search"></span></button></div>
+                            <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{Input::get('q')}}"><button class="btn"><span class="entypo search"></span></button></div>
                         </div>
                     </form>
                 </div>
@@ -132,7 +132,7 @@
                         <div class="clearfix super-search">
                             <form accept-charset="utf-8" class="form-inline" method="GET">
                                 <div class="control-group required">
-                                    <div class="search-controls"><input required="" type="text" name="search" placeholder="Para onde você quer ir?"><a href="busca.html" class="btn"><span class="entypo search"></span></a></div>
+                                    <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{Input::get('q')}}"><a href="busca.html" class="btn"><span class="entypo search"></span></a></div>
                                 </div>
                             </form>
                         </div>

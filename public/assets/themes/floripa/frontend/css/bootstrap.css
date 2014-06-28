@@ -784,8 +784,7 @@ pre code {
 
 .pre-scrollable {
 	max-height: 340px;
-	overf
-	low-y: scroll;
+    overflow-y:scroll;
 }
 
 .container {
@@ -7321,6 +7320,7 @@ h1, h2, h3, h4, h5, h6,
 }
 .checkout-page .outros-selos {
 	display: inline-block;
+    float: right;
 }
 .checkout-page .outros-selos > div {
 	margin-left: 20px !important;
@@ -7357,10 +7357,6 @@ h1, h2, h3, h4, h5, h6,
 #selo-embratur {
 	background: #fff;
 	display: inline-block;
-}
-#selo-site-sustentavel {
-	display: inline-block;
-	margin-top: 5px;
 }
 
 #widget-facebook {
@@ -7399,9 +7395,6 @@ h1, h2, h3, h4, h5, h6,
 	}
 	#selo-embratur {
 		margin-top: 5px;
-	}
-	#selo-site-sustentavel {
-		display: block;
 	}
 	#widget-facebook {
 		margin: 12px 0 0 0;
@@ -7884,7 +7877,7 @@ h1, h2, h3, h4, h5, h6,
 		margin: 5px 4px 8px;
 	}
 	.offer-spotlight .offer-grid-inner .info .tooltip {
-		font-size: 1.2em;
+		font-size: 1.1em;
 	}
 	.offer-spotlight .offer-grid-inner .options {
 		margin: 7px 0 11px 7px;
@@ -8013,7 +8006,7 @@ h1, h2, h3, h4, h5, h6,
 	color: #737480;
 	/*border: 1px solid red;*/
 	font-family: Cabin, 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	font-size: 1em;
+	font-size: 0.9em;
 	font-weight: 500;
 	display: inline-block;
 }
@@ -8375,32 +8368,26 @@ h1, h2, h3, h4, h5, h6,
 	/*padding-left: 14px;*/
 }
 .search-controls input[type="text"] {
-	/*width: 700px;*/
-	/*text-transform: uppercase;*/
-	/*line-height: 2.333em;*/
 	border: 1px solid #FFC4A1;
-	/*border-radius: 2px;*/
 	background: #fff;
-	/*box-shadow: inset -2px 2px 4px -2px #ccc;*/
 	color: #999;
 	font-size: 1em;
-	/*font-style: italic;*/
 	height: 31px;
-	display: inline-block;
-	/*margin: 0 7px 15px 0;*/
+	display: block;
 	padding: 0 8px 0 8px;
 	font-family: "Cabin", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	width: 156px;
+    float: left;
 }
 .super-search .btn {
-	margin: -2px 0 0 -1px;
 	height: 31px;
-	display: inline-block;
+	display: block;
 	color: #fff;
 	background: #FF7F33;
 	font-size: 1em;
 	padding: 0 6px;
-	border-bottom: 2px solid #cc6529;
+    width:36px;
+    float: left;
 }
 .super-search .btn:hover,
 .super-search .btn:focus {
