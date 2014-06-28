@@ -210,7 +210,7 @@ class PainelContractController extends BaseController {
 
 			$partner = Profile::where('user_id', $contract->partner_id)->first();
 
-			$partner_name = $partner->first_name.(isset($partner->last_name)?' '.$partner->last_name:'');
+			$partner_name = $partner->profile->first_name.(isset($partner->profile->last_name)?' '.$partner->profile->last_name:'');
 
 			$data = array('partner_name' => $partner_name, 'id' => $id);
 			

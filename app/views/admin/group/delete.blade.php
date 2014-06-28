@@ -4,17 +4,17 @@
 
         {{ Former::horizontal_open() }}
 
-        {{ Former::populate($couponArray) }}
+        {{ Former::populate($groupArray) }}
 
         <div class="widget">
         	<div class="body">
-        		{{ Typography::horizontal_dl($couponArray) }}
+        		{{ Typography::horizontal_dl($groupArray) }}
         	</div>
         </div>
 
         {{ Former::actions()
-          ->danger_submit('Desativar')
-          ->primary_link('Voltar', route('admin.coupon')) }}
+          ->danger_submit('Excluir')
+          ->primary_link('Cancelar', route('admin.group')) }}
 
         {{ Former::close() }}
 

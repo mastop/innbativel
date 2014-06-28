@@ -26,7 +26,7 @@ con.banco_cpf_cnpj AS bank_cpf_cnpj,
 con.banco_financeiro_email AS bank_financial_email, 
 con.assinado AS is_signed, 
 con.enviado AS is_sent,
-con.consultor_id AS consultant_id, 
+(80000+con.consultor_id) AS consultant_id, 
 DATE_FORMAT(con.prazo_inicio, '%Y-%m-%d') AS initial_term, 
 DATE_FORMAT(con.prazo_fim, '%Y-%m-%d') AS final_term, 
 con.restricao AS restriction, 
@@ -47,5 +47,6 @@ DATE_FORMAT(con.datahora , '%Y-%m-%d %H:%i:%s') AS updated_at
 FROM contratos AS con
 
 INTO OUTFILE "/tmp/contracts.csv"
+CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";

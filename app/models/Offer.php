@@ -100,7 +100,7 @@ class Offer extends BaseModel {
 	}
 
 	public function discount_coupon(){
-		return $this->hasMany('DiscountCoupon');
+		return $this->hasMany('DiscountCoupon', 'coupon_id')->withTrashed();
 	}
 
 	public function ngo(){

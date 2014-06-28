@@ -12,5 +12,6 @@ NOW() AS created_at
 FROM conte_pra_gente AS conte
 
 INTO OUTFILE "/tmp/tell_us.csv"
+CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";

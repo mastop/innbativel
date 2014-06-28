@@ -13,8 +13,8 @@
         </div>
 
         {{ Former::actions()
-          ->danger_submit('Desativar')
-          ->primary_link('Voltar', route('admin.coupon')) }}
+          ->danger_submit('Reativar Cupom de Desconto')
+          ->primary_link('Voltar', route('admin.coupon.deleted')) }}
 
         {{ Former::close() }}
 

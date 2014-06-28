@@ -11,5 +11,6 @@ par.ordem AS display_order
 FROM seja_nosso_parceiro AS par
 
 INTO OUTFILE "/tmp/partners_testimonies.csv"
+CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";

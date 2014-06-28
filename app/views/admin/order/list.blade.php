@@ -54,7 +54,7 @@
 	</div>
 {{ Table::open() }}
 {{ Table::headers('Data e hora', 'Número do Pedido', 'Cliente', 'ID das Ofertas', 'Forma de pagamento', 'Status', 'Valor', 'Ações') }}
-{{ Table::body($orderArray)->ignore(['user', 'offer', 'id', 'user_id', 'braspag_order_id', 'braspag_order_id_string', 'status', 'total', 'payment_terms', 'antifraud_id', 'braspag_id', 'coupon_id', 'first_digits_card', 'holder_card', 'donation', 'card_boletus_rate', 'antecipation_rate', 'interest_rate', 'credit_discount', 'cpf', 'telephone', 'is_gift', 'boleto', 'capture_date', 'history', 'created_at', 'updated_at'])
+{{ Table::body($orderArray)->ignore(['buyer', 'offer_option_offer', 'id', 'user_id', 'braspag_order_id', 'braspag_order_id_string', 'status', 'total', 'payment_terms', 'antifraud_id', 'braspag_id', 'coupon_id', 'first_digits_card', 'holder_card', 'donation', 'card_boletus_rate', 'antecipation_rate', 'interest_rate', 'credit_discount', 'cpf', 'telephone', 'is_gift', 'boleto', 'capture_date', 'history', 'created_at', 'updated_at'])
 	->datetime(function($order) {
 		if(isset($order['created_at'])) {
 			return date('d/m/Y H:i:s', strtotime($order['created_at']));
@@ -68,18 +68,20 @@
 		return '--';
 	})
 	->cliente(function($order) {
-		if(isset($order['user'])) {
-			$name = $order['user']->first_name . ' ' . $order['user']->last_name;
-			$id = $order['user']->user_id;
+		if(isset($order['buyer'])) {
+			$name = $order['buyer']->profile->first_name . ' ' . $order['buyer']->profile->last_name;
+			$id = $order['buyer']->id;
 			return link_to_route('admin.user.view', $name, ['id'=>$id]);
 		}
 		return '--';
 	})
 	->oferta(function($order) {
-		if(isset($order['offer'])) {
+		if($order->offer_option_offer){
 			$id = '| ';
-			foreach ($order['offer'] as $offer) {
-				$id .= link_to_route('offer', $offer->offer_id, ['slug' => $offer->slug]).' | ';
+			foreach ($order->offer_option_offer as $offer_option) {
+				if(strpos($id, $offer_option->offer_id) == false){
+					$id .= $offer_option->offer_id.' | ';
+				}
 			}
 			return $id;
 		}
@@ -118,7 +120,7 @@
 			  	Navigation::links([
 			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
 					['Cancelar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'cancelar\', \''.$order['braspag_order_id_string'].'\');'],
-					['Converter valor em créditos', 'javascript: action(\''.route('admin.order.convert_value_2_credit', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'converter valor em créditos\', \''.$order['braspag_order_id_string'].'\');'],
+					['Cancelar e converter valor em créditos', 'javascript: action(\''.route('admin.order.convert_value_2_credit', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'converter valor em créditos\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
 			)->pull_right()->split();
 	    }

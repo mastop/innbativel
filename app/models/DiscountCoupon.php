@@ -12,7 +12,7 @@ class DiscountCoupon extends Eloquent {
   protected $guarded = [];
   protected $fillable = [];
 
-  protected $softDelete = false;
+  protected $softDelete = true;
   public $timestamps = false;
 
   public static $rules = array(

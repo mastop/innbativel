@@ -221,13 +221,13 @@ class AdminCouponController extends BaseController {
 			return Redirect::route('admin.coupon');
 		}
 
-		Session::flash('error', 'Você tem certeza que deleja excluir este cupom de desconto? Esta operação não poderá ser desfeita.');
+		Session::flash('error', 'Você tem certeza que deleja desativar este cupom de desconto? Esta operação não poderá ser desfeita.');
 
 		$data['couponData'] = $coupon->toArray();
 		$data['couponArray'] = null;
 
 		foreach ($data['couponData'] as $key => $value) {
-			$data['couponArray'][Lang::get('coupon.'. $key)] = $value;
+			$data['couponArray'][Lang::get('coupon.'. $key)] = isset($value)?$value:'-';
 		}
 
 		/*
@@ -247,9 +247,111 @@ class AdminCouponController extends BaseController {
 	{
 		$this->coupon->find($id)->delete();
 
-		Session::flash('success', 'Cupom de desconto excluído com sucesso.');
+		Session::flash('success', 'Cupom de desconto desativado com sucesso.');
 
 		return Redirect::route('admin.coupon');
+	}
+
+	/**
+	 * Display all Perms.
+	 *
+	 * @return Response
+	 */
+	public function anyDeleted()
+	{
+		/*
+		 * Obj
+		 */
+		$coupon = $this->coupon->onlyTrashed();
+
+		/*
+		 * Paginate
+		 */
+
+        $pag = Input::get('pag', 50);
+
+		/*
+		 * Sort filter
+		 */
+
+    	$sort = in_array(Input::get('sort'), ['display_code', 'value', 'starts_on', 'ends_on', 'qty', 'qty_used']) ? Input::get('sort') : 'id';
+
+		/*
+		 * Order filter
+		 */
+
+    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+
+		/*
+		 * Search filters
+		 */
+		if (Input::has('display_code')) {
+			$coupon = $coupon->where('display_code', 'LIKE', '%'. Input::get('display_code') .'%');
+		}
+
+		if (Input::has('starts_on')) {
+			$coupon = $coupon->where('starts_on', '>=', Input::get('starts_on'));
+		}
+
+		if (Input::has('ends_on')) {
+			$coupon = $coupon->where('ends_on', '<=', Input::get('ends_on'));
+		}
+
+		/*
+		 * Finally Obj
+		 */
+		$coupon = $coupon->with(['user', 'offer'])->orderBy($sort, $order)
+		->paginate($pag)->appends([
+			'sort' => $sort,
+			'order' => $order,
+			'pag' => $pag,
+			'display_code' => Input::get('display_code'),
+			'starts_on' => Input::get('starts_on'),
+			'ends_on' => Input::get('ends_on'),
+		]);
+
+		// ->get()->toArray();
+		// print('<pre>');
+		// print_r($coupon);
+		// print('</pre>'); die();
+
+		/*
+		 * Layout / View
+		 */
+		$this->layout->content = View::make('admin.coupon.deleted.list', compact('sort', 'order', 'pag', 'coupon'));
+	}
+
+	public function getDeletedRestore($id)
+	{
+		$coupon = $this->coupon->onlyTrashed()->find($id);
+
+		if (is_null($coupon))
+		{
+			return Redirect::route('admin.coupon.deleted');
+		}
+
+		Session::flash('error', 'Você tem certeza que deleja reativar este cupom de desconto?');
+
+		$data['couponData'] = $coupon->toArray();
+		$data['couponArray'] = null;
+		$blackList = ['deleted_at'];
+
+		foreach ($data['couponData'] as $key => $value) {
+			if (!is_array($value) && !in_array($key, $blackList)) {
+				$data['couponArray'][Lang::get('coupon.'. $key)] = isset($value)?$value:'-';
+			}
+		}
+        $this->layout->page_title = 'Reativar Cupom '.$coupon->display_code;
+		$this->layout->content = View::make('admin.coupon.deleted.restore', $data);
+	}
+
+	public function postDeletedRestore($id)
+	{
+		$this->coupon->onlyTrashed()->find($id)->restore();
+
+		Session::flash('success', 'Cupom de desconto reativado com sucesso.');
+
+		return Redirect::route('admin.coupon.deleted');
 	}
 
 }
