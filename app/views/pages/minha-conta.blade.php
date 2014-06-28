@@ -49,7 +49,7 @@
                                                 Aguardando aprovação do pagamento
                                             @endif
                                         @else
-                                            <a href="{{route('cupom', ['id'=>$voucher->display_code])}}" target="_blank" title="Acesse o seu voucher" class="btn btn-include">Abrir</a>
+                                            <a href="{{route('cupom', ['id'=>base64_encode($voucher->id)])}}" target="_blank" title="Acesse o seu voucher" class="btn btn-include">Abrir</a>
                                         @endif
                                     </div>
                                 </div>
@@ -81,19 +81,95 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td width="30%">Nome completo</td>
-							<td width="70%"><a href="#" id="username" data-type="text" data-pk="1" data-title="Digite seu nome completo">Fulano da Silva</a></td>
+							<td width="30%">Nome</td>
+							<td width="70%"><a href="#" id="first_name" class="editable" data-type="text" data-pk="1" data-title="Digite seu nome">{{Auth::user()->profile->first_name}}</a></td>
+						</tr>
+                        @if(Auth::user()->profile->cnpj)
+                        <tr>
+                            <td width="30%">Razão Social</td>
+                            <td width="70%"><a href="#" id="company_name" class="editable" data-type="text" data-pk="1" data-title="Digite sua razão social">{{Auth::user()->profile->company_name}}</a></td>
+                        </tr>
+                        @else
+                        <tr>
+                            <td width="30%">Sobrenome</td>
+                            <td width="70%"><a href="#" id="last_name" class="editable" data-type="text" data-pk="1" data-title="Digite seu sobrenome">{{Auth::user()->profile->last_name}}</a></td>
+                        </tr>
+                        @endif
+						<tr>
+							<td width="30%">E-mail</td>
+                            <td width="70%"><a href="#" id="email" class="editable" data-type="text" data-pk="1" data-title="Digite seu e-mail">{{Auth::user()->email}}</a></td>
+						</tr>
+                        @if(Auth::user()->profile->cnpj)
+                        <tr>
+                            <td width="30%">CNPJ</td>
+                            <td width="70%"><a href="#" id="cnpj" class="editable" data-type="text" data-pk="1" data-title="Digite seu CNPJ">{{Auth::user()->profile->cnpj}}</a></td>
+                        </tr>
+                        @else
+                        <tr>
+                            <td width="30%">CPF</td>
+                            <td width="70%"><a href="#" id="cpf" class="editable" data-type="text" data-pk="1" data-title="Digite seu CPF">{{Auth::user()->profile->cpf}}</a></td>
+                        </tr>
+                        @endif
+						<tr>
+							<td width="30%">Telefone 1</td>
+							<td width="70%"><a href="#" id="telephone" class="editable"  data-type="text" data-pk="1" data-title="Digite seu telefone">{{Auth::user()->profile->telephone}}</a></td>
 						</tr>
 						<tr>
-							<td width="30%">Telefone</td>
-							<td width="70%"><a href="#" id="userphone" data-type="text" data-pk="1" data-title="Digite seu telefone">4812341234</a></td>
+							<td width="30%">Telefone 2</td>
+							<td width="70%"><a href="#" id="telephone2" class="editable"  data-type="text" data-pk="1" data-title="Digite seu telefone">{{Auth::user()->profile->telephone2}}</a></td>
+						</tr>
+						<tr>
+							<td width="30%">Endereço</td>
+							<td width="70%"><a href="#" id="street" class="editable"  data-type="text" data-pk="1" data-title="Digite seu endereço">{{Auth::user()->profile->street}}</a> Nº <a href="#" id="number" class="editable"  data-type="text" data-pk="1" data-title="Digite seu número">{{Auth::user()->profile->number}}</a> - Comp. (<a href="#" id="complement" class="editable"  data-type="text" data-pk="1" data-title="Digite seu complemento">{{Auth::user()->profile->complement}}</a>)</td>
+						</tr>
+						<tr>
+							<td width="30%">Bairro</td>
+							<td width="70%"><a href="#" id="neighborhood" class="editable"  data-type="text" data-pk="1" data-title="Digite seu bairro">{{Auth::user()->profile->neighborhood}}</a> CEP <a href="#" id="zip" class="editable"  data-type="text" data-pk="1" data-title="Digite seu CEP">{{Auth::user()->profile->zip}}</a></td>
+						</tr>
+						<tr>
+							<td width="30%">Cidade</td>
+							<td width="70%"><a href="#" id="city" class="editable"  data-type="text" data-pk="1" data-title="Digite sua cidade">{{Auth::user()->profile->city}}</a></td>
 						</tr>
 						<tr>
 							<td width="30%">Estado</td>
-							<td width="70%"><a href="#" id="userstate" data-type="select" data-pk="1" data-title="Escolha seu estado">Acre</a></td>
+							<td width="70%"><a href="#" id="state" data-type="select" data-pk="1" data-title="Escolha seu estado">{{Auth::user()->profile->state}}</a></td>
 						</tr>
+                        <tr>
+                            <td width="30%">Site</td>
+                            <td width="70%"><a href="#" id="site" class="editable"  data-type="text" data-pk="1" data-title="Digite seu site">{{Auth::user()->profile->site}}</a></td>
+                        </tr>
 					</tbody>
 				</table>
+
+                <br/>
+                <form method="post" action="{{route('trocar-senha')}}">
+                    <table class="table table-bordered user-data">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Trocar a Senha <span class="glyphicon glyphicon-chevron-down"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="30%">Senha Atual</td>
+                                <td width="70%"><input type="password" name="pass"></td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Nova Senha</td>
+                                <td width="70%"><input type="password" name="newpass"></td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Repita Nova Senha</td>
+                                <td width="70%"><input type="password" name="newpass2"></td>
+                            </tr>
+                            <tr>
+                                <td width="30%"></td>
+                                <td width="70%"><input type="submit" class="btn btn-primary" value="Trocar a Minha Senha"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+                </form>
 
 			</div>
 
@@ -124,12 +200,13 @@
 
 		$(document).ready(function() {
             $('.editable').editable({
-                url:   '{{route("ajax-myaccount")}}'
+                url:   '{{route("ajax-myaccount")}}',
+                emptytext: 'Não Informado'
             });
 		});
 
 		$(function(){
-			$('#userstate').editable({
+			$('#state').editable({
 				value: 0,    
 				source: [
 					{value: '0', text: 'Selecione'},
@@ -160,7 +237,8 @@
 					{value: 'SE', text: 'Sergipe'},
 					{value: 'SP', text: 'São Paulo'},
 					{value: 'TO', text: 'Tocantins'}
-				]
+				],
+                url:   '{{route("ajax-myaccount")}}'
 			});
 		});
 	</script>
