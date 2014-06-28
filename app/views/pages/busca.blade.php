@@ -12,10 +12,12 @@
 			<div class="col-12 col-sm-12 col-lg-12">
                 @if($total > 0)
 				<h1><strong>{{$total}}</strong> @if($total > 1)ofertas @else oferta @endif encontradas contendo <strong>{{$q}}</strong></h1>
+                <p class="subsubtitle">Utilize os filtros abaixo e encontre a melhor oferta para você</p>
                 @else
                 <h1>Nenhuma oferta encontrada contendo <strong>{{$q}}</strong></h1>
+                <p class="subsubtitle">Não encontramos nenhuma oferta com seus critérios de pesquisa.<br />
+                    Por favor, faça uma nova busca</p>
                 @endif
-				<p class="subsubtitle">Utilize os filtros abaixo e encontre a melhor oferta para você</p>
 			</div>
 
 		</div>
@@ -23,7 +25,7 @@
 		
 		<div class="row">
 			<form class="buy-form">
-
+                @if($total > 0)
 				<div itemscope class="col-4 col-sm-4 col-lg-4 clearfix">
 					
 					<h3>Filtrar por</h3>
@@ -145,20 +147,22 @@
 				</div>
 		
 				<div class="col-8 col-sm-8 col-lg-8">
-					<h3>Resultados</h3>
-					<label class="sorter">
-						Ordenar por: 
-						<select id="sort" name="sort">
-							<option value="spotlight">Maior Destaque</option>
-							<option value="price">Menor Preço</option>
-							<option value="discount">Maior Desconto</option>
-						</select>
-					</label>
-
+                    <h3>Resultados</h3>
+                    <label class="sorter">
+                        Ordenar por:
+                        <select id="sort" name="sort">
+                            <option value="spotlight">Maior Destaque</option>
+                            <option value="price">Menor Preço</option>
+                            <option value="discount">Maior Desconto</option>
+                        </select>
+                    </label>
+                @else
+                <div class="col-12 col-sm-12 col-lg-12">
+                @endif
 					<div id="sortable">
                         @if($total > 0)
                             @foreach($offers as $k => $offer)
-                            <div itemscope class="offer-grid-item clearfix" data-spotlight="{{$k}}" data-categories="{{$offer->category->slug}}" data-price="{{intval($offer->price_with_discount)}}" data-discount="{{intval($offer->percent_off)}}" data-destinies="destiny-{{$offer->destiny->id}}" data-holidays='["{{implode("-holiday\",\"",$offer->holiday->lists("id"))}}-holiday"]' data-mindate='{{substr(str_replace("/", "", $offer->offer_option->min("voucher_validity_start")), 2)}}' data-maxdate='{{substr(str_replace("/","", $offer->offer_option->max("voucher_validity_end")), 2)}}'>
+                            <div itemscope class="offer-grid-item clearfix" data-spotlight="{{$k}}" data-categories="{{$offer->category->slug}}" data-price="{{intval($offer->price_with_discount)}}" data-discount="{{intval($offer->percent_off)}}" data-destinies="destiny-{{$offer->destiny->id}}" data-holidays='["{{implode("-holiday\",\"",$offer->holiday->lists("id"))}}-holiday"]' data-mindate='{{date("Ym", $offer->min_date)}}' data-maxdate='{{date("Ym", $offer->max_date)}}'>
                                 @include('partials.oferta', array('offer'=>$offer))
                             </div>
                             @endforeach

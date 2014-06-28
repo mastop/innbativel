@@ -184,16 +184,10 @@ class PageController extends BaseController {
                     $holidays[$h->id]['total'] = (!isset($holidays[$h->id]['total'])) ? 1 : $holidays[$h->id]['total'] + 1;
                 }
                 // Datas
-                $dateMin = $offer->offer_option->lists('voucher_validity_start');
-                array_walk($dateMin, function($value) use(&$dateStart){
-                    $voucher_validity_start = strtotime(str_replace('/', '-', $value));
-                    if($voucher_validity_start <= $dateStart) $dateStart = $voucher_validity_start;
-                });
-                $dateMax = $offer->offer_option->lists('voucher_validity_end');
-                array_walk($dateMax, function($value) use(&$dateEnd){
-                    $voucher_validity_end = strtotime(str_replace('/', '-', $value));
-                    if($voucher_validity_end >= $dateEnd) $dateEnd = $voucher_validity_end;
-                });
+                $dateMin = $offer->min_date;
+                if($dateMin <= $dateStart) $dateStart = $dateMin;
+                $dateMax = $offer->max_date;
+                if($dateMax >= $dateEnd) $dateEnd = $dateMax;
             }
             // Para formar o filtro de datas
             $dateEnd = strtotime('+1 month', $dateEnd);
@@ -202,6 +196,9 @@ class PageController extends BaseController {
                 $dateStart = strtotime('+1 month', $dateStart);
             }
         }
+        $this->layout->title = $q.' - INNBatível';
+        $this->layout->description = 'No INNBatível você encontra as melhores ofertas de '.$q.', com preços INNBatíveis!';
+        $this->layout->og_type = 'article';
         $this->layout->body_classes = 'search-page';
         $this->layout->content = View::make('pages.busca', compact('offers', 'q', 'total', 'categories', 'destinies', 'holidays', 'dates'));
     }
