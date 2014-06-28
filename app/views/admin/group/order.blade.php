@@ -51,7 +51,7 @@
                     };
                 },
                 results: function (data, page) {
-                    return {results: data.group};
+                    return {results: data.offers};
                 }
             },
             initSelection: function(element, callback) {
@@ -65,7 +65,7 @@
                             'id': id
                         },
                         dataType: "jsonp"
-                    }).done(function(data) { callback(data.group); });
+                    }).done(function(data) { callback(data.offers); });
                 }
             },
             formatResult: offerFormatResult,
