@@ -81,6 +81,10 @@ class PageController extends BaseController {
         $this->layout->body_classes = 'checkout-page';
         $this->layout->content = View::make('pages.comprar', compact('offer', 'opt', 'add'));
     }
+
+    public function postPagar(){
+        dd(Input::all());
+    }
     public function postValidateCoupon(){
         $this->layout = 'format.ajax';
         $display_code = Input::get('promoCode');
