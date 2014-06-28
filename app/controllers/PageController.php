@@ -221,6 +221,39 @@ class PageController extends BaseController {
     /**
      * Show Termos de uso
      */
+    public function getViewVoucher($id)
+    {
+        ini_set('memory_limit', '2048M');
+        $voucher = Voucher::with(['order_buyer', 'offer_partner'])
+                          ->where('id', $id)
+                          ->where('used', '0')
+                          ->where('status', 'pago')
+                          ->whereExists(function($query){
+                                $query->select(DB::raw(1))
+                                      ->from('orders')
+                                      ->whereRaw('orders.id = vouchers.order_id')
+                                      ->whereRaw('orders.user_id = '.Auth::user()->id);
+                          })
+                          ->whereExists(function($query){
+                                $query->select(DB::raw(1))
+                                      ->from('offers_options')
+                                      ->whereRaw('offers_options.id = vouchers.offer_option_id')
+                                      ->whereRaw('offers_options.voucher_validity_end >= "'.date('Y-m-d H:i:s').'"');
+                          })
+                          ->first()
+                          ;
+        // print('<pre>'); print_r($voucher->toArray()); print('<pre>'); die();
+        if($voucher){
+            return View::make('pages.cupom', compact('voucher'));
+        }
+        else{
+            return Redirect::route('minha-conta')->with('error', 'Não foi possível exibir o seu cupom pois ele já foi expirado.');
+        }
+    }
+
+    /**
+     * Show Termos de uso
+     */
     public function anyTermosDeUso()
     {
         $this->layout->content = View::make('pages.termos-de-uso');

@@ -42,7 +42,7 @@
 							<div class="text-center">1 cupom</div>
 							<div class="text-center">Disponível</div>
 							<div class="buttons">
-								<a href="https://www.pagador.com.br/post/pagador/reenvia.asp/ea60e3e1-8e48-4ecd-93c7-0b98313b575a" target="_blank" title="Gere o boleto para pagamento" class="btn btn-include">Abrir</a>
+								<a href="{{ route('cupom', ['id'=>'448']) }}" target="_blank" title="Gere o boleto para pagamento" class="btn btn-include">Abrir</a>
 							</div>
 						</div>
 					</li>
