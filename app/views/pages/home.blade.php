@@ -51,7 +51,6 @@
 		  <h3>{{ $group->title }}</h3>
 
 		  @foreach ($group->offer as $offer)
-		  <?php $offer_option = $offer['offer_option_home'][0]; ?>
 		  <div itemscope class="offer-grid-item col-6 col-sm-6 col-lg-6 clearfix">
               @include('partials.oferta', array('offer'=>$offer))
 		  </div>

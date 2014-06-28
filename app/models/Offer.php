@@ -56,6 +56,17 @@ class Offer extends BaseModel {
         'genre_id' => 'required|integer',
 	 ];
 
+    public static function query()
+    {
+        $now = date('Y-m-d H:i:s');
+        $query = parent::query();
+        $query->where('offers.starts_on','<', $now)
+                ->where('offers.ends_on','>', $now)
+                ->where('offers.is_available','=', 1)
+                ->where('offers.is_active','=', 1);
+        return $query;
+    }
+
 	public function order(){
 		return $this->hasMany('Order');
 	}

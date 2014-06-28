@@ -1,5 +1,4 @@
 ;(function($){
-
 		Innbativel = window.Innbativel || {};
 
 		Innbativel.init = function(){};
@@ -10,6 +9,7 @@
 			var $minPrice = $('#min-price');
 			var $maxPrice = $('#max-price');
 			var $destinies = $('#destinies');
+			var $categories = $('#categories');
 			var $departures = $('#departures');
 			var $holidays = $('#holidays');
 			var $dates = $('#dates');
@@ -153,6 +153,23 @@
 				filter();
 			});
 
+			// categories
+			$categories.find('input').on('change', function() {
+				var $checked = $categories.find('input:checked'),
+				groups = [];
+
+				// At least one checkbox is checked, clear the array and loop through the checked checkboxes
+				// to build an array of strings
+				if ( $checked.length !== 0 && $checked[0].value !== 'all' ) {
+					$checked.each(function() {
+						groups.push(this.value);
+					});
+				}
+				categories = groups;
+
+				filter();
+			});
+
 			// departures
 			departures = [];
 			$departures.find('input').on('change', function() {
@@ -210,6 +227,7 @@
 					$grid.shuffle('shuffle', function($el) {
 						$price = parseInt($el.data('price'));
 						$destiny = $el.data('destinies');
+						$category = $el.data('categories');
 						return itemPassesFilters( $el.data() );
 					});
 				} else {
@@ -223,6 +241,10 @@
 				if ( destinies.length > 0 && !valueInArray(data.destinies, destinies) ) {
 					return false;
 				}
+				// If a categories filter is active and no value is in the array
+				if ( categories.length > 0 && !valueInArray(data.categories, categories) ) {
+					return false;
+				}
 				// If a departures filter is active and no value is in the array
 				if ( departures &&departures.length > 0 && !valueInArray(data.departures, departures) && !arrayContainsArray(data.departures, departures) ) {
 					return false;
@@ -231,11 +253,24 @@
 				if ( holidays.length > 0 && !valueInArray(data.holidays, holidays) && !arrayContainsArray(data.holidays, holidays) ) {
 					return false;
 				}
-				// If a holidays filter is active and no value is in the array
-				if ( dates.length > 0 && !valueInArray(data.dates, dates) && !arrayContainsArray(data.dates, dates) ) {
-					return false;
+				// If a date filter is active and no value is in the array
+				if ( dates.length > 0 ){
+                    var passDate = false;
+                    for ( var i in dates ) {
+                        //alert(parseInt(dates[i]));
+                        if(parseInt(dates[i]) >= parseInt(data.mindate) && parseInt(dates[i]) <= parseInt(data.maxdate)){
+                            passDate = true;
+                            //alert(data.mindate);
+                            //alert(data.maxdate);
+                            //return false;
+                        }
+
+                    }
+                    if(!passDate){
+                        return false
+                    }
 				}
-				
+
 				if ( parseInt($price) > parseInt($maxPrice.val()) /*&& !parseInt($minPrice.val())*/ ){
 					return false;
 				}
@@ -251,7 +286,7 @@
 			}
 
 			hasActiveFilters = function() {
-				return destinies.length > 0 || departures.length > 0 || holidays.length > 0 || dates.length > 0 || parseInt($minPrice.val()) || parseInt($maxPrice.val()) ;
+				return destinies.length > 0 || categories.length > 0 || departures.length > 0 || holidays.length > 0 || dates.length > 0 || parseInt($minPrice.val()) || parseInt($maxPrice.val()) ;
 			}
 
 			valueInArray = function(value, arr) {
