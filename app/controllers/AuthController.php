@@ -302,6 +302,7 @@ class AuthController extends BaseController {
 			catch (FacebookApiException $e)
 			{
 				print_r($e);
+                exit();
 				$user = null;
 			}
 
@@ -387,12 +388,17 @@ class AuthController extends BaseController {
 
 		else
 		{
-			$login = $facebook->getLoginUrl([
-				'scope' => 'email,user_birthday,user_hometown',
-				'redirect_uri' => URL::route('login.facebook', null, true),
-			]);
+            if(!Input::get('code')){
+                $login = $facebook->getLoginUrl([
+                    'scope' => 'email,user_birthday,user_hometown',
+                    'redirect_uri' => URL::route('login.facebook', null, true),
+                ]);
 
-			return Redirect::to($login);
+                return Redirect::to($login);
+            }
+            print_r($facebook);
+            exit();
+
 		}
 
 	}
