@@ -301,7 +301,7 @@ class AuthController extends BaseController {
 
 			catch (FacebookApiException $e)
 			{
-				error_log($e);
+				print_r($e);
 				$user = null;
 			}
 
