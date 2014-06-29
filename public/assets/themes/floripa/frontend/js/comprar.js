@@ -18,31 +18,11 @@
 
 			//$('#modal-payment-boleto').modal('show'); //excluir em produção
 
-			// login button
-			$('#login .btn').on('click', function (e) {
-				// login confirmed
-				userAuth = 1;
-			});
-
-			// register button
-			$('#register .btn').on('click', function (e) {
-				// login confirmed
-				userAuth = 1;
-			});
-
 			// credit card payment
 			$('#payment-card').on('click', function (e) {
 				e.preventDefault();
 				if( !userAuth ){
 					$('#login').modal('show');
-					$('#login .btn').on('click', function (e) {
-						userAuth = 1;
-						$('#modal-payment-card').modal('show');
-					});
-					$('#register .btn').on('click', function (e) {
-						userAuth = 1;
-						$('#modal-payment-card').modal('show');
-					});
 				}
 				else {
 					$('#modal-payment-card').modal('show');
@@ -80,31 +60,10 @@
 				e.preventDefault();
 				if( !userAuth ){
 					$('#login').modal('show');
-					$('#login .btn').on('click', function (e) {
-						userAuth = 1;
-						$('#modal-payment-boleto').modal('show');
-					});
-					$('#register .btn').on('click', function (e) {
-						userAuth = 1;
-						$('#modal-payment-boleto').modal('show');
-					});
 				}
 				else {
 					$('#modal-payment-boleto').modal('show');
 				}
-			});
-
-			// $('#modal-payment-boleto .btn-primary').on('click', function (e) {
-			// 	e.preventDefault();
-			// 	window.open('https://www.pagador.com.br/post/pagador/reenvia.asp/ea60e3e1-8e48-4ecd-93c7-0b98313b575a', '_blank');
-			// 	$('#modal-payment-confirmed').modal('show');
-			// });
-
-			// on dismiss modal payment confirmed, load user account
-			$('#modal-payment-confirmed').on('hidden.bs.modal', function (e) {
-				//window.location.href = 'index.html';
-				// alterar url para conta do usuário
-				window.open('index.html', '_self');
 			});
 
 			function hideEmptyComboList(){

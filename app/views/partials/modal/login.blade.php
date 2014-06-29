@@ -9,7 +9,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-8">
-                            <a class="img-link" href="{{ route('login.facebook') }}"><img src="//innbativel.s3.amazonaws.com/fb-login.png" alt="Faça login com sua conta do Facebook"></a>
+                            <a class="img-link" href="{{ route('login.facebook', array('destination' => Input::get('destination', Request::getPathInfo()))) }}"><img src="//innbativel.s3.amazonaws.com/fb-login.png" alt="Faça login com sua conta do Facebook"></a>
                         </div>
                     </div>
                     <hr>
@@ -42,24 +42,8 @@
         </div>
     </div>
 </div>
-@if($message = Session::get('error', Session::get('warning')))
-<div id="login-error" class="modal fade" tabindex="-1">
-    <div class="modal-dialog modal-sm text-center">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h4 class="modal-title">Atenção</h4><br/>
-                <p>
-                    {{$message}}
-                </p><br/>
-                <button type="submit" class="btn" data-dismiss="modal">Ok</button>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
 @if(Input::get('destination'))
 <script>
     $('#login').modal('show');
-    $('#login-error').modal('show');
 </script>
 @endif

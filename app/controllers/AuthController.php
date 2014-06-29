@@ -265,13 +265,14 @@ class AuthController extends BaseController {
 
 	public function getFacebook()
 	{
-
+        $destination = Input::get('destination', Session::get('destination', '/'));
 		/**
 		 * Facebook Config
 		 *
 		 * @return array
 		 */
-		$config = Config::get('facebook');
+		$config = ['appId' =>  Configuration::get('fb_app'), 'secret' => Configuration::get('fb_secret')];
+		//$config = Config::get('facebook');
 
 		/**
 		 * Facebook Config
@@ -337,8 +338,7 @@ class AuthController extends BaseController {
 						}
 
 						Auth::login($userObj);
-
-						return Redirect::route('home');
+						return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$profileObj->first_name.'</strong>!');
 					}
 				}
 
@@ -347,7 +347,7 @@ class AuthController extends BaseController {
 					$login = User::find($emailExists->id);
 					Auth::login($login);
 
-					return Redirect::route('home');
+					return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$login->profile->first_name.'</strong>!');
 				}
 				else
 				{
@@ -378,10 +378,11 @@ class AuthController extends BaseController {
 					$user->profile()->create($createdUser);
 
                     Auth::login($user);
+                    return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$user->profile->first_name.'</strong>!');
 				}
 			}
 
-			 return Redirect::route('home');
+			 return Redirect::to($destination);
 		}
 
 		else
@@ -404,7 +405,8 @@ class AuthController extends BaseController {
 		 *
 		 * @return array
 		 */
-		$config = Config::get('facebook');
+        $config = ['appId' =>  Configuration::get('fb_app'), 'secret' => Configuration::get('fb_secret')];
+		//$config = Config::get('facebook');
 
 		/**
 		 * Facebook Config
@@ -465,26 +467,7 @@ class AuthController extends BaseController {
 
 	public function getCreate()
 	{
-        $rules = [
-            'email' => 'Required|Max:255|Email',
-            'profile.first_name' => 'Required|Max:255|Alpha',
-            'profile.last_name' => 'Required|Max:255|Alpha',
-            'password'              => 'Required|Min:6|Max:255|confirmed',
-            'password_confirmation' => 'Required|Min:6|Max:255',
-        ];
-
-		$form  = Former::horizontal_open(route('account.create'))->class('row-fluid')->rules($rules);
-        $form .= Form::hidden('roles[name]', 10);// Cliente
-        $form .= Former::text('profile[first_name]')->label('Nome')->class('span12')->value(Input::old('profile[first_name]'));
-        $form .= Former::text('profile[last_name]')->label('Sobrenome')->class('span12')->value(Input::old('profile[last_name]'));
-
-		$form .= Former::text('email')->class('span12')->value(Input::old('email'));
-		$form .= Former::password('password')->label('Senha')->class('span12');
-		$form .= Former::password('password_confirmation')->label('Confirmar senha')->class('span12');
-		$form .= Former::submit('Cadastrar')->class('btn btn-danger btn-block');
-		$form .= Former::close();
-
-		$this->layout->content = View::make('auth.create', compact('form'));
+        return Redirect::route('home', ['open' => 'register']);
 	}
 
 	public function postCreate()
@@ -492,49 +475,67 @@ class AuthController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-            'email' => 'Required|Max:255|Email|Unique:users,email',
-            'profile.first_name' => 'Required|Max:255|Alpha',
-            'profile.last_name' => 'Required|Max:255|Alpha',
-            'password'              => 'Required|Min:6|Max:255|confirmed',
-            'password_confirmation' => 'Required|Min:6|Max:255',
+            'registerEmail' => 'required|email',
+            'registerFullName' => 'required',
+            'registerPhone' => 'required|numeric',
+            'registerPassword'      => 'required|min:6|confirmed',
+            'registerPassword_confirmation' => 'required|min:6',
 		];
 
 		$validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
-            $inputs['username'] = Str::lower(Str::slug(Input::get('email')));
-            $inputs['api_key'] = md5($inputs['username']);
-            $inputs['password'] = $this->user->setPasswordAttribute($inputs['password']);
-
-            if ($user = $this->user->create($inputs))
+            $userData = [];
+            $userData['username'] = Str::lower(Str::slug(Input::get('registerEmail')));
+            $userData['api_key'] = md5($userData['username']);
+            //$inputs['password'] = $this->user->setPasswordAttribute($inputs['password']);
+            $userData['password'] = $inputs['registerPassword'];
+            $userData['email'] = $inputs['registerEmail'];
+            if ($user = $this->user->create($userData))
             {
-                $inputs['profile']['user_id'] = $user->id;
+                $profileData = [];
+                $profileData['user_id'] = $user->id;
+                $FullNameArray = explode(' ', $inputs['registerFullName']);
+                $profileData['first_name'] = array_shift($FullNameArray);
+                $profileData['last_name'] = implode(' ', $FullNameArray);
+                $profileData['telephone'] = $inputs['registerPhone'];
+                $profileData['allow_newsletter'] = Input::get('registerNewsletter', 0);
 
-                $user->profile()->create($inputs['profile']);
+                $user->profile()->create($profileData);
 
-                /*
-                 * Roles
-                 */
-                $roles = [];
-                foreach ($inputs['roles'] as $key => $value) {
-                    $roles[] = $value;
+                $user->roles()->sync(array(10)); // 10 = Cliente
+
+                // Email de boas vindas
+                Mail::send('emails.auth.welcome', $user, function($message) use ($user){
+                    $message->to($user->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Bem-vindo ao INNBatível');
+                });
+
+                // Loga o usuário
+                $userdata = array(
+                    'email'      => $userData['email'],
+                    'password'   => $userData['password']
+                );
+                $destination = Input::get('destination', Session::get('destination', '/'));
+                try
+                {
+                    if ( Auth::attempt($userdata ) ) {
+                        return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$profileData['first_name'].'</strong>!');
+                    }
                 }
-
-                $user->roles()->sync($roles);
-
-                // Redirect to the register page
-                return //Redirect::route('home')
-                    Redirect::route('home', array('destination' => '/minha-conta'))
-                    ->withInput()
-                    ->withErrors('warning', 'Seu cadastro foi feito com sucesso!');
+                catch (Exception $e)
+                {
+                    // Redirect to the register page
+                    return //Redirect::route('home')
+                        Redirect::to($destination)
+                            ->with('warning', 'Bem-vindo, <strong>'.$profileData['first_name'].'</strong>! Você está cadastrado.');
+                }
             }
 		}
-
 		/*
 		 * Return and display Errors
 		 */
-		return Redirect::route('account.create')
+		return Redirect::route('home')
 			->withInput()
 			->withErrors($validation);
 	}
