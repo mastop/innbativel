@@ -180,6 +180,7 @@
 					</ul>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
                         <input type="hidden" name="offer" value="{{ $offer->id }}"/>
+                        <input type="hidden" name="merchantreferencecode" value="{{ $MerchantReferenceCode; }}">
                         <input type="hidden" name="payment_type" value=""/>
                     </form>
 
@@ -206,14 +207,14 @@
 							<div class="col-md-5">
 								<select id="paymentCardFlag" class="form-control" name="paymentCardFlag">
 									<option value>Selecione</option>
-									<option value="visa">Visa</option>
-									<option value="master">MasterCard</option>
-									<option value="amex">American Express</option>
-									<option value="diners">Diners Club</option>
-									<option value="elo">Elo</option>
-									<option value="discover">Discover</option>
-									<option value="jcb">JCB</option>
-									<option value="aura">Aura</option>
+									<option value="Visa">Visa</option>
+									<option value="Mastercard">MasterCard</option>
+									<option value="AmericanExpress">American Express</option>
+									<option value="DinersClub">Diners Club</option>
+									<option value="Elo">Elo</option>
+									<option value="Discover">Discover</option>
+									<option value="JCB">JCB</option>
+									<option value="Aura">Aura</option>
 								</select>
 							</div>
 							<div class="col-md-5">
@@ -235,15 +236,15 @@
 							<div class="col-md-5">
 								<select id="paymentCardValidityMonth" class="form-control" name="paymentCardValidityMonth">
 									<option value>Mês</option>
-									<option value="1">01 - Janeiro</option>
-									<option value="2">02 - Fevereiro</option>
-									<option value="3">03 - Março</option>
-									<option value="4">04 - Abril</option>
-									<option value="5">05 - Maio</option>
-									<option value="6">06 - Junho</option>
-									<option value="7">07 - Julho</option>
-									<option value="8">08 - Agosto</option>
-									<option value="9">09 - Setembro</option>
+									<option value="01">01 - Janeiro</option>
+									<option value="02">02 - Fevereiro</option>
+									<option value="03">03 - Março</option>
+									<option value="04">04 - Abril</option>
+									<option value="05">05 - Maio</option>
+									<option value="06">06 - Junho</option>
+									<option value="07">07 - Julho</option>
+									<option value="08">08 - Agosto</option>
+									<option value="09">09 - Setembro</option>
 									<option value="10">10 - Outubro</option>
 									<option value="11">11 - Novembro</option>
 									<option value="12">12 - Dezembro</option>
@@ -591,4 +592,15 @@
     calc6x = {{Configuration::get('interest-rate-6x')}};
     calc10x = {{Configuration::get('interest-rate-10x')}};
 </script>
+
+<!--INICIO DEVICE FINGERPRINT-->
+<p style="background:url(https://h.online-metrix.net/fp/clear.png?org_id=k8vif92e&amp;session_id=braspag_innbativel{{ $MerchantReferenceCode; }}&amp;m=1)"></p>
+<img src="https://h.online-metrix.net/fp/clear.png?org_id=k8vif92e&amp;session_id=braspag_innbativel{{ $MerchantReferenceCode; }}&amp;m=2" alt="">
+<object type="application/x-shockwave-flash" data="https://h.online-metrix.net/fp/fp.swf?org_id=k8vif92e&amp;session_id=braspag_innbativel{{ $MerchantReferenceCode; }}" width="1" height="1" id="thm_fp">
+    <param name="movie" value="https://h.online-metrix.net/fp/fp.swf?org_id=k8vif92e&amp;session_id=braspag_innbativel{{ $MerchantReferenceCode; }}" />
+<div></div>
+</object>
+<script src="https://h.online-metrix.net/fp/check.js?org_id=k8vif92e&amp;session_id=braspag_innbativel{{ $MerchantReferenceCode; }}" type="text/javascript"></script>
+<!--FIM DEVICE FINGERPRINT-->
+
 @stop
