@@ -613,6 +613,7 @@ class AdminOfferController extends BaseController {
 	public function getNewsletter(){
 		$offers = $this->offer/*->where('starts_on', '<=', date('Y-m-d H:i:s'))
 		             		   ->where('ends_on', '>=', date('Y-m-d H:i:s'))*/->get();
+
 		/*
 		* Layout / View
 		*/
@@ -620,20 +621,51 @@ class AdminOfferController extends BaseController {
 	}
 
 	public function postNewsletter(){
-		$offers = Input::get('offers');
+        $title = Input::get('title');
+
+        $input = Input::get('input');
+        $text = Input::get('text');
+        $button = Input::get('button');
+
+		$allOffers = Input::get('offers');
 		$selected_offers = Input::get('selected_offers');
 
-		$ids = array();
+        $n=1;
+        foreach ($allOffers as $offer) {
+            $ids[$n] = array();
 
-		foreach ($offers as $display_order => $id) {
-			if(isset($selected_offers[$id])){
-				$ids[] = $id;
-			}
-		}
+            foreach ($offer as $display_order => $id) {
+                if (isset($selected_offers[$n][$display_order])) {
+                    $ids[$n][] = $display_order;
+                }
+		    }
+            $offers[$n] = Array();
 
-		$offers = DB::select(DB::raw('SELECT o.*, oo.price_original,oo.price_with_discount FROM offers o LEFT JOIN offers_options oo ON o.id = oo.offer_id WHERE oo.id = (SELECT id FROM offers_options WHERE offer_id = o.id ORDER BY price_with_discount LIMIT 1) AND o.id IN ('.implode(',', $ids).') GROUP BY o.id ORDER BY FIELD(o.id, ' . implode(',', $ids) . ') ASC'));
+            If (count($ids[$n]) != 0 ) {
+                $query = 'SELECT o.*, oo.price_original,oo.price_with_discount, oo.percent_off, oo.min_qty, g.title descricao ';
+                $query .= ' FROM offers o ';
+                $query .= ' LEFT JOIN offers_options oo ';
+                $query .= ' ON o.id = oo.offer_id ';
+                $query .= ' LEFT JOIN offers_groups og ';
+                $query .= ' ON o.id = og.offer_id ';
+                $query .= ' LEFT JOIN groups g ';
+                $query .= ' ON g.id = og.group_id ';
+                $query .= ' WHERE oo.id IN ((SELECT id FROM offers_options ';
+                $query .= ' WHERE offer_id = o.id ';
+                $query .= ' ORDER BY price_with_discount ';
+                $query .= ' LIMIT 1),\'\') AND ';
+                $query .= ' o.id IN (' . implode(',', $ids[$n]) . ') ';
+                $query .= ' GROUP BY o.id, g.title ';
+                $query .= ' ORDER BY g.title, FIELD(o.id, ' . implode(',', $ids[$n]) . ') ASC';
 
-		// $html = Response::view('email.newsletter_'.Input::get('system'), compact('offers'));
+                $offers[$n] = DB::select(DB::raw($query));
+            }
+            $n++;
+        }
+
+        $send = Array('title'=> $title, 'input' => $input, 'text' => $text, 'button' => $button, 'offers' =>$offers);
+
+        $html = Response::view('emails.newsletter_' . Input::get('system'), compact('send'));
 
 		// print('<pre>');
 		// print_r($offers);
@@ -643,8 +675,8 @@ class AdminOfferController extends BaseController {
 		* Layout / View
 		*/
 
-		return View::make('emails.newsletter_'.Input::get('system'), compact('offers'));
+		return View::make('emails.newsletter_'.Input::get('system'), compact('send'));
 		// $this->layout->content = View::make('admin.newsletter.html', compact('html'));
-	}
+    }
 
 }
