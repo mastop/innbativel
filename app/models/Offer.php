@@ -10,7 +10,7 @@ class Offer extends BaseModel {
 	protected $table = 'offers';
 
 	public static $sluggable = array(
-		 'build_from' => 'title',
+		 'build_from' => 'short_title',
 		 'save_to'    => 'slug',
 	 );
 
@@ -24,6 +24,8 @@ class Offer extends BaseModel {
         'ngo_id', // Id da ONG
         'tell_us_id', // Id do depoimento do cliente
         'title', // Título
+        'short_title', // Título Curto
+        'short_title', // Título
         'subtitle', // SubTítulo
         'price_original', // Preço Original
         'price_with_discount', // Preço Com Desconto
@@ -46,6 +48,7 @@ class Offer extends BaseModel {
 
 	public static $rules = [
         'title' => 'required',
+        'short_title' => 'required',
         'destiny_id' => 'required|integer',
         'partner_id' => 'required|integer',
         'ngo_id' => 'required|integer',
@@ -158,12 +161,14 @@ class Offer extends BaseModel {
         $search = array(
             'Regulamento da Oferta',
             'Regras',
+            'Reagendamento/Cancelamento',
             'Fale Conosco',
             'mapa'
         );
         $replace = array(
             '<a href="#regulation" class="tooltip" data-tip="Veja o Regulamento da Oferta" data-toggle="modal">Regulamento da Oferta</a>',
             '<a href="#regulation" class="tooltip" data-tip="Veja o Regulamento da Oferta" data-toggle="modal">Regras</a>',
+            '<a href="#regulation" class="tooltip" data-tip="Veja a Política de Reagendamento/Cancelamento" data-toggle="modal">Reagendamento/Cancelamento</a>',
             '<a href="#contact" class="tooltip" data-tip="Entre em contato" data-toggle="modal">Fale Conosco</a>',
             '<a href="#map" class="tooltip" data-tip="Veja a localização" data-toggle="modal">Mapa</a>'
         );

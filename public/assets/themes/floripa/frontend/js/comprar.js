@@ -18,31 +18,11 @@
 
 			//$('#modal-payment-boleto').modal('show'); //excluir em produção
 
-			// login button
-			$('#login .btn').on('click', function (e) {
-				// login confirmed
-				userAuth = 1;
-			});
-
-			// register button
-			$('#register .btn').on('click', function (e) {
-				// login confirmed
-				userAuth = 1;
-			});
-
 			// credit card payment
 			$('#payment-card').on('click', function (e) {
 				e.preventDefault();
 				if( !userAuth ){
 					$('#login').modal('show');
-					$('#login .btn').on('click', function (e) {
-						userAuth = 1;
-						$('#modal-payment-card').modal('show');
-					});
-					$('#register .btn').on('click', function (e) {
-						userAuth = 1;
-						$('#modal-payment-card').modal('show');
-					});
 				}
 				else {
 					$('#modal-payment-card').modal('show');
@@ -80,14 +60,6 @@
 				e.preventDefault();
 				if( !userAuth ){
 					$('#login').modal('show');
-					$('#login .btn').on('click', function (e) {
-						userAuth = 1;
-						$('#modal-payment-boleto').modal('show');
-					});
-					$('#register .btn').on('click', function (e) {
-						userAuth = 1;
-						$('#modal-payment-boleto').modal('show');
-					});
 				}
 				else {
 					$('#modal-payment-boleto').modal('show');
@@ -97,7 +69,12 @@
 			// credit card payment
 			$('#payment-credit').on('click', function (e) {
 				e.preventDefault();
-				$('#modal-payment-credit').modal('show');
+				if( !userAuth ){
+					$('#login').modal('show');
+				}
+				else {
+					$('#modal-payment-credit').modal('show');
+				}
 			});
 
 			// $('#modal-payment-boleto .btn-primary').on('click', function (e) {

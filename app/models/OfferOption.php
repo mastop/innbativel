@@ -171,4 +171,8 @@ class OfferOption extends BaseModel {
     {
         return date('d/m/Y', strtotime($value));
     }
+
+    public function getIsExpiredAttribute(){
+        return (time() > strtotime($this->getOriginal('voucher_validity_end'))) ? true : false;
+    }
 }

@@ -153,5 +153,41 @@ class AjaxController extends BaseController {
         //print_r($data);
         return Response::json($data)->setCallback(Input::get('callback'));
     }
+    public function postMyaccount(){
+        $fields = [
+            'email',
+            'first_name',
+            'last_name',
+            'birthdat',
+            'cpf',
+            'telephone',
+            'telephone2',
+            'city',
+            'state',
+            'country',
+            'street',
+            'number',
+            'complement',
+            'neighborhood',
+            'zip',
+            'company_name',
+            'cnpj',
+            'site',
+        ];
+        $name = Input::get('name');
+        $value = Input::get('value');
+        if(in_array($name, $fields)){
+            if($name == 'email'){
+                Auth::user()->email = $value;
+                Auth::user()->update();
+                return Response::json(['OK']);
+            }
+            $profile = Auth::user()->profile;
+            $profile->$name = $value;
+            $profile->update();
+            return Response::json(['OK']);
+        }
+        return Response::json(['ERRO']);
+    }
 
 }

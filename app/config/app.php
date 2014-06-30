@@ -244,6 +244,13 @@ return array(
 		'AWS' 			  => 'Aws\Laravel\AwsFacade',
         'Excel' => 'Maatwebsite\Excel\Facades\Excel',
         //'Debugbar' => 'Barryvdh\Debugbar\Facade',
+        'FacebookSession' => 'Facebook\FacebookSession',
+        'FacebookRequest' => 'Facebook\FacebookRequest',
+        'FacebookResponse' => 'Facebook\FacebookResponse',
+        'GraphObject' => 'Facebook\GraphObject',
+        'FacebookRedirectLoginHelper' => 'Facebook\FacebookRedirectLoginHelper',
+        'FacebookJavaScriptLoginHelper' => 'Facebook\FacebookJavaScriptLoginHelper',
+        'Facebook' => 'Mastop\Facebook\Facebook',
 	),
 
 );

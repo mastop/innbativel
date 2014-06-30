@@ -64,7 +64,7 @@
                     @endif
                 @else
                 <a class="btn-login" href="#login" data-toggle="modal" title="Entre com sua conta INNBatível">Entrar <span class="entypo login"></span></a>
-                <a href="https://www.facebook.com/dialog/oauth?client_id=145684162279488&amp;redirect_uri=https%3A%2F%2Finnbativel.com.br%2Flogin-facebook-valida.php&amp;state=8bbb0e68cf6d535aac3a58cf2c254be8&amp;scope=email%2C+user_birthday%2C+user_hometown" title="Entre com sua conta do Facebook" class="btn-login login"><span class="entypo facebook"></span></a>
+                <a href="{{ route('facebook', array('destination' => Input::get('destination', Request::getPathInfo()))) }}" title="Entre com sua conta do Facebook" class="btn-login login"><span class="entypo facebook"></span></a>
                 @endif
             </div>
         </div>
@@ -198,5 +198,32 @@
         </div>
     </footer>
     {{ Configuration::get('script_body') }}
+@if(($message = Session::get('error', Session::get('warning'))) || count($errors) > 0)
+<div id="modal-error" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-sm text-center">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 class="modal-title">Atenção</h4><br/>
+                <p>
+                    @if($message)
+                    {{$message}}
+                    @else
+                    Existem erros de preenchimento. Verifique o formulário e envie novamente.
+                    @endif
+                </p><br/>
+                <button type="submit" class="btn" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#modal-error').modal('show');
+</script>
+@endif
+@if(Input::get('open', Input::old('modal')))
+<script>
+    $("#{{Input::get('open', Input::old('modal'))}}").modal('show');
+</script>
+@endif
 </body>
 </html>

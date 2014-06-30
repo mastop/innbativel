@@ -21,12 +21,7 @@
                 $('#opt0').click();
             }
 
-			//$('#emailShare').modal('show'); //excluir em produção
-
 			//clear fields on show modal
-			$('#emailShare').on('show.bs.modal', function (e) {
-				$('#emailShare input[type=text]').val('');
-			})
 
 			//#emailShare modal btn-primary behavior
 			$('#emailShare.modal .btn-primary').on('click', function() {

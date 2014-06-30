@@ -528,9 +528,9 @@
 
             // open modal login on load page if user not logged
             $('#login').modal('show');
-            $('#login').on('hidden.bs.modal', function (e) {
-                window.location.href = "{{$offer->url}}";
-            })
+            //$('#login').on('hidden.bs.modal', function (e) {
+            //    window.location.href = "{{$offer->url}}";
+            //})
         });
     </script>
     @else

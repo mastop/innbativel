@@ -17,7 +17,7 @@
 					
 					<div class="fb-share-button" data-href="{{$offer->ufl}}" data-type="button_count"></div>
 
-					<a target="_blank" href="http://twitter.com/home?status={{$offer->subtitle}} à partir de R${{intval($offer->price_with_discount)}}! -> {{$offer->url}}" title="Compartilhe no Twitter"><span class="entypo c-twitter"></span></a>
+					<a target="_blank" href="http://twitter.com/home?status={{$offer->short_title}} à partir de R${{intval($offer->price_with_discount)}}! -> {{$offer->url}}" title="Compartilhe no Twitter"><span class="entypo c-twitter"></span></a>
 					
 					<a href="#emailShare" title="Compartilhe por Email" data-toggle="modal"><div class="circle"><span class="entypo mail"></span></div></a>
 				</div>
@@ -90,7 +90,7 @@
                                 <input type="checkbox" id="combo{{$k}}" name="add[]" data-price="{{intval($additional->price_with_discount)}}" value="{{$additional->id}}">
                                 <figure><img src="{{$additional->offer->thumb}}"></figure>
                                 <div class="offer-combo">
-                                    <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
+                                    <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->short_title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
                                     <p>{{$additional->subtitle}}</p>
                                     <div class="price">R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
                                 </div>
@@ -178,7 +178,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><span class="entypo text-doc"></span>Regulamento da Oferta</h3>
+					<h3 class="modal-title"><span class="entypo text-doc"></span>Política de Reagendamento/Cancelamento</h3>
 				</div>
 				<div class="modal-body">
 					{{$offer->rules}}
@@ -198,7 +198,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title"><span class="entypo mail"></span>Compartilhe com seus amigos</h4>
 				</div>
-				<form id="emailShareForm" class="form-horizontal" name="emailShareForm" method="post" action="send_form_emailShare.php">
+				<form id="emailShareForm" class="form-horizontal" name="emailShareForm" method="post" action="{{route('offershare')}}">
 					<div class="modal-body">
 						<p>
 							Preencha os campos abaixo para compartilhar esta oferta.
@@ -206,13 +206,13 @@
 						<div class="form-group">
 							<label class="control-label col-md-4" for="senderName">Seu nome</label>
 							<div class="col-md-6">
-								<input type="text" class="form-control" id="senderName" name="senderName" placeholder="Seu nome"/>
+								<input type="text" class="form-control" id="senderName" name="senderName" placeholder="Seu nome" @if(Auth::check())value="{{Auth::user()->profile->first_name}} {{Auth::user()->profile->last_name}}"@endif/>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="control-label col-md-4" for="senderEmail">Seu email</label>
 							<div class="col-md-6 input-group">
-								<input type="email" class="form-control" id="senderEmail" name="senderEmail" placeholder="Seu email"/>
+								<input type="email" class="form-control" id="senderEmail" name="senderEmail" placeholder="Seu email" @if(Auth::check())value="{{Auth::user()->email}}"@endif/>
 							</div>
 						</div>
 						<div class="form-group">
@@ -229,6 +229,8 @@
 						</div>
 					</div>
 					<div class="modal-footer">
+                        <input type="hidden" name="offer" value="{{$offer->id}}" />
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
 						<button type="submit" class="btn btn-primary">Compartilhar</button>
 					</div>
 				</form>

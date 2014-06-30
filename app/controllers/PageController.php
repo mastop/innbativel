@@ -43,7 +43,7 @@ class PageController extends BaseController {
         // print('</pre>'); die();
 
         // SEO
-        $this->layout->title = $offer->destiny->name.' - '.$offer->title;
+        $this->layout->title = $offer->destiny->name.' - '.$offer->short_title;
         $this->layout->description = $offer->subtitle.' A partir de R$ '.intval($offer->price_with_discount).' com '.$offer->percent_off.'% OFF!';
         $this->layout->og_type = 'article';
         $this->layout->image = 'https:'.$offer->thumb;
@@ -1161,11 +1161,77 @@ class PageController extends BaseController {
     }
 
     /**
-     * Show Termos de uso
+     * Show Minha Conta
      */
     public function anyMinhaConta()
     {
-        $this->layout->content = View::make('pages.minha-conta');
+        $vouchers = Voucher::with('offer_option_offer', 'offer_option.offer')->whereExists(function($query){
+            $query->select(DB::raw(1))
+                ->from('orders')
+                ->whereRaw('orders.id = vouchers.order_id')
+                ->whereRaw('orders.user_id = '.Auth::user()->id);
+        })->get();
+        $this->layout->title = 'Minha Conta no INNBatível';
+        $this->layout->content = View::make('pages.minha-conta', compact('vouchers'));
+    }
+    /**
+     * Troca a Senha do Usuário
+     */
+    public function postTrocarSenha()
+    {
+        $old = Input::get('pass');
+        $new = Input::get('newpass');
+        $new2 = Input::get('newpass2');
+        if(strlen($new) < 6){
+            return Redirect::route('minha-conta')->with('error', 'A nova senha deve ter pelo menos 6 caracteres');
+        }
+        $hash= Auth::user()->password;
+        $user = User::findOrFail(Auth::user()->id);
+        if(Hash::check($user->salt.$old, $user->password))
+        {
+            if($new === $new2)
+            {
+                $user->password = $new;
+                $user->save();
+                Session::flash('success', 'Senha alterada com sucesso');
+                return Redirect::route('minha-conta');
+            }
+            else
+            {
+                return Redirect::route('minha-conta')->with('error', 'Os campos "Nova Senha" e "Repita Nova Senha" devem ser iguais');
+            }
+        }
+        else
+        {
+            return Redirect::route('minha-conta')->with('error', 'Senha atual inválida');
+        }
+    }
+
+    public function postOfferShare(){
+        $this->layout = 'format.ajax';
+        $data = [];
+        $data['senderName'] = Input::get('senderName');
+        $data['senderEmail'] = Input::get('senderEmail');
+        $data['receiverName'] = Input::get('receiverName');
+        $data['receiverEmail'] = Input::get('receiverEmail');
+        $id = Input::get('offer');
+
+        $offer = Offer::with('destiny')->find($id);
+        $data['offer'] = $offer;
+
+        if($offer){
+            Mail::send('emails.offer_share', $data,
+                function($message) use($data) {
+                    $message->to($data['receiverEmail'], $data['receiverName'])
+                        ->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
+                        ->setSubject('Uma sugestão INNBatível de '.$data['senderName']
+                        );
+                }
+            );
+            return Response::json(['error' => 0]);
+        }else{
+            return Response::json(['error' => 1]);
+        }
     }
 
     /**

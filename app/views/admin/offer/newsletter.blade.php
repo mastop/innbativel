@@ -11,23 +11,31 @@
 		</div>
 	</div>
 	<div class="well widget row-fluid">
-		{{ Former::inline_open(route('admin.offer.generate_newsletter')) }}
+        {{ Former::inline_open(route('admin.offer.generate_newsletter')) }}
 
-		{{ Former::select('system', 'Sistema')
-	        	 ->addOption('Sendy', 'sendy')
-	        	 ->addOption('GetResponse', 'getresponse')
-	    }}
-
+        {{ Former::select('system', 'Sistema')
+        ->addOption('Sendy', 'sendy')
+        ->addOption('GetResponse', 'getresponse')
+        }}
+        <hr/>
+        {{ Former::text('title', 'Título do e-mail:') }}
+        <hr/>
+        @for ($i = 1; $i <= 3; $i++)
 		<div id="TabContainer">
+            {{ Former::text('input['.$i.']', 'Título do grupo '.$i.':') }}
+            {{ Former::text('text['.$i.']', 'Texto do Botão '.$i.':') }}
+            {{ Former::text('button['.$i.']', 'Link do Botão '.$i.':') }}
 			<ul>
 				@foreach ($offers as $offer)
 				<li>
-					{{ Former::checkbox('selected_offers['.$offer->id.']', '')->text($offer->id.' | '.$offer->title) }}
-					{{ Former::hidden('offers[]', $offer->id) }}
+					{{ Former::checkbox('selected_offers['.$i.']['.$offer->id.']', '')->text($offer->id.' | '.$offer->title) }}
+					{{ Former::hidden('offers['.$i.'][]', $offer->id) }}
 				</li>
 				@endforeach
 			</ul>
 		</div>
+        <hr/>
+        @endfor
 
 	    {{ Former::submit('Gerar HTML') }}
 

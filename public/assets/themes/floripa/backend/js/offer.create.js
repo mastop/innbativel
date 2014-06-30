@@ -200,6 +200,10 @@
         if(isEmpty('title')){
             return false;
         }
+        // Valida título curto
+        if(isEmpty('short_title')){
+            return false;
+        }
         // Valida Destino
         if(isEmpty('destiny_id')){
             return false;

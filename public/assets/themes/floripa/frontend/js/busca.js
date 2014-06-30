@@ -320,7 +320,7 @@
 
 		};
 
-		$(window).on('ready', Innbativel.ready);
+		$(document).on('ready', Innbativel.ready);
 		$(window).on('load', Innbativel.load);
 
 })(jQuery);

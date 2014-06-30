@@ -17,16 +17,16 @@ Route::filter('auth', function()
   {
     $destination = Input::get('destination', Request::getPathInfo());
 
-	  Session::flash('warning', 'Você precisa logar no site para acessar está página ou arquivo.');
+	  Session::flash('warning', 'Você precisa logar no site para acessar esta página.');
 
     if ($destination !== '/')
     {
       Session::put('destination', $destination);
-      return Redirect::route('login', array('destination' => $destination));
+      return Redirect::route('home', array('destination' => $destination));
     }
 
     Session::forget('destination');
-    return Redirect::route('login');
+    return Redirect::route('home', array('destination' => '/'));
   }
 });
 
