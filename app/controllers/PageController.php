@@ -43,7 +43,7 @@ class PageController extends BaseController {
         // print('</pre>'); die();
 
         // SEO
-        $this->layout->title = $offer->destiny->name.' - '.$offer->title;
+        $this->layout->title = $offer->destiny->name.' - '.$offer->short_title;
         $this->layout->description = $offer->subtitle.' A partir de R$ '.intval($offer->price_with_discount).' com '.$offer->percent_off.'% OFF!';
         $this->layout->og_type = 'article';
         $this->layout->image = 'https:'.$offer->thumb;
