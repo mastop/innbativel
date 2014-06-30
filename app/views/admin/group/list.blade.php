@@ -37,7 +37,7 @@
 	{{ Table::open() }}
 	{{ Table::headers('ID', 'Título', 'URL (link do grupo)', 'Ícone', 'Ordem', 'Ações') }}
 	{{ Table::body($group)
-		->ignore(['icon', 'display_order'])
+		->ignore(['icon', 'short_title', 'display_order'])
         ->iconn(function($body) {
             if(isset($body->icon)){
                 return '<span class="entypo entypo-'.$body->icon.'"></span>';
