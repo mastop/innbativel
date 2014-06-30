@@ -266,141 +266,181 @@ class AuthController extends BaseController {
 	public function getFacebook()
 	{
         $destination = Input::get('destination', Session::get('destination', '/'));
-		/**
-		 * Facebook Config
-		 *
-		 * @return array
-		 */
-		$config = ['appId' =>  Configuration::get('fb_app'), 'secret' => Configuration::get('fb_secret')];
-		//$config = Config::get('facebook');
 
-		/**
-		 * Facebook Config
-		 *
-		 * @return Facebook
-		 */
-		$facebook = new Facebook($config);
+        FacebookSession::setDefaultApplication(Configuration::get('fb_app'), Configuration::get('fb_secret'));
+        $helper = new FacebookRedirectLoginHelper(route('login.facebook'));
 
+        // Check if existing session exists
+        if ( Session::has('fb_token') ) {
 
-		/**
-		 * Facebook User ID
-		 *
-		 * @return var
-		 */
-		$user = $facebook->getUser();
+            // Create new session from saved access_token
+            $session = new FacebookSession( Session::get('fb_token') );
 
+            // Validate the access_token to make sure it's still valid
+            try {
+                if ( ! $session->validate() ) {
+                    $session = null;
+                }
+            } catch ( Exception $e ) {
+                // Catch any exceptions
+                Log::error($e);
+                $session = null;
+            }
+        } else {
+            // No session exists
+            try {
+                $session = $helper->getSessionFromRedirect();
+            } catch( FacebookRequestException $ex ) {
+                // When Facebook returns an error
+                Log::error($ex);
+            } catch( Exception $ex ) {
+                // When validation fails or other local issues
+                Log::error($ex);
+            }
+        }
+
+        // Check if a session exists
+        if ( isset( $session ) ) {
+
+            // Save the session
+            Session::put('fb_token', $session->getToken());
+
+            // Create session using saved token or the new one we generated at login
+            $session = new FacebookSession( $session->getToken() );
+
+            // Create the logout URL (logout page should destroy the session)
+            // $logoutURL = $helper->getLogoutUrl( $session, 'http://yourdomain.com/logout' );
+        }else{
+            return Redirect::back()
+                ->with('warning', 'Erro ao se comunicar com o Facebook')
+                ->withInput();
+        }
+        // Graph API to request user data
+        $request = (new FacebookRequest( $session, 'GET', '/me' ))->execute();
+
+        // Get response as an array
+        $user = $request->getGraphObject()->asArray();
 		/**
 		 * If User ID is not null
 		 */
 		if($user)
         {
-			try
-			{
-				$profile = $facebook->api('/me');
-			}
+            /**
+             * Exemplo de $user
+             *
+             *
+            array (size=14)
+            'id' => string '100002078826091' (length=15)
+            'birthday' => string '02/27/1983' (length=10)
+            'email' => string 'fernando@mastop.com.br' (length=22)
+            'first_name' => string 'Fernando' (length=8)
+            'gender' => string 'male' (length=4)
+            'hometown' =>
+            object(stdClass)[1546]
+            public 'id' => string '112047398814697' (length=15)
+            public 'name' => string 'SÃ£o Paulo, Brazil' (length=18)
+            'last_name' => string 'Santos' (length=6)
+            'link' => string 'http://www.facebook.com/100002078826091' (length=39)
+            'location' =>
+            object(stdClass)[1547]
+            public 'id' => string '106339232734991' (length=15)
+            public 'name' => string 'FlorianÃ³polis, Santa Catarina' (length=30)
+            'locale' => string 'en_US' (length=5)
+            'name' => string 'Fernando Santos' (length=15)
+            'timezone' => int -3
+            'updated_time' => string '2014-05-08T19:55:19+0000' (length=24)
+            'verified' => boolean true
+             *
+             *
+             */
+            $uid = $user['id'];
+            $email = $user['email'];
+            $emailExists = User::where('email', '=', $email)->first();
+            $profileExists = Profile::where('facebook_id', '=', $uid)->first();
 
-			catch (FacebookApiException $e)
-			{
-				print_r($e);
-                exit();
-				$user = null;
-			}
+            if (!is_null($emailExists))
+            {
+                $userObj = User::find($emailExists->id);
 
-			if(!empty($profile))
-			{
-				$uid = $profile['id'];
-				$email = $profile['email'];
+                $profileObj = $userObj->profile;
 
-				$emailExists = User::where('email', '=', $email)->first();
-				$profileExists = Profile::where('facebook_id', '=', $uid)->first();
+                if ($profileObj) {
 
-				if (!is_null($emailExists))
-				{
-					$userObj = User::find($emailExists->id);
+                    $facebookExists = $userObj->profile->facebook_id;
 
-					$profileObj = $userObj->profile;
+                    if (!is_null($facebookExists)) {
+                        $profileUpdate = Profile::where('user_id', $userObj->id)->first();
+                        $profileUpdate->facebook_id = $uid;
+                        $profileUpdate->first_name = $user['first_name'];
+                        $profileUpdate->last_name = $user['last_name'];
+                        if(isset($user['location']->name)){
+                            $location = explode(',', $user['location']->name);
+                            $profileUpdate->city = (isset($location[0]) && !empty($location[0])) ? trim($location[0]) : "";
+                            $profileUpdate->state = (isset($location[1]) && !empty($location[1])) ? trim($location[1]) : "";
+                        }
+                        if(isset($user['birthday'])){
+                            $birth = explode('/', $user['birthday']);
+                            $profileUpdate->birthday = $birth[2].'-'.$birth[0].'-'.$birth[1];
+                        }
+                        $profileUpdate->update();
+                    }
+                }
+                Auth::login($userObj);
+                return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$profileObj->first_name.'</strong>!');
+            }elseif(!is_null($profileExists)){
+                $userObj = User::find($profileExists->user_id);
+                // Atualiza o profile
+                $profileExists->first_name = $user['first_name'];
+                $profileExists->last_name = $user['last_name'];
+                if(isset($user['location']->name)){
+                    $location = explode(',', $user['location']->name);
+                    $profileExists->city = (isset($location[0]) && !empty($location[0])) ? trim($location[0]) : "";
+                    $profileExists->state = (isset($location[1]) && !empty($location[1])) ? trim($location[1]) : "";
+                }
+                if(isset($user['birthday'])){
+                    $birth = explode('/', $user['birthday']);
+                    $profileExists->birthday = $birth[2].'-'.$birth[0].'-'.$birth[1];
+                }
+                $profileExists->update();
+                Auth::login($userObj);
+                return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$profileExists->first_name.'</strong>!');
+            }else{
+                // Novo usuário
+                $new = [
+                    'email' => $user['email'],
+                    'username' => Str::lower(Str::slug($user['email']) . '-' .Str::random(16)),
+                    'password' => Str::random(8),
+                ];
 
-					if ($profileObj) {
+                $created = $this->user->create($new)->id;
 
-						$facebookExists = $userObj->profile->facebook_id;
+                $createdUser = [
+                    'user_id' => $created,
+                    'facebook_id' => $user['id'],
+                    'first_name' => $user['first_name'],
+                    'last_name' => $user['last_name'],
+                ];
+                if(isset($user['birthday'])){
+                    $birth = explode('/', $user['birthday']);
+                    $createdUser['birthday'] = $birth[2].'-'.$birth[0].'-'.$birth[1];
+                }
+                if (isset($user['location']->name))
+                {
+                    $location = explode(',', $user['location']->name);
+                    $createdUser['city'] = (isset($location[0]) && !empty($location[0])) ? trim($location[0]) : "";
+                    $createdUser['state'] = (isset($location[1]) && !empty($location[1])) ? trim($location[1]) : "";
+                }
 
-						if (!is_null($facebookExists)) {
-                            $profileUpdate = Profile::where('user_id', $userObj->id)->first();
-                            $profileUpdate->facebook_id = $uid;
-                            $profileUpdate->first_name = $profile['name'];
+                $user = User::find($created);
+                $user->profile()->create($createdUser);
 
-                            if (isset($profile['location']) && !empty($profile['location']))
-                            {
-                                $location = explode(',', $profile['location']['name']);
-                                $profileUpdate->city = (isset($location[0]) && !empty($location[0])) ? $location[0] : "";
-                                $profileUpdate->state = (isset($location[1]) && !empty($location[1])) ? $location[1] : "";
-                            }
-							$profileUpdate->update();
-						}
-
-						Auth::login($userObj);
-						return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$profileObj->first_name.'</strong>!');
-					}
-				}
-
-				if (!is_null($emailExists))
-				{
-					$login = User::find($emailExists->id);
-					Auth::login($login);
-
-					return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$login->profile->first_name.'</strong>!');
-				}
-				else
-				{
-					$new = [
-						'email' => $profile['email'],
-						'username' => Str::lower(Str::slug($profile['email']) . '-' .Str::random(16)),
-						'password' => Str::random(8),
-					];
-
-					$created = $this->user->create($new)->id;
-
-					$location = [];
-					$location = explode(',', $profile['location']['name']);
-
-					$createdUser = [
-						'user_id' => $created,
-						'facebook_id' => $profile['id'],
-						'first_name' => $profile['name'],
-					];
-
-					if (isset($profile['location']) && !empty($profile['location']))
-					{
-						$createdUser['city'] = (isset($location[0]) && !empty($location[0])) ? $location[0] : "";
-						$createdUser['state'] = (isset($location[1]) && !empty($location[1])) ? $location[1] : "";
-					}
-
-					$user = User::find($created);
-					$user->profile()->create($createdUser);
-
-                    Auth::login($user);
-                    return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$user->profile->first_name.'</strong>!');
-				}
-			}
-
+                Auth::login($user);
+                return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$user->profile->first_name.'</strong>!');
+            }
 			 return Redirect::to($destination);
 		}
 
-		else
-		{
-            if(!Input::get('code')){
-                $login = $facebook->getLoginUrl([
-                    'scope' => 'email,user_birthday,user_hometown',
-                    'redirect_uri' => URL::route('login.facebook', null, true),
-                ]);
-
-                return Redirect::to($login);
-            }
-            print_r($facebook);
-            exit();
-
-		}
-
+        return Redirect::route('home')->with('warning', 'Falha ao tentar logar com os dados do Facebook');
 	}
 
 	public function getFacebookAjax()
