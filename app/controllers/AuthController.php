@@ -415,6 +415,7 @@ class AuthController extends BaseController {
                     'username' => Str::lower(Str::slug($user['email']) . '-' .Str::random(16)),
                     'password' => Str::random(8),
                 ];
+                $new['api_key'] = md5($new['username']);
 
                 $created = $this->user->create($new)->id;
 
