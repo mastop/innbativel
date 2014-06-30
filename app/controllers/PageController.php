@@ -257,6 +257,33 @@ class PageController extends BaseController {
         }
     }
 
+    public function postOfferShare(){
+        $this->layout = 'format.ajax';
+        $data = [];
+        $data['senderName'] = Input::get('senderName');
+        $data['senderEmail'] = Input::get('senderEmail');
+        $data['receiverName'] = Input::get('receiverName');
+        $data['receiverEmail'] = Input::get('receiverEmail');
+        $id = Input::get('offer');
+
+        $offer = Offer::with('destiny')->find($id);
+        $data['offer'] = $offer;
+
+        if($offer){
+            Mail::send('emails.offer_share', $data,
+                function($message) use($data) {
+                    $message->to($data['receiverEmail'], $data['receiverName'])
+                        ->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
+                        ->setSubject('Uma sugestão INNBatível de '.$data['senderName']
+                        );
+                }
+            );
+            return Response::json(['error' => 0]);
+        }else{
+            return Response::json(['error' => 1]);
+        }
+    }
+
     /**
      * Show Termos de uso
      */

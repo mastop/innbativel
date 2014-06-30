@@ -4,7 +4,7 @@
 
 		Innbativel.init = function(){};
 		
-		Innbativel.ready = function(){
+		Innbativel.load = function(){
 
 			(function(d, s, id) {
 				var js, fjs = d.getElementsByTagName(s)[0];
@@ -24,7 +24,7 @@
 
 		};
 
-		Innbativel.load = function(){
+		Innbativel.ready = function(){
 
 			//$('#register').modal('show'); //excluir em produção
 
@@ -97,7 +97,7 @@
 			
 		};
 
-		$(window).on('ready', Innbativel.ready);
+		$(document).on('ready', Innbativel.ready);
 		$(window).on('load', Innbativel.load);
 
 })(jQuery);

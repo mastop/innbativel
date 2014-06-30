@@ -64,7 +64,7 @@
                     @endif
                 @else
                 <a class="btn-login" href="#login" data-toggle="modal" title="Entre com sua conta INNBatível">Entrar <span class="entypo login"></span></a>
-                <a href="https://www.facebook.com/dialog/oauth?client_id=145684162279488&amp;redirect_uri=https%3A%2F%2Finnbativel.com.br%2Flogin-facebook-valida.php&amp;state=8bbb0e68cf6d535aac3a58cf2c254be8&amp;scope=email%2C+user_birthday%2C+user_hometown" title="Entre com sua conta do Facebook" class="btn-login login"><span class="entypo facebook"></span></a>
+                <a href="{{ route('facebook', array('destination' => Input::get('destination', Request::getPathInfo()))) }}" title="Entre com sua conta do Facebook" class="btn-login login"><span class="entypo facebook"></span></a>
                 @endif
             </div>
         </div>

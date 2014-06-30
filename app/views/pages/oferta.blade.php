@@ -198,7 +198,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title"><span class="entypo mail"></span>Compartilhe com seus amigos</h4>
 				</div>
-				<form id="emailShareForm" class="form-horizontal" name="emailShareForm" method="post" action="send_form_emailShare.php">
+				<form id="emailShareForm" class="form-horizontal" name="emailShareForm" method="post" action="{{route('offershare')}}">
 					<div class="modal-body">
 						<p>
 							Preencha os campos abaixo para compartilhar esta oferta.
@@ -206,13 +206,13 @@
 						<div class="form-group">
 							<label class="control-label col-md-4" for="senderName">Seu nome</label>
 							<div class="col-md-6">
-								<input type="text" class="form-control" id="senderName" name="senderName" placeholder="Seu nome"/>
+								<input type="text" class="form-control" id="senderName" name="senderName" placeholder="Seu nome" @if(Auth::check())value="{{Auth::user()->profile->first_name}} {{Auth::user()->profile->last_name}}"@endif/>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="control-label col-md-4" for="senderEmail">Seu email</label>
 							<div class="col-md-6 input-group">
-								<input type="email" class="form-control" id="senderEmail" name="senderEmail" placeholder="Seu email"/>
+								<input type="email" class="form-control" id="senderEmail" name="senderEmail" placeholder="Seu email" @if(Auth::check())value="{{Auth::user()->email}}"@endif/>
 							</div>
 						</div>
 						<div class="form-group">
@@ -229,6 +229,8 @@
 						</div>
 					</div>
 					<div class="modal-footer">
+                        <input type="hidden" name="offer" value="{{$offer->id}}" />
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
 						<button type="submit" class="btn btn-primary">Compartilhar</button>
 					</div>
 				</form>
