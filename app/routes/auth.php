@@ -25,6 +25,9 @@ Route::get  ('entrar/facebook', 		['as' => 'login.facebook',      'uses' => 'Aut
 Route::get('facebook', ['as' => 'facebook', function()
 {
     $destination = Input::get('destination', Session::get('destination', '/'));
+    if(!Session::has('destination')){
+        Session::put('destination', $destination);
+    }
     $permissions = array(
         'email',
         'user_location',
@@ -33,6 +36,5 @@ Route::get('facebook', ['as' => 'facebook', function()
     $helper = new Facebook();
     return Redirect::to($helper->getLoginUrl($permissions));
 }]);
-Route::get  ('entrar/facebook/ajax',    ['as' => 'login.facebook.ajax', 'uses' => 'AuthController@getFacebookAjax']);
 
 });

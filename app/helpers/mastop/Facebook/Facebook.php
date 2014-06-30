@@ -21,9 +21,8 @@ class Facebook extends \Facebook\FacebookRedirectLoginHelper
 
     public function __construct()
     {
-        $destination = \Input::get('destination', \Session::get('destination', '/'));
         \FacebookSession::setDefaultApplication(\Configuration::get('fb_app'), \Configuration::get('fb_secret'));
-        parent::__construct(route('login.facebook').'?destination='.$destination);
+        parent::__construct(route('login.facebook'));
     }
 
 

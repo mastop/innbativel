@@ -188,6 +188,11 @@ class AuthController extends BaseController {
 	public function getLogout()
 	{
 		Auth::logout();
+        if(Session::has('fb_token')){
+            $helper = new Facebook();
+            $session = new FacebookSession( Session::get('fb_token') );
+            if($session) return Redirect::to($helper->getLogoutUrl($session, route('home')));
+        }
 		return Redirect::route('home');
 	}
 
@@ -440,74 +445,6 @@ class AuthController extends BaseController {
 		}
 
         return Redirect::route('home')->with('warning', 'Falha ao tentar logar com os dados do Facebook');
-	}
-
-	public function getFacebookAjax()
-	{
-
-		/**
-		 * Facebook Config
-		 *
-		 * @return array
-		 */
-        $config = ['appId' =>  Configuration::get('fb_app'), 'secret' => Configuration::get('fb_secret')];
-		//$config = Config::get('facebook');
-
-		/**
-		 * Facebook Config
-		 *
-		 * @return Facebook
-		 */
-		$facebook = new Facebook($config);
-
-
-		/**
-		 * Facebook User ID
-		 *
-		 * @return var
-		 */
-		$user = $facebook->getUser();
-
-		/**
-		 * If User ID is not null
-		 */
-		if($user){
-
-			try
-			{
-				$profile = $facebook->api('/me');
-			}
-
-			catch (FacebookApiException $e)
-			{
-				error_log($e);
-				$user = null;
-			}
-
-			if(!empty($profile))
-			{
-				$uid = $profile['id'];
-				$email = $profile['email'];
-
-				$emailExists = User::where('email', '=', $email)->first();
-				$profileExists = Profile::where('facebook_id', '=', $uid)->first();
-
-				if (!is_null($profileExists))
-				{
-					$login = User::find($emailExists->id);
-					Auth::login($login);
-					return Response::json('yep');
-				}
-
-				else
-				{
-					return Response::json('nope');
-				}
-			}
-
-			 return 'none';
-		}
-
 	}
 
 	public function getCreate()
