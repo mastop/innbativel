@@ -400,7 +400,7 @@
 				<form id="paymentCreditForm" class="form-horizontal" name="paymentCreditForm" method="post">
 					<div class="modal-body">
 						<p>
-							Após clicar em "Finalizar compra" seus cupons serão disponibilizados em sua conta.
+							Após clicar em "Finalizar compra" seu cupom será disponibilizado em sua conta.
 						</p>
 						<div class="form-group">
 							<div class="panel-group col-md-11" id="card-eula">

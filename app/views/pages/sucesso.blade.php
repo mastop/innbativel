@@ -4,7 +4,7 @@
 		@if($status == 'pago')
 			<h1>Compra efetuada com sucesso</h1>
 			<p>
-				Seu cupom já está disponível em <a href="https://www.innbativel.com.br/area-do-usuario-meus-cupons.php">sua conta</a>. Acesse e imprima seu cupom agora mesmo.
+				Seu cupom já está disponível em {{ link_to_route('minha-conta', 'sua conta') }}. Acesse e imprima seu cupom agora mesmo.
 				<br/>
 				Obrigado por comprar no INNBatível. Desejamos uma ótima viajem!
 		@elseif($status == 'pendente')
@@ -12,7 +12,7 @@
 			<p>
 				Obrigado por comprar no INNBatível!
 				<br/>
-				Assim que identificarmos o seu pagamento, seu cupom será liberado.
+				Assim que identificarmos o seu pagamento, seu cupom será disponibilizado em {{ link_to_route('minha-conta', 'sua conta') }}.
 				<br/>
 				<a href="{{ $boletus_url }}" target="_blank">Acesse aqui o boleto de pagamento</a>
 		@else {{-- revisao --}}
