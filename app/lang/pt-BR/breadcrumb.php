@@ -34,4 +34,5 @@ return [
 	'payment' => 'Pagamentos aos Parceiros',
 	'transaction' => 'Transações',
 	'contract' => 'Contratos',
+	'group' => 'Grupos',
 ];
