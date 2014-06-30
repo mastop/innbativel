@@ -198,5 +198,32 @@
         </div>
     </footer>
     {{ Configuration::get('script_body') }}
+@if(($message = Session::get('error', Session::get('warning'))) || count($errors) > 0)
+<div id="modal-error" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-sm text-center">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 class="modal-title">Atenção</h4><br/>
+                <p>
+                    @if($message)
+                    {{$message}}
+                    @else
+                    Existem erros de preenchimento. Verifique o formulário e envie novamente.
+                    @endif
+                </p><br/>
+                <button type="submit" class="btn" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#modal-error').modal('show');
+</script>
+@endif
+@if(Input::get('open', Input::old('modal')))
+<script>
+    $("#{{Input::get('open', Input::old('modal'))}}").modal('show');
+</script>
+@endif
 </body>
 </html>

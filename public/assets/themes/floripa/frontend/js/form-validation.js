@@ -512,7 +512,7 @@
 						required: true,
 						rangelength: [6, 10]
 					},
-					registerConfirmPassword: {
+                    registerPassword_confirmation: {
 						required: true,
 						equalTo: "#registerPassword"
 					},
@@ -541,7 +541,7 @@
 						required: "O campo senha é obrigatório.",
 						rangelength: "Este campo deve conter de 6 a 10 caracteres."
 					},
-					registerConfirmPassword: {
+                    registerPassword_confirmation: {
 						required: "A confirmação da senha é obrigatória.",
 						equalTo: "Senha não confere."
 					},
@@ -553,8 +553,7 @@
 					}
 				},
 				submitHandler: function(form) {
-					//form.submit();
-					$('#register').modal('hide');
+					form.submit();
 				}
 			});
 

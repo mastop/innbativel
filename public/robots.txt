@@ -1,2 +1,7 @@
 User-agent: *
-Disallow: 
+Disallow: /entrar/
+Disallow: /facebook
+Disallow: /minha-conta
+Disallow: /sair
+Disallow: /recuperar/
+

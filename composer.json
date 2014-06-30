@@ -17,10 +17,10 @@
 		"raveren/kint": "dev-1.0.0-wip",
 		"sebklaus/profiler" : "dev-master",
 		"aws/aws-sdk-php-laravel": "1.*",
-		"patricktalmadge/bootstrapper": "dev-develop",
+		"patricktalmadge/bootstrapper": "4.1.10",
 		"kennedytedesco/validation": "dev-master",
 		"tijsverkoyen/css-to-inline-styles": "1.2.*@dev",
-		"facebook/php-sdk": "dev-master",
+        "facebook/php-sdk-v4": "dev-master",
 		"goodby/csv": "*",
         "barryvdh/laravel-debugbar": "1.*",
         "maatwebsite/excel": "dev-master"

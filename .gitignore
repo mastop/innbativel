@@ -11,3 +11,4 @@ server/
 .idea/
 drop_tables.php
 .elasticbeanstalk/
+.DS_Store

@@ -24,7 +24,7 @@ class Configuration extends BaseModel {
             $conf = Configuration::where('name', $name)->first();
             return ($conf) ? $conf->value : '';
         });
-        return $val;
+        return trim($val);
     }
 
 }
