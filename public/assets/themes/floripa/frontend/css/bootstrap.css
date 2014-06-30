@@ -9220,6 +9220,10 @@ table.user-data th,
 	font-size: 16px;
 }
 
+#payment-credit-button {
+	display: none;
+}
+
 #buy-box {
 	text-align: center;
 	border: 1px dashed #FFC4A1;

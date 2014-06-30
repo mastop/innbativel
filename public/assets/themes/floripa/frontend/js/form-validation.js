@@ -322,7 +322,10 @@
 					paymentBoletoPhone: {
 						required: true,
 						digits: true,
-						rangelength: [10, 11]
+						rangelength: [10, 15]
+					},
+					paymentCardEULA: {
+						required: true
 					}
 				},
 				messages:{
@@ -330,9 +333,14 @@
 						required: "O campo telefone é obrigatório.",
 						digits: "Digite apenas dígitos.",
 						rangelength: "Digite um número de telefone válido."
+					},
+					paymentCardEULA: {
+						required: "Campo obrigatório."
 					}
 				},
 				submitHandler: function(form) {
+					$('#closeOrderBoleto').attr('disabled','disabled');
+					$('#closeOrderBoleto').html('Aguarde . . .');
                     $.each ( $('#paymentBoletoForm input').serializeArray(), function ( i, obj ) {
                         $('<input type="hidden">').prop( obj ).appendTo( $('#buy-form') );
                     } );
@@ -413,11 +421,36 @@
 					}
 				},
 				submitHandler: function(form) {
+					$('#closeOrderCard').attr('disabled','disabled');
+					$('#closeOrderCard').html('<span class="entypo lock"></span>Aguarde . . .');
+
                     $.each ( $('#paymentCardForm input, #paymentCardForm select').serializeArray(), function ( i, obj ) {
                         $('<input type="hidden">').prop( obj ).appendTo( $('#buy-form') );
                     } );
                     $('#buy-form input[name="payment_type"]').val('credit_card');
                     $('#buy-form').submit();
+				}
+			});
+
+			$('#paymentCreditForm').validate({
+				rules:{ 
+					paymentCardEULA: {
+						required: true
+					}
+				},
+				messages:{
+					paymentCardEULA: {
+						required: "Campo obrigatório."
+					}
+				},
+				submitHandler: function(form) {
+					$('#closeOrderCredit').attr('disabled','disabled');
+					$('#closeOrderCredit').html('Aguarde . . .');
+                    $.each ( $('#paymentCreditForm input').serializeArray(), function ( i, obj ) {
+                        $('<input type="hidden">').prop( obj ).appendTo( $('#buy-form') );
+                    } );
+                    $('#buy-form input[name="payment_type"]').val('credit');
+                    // $('#buy-form').submit();
 				}
 			});
 

@@ -163,10 +163,9 @@ class PageController extends BaseController {
         // print('<pre>'); print_r($inputs); print('<pre>'); die();
 
         $rules = [
-            'payment_type' => 'required',
             'merchantreferencecode' => 'required',
             'donation' => 'required',
-            'paymentCardEULA' => 'required'
+            'paymentCardEULA' => 'required',
         ];
 
         $validation = Validator::make($inputs, $rules);
@@ -888,6 +887,18 @@ class PageController extends BaseController {
             // paying via boletus
             ////////////////////////////////////////////////////////////////////////////
             else{
+                $rules = [
+                    'paymentBoletoPhone' => 'required|digitsbetween:10,15',
+                ];
+
+                $validation = Validator::make($inputs, $rules);
+
+                if (!$validation->passes()){
+                    return Redirect::back()
+                                    ->withInput()
+                                    ->withErrors($validation);
+                }
+
                 //////////////////////////////////////
                 require_once app_path().'/braspag/vars.php';
                 //////////////////////////////////////
