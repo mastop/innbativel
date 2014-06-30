@@ -4,6 +4,7 @@
 
         {{ Former::horizontal_open()->rules([
         	'title' => 'required',
+        	'short_title' => 'required',
             'url' => 'required',
         	'icon' => 'required',
         ]) }}
@@ -11,6 +12,7 @@
         {{ Former::populate($group) }}
 
         {{ Former::text('title', 'Título')->class('span12') }}
+        {{ Former::text('short_title', 'Título Curto')->class('span12') }}
         {{ Former::text('url', 'URL (link do grupo)')->class('span12') }}
         {{ Former::select('icon', 'Ícone')
         ->addOption(null)
