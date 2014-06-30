@@ -423,7 +423,7 @@
 
 			$('#emailShareForm').validate({
 				rules:{
-					senderName:{ 
+					senderName:{
 						required: true,
 						minlength: 3
 					},
@@ -460,8 +460,28 @@
 				},
 				submitHandler: function(form) {
 					//form.submit();
-					$('#emailShare').modal('hide');
-					$('#emailShareResponse').modal('show');
+                    $(form).find('button.btn-primary').attr('disabled', true);
+                    $(form).parent().find('h4.modal-title').html('<span class="entypo cycle"></span> Aguarde...');
+                    $.ajax({
+                        type: "POST",
+                        url: $(form).attr('action'),
+                        data: $(form).serialize(),
+                        success: function(data){
+                            if(data.error > 0){
+                                alert('Houve um erro ao tentar enviar sua sugestão. Tente novamente.');
+                            }else{
+                                $('#receiverName').val('');
+                                $('#receiverEmail').val('');
+                                $('#emailShare').modal('hide');
+                                $('#emailShareResponse').modal('show');
+                            }
+                            $(form).find('button.btn-primary').attr('disabled', false);
+                            $(form).parent().find('h4.modal-title').html('<span class="entypo mail"></span>Compartilhe com seus amigos');
+                        },
+                        headers: {
+                            'X-CSRF-Token': $(form).find('input[name="_token"]').val()
+                        }
+                    });
 				}
 			});
 
@@ -679,7 +699,7 @@
 			
 		};
 
-		$(window).on('ready', Innbativel.ready);
+		$(document).on('ready', Innbativel.ready);
 		$(window).on('load', Innbativel.load);
 
 })(jQuery);

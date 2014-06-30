@@ -9,6 +9,7 @@
 Route::group(array('https', 'after' => 'cache.public'), function()
 {
     Route::any('/', ['as' => 'home', 'uses' => 'PageController@anyHome']);
+    Route::post('/oferta/compratilhar', ['as' => 'offershare', 'uses' => 'PageController@postOfferShare']);
     Route::any('/oferta/{slug}', ['as' => 'oferta', 'uses' => 'PageController@anyOferta']);
     Route::any('/comprar', ['as' => 'comprar', 'uses' => 'PageController@anyComprar']);
     Route::post('/pagar', ['as' => 'pagar', 'uses' => 'PageController@postPagar']);
