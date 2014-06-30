@@ -812,6 +812,7 @@ class AdminOfferController extends BaseController {
 		/*
 		* Layout / View
 		*/
+        $this->layout->page_title = 'Gerar HTML para Newsletter';
 		$this->layout->content = View::make('admin.offer.newsletter', compact('offers'));
 	}
 
