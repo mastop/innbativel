@@ -30,7 +30,7 @@ Route::get('facebook', ['as' => 'facebook', function()
         'user_location',
         'user_birthday'
     );
-    $helper = new FacebookRedirectLoginHelper(route('login.facebook').'?destination='.$destination, Configuration::get('fb_app'), Configuration::get('fb_secret'));
+    $helper = new Facebook();
     return Redirect::to($helper->getLoginUrl($permissions));
 }]);
 Route::get  ('entrar/facebook/ajax',    ['as' => 'login.facebook.ajax', 'uses' => 'AuthController@getFacebookAjax']);

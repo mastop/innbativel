@@ -250,6 +250,7 @@ return array(
         'GraphObject' => 'Facebook\GraphObject',
         'FacebookRedirectLoginHelper' => 'Facebook\FacebookRedirectLoginHelper',
         'FacebookJavaScriptLoginHelper' => 'Facebook\FacebookJavaScriptLoginHelper',
+        'Facebook' => 'Mastop\Facebook\Facebook',
 	),
 
 );

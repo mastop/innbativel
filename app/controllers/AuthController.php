@@ -267,8 +267,7 @@ class AuthController extends BaseController {
 	{
         $destination = Input::get('destination', Session::get('destination', '/'));
 
-        FacebookSession::setDefaultApplication(Configuration::get('fb_app'), Configuration::get('fb_secret'));
-        $helper = new FacebookRedirectLoginHelper(route('login.facebook'));
+        $helper = new Facebook();
 
         // Check if existing session exists
         if ( Session::has('fb_token') ) {
