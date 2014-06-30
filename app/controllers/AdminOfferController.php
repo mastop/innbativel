@@ -274,7 +274,7 @@ class AdminOfferController extends BaseController {
                         'Bucket' => $s3bucket,
                         'Key' => "$newpath"
                     ));
-                    $thumb = Image::make($result['Body'])->resize(537, 224);
+                    $thumb = Image::make((string)$result['Body'])->resize(537, 224);
                     $s3->putObject(array(
                         'Bucket' => $s3bucket,
                         'Key'    => "ofertas/{$offer->id}/thumb/$newname",
@@ -301,7 +301,7 @@ class AdminOfferController extends BaseController {
                         'Bucket' => $s3bucket,
                         'Key' => "temp/{$newsletter_img}"
                     ));
-                    $thumb = Image::make($result['Body'])->resize(280, 117);
+                    $thumb = Image::make((string)$result['Body'])->resize(280, 117);
                     $s3->putObject(array(
                         'Bucket' => $s3bucket,
                         'Key'    => "$newpath",
@@ -566,7 +566,7 @@ class AdminOfferController extends BaseController {
                         'Bucket' => $s3bucket,
                         'Key' => "$newpath"
                     ));
-                    $thumb = Image::make($result['Body'])->resize(537, 224);
+                    $thumb = Image::make((string)$result['Body'])->resize(537, 224);
                     $s3->putObject(array(
                         'Bucket' => $s3bucket,
                         'Key'    => "ofertas/{$offer->id}/thumb/$newname",
@@ -605,7 +605,7 @@ class AdminOfferController extends BaseController {
                             'Bucket' => $s3bucket,
                             'Key' => "temp/{$newsletter_img}"
                         ));
-                        $thumb = Image::make($result['Body'])->resize(280, 117);
+                        $thumb = Image::make((string)$result['Body'])->resize(280, 117);
                         $s3->putObject(array(
                             'Bucket' => $s3bucket,
                             'Key'    => "$newpath",
