@@ -48,7 +48,7 @@
 
 {{ Former::textarea('features', 'Destaques')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques da Oferta') }}
 {{ Former::textarea('popup_features', 'Destaques Popup')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira os Destaques que aparecerão como Popup')}}
-{{ Former::textarea('rules', 'Regras')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira as Regras da Oferta') }}
+{{ Former::textarea('rules', 'Política de Reagendamento/Cancelamento')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira a Política de Reagendamento/Cancelamento da Oferta') }}
 
 
 {{ Former::multiselect('offers_included', 'Inclusos')
