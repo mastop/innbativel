@@ -76,7 +76,7 @@ class User extends BaseUser {
         $ret = array();
         if(!empty($users)){
             foreach($users as $u){
-                $ret[$u->id] = $u->fullName();
+                $ret[$u->id] = $u->fullName;
             }
         }
         return $ret;

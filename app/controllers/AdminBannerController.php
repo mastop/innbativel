@@ -169,7 +169,7 @@ class AdminBannerController extends BaseController {
 //                        'Bucket' => $s3bucket,
 //                        'Key' => "$newpath"
 //                    ));
-//                    $thumb = Image::make($result['Body'])->resize(100, 50);
+//                    $thumb = Image::make((string)$result['Body'])->resize(100, 50);
 //                    $s3->putObject(array(
 //                        'Bucket' => $s3bucket,
 //                        'Key'    => "banners/{$banner->id}/thumb/$newtitle",
@@ -307,7 +307,7 @@ class AdminBannerController extends BaseController {
 //                        'Bucket' => $s3bucket,
 //                        'Key' => "$newpath"
 //                    ));
-//                    $thumb = Image::make($result['Body'])->resize(100, 50);
+//                    $thumb = Image::make((string)$result['Body'])->resize(100, 50);
 //                    $s3->putObject(array(
 //                        'Bucket' => $s3bucket,
 //                        'Key'    => "banners/{$banner->id}/thumb/$newtitle",

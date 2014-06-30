@@ -17,7 +17,7 @@
 					
 					<div class="fb-share-button" data-href="{{$offer->ufl}}" data-type="button_count"></div>
 
-					<a target="_blank" href="http://twitter.com/home?status={{$offer->subtitle}} à partir de R${{intval($offer->price_with_discount)}}! -> {{$offer->url}}" title="Compartilhe no Twitter"><span class="entypo c-twitter"></span></a>
+					<a target="_blank" href="http://twitter.com/home?status={{$offer->short_title}} à partir de R${{intval($offer->price_with_discount)}}! -> {{$offer->url}}" title="Compartilhe no Twitter"><span class="entypo c-twitter"></span></a>
 					
 					<a href="#emailShare" title="Compartilhe por Email" data-toggle="modal"><div class="circle"><span class="entypo mail"></span></div></a>
 				</div>
@@ -90,7 +90,7 @@
                                 <input type="checkbox" id="combo{{$k}}" name="add[]" data-price="{{intval($additional->price_with_discount)}}" value="{{$additional->id}}">
                                 <figure><img src="{{$additional->offer->thumb}}"></figure>
                                 <div class="offer-combo">
-                                    <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
+                                    <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->short_title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
                                     <p>{{$additional->subtitle}}</p>
                                     <div class="price">R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
                                 </div>

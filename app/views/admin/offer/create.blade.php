@@ -3,6 +3,7 @@
 
         {{ Former::horizontal_open()->rules([
         	'title' => 'required',
+        	'short_title' => 'required',
         	'destiny_id' => 'required',
         	'partner_id' => 'required',
         	'starts_on' => 'required',
@@ -16,6 +17,7 @@
         {{ Former::legend('Dados da Oferta') }}
 
         {{ Former::text('title', 'Título')->class('span12') }}
+        {{ Former::text('short_title', 'Título Curto')->class('span12') }}
         {{ Former::text('subtitle', 'Subtítulo')->class('span12') }}
 
         {{ Former::select('destiny_id', 'Destino')
