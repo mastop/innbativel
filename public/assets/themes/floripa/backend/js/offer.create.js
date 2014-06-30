@@ -110,7 +110,7 @@
             resetOfferOptions();
         }
     });
-    $( "div#offerOptionsMain" ).disableSelection();
+    //$( "div#offerOptionsMain span" ).disableSelection();
 
     $('#offer_opt_add').click(function(){
         var div_clone = $('#offerOptionsMain div.offerOptions').last();
