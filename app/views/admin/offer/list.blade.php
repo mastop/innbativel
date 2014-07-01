@@ -46,13 +46,16 @@
 	{{ Table::open() }}
 	{{ Table::headers('ID', 'Título', 'Destino', 'Início', 'Fim', 'Ações') }}
 	{{ Table::body($offer)
-		->ignore(['slug', 'destiny', 'partner'])
+		->ignore(['slug', 'destiny', 'partner', 'is_active', 'is_available'])
         ->destiny_id__noreplace__(function($body) {
             return $body->getFullDestinnyAttribute();
         })
 		->id(function($body) {
 			return '<a href="'.route('oferta', $body->slug).'" target="_blank">'.$body->id.'</a>';
 		})
+        ->title(function($body) {
+            return ($body->can_sell) ? $body->title : '<span style="color: red">'.$body->title.'</span>';
+        })
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 				Navigation::links([
