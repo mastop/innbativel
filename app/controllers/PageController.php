@@ -421,6 +421,8 @@ class PageController extends BaseController {
 
                 $order->save();
 
+                $pagadorTransactionType = 2;
+
                 /////////////////////////////////////
                 /////////////////////////////////////
                 require_once app_path().'/braspag/vars.php';
@@ -434,235 +436,235 @@ class PageController extends BaseController {
                 //                    ->withInput();
                 // }
 
-                /////////////////////////////////////////////
-                /////////////////////////////////////////////
-                require_once app_path().'/braspag/antifraud.php';
-                /////////////////////////////////////////////
-                /////////////////////////////////////////////
+                // /////////////////////////////////////////////
+                // /////////////////////////////////////////////
+                // require_once app_path().'/braspag/antifraud.php';
+                // /////////////////////////////////////////////
+                // /////////////////////////////////////////////
 
-                $SoapClient = new AntiFraud($url_antifraud);
-                $antifraude = new FraudAnalysis();
-                $request = new FraudAnalysisRequest();
-                $document = new AntiFraudDocumentData();
-                $request->AntiFraudRequest = new AntiFraudRequest();
-                $request->AntiFraudRequest->CardData = new CardData();
-                $request->AntiFraudRequest->PurchaseTotalsData = new PurchaseTotalsData();
-                $MerchantDefinedData = new MerchantDefinedData();
-                $PurchaseTotalsData = new PurchaseTotalsData();
-                $billToData = new BillToData();
-                $itemData = new ItemData();
-                $itemData->ProductData = new ProductData();
-                $itemData->PassengerData = new PassengerData();
+                // $SoapClient = new AntiFraud($url_antifraud);
+                // $antifraude = new FraudAnalysis();
+                // $request = new FraudAnalysisRequest();
+                // $document = new AntiFraudDocumentData();
+                // $request->AntiFraudRequest = new AntiFraudRequest();
+                // $request->AntiFraudRequest->CardData = new CardData();
+                // $request->AntiFraudRequest->PurchaseTotalsData = new PurchaseTotalsData();
+                // $MerchantDefinedData = new MerchantDefinedData();
+                // $PurchaseTotalsData = new PurchaseTotalsData();
+                // $billToData = new BillToData();
+                // $itemData = new ItemData();
+                // $itemData->ProductData = new ProductData();
+                // $itemData->PassengerData = new PassengerData();
 
-                $request->MerchantId = $MerchantIdAF;
+                // $request->MerchantId = $MerchantIdAF;
 
-                if(strlen($cpf_cnpj) == 11) $document->Cpf = $cpf_cnpj;
-                else $document->Cnpj = $cpf_cnpj;
+                // if(strlen($cpf_cnpj) == 11) $document->Cpf = $cpf_cnpj;
+                // else $document->Cnpj = $cpf_cnpj;
 
-                $request->DocumentData = $document;
+                // $request->DocumentData = $document;
 
-                $request->RequestId = getGUID_semchave();
-                $request->AccessKey = getGUID_semchave();
-                $request->AntiFraudSequenceType = "AnalyseOnly";
+                // $request->RequestId = getGUID_semchave();
+                // $request->AccessKey = getGUID_semchave();
+                // $request->AntiFraudSequenceType = "AnalyseOnly";
 
-                $request->AntiFraudRequest->MerchantReferenceCode = $braspag_order_id;
+                // $request->AntiFraudRequest->MerchantReferenceCode = $braspag_order_id;
 
-                $request->AntiFraudRequest->CardData->AccountNumber = $number;
-                $request->AntiFraudRequest->CardData->Bin = '';
-                $request->AntiFraudRequest->CardData->Card = $flag;
-                $request->AntiFraudRequest->CardData->ExpirationMonth = $month;
-                $request->AntiFraudRequest->CardData->ExpirationYear = $year;
+                // $request->AntiFraudRequest->CardData->AccountNumber = $number;
+                // $request->AntiFraudRequest->CardData->Bin = '';
+                // $request->AntiFraudRequest->CardData->Card = $flag;
+                // $request->AntiFraudRequest->CardData->ExpirationMonth = $month;
+                // $request->AntiFraudRequest->CardData->ExpirationYear = $year;
 
-                $MerchantDefinedData->Field1 = $offers_options{0}->offer_id;
-                $MerchantDefinedData->Field2 = $offers_options{0}->id;
-                $MerchantDefinedData->Field3 = $offers_options{0}->voucher_validity_start;
-                $MerchantDefinedData->Field4 = $offers_options{0}->voucher_validity_end;
-                $MerchantDefinedData->Field5 = $offers_options{0}->price_with_discount;
-                $MerchantDefinedData->Field6 = $offers_options{0}->price_original;
-                $MerchantDefinedData->Field7 = $offers_options{0}->percent_off;
-                $MerchantDefinedData->Field8 = $offers_options{0}->title;
-                $MerchantDefinedData->Field9 = $offers_options{0}->subtitle;
-                $MerchantDefinedData->Field10 = $offers_options{0}->transfer;
+                // $MerchantDefinedData->Field1 = $offers_options{0}->offer_id;
+                // $MerchantDefinedData->Field2 = $offers_options{0}->id;
+                // $MerchantDefinedData->Field3 = $offers_options{0}->voucher_validity_start;
+                // $MerchantDefinedData->Field4 = $offers_options{0}->voucher_validity_end;
+                // $MerchantDefinedData->Field5 = $offers_options{0}->price_with_discount;
+                // $MerchantDefinedData->Field6 = $offers_options{0}->price_original;
+                // $MerchantDefinedData->Field7 = $offers_options{0}->percent_off;
+                // $MerchantDefinedData->Field8 = $offers_options{0}->title;
+                // $MerchantDefinedData->Field9 = $offers_options{0}->subtitle;
+                // $MerchantDefinedData->Field10 = $offers_options{0}->transfer;
 
-                $request->AntiFraudRequest->MerchantDefinedData = $MerchantDefinedData;
+                // $request->AntiFraudRequest->MerchantDefinedData = $MerchantDefinedData;
 
-                $PurchaseTotalsData->Currency = 'BRL';
-                $PurchaseTotalsData->GrandTotalAmount = number_format($total_left, 2, '.', '');
+                // $PurchaseTotalsData->Currency = 'BRL';
+                // $PurchaseTotalsData->GrandTotalAmount = number_format($total_left, 2, '.', '');
 
-                $request->AntiFraudRequest->PurchaseTotalsData = $PurchaseTotalsData;
+                // $request->AntiFraudRequest->PurchaseTotalsData = $PurchaseTotalsData;
 
-                // Instancia o objeto que conter? os dados de cobran?a do cliente.
-                $billToData->City = "Mountain View";
-                $billToData->Country = "US";
-                $billToData->Email = 'null@cybersource.com';
-                $billToData->PhoneNumber = '1743258722';//$telephone;
-                $billToData->FirstName = $holder_fname;
-                $billToData->LastName = $holder_surname;
-                $billToData->State = "CA";
-                $billToData->Street1 = "1295 Charleston Road";
-                $billToData->PostalCode = "94043";
-                $billToData->HttpBrowserCookiesAccepted = false;
-                $billToData->IpAddress = get_real_ip();
-                $request->AntiFraudRequest->BillToData = $billToData;
+                // // Instancia o objeto que conter? os dados de cobran?a do cliente.
+                // $billToData->City = "Mountain View";
+                // $billToData->Country = "US";
+                // $billToData->Email = 'null@cybersource.com';
+                // $billToData->PhoneNumber = '1743258722';//$telephone;
+                // $billToData->FirstName = $holder_fname;
+                // $billToData->LastName = $holder_surname;
+                // $billToData->State = "CA";
+                // $billToData->Street1 = "1295 Charleston Road";
+                // $billToData->PostalCode = "94043";
+                // $billToData->HttpBrowserCookiesAccepted = false;
+                // $billToData->IpAddress = get_real_ip();
+                // $request->AntiFraudRequest->BillToData = $billToData;
 
-                $itemData->GiftCategory = "Off";
-                $itemData->HostHedge = "Low";
-                $itemData->NonSensicalHedge = "Off";
-                $itemData->ObscenitiesHedge = "Off";
-                $itemData->PhoneHedge = "Low";
-                $itemData->TimeHedge = "Off";
-                $itemData->VelocityHedge = "Off";
-                $itemData->PassengerData->FirstName = $first_name;
-                $itemData->PassengerData->LastName = $last_name;
-                $itemData->PassengerData->PassengerId = $user_id;
-                $itemData->PassengerData->Passenger = "Adult";
-                $itemData->PassengerData->Email = $email;
-                $itemData->PassengerData->Phone = $passenger_telephone;
-                $itemData->ProductData->Code = "Default";
-                $itemData->ProductData->Name = $offers_options{0}->title;
-                $itemData->ProductData->Risk = "Low";
-                $itemData->ProductData->Sku = $inputs['offer'];
-                $itemData->ProductData->Quantity = $qty_ordered;
-                $itemData->ProductData->UnitPrice = number_format($offers_options{0}->price_with_discount*100, 0, '', '');
-                $itemDataCollection = array($itemData);
+                // $itemData->GiftCategory = "Off";
+                // $itemData->HostHedge = "Low";
+                // $itemData->NonSensicalHedge = "Off";
+                // $itemData->ObscenitiesHedge = "Off";
+                // $itemData->PhoneHedge = "Low";
+                // $itemData->TimeHedge = "Off";
+                // $itemData->VelocityHedge = "Off";
+                // $itemData->PassengerData->FirstName = $first_name;
+                // $itemData->PassengerData->LastName = $last_name;
+                // $itemData->PassengerData->PassengerId = $user_id;
+                // $itemData->PassengerData->Passenger = "Adult";
+                // $itemData->PassengerData->Email = $email;
+                // $itemData->PassengerData->Phone = $passenger_telephone;
+                // $itemData->ProductData->Code = "Default";
+                // $itemData->ProductData->Name = $offers_options{0}->title;
+                // $itemData->ProductData->Risk = "Low";
+                // $itemData->ProductData->Sku = $inputs['offer'];
+                // $itemData->ProductData->Quantity = $qty_ordered;
+                // $itemData->ProductData->UnitPrice = number_format($offers_options{0}->price_with_discount*100, 0, '', '');
+                // $itemDataCollection = array($itemData);
 
-                $request->AntiFraudRequest->ItemDataCollection = $itemDataCollection;
+                // $request->AntiFraudRequest->ItemDataCollection = $itemDataCollection;
 
-                $antifraude->request = $request;
+                // $antifraude->request = $request;
 
-                $AntiFraudResponse = $SoapClient->FraudAnalysis($antifraude);
+                // $AntiFraudResponse = $SoapClient->FraudAnalysis($antifraude);
 
-                $pagador = 'n';
-                $status = antifraud_status_code_2_string($AntiFraudResponse->FraudAnalysisResult->TransactionStatusCode);
+                // $pagador = 'n';
+                // $status = antifraud_status_code_2_string($AntiFraudResponse->FraudAnalysisResult->TransactionStatusCode);
 
-                if(!isset($AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse)){
-                    print("<pre>");
-                    print_r($AntiFraudResponse);
-                    print("</pre>"); die();
-                    $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 055). Este erro pode ocorrer devido a um navegador desatualizado ou a uma conexão de internet lenta. Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-                    Session::flash('error', $error);
-                    return Redirect::back()
-                                   ->withInput();
-                }
+                // if(!isset($AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse)){
+                //     print("<pre>");
+                //     print_r($AntiFraudResponse);
+                //     print("</pre>"); die();
+                //     $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 055). Este erro pode ocorrer devido a um navegador desatualizado ou a uma conexão de internet lenta. Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                //     Session::flash('error', $error);
+                //     return Redirect::back()
+                //                    ->withInput();
+                // }
 
-                switch ($AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse->ReasonCode) {
-                  case '100':
-                  case '231':
-                    // $return = 'Operação bem sucedida.';
-                    $returnBD = 'Operação bem sucedida.';
-                    $pagador = 'y';
-                    // vai pro pagadaor com auto-captura
-                    $pagadorTransactionType = 2; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTOCAPTURE;
-                    break;
-                  case '480':
-                    // $return = 'O pedido foi marcado para revisão pelo Gerenciador de Decisão.';
-                    $returnBD = 'O pedido foi marcado para revisão pelo Gerenciador de Decisão.';
-                    $pagador = 'y';
-                    // vai pro pagador apenas para autorizar a transacao (como foi para revisão, não podemos captura-la)
-                    // observação: por que prossegue para o pagador? porque o pagador grava todos os dados da compra, só esperando uma confirmação nossa (aprova ou rejeita)
-                    $pagadorTransactionType = 1; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTHORIZE;
-                    break;
-                  case '400':
-                    // $return = 'Pagamento não autorizado. Por favor, entre em contato com a operadora do cartão de crédito (CÓD: 045).';
-                    $returnBD = 'A pontuação de fraude ultrapassa o seu limite.';
-                    $pagador = 'y';
-                    // vai pro pagador apenas para autorizar a transacao (como foi para revisão, não podemos captura-la)
-                    // observação: por que prossegue para o pagador? porque o pagador grava todos os dados da compra, só esperando uma confirmação nossa (aprova ou rejeita)
-                    $pagadorTransactionType = 1; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTHORIZE;
-                    break;
-                  case '101':
-                    $return = 'Por favor, preencha todos os campos corretamente.';
-                    $returnBD = 'O pedido está faltando um ou mais campos necessários.';
-                    break;
-                  case '102':
-                    $return = 'Por favor, preencha todos os campos corretamente.';
-                    $returnBD = 'Um ou mais campos do pedido contêm dados inválidos.';
-                    break;
-                  case '150':
-                    $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 009). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-                    $returnBD = 'Falha no sistema geral.';
-                    break;
-                  case '151':
-                    $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 010). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-                    $returnBD = 'O pedido foi recebido, mas ocorreu time-out no servidor. Este erro não inclui time-out entre o cliente e o servidor.';
-                    break;
-                  case '152':
-                    $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 011). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-                    $returnBD = 'O pedido foi recebido, mas ocorreu time-out.';
-                    break;
-                  case '202':
-                    $return = 'Cartão expirado ou data de validade incorreta.';
-                    $returnBD = 'CyberSource recusou o pedido porque o cartão expirou. Você também pode receber este código se a data de validade não coincidir com a data em arquivo do banco emissor.';
-                    break;
-                  case '231':
-                    $return = 'Número da conta inválido.';
-                    $returnBD = 'O número da conta é inválido.';
-                    break;
-                  case '234':
-                    $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 012). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-                    $returnBD = 'Há um problema com a configuração do comerciante na CyberSource.';
-                    break;
-                  case '481':
-                    $pagador = 'y';
-                    $pagadorTransactionType = 1; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTHORIZE;
-                    //$return = 'Pagamento não autorizado. Por favor, entre em contato com a operadora do cartão de crédito (CÓD: 046).';
-                    $returnBD = 'O pedido foi rejeitado pelo Gerenciador de Decisão.';
-                    break;
-                  case '901':
-                    $return = 'Por favor, preencha todos os campos corretamente (CÓD: 047).';;
-                    $returnBD = 'Algum parâmetro está indevidamente nulo ou vazio.';
-                    break;
-                  case '902':
-                    $return = 'Por favor, preencha todos os campos corretamente (CÓD: 048).';
-                    $returnBD = 'O tamanho de algum parâmetro está inválido.';
-                    break;
-                  case '903':
-                    $return = 'Por favor, preencha todos os campos corretamente (CÓD: 049).';
-                    $returnBD = 'O valor de algum parêmtro está inválido.';
-                    break;
-                  case '904':
-                    $return = 'Por favor, preencha todos os campos corretamente (CÓD: 050).';
-                    $returnBD = 'Apenas valores numéricos são permitidos.';
-                    break;
-                  case '905':
-                    $return = 'Por favor, preencha todos os campos corretamente (CÓD: 051).';
-                    $returnBD = 'Algum parâmetro não estava no formato correto.';
-                    break;
-                  case '906':
-                    $return = 'Por favor, preencha todos os campos corretamente (CÓD: 052).';
-                    $returnBD = 'Apenas valores númericos são permitidos e/ou o tamanho de algum parâmetro está inválido.';
-                    break;
-                  case '907':
-                    $return = 'Por favor, preencha todos os campos corretamente (CÓD: 053).';
-                    $returnBD = 'Algum parâmetro é inválido.';
-                    break;
-                  default:
-                    $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 013). Este erro pode ocorrer devido a um navegador desatualizado ou a uma conexão de internet lenta. Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-                    $returnBD = 'Ocorreu um erro na solicitação.';
-                    break;
-                }
+                // switch ($AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse->ReasonCode) {
+                //   case '100':
+                //   case '231':
+                //     // $return = 'Operação bem sucedida.';
+                //     $returnBD = 'Operação bem sucedida.';
+                //     $pagador = 'y';
+                //     // vai pro pagadaor com auto-captura
+                //     $pagadorTransactionType = 2; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTOCAPTURE;
+                //     break;
+                //   case '480':
+                //     // $return = 'O pedido foi marcado para revisão pelo Gerenciador de Decisão.';
+                //     $returnBD = 'O pedido foi marcado para revisão pelo Gerenciador de Decisão.';
+                //     $pagador = 'y';
+                //     // vai pro pagador apenas para autorizar a transacao (como foi para revisão, não podemos captura-la)
+                //     // observação: por que prossegue para o pagador? porque o pagador grava todos os dados da compra, só esperando uma confirmação nossa (aprova ou rejeita)
+                //     $pagadorTransactionType = 1; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTHORIZE;
+                //     break;
+                //   case '400':
+                //     // $return = 'Pagamento não autorizado. Por favor, entre em contato com a operadora do cartão de crédito (CÓD: 045).';
+                //     $returnBD = 'A pontuação de fraude ultrapassa o seu limite.';
+                //     $pagador = 'y';
+                //     // vai pro pagador apenas para autorizar a transacao (como foi para revisão, não podemos captura-la)
+                //     // observação: por que prossegue para o pagador? porque o pagador grava todos os dados da compra, só esperando uma confirmação nossa (aprova ou rejeita)
+                //     $pagadorTransactionType = 1; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTHORIZE;
+                //     break;
+                //   case '101':
+                //     $return = 'Por favor, preencha todos os campos corretamente.';
+                //     $returnBD = 'O pedido está faltando um ou mais campos necessários.';
+                //     break;
+                //   case '102':
+                //     $return = 'Por favor, preencha todos os campos corretamente.';
+                //     $returnBD = 'Um ou mais campos do pedido contêm dados inválidos.';
+                //     break;
+                //   case '150':
+                //     $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 009). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                //     $returnBD = 'Falha no sistema geral.';
+                //     break;
+                //   case '151':
+                //     $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 010). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                //     $returnBD = 'O pedido foi recebido, mas ocorreu time-out no servidor. Este erro não inclui time-out entre o cliente e o servidor.';
+                //     break;
+                //   case '152':
+                //     $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 011). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                //     $returnBD = 'O pedido foi recebido, mas ocorreu time-out.';
+                //     break;
+                //   case '202':
+                //     $return = 'Cartão expirado ou data de validade incorreta.';
+                //     $returnBD = 'CyberSource recusou o pedido porque o cartão expirou. Você também pode receber este código se a data de validade não coincidir com a data em arquivo do banco emissor.';
+                //     break;
+                //   case '231':
+                //     $return = 'Número da conta inválido.';
+                //     $returnBD = 'O número da conta é inválido.';
+                //     break;
+                //   case '234':
+                //     $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 012). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                //     $returnBD = 'Há um problema com a configuração do comerciante na CyberSource.';
+                //     break;
+                //   case '481':
+                //     $pagador = 'y';
+                //     $pagadorTransactionType = 1; //BraspagCreditCardModel::TRANSACTION_TYPE_AUTHORIZE;
+                //     //$return = 'Pagamento não autorizado. Por favor, entre em contato com a operadora do cartão de crédito (CÓD: 046).';
+                //     $returnBD = 'O pedido foi rejeitado pelo Gerenciador de Decisão.';
+                //     break;
+                //   case '901':
+                //     $return = 'Por favor, preencha todos os campos corretamente (CÓD: 047).';;
+                //     $returnBD = 'Algum parâmetro está indevidamente nulo ou vazio.';
+                //     break;
+                //   case '902':
+                //     $return = 'Por favor, preencha todos os campos corretamente (CÓD: 048).';
+                //     $returnBD = 'O tamanho de algum parâmetro está inválido.';
+                //     break;
+                //   case '903':
+                //     $return = 'Por favor, preencha todos os campos corretamente (CÓD: 049).';
+                //     $returnBD = 'O valor de algum parêmtro está inválido.';
+                //     break;
+                //   case '904':
+                //     $return = 'Por favor, preencha todos os campos corretamente (CÓD: 050).';
+                //     $returnBD = 'Apenas valores numéricos são permitidos.';
+                //     break;
+                //   case '905':
+                //     $return = 'Por favor, preencha todos os campos corretamente (CÓD: 051).';
+                //     $returnBD = 'Algum parâmetro não estava no formato correto.';
+                //     break;
+                //   case '906':
+                //     $return = 'Por favor, preencha todos os campos corretamente (CÓD: 052).';
+                //     $returnBD = 'Apenas valores númericos são permitidos e/ou o tamanho de algum parâmetro está inválido.';
+                //     break;
+                //   case '907':
+                //     $return = 'Por favor, preencha todos os campos corretamente (CÓD: 053).';
+                //     $returnBD = 'Algum parâmetro é inválido.';
+                //     break;
+                //   default:
+                //     $return = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 013). Este erro pode ocorrer devido a um navegador desatualizado ou a uma conexão de internet lenta. Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                //     $returnBD = 'Ocorreu um erro na solicitação.';
+                //     break;
+                // }
 
-                if ($pagador === 'n') {
-                    // As vezes ocorreu algum erro, mas o antifraud retornou "aprovado" (ACCEPT). Nesse caso, salva no BD como "abortado".
-                    $status = ($status === 'pago') ? 'cancelado' : $status;
+                // if ($pagador === 'n') {
+                //     // As vezes ocorreu algum erro, mas o antifraud retornou "aprovado" (ACCEPT). Nesse caso, salva no BD como "abortado".
+                //     $status = ($status === 'pago') ? 'cancelado' : $status;
 
-                    $order->status = $status;
-                    $order->antifraud_id = $AntiFraudResponse->FraudAnalysisResult->AntiFraudTransactionId;
-                    $order->history .= date('d/m/Y H:i:s') . " - Antifraud: ".$returnBD." (ReasonCode = ".$AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse->ReasonCode.")";
+                //     $order->status = $status;
+                //     $order->antifraud_id = $AntiFraudResponse->FraudAnalysisResult->AntiFraudTransactionId;
+                //     $order->history .= date('d/m/Y H:i:s') . " - Antifraud: ".$returnBD." (ReasonCode = ".$AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse->ReasonCode.")";
 
-                    $order->save();
+                //     $order->save();
 
-                    Session::flash('error', $return);
-                    return Redirect::back()
-                                   ->withInput();
-                }
-                else{
-                    // $order->status = 'pago';
-                    // $order->status = 'pendente';
-                    $order->history .= date('d/m/Y H:i:s') . " - Antifraud: ".$returnBD." (".$status.")";
+                //     Session::flash('error', $return);
+                //     return Redirect::back()
+                //                    ->withInput();
+                // }
+                // else{
+                //     // $order->status = 'pago';
+                //     // $order->status = 'pendente';
+                //     $order->history .= date('d/m/Y H:i:s') . " - Antifraud: ".$returnBD." (".$status.")";
 
-                    $order->save();
-                }
+                //     $order->save();
+                // }
 
                 /////////////////////////////////////////////////
                 /////////////////////////////////////////////////
