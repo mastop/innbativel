@@ -38,6 +38,10 @@ class PageController extends BaseController {
                       ->with(['offer_option', 'offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])
                       ->first();
 
+        if(!$offer){
+            return Redirect::route('home')->with('warning', 'Oferta não encontrada');
+        }
+
         // print('<pre>');
         // print_r($offer->toArray());
         // print('</pre>'); die();
