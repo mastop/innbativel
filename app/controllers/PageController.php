@@ -507,11 +507,10 @@ class PageController extends BaseController {
                 $pagador = 'n';
                 $status = antifraud_status_code_2_string($AntiFraudResponse->FraudAnalysisResult->TransactionStatusCode);
 
-                print("<pre>");
-                print_r($AntiFraudResponse);
-                print("</pre>"); die();
-
                 if(!isset($AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse)){
+                    print("<pre>");
+                    print_r($AntiFraudResponse);
+                    print("</pre>"); die();
                     $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 055). Este erro pode ocorrer devido a um navegador desatualizado ou a uma conexão de internet lenta. Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
                     Session::flash('error', $error);
                     return Redirect::back()
