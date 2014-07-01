@@ -25,7 +25,6 @@ class Offer extends BaseModel {
         'tell_us_id', // Id do depoimento do cliente
         'title', // Título
         'short_title', // Título Curto
-        'short_title', // Título
         'subtitle', // SubTítulo
         'price_original', // Preço Original
         'price_with_discount', // Preço Com Desconto
@@ -49,13 +48,13 @@ class Offer extends BaseModel {
 	public static $rules = [
         'title' => 'required',
         'short_title' => 'required',
-        'destiny_id' => 'required|integer',
-        'partner_id' => 'required|integer',
+        'destiny_id' => 'required|integer|min:1',
+        'partner_id' => 'required|integer|min:1',
         'ngo_id' => 'required|integer',
         'starts_on' => 'required',
         'ends_on' => 'required',
         'rules' => 'required',
-        'category_id' => 'required|integer',
+        'category_id' => 'required|integer|min:1',
         'genre_id' => 'required|integer',
 	 ];
 

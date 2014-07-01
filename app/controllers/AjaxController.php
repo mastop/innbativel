@@ -128,7 +128,7 @@ class AjaxController extends BaseController {
     {
         $id = Input::get('id');
         $group_id = Input::get('group_id');
-        if(!$id || !$group_id){
+        if(!$id){
             return Response::json();
         }
         //print_r($id);
@@ -143,11 +143,15 @@ class AjaxController extends BaseController {
 
                     'destinies.name as destname')
                     ->join('destinies', 'offers.destiny_id', '=', 'destinies.id')
-                    ->join('offers_groups', 'offers.id', '=', 'offers_groups.offer_id')
-                    ->whereIn('offers.id',explode(',', $id))
-                    ->where('offers_groups.group_id', $group_id)
-                    ->orderBy('offers_groups.display_order', 'asc')
-                    ->get();
+                    ->whereIn('offers.id',explode(',', $id));
+        if($group_id){
+            $results->join('offers_groups', 'offers.id', '=', 'offers_groups.offer_id')
+            ->where('offers_groups.group_id', $group_id)
+                    ->orderBy('offers_groups.display_order', 'asc');
+        }else{
+            $results->orderByRaw(DB::raw("FIELD(offers.id, $id)")); // Ordenar pela sequência de IDs
+        }
+        $results = $results->get();
         $data['count'] = count($results);
         $data['offers'] = $results;
         //print_r($data);
