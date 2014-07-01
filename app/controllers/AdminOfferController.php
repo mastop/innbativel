@@ -232,7 +232,7 @@ class AdminOfferController extends BaseController {
                 }
 
                 // Salva os Feriados
-                $offer->holiday()->sync(Input::get('offers_holidays'));
+                $offer->holiday()->sync(Input::get('offers_holidays', array()));
 
                 // Salva as imagens da Oferta
 
@@ -806,72 +806,89 @@ class AdminOfferController extends BaseController {
 	}
 
 	public function getNewsletter(){
-		$offers = $this->offer/*->where('starts_on', '<=', date('Y-m-d H:i:s'))
-		             		   ->where('ends_on', '>=', date('Y-m-d H:i:s'))*/->get();
+        $s3access = Configuration::get('s3access');
+        $s3secret = Configuration::get('s3secret');
+        $s3region = Configuration::get('s3region');
+        $s3bucket = Configuration::get('s3bucket');
+
+        $s3 = Aws\S3\S3Client::factory(
+            array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+        );
+
+        $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
+
+        $postObject = new Aws\S3\Model\PostObject($s3, $s3bucket, array('acl' => 'public-read', 'Cache-Control' => 'max-age=315360000', 'Content-Type' => '^', 'Expires' => $expires, "success_action_status" => "200"));
+        $form = $postObject->prepareData()->getFormInputs();
+        $policy = $form['policy'];
+        $signature = $form['signature'];
+        $uid = uniqid();
 
 		/*
 		* Layout / View
 		*/
         $this->layout->page_title = 'Gerar HTML para Newsletter';
-		$this->layout->content = View::make('admin.offer.newsletter', compact('offers'));
+		$this->layout->content = View::make('admin.offer.newsletter', compact('policy', 'signature', 'uid', 's3bucket', 's3access', 'expires'));
 	}
 
 	public function postNewsletter(){
-        $title = Input::get('title');
+        //dd(Input::all());
+        $data = [];
+        $data['system'] = Input::get('system');
+        $data['banner']['img'] = Input::get('banner');
+        $data['banner']['link'] = Input::get('banner_link');
 
-        $input = Input::get('input');
-        $text = Input::get('text');
-        $button = Input::get('button');
+        if(Input::get('banner')){
+            // Envia o banner
+            $s3access = Configuration::get('s3access');
+            $s3secret = Configuration::get('s3secret');
+            $s3region = Configuration::get('s3region');
+            $s3bucket = Configuration::get('s3bucket');
 
-		$allOffers = Input::get('offers');
-		$selected_offers = Input::get('selected_offers');
+            $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
 
-        $n=1;
-        foreach ($allOffers as $offer) {
-            $ids[$n] = array();
+            $s3 = Aws\S3\S3Client::factory(
+                array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+            );
 
-            foreach ($offer as $display_order => $id) {
-                if (isset($selected_offers[$n][$display_order])) {
-                    $ids[$n][] = $display_order;
-                }
-		    }
-            $offers[$n] = Array();
+            $img = Input::get('banner');
+            // Pega a extensão da imagem
+            $ext = pathinfo($img, PATHINFO_EXTENSION);
+            // Cria um novo nome para a imagem
+            $newtitle = md5(uniqid("")).".$ext";
+            $newpath = "newsletters/$newtitle";
 
-            If (count($ids[$n]) != 0 ) {
-                $query = 'SELECT o.*, oo.price_original,oo.price_with_discount, oo.percent_off, oo.min_qty, g.title descricao ';
-                $query .= ' FROM offers o ';
-                $query .= ' LEFT JOIN offers_options oo ';
-                $query .= ' ON o.id = oo.offer_id ';
-                $query .= ' LEFT JOIN offers_groups og ';
-                $query .= ' ON o.id = og.offer_id ';
-                $query .= ' LEFT JOIN groups g ';
-                $query .= ' ON g.id = og.group_id ';
-                $query .= ' WHERE oo.id IN ((SELECT id FROM offers_options ';
-                $query .= ' WHERE offer_id = o.id ';
-                $query .= ' ORDER BY price_with_discount ';
-                $query .= ' LIMIT 1),\'\') AND ';
-                $query .= ' o.id IN (' . implode(',', $ids[$n]) . ') ';
-                $query .= ' GROUP BY o.id, g.title ';
-                $query .= ' ORDER BY g.title, FIELD(o.id, ' . implode(',', $ids[$n]) . ') ASC';
-
-                $offers[$n] = DB::select(DB::raw($query));
-            }
-            $n++;
+            // Gera o Thumb
+            $result = $s3->getObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key' => "temp/".$img
+                    ));
+            $thumb = Image::make((string)$result['Body'])->resize(600, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $s3->putObject(array(
+                'Bucket' => $s3bucket,
+                'Key'    => "$newpath",
+                'Body'   => $thumb->encode($ext, 65), // 65 é a Qualidade
+                'ACL'        => 'public-read',
+                'CacheControl' => 'max-age=315360000',
+                'ContentType' => $result['ContentType'],
+                'Expires'    => $expires
+            ));
+            $data['banner']['img'] = 'https://'.Configuration::get('s3bucket').'.s3.amazonaws.com/'.$newpath;
         }
 
-        $send = Array('title'=> $title, 'input' => $input, 'text' => $text, 'button' => $button, 'offers' =>$offers);
+        if(is_array(Input::get('group_title'))){
+            foreach(Input::get('group_title') as $k => $title){
+                $data['group'][$k]['title'] = $title;
+                $data['group'][$k]['link'] = Input::get('group_link.'.$k);
+                $data['group'][$k]['link_text'] = Input::get('group_text.'.$k);
+                $offers = explode(',', Input::get('group_offers.'.$k));
+                foreach($offers as $o => $offer) $data['group'][$k]['offer'][$o] = Offer::with('destiny', 'included')->find($offer);
+            }
 
-        $html = Response::view('emails.newsletter_' . Input::get('system'), compact('send'));
-
-		// print('<pre>');
-		// print_r($offers);
-		// print('</pre>'); die();
-
-		/*
-		* Layout / View
-		*/
-
-		return View::make('emails.newsletter_'.Input::get('system'), compact('send'));
+        }
+        $this->layout->page_title = 'Visualizar HTML para Newsletter';
+        $this->layout->content = View::make('emails.newsletter', compact('data'));
 		// $this->layout->content = View::make('admin.newsletter.html', compact('html'));
     }
 
