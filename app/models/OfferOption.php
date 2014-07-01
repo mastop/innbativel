@@ -52,11 +52,24 @@ class OfferOption extends BaseModel {
 	}
 
 	public function qty_sold(){
-		return $this->hasMany('Voucher', 'offer_option_id')
-					->where('vouchers.status', 'pago')
-					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
-					->groupBy('vouchers.offer_option_id');
-	}
+        return $this->hasMany('Voucher', 'offer_option_id')
+                    ->where('vouchers.status', 'pago')
+                    ->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
+                    ->groupBy('vouchers.offer_option_id');
+    }
+
+    public function qty_sold_boletus(){
+        return $this->hasMany('Voucher', 'offer_option_id')
+                    ->where('vouchers.status', 'pago')
+                    ->whereExists(function($query){
+                        $query->select(DB::raw(1))
+                              ->from('orders')
+                              ->whereRaw('orders.id = vouchers.order_id')
+                              ->whereRaw('orders.payment_terms = "Boleto"');
+                    })
+                    ->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
+                    ->groupBy('vouchers.offer_option_id');
+    }
 
 	public function qty_pending(){
 		return $this->hasMany('Voucher', 'offer_option_id')

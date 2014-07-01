@@ -450,7 +450,7 @@
                         $('<input type="hidden">').prop( obj ).appendTo( $('#buy-form') );
                     } );
                     $('#buy-form input[name="payment_type"]').val('credit');
-                    // $('#buy-form').submit();
+                    $('#buy-form').submit();
 				}
 			});
 

@@ -62,18 +62,18 @@ return array(
 	|
 	*/
 
-	'locale' => 'pt-BR',
-    'phplocale' => [
-    	'pt_BR',
-    	'ptb',
-    	'pt_BR.iso-8859-1',
-    	'pt_BR.utf-8',
-    	'pt_BR@real',
-    	'ptb@real',
-    	'Portuguese_Brazil.1252',
-    	'Portuguese_Brazil.utf-8',
-    	'portuguese_brazil',
-    ],
+	// 'locale' => 'pt-BR',
+ //    'phplocale' => [
+ //    	'pt_BR',
+ //    	'ptb',
+ //    	'pt_BR.iso-8859-1',
+ //    	'pt_BR.utf-8',
+ //    	'pt_BR@real',
+ //    	'ptb@real',
+ //    	'Portuguese_Brazil.1252',
+ //    	'Portuguese_Brazil.utf-8',
+ //    	'portuguese_brazil',
+ //    ],
 
 	/*
 	|--------------------------------------------------------------------------
