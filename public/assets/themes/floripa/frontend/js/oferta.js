@@ -48,6 +48,9 @@
 
 			//disabled buy-btn click actions
 			$('#buy-btn.disabled').on('click', buyBtnDisabledClickEvents);
+			$('#buy-sold').on('click', function(e){
+                e.preventDefault();
+            });
 
 			var scrolling = false;
 			function buyBtnDisabledClickEvents() {

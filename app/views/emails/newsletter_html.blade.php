@@ -119,6 +119,7 @@
         <td>
             <table cellpadding="0" cellspacing="0" border="0" width="600" align="center">
                 <tr>
+                @if(!empty($v['offer'][0]))
                     @foreach($v['offer'] as $i => $offer)
                     <td width="13">&nbsp;</td>
                     <td bgcolor="#ffffff" width="280" style="border: 1px solid #FFC4A1;">
@@ -128,7 +129,8 @@
                             <p style="padding:0px 10px 0px 15px; color:#737480; font-size:13px; font-weight:400">
                                 @foreach ($offer->included as $in => $included)
                                 {{ $included->title }}
-                                @if(count($offer->included) < $in), @endif
+                                @if($in <= 1), @endif
+                                @if($in == 2) @break @endif
                                 @endforeach
                             </p>
                             <p style="display:inline-block; padding:10px 10px 15px 15px; color:#737480; font-size:13px; font-weight:400">
@@ -155,6 +157,7 @@
                         @endif
                     @endif
                     @endforeach
+                @endif
             </table>
         </td>
     </tr>
