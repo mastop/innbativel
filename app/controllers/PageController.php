@@ -281,6 +281,8 @@ class PageController extends BaseController {
                 $total_left = 0;
             }
 
+            // echo $total. ' '. $total_left; die();
+
             //*********************//
             //*********************//
             // paying for the order//
@@ -457,7 +459,7 @@ class PageController extends BaseController {
                 $request->AntiFraudRequest->MerchantDefinedData = $MerchantDefinedData;
 
                 $PurchaseTotalsData->Currency = 'BRL';
-                $PurchaseTotalsData->GrandTotalAmount = $total_left;
+                $PurchaseTotalsData->GrandTotalAmount = number_format($total_left, 2, '.', '');
 
                 $request->AntiFraudRequest->PurchaseTotalsData = $PurchaseTotalsData;
 
@@ -685,7 +687,7 @@ class PageController extends BaseController {
                 $CreditCard->setCardSecurityCode($code);
                 $CreditCard->setCurrency('BRL');
                 $CreditCard->setCountry('BRA');
-                $CreditCard->setAmount(($total_left*100));
+                $CreditCard->setAmount(number_format(($total_left*100), 2, '.', ''));
                 $CreditCard->setPaymentPlan( (($installment == 1) ? 0 : 1) );
                 $CreditCard->setNumberOfPayments($installment);
                 $CreditCard->setSaveCreditCard(false);
@@ -961,6 +963,7 @@ class PageController extends BaseController {
                 $boletus_url = $result['CreateBoletoResult']['url'];
 
                 $order->total = $total_left;
+                $order->status = 'pendente';
                 $order->card_boletus_rate = Configuration::get('boletus-value');
                 $order->braspag_id = $result['CreateBoletoResult']['boletoNumber'];
                 $order->boleto = $boletus_url;
@@ -1015,19 +1018,21 @@ class PageController extends BaseController {
                 return Redirect::route('sucesso', array('status' => $status));
             }
             else if($status == 'pendente' AND isset($boletus_url)){
+                $products_email = '';
+
                 foreach ($products as $product) {
                     $products_email .= $product . '<br/>';
                 }
 
                 $products_email = substr($products_email, 0, -5);
 
-                $data = array('name' => $profile->first_name, 'products' => $products_email, 'boletus_url' => $boletus_url);
+                $data = array('name' => $profile_info->first_name, 'products' => $products_email, 'boletus_url' => $boletus_url);
 
-                Mail::send('emails.order.order.order_boletus', $data, function($message){
+                Mail::send('emails.order.order_boletus', $data, function($message){
                     $message->to(Auth::user()->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra finalizada com sucesso');
                 });
 
-                return Redirect::route('sucesso', array('status' => $status, 'boletus_url' => $boletus_url));
+                return Redirect::route('sucesso', array('status' => $status, 'boletus_url' => base64_encode($boletus_url)));
             }
             else{
                 return Redirect::route('sucesso', array('status' => $status));
