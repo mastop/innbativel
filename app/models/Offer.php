@@ -302,7 +302,7 @@ class Offer extends BaseModel {
      * Retorna a data mínima para o uso da oferta, como $offer->min_date
      * @return string
      */
-    function getMinDateAttribute(){
+    public function getMinDateAttribute(){
         $dateMin = $this->offer_option->lists('voucher_validity_start');
         $dateStart = strtotime('+1 year');
         array_walk($dateMin, function($value) use(&$dateStart){
@@ -315,7 +315,7 @@ class Offer extends BaseModel {
      * Retorna a data limite para o uso da oferta, como $offer->max_date
      * @return string
      */
-    function getMaxDateAttribute(){
+    public function getMaxDateAttribute(){
         $dateMax = $this->offer_option->lists('voucher_validity_end');
         $dateEnd = time();
         array_walk($dateMax, function($value) use(&$dateEnd){
@@ -324,5 +324,15 @@ class Offer extends BaseModel {
         });
         return $dateEnd;
     }
+    /**
+     * Retorna true se pode vender e false se não
+     * como $offer->can_sell
+     * @return string
+     */
+    public function getCanSellAttribute(){
+        $now = date('Y-m-d H:i:s');
+        return ($this->getOriginal('starts_on') < $now && $this->getOriginal('ends_on') > $now && $this->is_active && $this->is_available);
+    }
+
 
 }
