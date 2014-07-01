@@ -20,7 +20,10 @@ class Holiday extends Eloquent {
   );
 
     public function offer(){
-        return $this->belongsToMany('Offer', 'offers_holidays', 'holiday_id', 'offer_id');
+        return $this->belongsToMany('Offer', 'offers_holidays', 'holiday_id', 'offer_id')->where('offers.starts_on', '<=', Carbon::now()->toDateTimeString())
+            ->where('offers.ends_on'  , '>=', Carbon::now()->toDateTimeString())
+            ->where('offers.is_available'  , '=', 1)
+            ->where('offers.is_active'  , '=', 1);
     }
     public static function getAllArray(){
         $holidays = parent::orderBy('title')->get(['id', 'title'])->toArray();
