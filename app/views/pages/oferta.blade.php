@@ -10,7 +10,7 @@
 		<div class="row">
 			<div class="col-8 col-sm-8 col-lg-8">
                 <p class="destiny_title">{{$offer->destiny->name}}</p>
-				<h1>Test -{{$offer->title}}</h1>
+				<h1>{{$offer->title}}</h1>
 				<h2>{{$offer->subtitle}}</h2>
 				<div class="social-share">
 					<div class="fb-like" data-href="{{$offer->url}}" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div>
@@ -71,7 +71,7 @@
 							<label>
 								<input type="checkbox" id="opt{{$k}}" name="opt[]" data-price="{{intval($option->price_with_discount)}}" value="{{$option->id}}">
 								<div>
-									<strong>{{$k + 1}} - {{$option->title}}</strong>
+									<strong>{{$option->title}}</strong>
 									<span>{{$option->subtitle}}</span>
 									<div>R$<strong>{{intval($option->price_with_discount)}}</strong></div>
 								</div>
