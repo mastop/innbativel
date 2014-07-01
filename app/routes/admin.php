@@ -453,7 +453,7 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 
 	Route::any('group/delete', function(){ return Redirect::route('admin.group'); });
 	Route::get('group/delete/{id}', ['as' => 'admin.group.delete', 'uses' => 'AdminGroupController@getDelete']);
-	Route::post('group/delete/{id}', ['as' => 'admin.included.destroy', 'uses' => 'AdminGroupController@postDelete']);
+	Route::post('group/delete/{id}', ['as' => 'admin.group.destroy', 'uses' => 'AdminGroupController@postDelete']);
 
 	/*
 	 * Tags
