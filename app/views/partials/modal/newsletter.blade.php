@@ -12,6 +12,7 @@
                 ])
                 ->id('newsletterForm')
                 ->name('newsletterForm')
+                ->class('form-horizontal')
             }}
                 <div class="modal-body">
                     <p>
