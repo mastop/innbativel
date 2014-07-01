@@ -767,6 +767,31 @@ class AntiFraud extends SoapClient {
     parent::__construct($wsdl, $options);
   }
 
+  // /**
+  //  * Performs a fraud analysis operation.
+  //  *
+  //  * @param FraudAnalysis $parameters
+  //  * @return FraudAnalysisResponse
+  //  */
+  // public function FraudAnalysis(FraudAnalysis $parameters) {
+  //   try {
+  //     return $this->__soapCall('FraudAnalysis', array($parameters),       array(
+  //           'uri' => 'http://www.braspag.com.br/antifraud/',
+  //           'soapaction' => ''
+  //          )
+  //     );
+  //   } catch (Exception $e) {
+  //     // print('<pre>');
+  //     // print_r($parameters);
+  //     // print('</pre>'); die();
+
+  //     header("Content-Type: application/xml; charset=UTF-8");
+
+  //     $arr = (array) $parameters; 
+  //     print_r(XMLSerializer::generateValidXmlFromArray($arr)); die();
+  //   }
+  // }
+  
   /**
    * Performs a fraud analysis operation.
    *

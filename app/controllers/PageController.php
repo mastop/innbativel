@@ -160,7 +160,7 @@ class PageController extends BaseController {
 
         //get all user input
         $inputs = Input::all();
-        // print('<pre>'); print_r($inputs); print('<pre>'); die();
+        // print('<pre>'); print_r($inputs); print('<pre>'); //die();
 
         $rules = [
             'merchantreferencecode' => 'required',
@@ -173,6 +173,10 @@ class PageController extends BaseController {
         // validate user input
         if ($validation->passes()){
             if($inputs['paymentCardEULA'] == false){
+                // RETORNA COM ERRO
+            }
+
+            if(!Auth::check()){
                 // RETORNA COM ERRO
             }
 
@@ -208,19 +212,19 @@ class PageController extends BaseController {
             $vouchers = array();
 
             // get id and quantity of product user just ordered
-            foreach ($inputs['opt-quantity'] as $id => $qty) {
-                $ids[] = $id;
-                $qties[] = $qty;
+            if(Input::has('add-quantity')){
+                $ids = $inputs['opt-quantity'] + $inputs['add-quantity'];
+                $ids = array_keys($ids);
+
+                $qties = $inputs['opt-quantity'] + $inputs['add-quantity'];
+                $qties = array_values($qties);
             }
-            
-            if(isset($inputs['add-offer'])){
-                foreach ($inputs['add-offer'] as $id => $qty) {
-                    $ids[] = $id;
-                    $qties[] = $qty;
-                }
+            else{
+                $ids = array_keys($inputs['opt-quantity']);
+                $qties = array_values($inputs['opt-quantity']);
             }
 
-            $offers_options = OfferOption::whereIn('id', $ids)->with(['offer', 'qty_sold'])->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty']);
+            $offers_options = OfferOption::whereIn('id', $ids)->with(['offer', 'qty_sold', 'qty_sold_boletus'])->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty']);
 
             // save the items the user ordered and calculate total
             foreach ($offers_options as $offer_option) {
@@ -230,11 +234,10 @@ class PageController extends BaseController {
 
                 if($qty_ordered > $max_qty_allowed){
                     // ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
-                    $error = 'A quantidade selecionada para a oferta ' . $offer_option->offer->title . ' é maior do que a quantidade em estoque.';
-
+                    $error = 'A quantidade selecionada para a oferta "' . $offer_option->offer->title . '" é maior do que a quantidade em estoque.';
+                    Session::flash('error', $error);
                     return Redirect::back()
-                                   ->withInput()
-                                   ->withErrors($error);
+                                   ->withInput();
                 }
                 else{
                     $products[] = '<a href="' . route('oferta', $offer_option->offer->slug) . '">' . $qty_ordered . ' x ' . $offer_option->offer->title . ' | ' . $offer_option->title . '</a>';
@@ -243,7 +246,7 @@ class PageController extends BaseController {
                     for ($i = 0; $i < $qty_ordered; $i++) {
                         $voucher['offer_option_id'] = $offer_option->id;
                         $voucher['order_id'] = $order_id;
-                        $voucher['display_code'] = $braspag_order_id . $offer_option->offer_id;
+                        $voucher['display_code'] = $braspag_order_id . '-'. $offer_option->offer_id;
                         $vouchers[] = $voucher;
                     }
 
@@ -257,10 +260,10 @@ class PageController extends BaseController {
 
             // if user have entered a discount coupon code
             if($discount_coupon_code){
-                $discount = $this->validateDiscountCoupon($ids, $discount_coupon_code);
+                $discount = $this->validateDiscountCoupon($discount_coupon_code, $ids);
                 if($discount){
-                    $discount_coupon_id = $discount['id'];
-                    $discount_coupon_value = $discount['value'];
+                    $discount_coupon_id = $discount->id;
+                    $discount_coupon_value = $discount->value;
                 }
             }
 
@@ -268,8 +271,6 @@ class PageController extends BaseController {
             if($discount_coupon_value < $total){
                 $user_profile = Profile::where('user_id', $user_id)->first();
                 $user_credit = $user_profile->credit;
-
-                echo $total . ' ' . $user_credit . ' ';
 
                 $total_left = $total - $discount_coupon_value;
 
@@ -279,8 +280,6 @@ class PageController extends BaseController {
             else{
                 $total_left = 0;
             }
-
-            echo $total_left; die();
 
             //*********************//
             //*********************//
@@ -374,9 +373,9 @@ class PageController extends BaseController {
                 }
                 else{
                     $error = 'Número de parcelas inválido.';
+                    Session::flash('error', $error);
                     return Redirect::back()
-                                   ->withInput()
-                                   ->withErrors($error);
+                                   ->withInput();
                 }
 
                 $order->total = $total_left;
@@ -399,10 +398,10 @@ class PageController extends BaseController {
                 /////////////////////////////////////
 
                 // if(validateInstallment($installment, $total, $donation) == false){
-                //  $error = 'Número de parcelas inválido.';
-                //  return Redirect::back()
-                //                 ->withInput()
-                //                 ->withErrors($error);
+                //     $error = 'Número de parcelas inválido.';
+                //     Session::flash('error', $error);
+                //     return Redirect::back()
+                //                    ->withInput();
                 // }
 
                 /////////////////////////////////////////////
@@ -506,9 +505,16 @@ class PageController extends BaseController {
                 $pagador = 'n';
                 $status = antifraud_status_code_2_string($AntiFraudResponse->FraudAnalysisResult->TransactionStatusCode);
 
-                print("<pre>");
-                print_r($AntiFraudResponse);
-                print("</pre>"); die();
+                // print("<pre>");
+                // print_r($AntiFraudResponse);
+                // print("</pre>"); die();
+
+                if(!isset($AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse)){
+                    $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 055). Este erro pode ocorrer devido a um navegador desatualizado ou a uma conexão de internet lenta. Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                    Session::flash('error', $error);
+                    return Redirect::back()
+                                   ->withInput();
+                }
 
                 switch ($AntiFraudResponse->FraudAnalysisResult->AntiFraudResponse->ReasonCode) {
                   case '100':
@@ -617,9 +623,9 @@ class PageController extends BaseController {
 
                     $order->save();
 
+                    Session::flash('error', $return);
                     return Redirect::back()
-                                   ->withInput()
-                                   ->withErrors($return);
+                                   ->withInput();
                 }
                 else{
                     // $order->status = 'pago';
@@ -862,9 +868,9 @@ class PageController extends BaseController {
                     $order->save();
 
                     // ERRO, NAO APROVADO, ETC...
+                    Session::flash('error', $return);
                     return Redirect::back()
-                                   ->withInput()
-                                   ->withErrors($return);
+                                   ->withInput();
                 }
                 else{
                     if($pagadorTransactionType == 1){
@@ -932,22 +938,22 @@ class PageController extends BaseController {
 
                 if ($client->fault) {
                     $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 039). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                    Session::flash('error', $error);
                     return Redirect::back()
-                                   ->withInput()
-                                   ->withErrors($error);
+                                   ->withInput();
                 } else {
                   $err = $client->getError();
                   if ($err) {
                     $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 040). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                    Session::flash('error', $error);
                     return Redirect::back()
-                                    ->withInput()
-                                    ->withErrors($error);
+                                    ->withInput();
                   } else {
                     if($result['CreateBoletoResult']['status'] == NULL){
                         $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 041). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                        Session::flash('error', $error);
                         return Redirect::back()
-                                       ->withInput()
-                                       ->withErrors($error);
+                                       ->withInput();
                     }
                   }
                 }
@@ -1238,8 +1244,8 @@ class PageController extends BaseController {
      * Show Termos de uso
      */
     public function getViewVoucher($id)
-    {
-        ini_set('memory_limit', '2048M');
+    {   
+        $id = base64_decode($id);
         $voucher = Voucher::with(['order_buyer', 'offer_partner'])
                           ->where('id', $id)
                           ->where('used', '0')
