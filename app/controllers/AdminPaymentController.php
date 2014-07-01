@@ -37,7 +37,7 @@ class AdminPaymentController extends BaseController {
 		$this->payment = $payment;
 		$this->payment_partner = $payment_partner;
 		$this->transaction_voucher = $transaction_voucher;
-		$this->cron_command = $cronjob = ' php /var/app/current/artisan fechamento '; // exemplo de uso: 00 00 16 05 * php /Applications/MAMP/htdocs/innbativel/artisan fechamento 1
+		$this->cron_command = $cronjob = ' wget https://www.innbativel.com.br/fechamento/'; // exemplo de uso: 00 00 16 05 * php /Applications/MAMP/htdocs/innbativel/artisan fechamento 1
 	}
 
 	/**
@@ -440,7 +440,7 @@ class AdminPaymentController extends BaseController {
 			$cron_date = Crontab::date2cron($script_date);
 			$cronjob = $cron_date . $this->cron_command . $id;
 
-			Crontab::addJob($cronjob);
+			// Crontab::addJob($cronjob);
 
 			$this->payment->where('id', $id)->update(['cronjob' => $cronjob]);
 
@@ -493,8 +493,13 @@ class AdminPaymentController extends BaseController {
 				$cron_date = Crontab::date2cron($script_date);
 				$cronjob = $cron_date . $this->cron_command . $id;
 
-				Crontab::removeJob($payment->cronjob); //remove atual cron job do crontab
-				Crontab::addJob($cronjob); // insere novo cron job (com data atualizada) no crontab
+				// Crontab::removeJob($payment->cronjob); //remove atual cron job do crontab
+				// Crontab::addJob($cronjob); // insere novo cron job (com data atualizada) no crontab
+				$data = "Você acabou de alterar o período de fechamento quinzenal para pagamento aos carceiros #".$inputs['id'].". Se você mudou alguma data, você precisa entrar em contato com o Fernando da Mastop para ele atualizar tais datas nos CronJobs que estão no servidor dele que estamos utilizando.";
+
+				Mail::send('emails.simple_mail', $data, function($message){
+                    $message->to(Auth::user()->email, 'INNBatível')->replyTo('programacao@innbativel.com.br', 'INNBatível')->subject('Mudança no periodo de fechamento quinzenal');
+                });
 
 				$inputs['cronjob'] = $cronjob;
 
@@ -549,13 +554,30 @@ class AdminPaymentController extends BaseController {
 	public function postDelete($id)
 	{
 		$payment = $this->payment->find($id);
-		$payment->delete();
 
-		Crontab::removeJob($payment->cronjob); //remove cron job do crontab
+		if($payment->date > date('Y-m-d')){
+			$sales_from = date('d/m/Y H:i:s', strtotime($payment->sales_from));
+			$sales_to = date('d/m/Y H:i:s', strtotime($payment->sales_to));
 
-		Session::flash('success', 'Período de pagamento excluída com sucesso.');
+			// Crontab::removeJob($payment->cronjob); //remove cron job do crontab
 
-		return Redirect::route('admin.payment.period');
+			$data = "Você acabou de excluir o período de fechamento quinzenal #".$id." das vendas de ".$sales_from." a ".$sales_to.". Você precisa entrar em contato com o Fernando da Mastop para ele atualizar os CronJobs que estão no servidor dele que estamos utilizando.";
+
+			Mail::send('emails.simple_mail', $data, function($message){
+	            $message->to(Auth::user()->email, 'INNBatível')->replyTo('programacao@innbativel.com.br', 'INNBatível')->subject('Mudança no periodo de fechamento quinzenal');
+	        });
+
+	        $payment->delete();
+
+			Session::flash('success', 'Período de pagamento excluída com sucesso.');
+
+			return Redirect::route('admin.payment.period');
+		}
+		else{
+			Session::flash('error', 'Não é possível remover períodos passados');
+
+			return Redirect::back();
+		}
 	}
 
 	/**

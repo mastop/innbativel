@@ -14,7 +14,7 @@
 				<br/>
 				Assim que identificarmos o seu pagamento, seu cupom será disponibilizado em {{ link_to_route('minha-conta', 'sua conta') }}.
 				<br/>
-				<a href="{{ $boletus_url }}" target="_blank">Acesse aqui o boleto de pagamento</a>
+				<a href="{{ base64_decode($boletus_url) }}" target="_blank">Acesse aqui o boleto de pagamento</a>
 		@else {{-- revisao --}}
 			<h1>Pagamento em análise</h1>
 			<p>
