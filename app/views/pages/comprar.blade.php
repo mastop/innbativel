@@ -277,9 +277,9 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-2" for="paymentCardCPF">CPF</label>
+							<label class="control-label col-md-2" for="paymentCardCPF">CPF/CNPJ</label>
 							<div class="col-md-4">
-								<input type="text" class="form-control" id="paymentCardCPF" name="paymentCardCPF" placeholder="CPF do titular" />
+								<input type="text" class="form-control" id="paymentCardCPF" name="paymentCardCPF" placeholder="CPF/CNPJ do titular" />
 							</div>
 							<label class="control-label col-md-2" for="paymentCardPhone">Telefone</label>
 							<div class="col-md-4">
