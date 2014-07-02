@@ -144,14 +144,14 @@ class Braspag{
 		$params->request = $request;
 
 		// print in array format
-		// print_r("<pre>");
+		// print("<pre>");
 		// print_r($request);
-		// print_r("</pre>");
+		// print("</pre>"); die();
 
 		// print in JSON so you can convert to XML (Braspag suport prefered format) through this site http://www.utilities-online.info/xmltojson
 		// $array = (array) $request;
-    // $json = json_encode($array);
-    // print_r($json);
+	 //    $json = json_encode($array);
+  //   	print_r($json); die();
 
 		$this->Soap = new BraspagSoapClient($this->transactionURL);
 

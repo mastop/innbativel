@@ -7,23 +7,23 @@ class AjaxController extends BaseController {
         $this->layout = 'format.ajax';
     }
 
-	public function postSearch()
-	{
-		return [];
-	}
+    public function postSearch()
+    {
+        return [];
+    }
 
-	public function getSearchRecomendations()
-	{
-		$tips = [
-			'Florianópolis',
-			'Rio de Janeiro',
-			'Veneza',
-			'Toquio',
-		];
+    public function getSearchRecomendations()
+    {
+        $tips = [
+            'Florianópolis',
+            'Rio de Janeiro',
+            'Veneza',
+            'Toquio',
+        ];
 
-		return Response::json($tips);
-	}
-	public function getSearchOffers()
+        return Response::json($tips);
+    }
+    public function getSearchOffers()
     {
         $q = Input::get('q');
         $page = Input::get('page_limit', 10);
