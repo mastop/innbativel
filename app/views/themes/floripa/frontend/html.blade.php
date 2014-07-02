@@ -5,11 +5,6 @@
 	<meta charset="utf-8" />
 	<title>{{ isset($title) ? $title : $seo['metatag']['title'] }}</title>
 
-    @if (App::environment() == 'elastic')
-            {{-- Impede que o site seja indexado pelos bots de busca, apenas no ambiente "elastic" --}}
-        <meta name="robots" content="noindex">
-    @endif
-
     <meta name="title" content="{{ isset($title) ? $title : $seo['metatag']['title'] }}" />
     <meta name="description" content="{{ isset($description) ? $description : $seo['metatag']['description'] }}" />
 	<meta name="author" content="{{ $seo['metatag']['author'] }}" />
