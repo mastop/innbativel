@@ -541,11 +541,121 @@
 					}
 				},
 				submitHandler: function(form) {
-					//form.submit();
-					$('#newsletter').modal('hide');
-					$('#newsletterResponse').modal('show');
+                    $(form).find('button.btn-primary').attr('disabled', true);
+                    $(form).parent().find('h4.modal-title').html('<span class="entypo cycle"></span> Aguarde...');
+                    add_contact($('#newsletterName').val(), $('#newsletterEmail').val(), form);
 				}
 			});
+
+            function add_contact(name, email, form){
+                // your API key is available at
+                // https://app.getresponse.com/my_api_key.html
+                var api_key = '5a98b99902ebe5e0cae6e814f4fcb67a';
+
+                // API 2.x URL
+                var api_url = 'http://api2.getresponse.com';
+
+                var campaigns = {};
+
+                var returnMsg = '';
+
+                // find campaign named 'innbativel' (é necessário para acrescentar o usuário à campanha certa)
+                $.ajax({
+                    url     : api_url,
+                    data    : JSON.stringify({
+                        'jsonrpc'   : '2.0',
+                        'method'    : 'get_campaigns',
+                        'params'    : [
+                            api_key,
+                            {
+                                // find by name literally
+                                'name' : { 'EQUALS' : 'innbativel' }
+                            }
+                        ],
+                        'id'        : 1
+                    }),
+                    type        : 'POST',
+                    contentType : 'application/json',
+                    dataType    : 'JSON',
+                    crossDomain : true,
+                    async       : false,
+                    success     : function(response) {
+                        // uncomment following line to preview Response
+                        // alert(JSON.stringify(response));
+
+                        campaigns = response.result;
+                    }
+                });
+
+                // because there can be only (too much HIGHLANDER movie) one campaign of this name
+                // first key is the CAMPAIGN_ID required by next method
+                // (this ID is constant and should be cached for future use)
+                var CAMPAIGN_ID;
+                for(var key in campaigns) {
+                    CAMPAIGN_ID = key;
+                    break; //get only the first key (that is the id)
+                }
+
+                //add user to the campaign 'innbativel'
+
+                $.ajax({
+                    url     : api_url,
+                    data    : JSON.stringify({
+                        'jsonrpc'    : '2.0',
+                        'method'    : 'add_contact',
+                        'params'    : [
+                            api_key,
+                            {
+                                // identifier of 'test' campaign
+                                'campaign'  : CAMPAIGN_ID,
+
+                                // basic info
+                                'email'     : email,
+                                'name'     : name,
+                            }
+                        ],
+                        'id'        : 2
+                    }),
+                    type        : 'POST',
+                    contentType : 'application/json',
+                    dataType    : 'JSON',
+                    crossDomain : true,
+                    async       : false,
+                    success     : function(response)
+                    {
+                        // uncomment following line to preview Response
+                        // alert(JSON.stringify(response));
+
+                        if(response.result){
+                            returnMsg = 'ok';
+                        }
+                        else if(response.error.message == 'Invalid email syntax'){
+                            returnMsg = "E-mail inválido.";
+                        }
+                        else if(response.error.message == 'Missing campaign'){
+                            returnMsg = "Houve um erro interno. Por favor, tente novamente mais tarde.";
+                        }
+                        else if(response.error.message == 'Contact already queued for target campaign' || response.error.message == 'Contact already added to target campaign'){
+                            returnMsg = "Seu e-mail já está cadastrado em nossa newsletter.";
+                        }
+                        else{
+                            returnMsg = "Houve um erro interno. Por favor, tente novamente mais tarde.";
+                        }
+
+                    },
+                    error: function(txt) {
+                        returnMsg = "Houve um erro interno. Por favor, tente novamente mais tarde.";
+                    }
+                });
+                $(form).find('button.btn-primary').attr('disabled', false);
+                $(form).parent().find('h4.modal-title').html('<span class="entypo mail"></span>Receba ofertas por Email');
+                if(returnMsg == 'ok'){
+                    $('#newsletter').modal('hide');
+                    $('#newsletterResponse').modal('show');
+                }else{
+                    alert(returnMsg);
+                }
+            }
 
 			$('#registerForm').validate({
 				rules:{ 
