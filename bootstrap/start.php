@@ -29,9 +29,9 @@ $app->redirectIfTrailingSlash();
 $env = $app->detectEnvironment([
 
 	'local' => ['innbativel', 'innbativel.dev', 'innbativel.local'],
-	'elastic' => ['viaja.ca', 'www.viaja.ca', 'innbativel.elasticbeanstalk.com'],
+	'elastic' => ['viaja.ca', 'innbativel.com.br', 'innbativel.elasticbeanstalk.com'],
 	'staging' => ['innbativel.sta'],
-	'production' => ['innbativel.com', 'innbativel.com.br', 'innbativel.mobi'],
+	'production' => ['innbativel.prod', 'innbativel.mobi'],
 
 ]);
 
