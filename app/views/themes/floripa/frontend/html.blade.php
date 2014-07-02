@@ -61,6 +61,8 @@
                 <a class="btn-login" href="{{ route('logout') }}" data-toggle="modal" title="Sair de sua conta INNBatível">Sair <span class="entypo logout"></span></a>
                     @if(Auth::user()->is('administrador'))
                         <a class="btn-login" href="{{ route('admin') }}" title="Acesse a Administração">Admin <span class="entypo key"></span></a>
+                    @elseif(Auth::user()->is('parceiro'))
+                        <a class="btn-login" href="{{ route('painel') }}" title="Acesse o Painel do Parceiro">Painel do Parceiro <span class="entypo key"></span></a>
                     @endif
                 @else
                 <a class="btn-login" href="#login" data-toggle="modal" title="Entre com sua conta INNBatível">Entrar <span class="entypo login"></span></a>
@@ -102,6 +104,11 @@
                 @if(Auth::check())
                     <a class="btn-login" href="{{ route('logout') }}" data-toggle="modal" title="Sair de sua conta INNBatível">Sair <span class="entypo logout"></span></a>
                     <a class="btn-login" href="{{ route('minha-conta') }}" title="Acesse sua conta INNBatível">Minha conta <span class="entypo user"></span></a>
+                    @if(Auth::user()->is('administrador'))
+                        <a class="btn-login" href="{{ route('admin') }}" title="Acesse a Administração">Admin <span class="entypo key"></span></a>
+                    @elseif(Auth::user()->is('parceiro'))
+                        <a class="btn-login" href="{{ route('painel') }}" title="Acesse o Painel do Parceiro">Painel do Parceiro <span class="entypo key"></span></a>
+                    @endif
                 @else
                     <a class="btn-login" href="#login" data-toggle="modal" title="Entre com sua conta INNBatível">Entrar <span class="entypo login"></span></a>
                     <a href="https://www.facebook.com/dialog/oauth?client_id=145684162279488&amp;redirect_uri=https%3A%2F%2Finnbativel.com.br%2Flogin-facebook-valida.php&amp;state=8bbb0e68cf6d535aac3a58cf2c254be8&amp;scope=email%2C+user_birthday%2C+user_hometown" title="Entre com sua conta do Facebook"><span class="entypo facebook"></span></a>
