@@ -67,8 +67,8 @@ class CronjobController extends BaseController {
         return Response::json(['error' => $error]);
       }
 
-      $crontab = new Crontab;
-      $crontab->removeJob($payment->cronjob);
+      // $crontab = new Crontab;
+      // $crontab->removeJob($payment->cronjob);
     } catch (Exception $e) {
       $error = 2;
       $message = 'Erro de exceção: '.$e->getMessage();
