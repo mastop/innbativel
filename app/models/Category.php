@@ -57,11 +57,11 @@ class Category extends Eloquent {
 
     public static function getAllArray(){
 
-        $categories = Category::orderBy('title')->get(['id', 'title'])->toArray();
+        $cats = parent::orderBy('title')->get(['id', 'title'])->toArray();
         $ret = array();
-        if(!empty($categories)){
-            foreach($categories as $c){
-                $ret[$c['id']] = $c['title'];
+        if(!empty($cats)){
+            foreach($cats as $c){
+                $ret[$c['title']] = array('value'=>$c['id']);
             }
         }
         return $ret;

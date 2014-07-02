@@ -38,6 +38,10 @@ class PageController extends BaseController {
                       ->with(['offer_option', 'offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])
                       ->first();
 
+        if(!$offer){
+            return Redirect::route('home')->with('warning', 'Oferta não encontrada');
+        }
+
         // print('<pre>');
         // print_r($offer->toArray());
         // print('</pre>'); die();
@@ -77,6 +81,21 @@ class PageController extends BaseController {
             return Redirect::route('home');
         }
 
+        if(!$offer->is_active || !$offer->is_available){
+            return Redirect::route('home')->with('warning', 'A oferta '.$offer->title.' está indisponível no momento.');
+        }
+
+        $now = date('Y-m-d H:i:s');
+        //dd($offer->getOriginal('starts_on'), $now);
+
+        if($offer->getOriginal('starts_on') > $now){
+            return Redirect::route('home')->with('warning', 'As vendas da oferta '.$offer->title.' ainda não iniciaram.');
+        }
+        if($offer->getOriginal('ends_on') < $now){
+            return Redirect::route('home')->with('warning', 'As vendas da oferta '.$offer->title.' foram encerradas');
+        }
+
+
         /////////////////////////////////////
         /////////////////////////////////////
         require_once app_path().'/braspag/vars.php';
@@ -86,6 +105,15 @@ class PageController extends BaseController {
         $this->layout->comprar = true;
         $this->layout->body_classes = 'checkout-page';
         $this->layout->content = View::make('pages.comprar', compact('offer', 'opt', 'add', 'MerchantReferenceCode'));
+    }
+
+    public function anyFeriados()
+    {
+        $feriados = Holiday::with('offer', 'offer.genre', 'offer.genre2', 'offer.destiny', 'offer.included')->remember(5)->get();
+        $this->layout->title = 'Viaje no Feriado - INNBatível';
+        $this->layout->description = 'Ofertas INNBatíveis para você viajar no Feriado!';
+        $this->layout->og_type = 'article';
+        $this->layout->content = View::make('holiday.offers', compact('feriados'));
     }
 
     private function validateDiscountCoupon($display_code, $offers_options_ids){

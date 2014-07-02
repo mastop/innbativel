@@ -8420,7 +8420,7 @@ h1, h2, h3, h4, h5, h6,
     color: #333;
     margin-top: 10px;
 }
-.search-page h1 {
+.search-page h1, h1.title {
 	color: #004286;
 	margin-top: 10px;
 }
@@ -9346,6 +9346,18 @@ table.user-data th,
 	color: #fff;
 	background: #FF7F33;
 	border-bottom: 2px solid #cc6529;
+}
+#buy-sold {
+	display: inline-block;
+	width: 200px;
+	padding: 10px;
+	text-align: center;
+	font-size: 1.5em;
+	font-weight: 800;
+	text-decoration: none;
+	color: #fff;
+	background: #CCC;
+	border-bottom: 2px solid #333;
 }
 #buy-btn:hover,
 #buy-btn:focus {

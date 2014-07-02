@@ -9,7 +9,7 @@
 -- Observação: um voucher cancelado (incluindo os parcialmente cancelados e convertidos para créditos na conta do comprador) pode representar um cancelamento parcial de um pedido. Nestes casos, o novo status será 'cancelado_parcial' ou 'convercao_creditos_parcial'
 -- ------------------------
 
--- DROP TRIGGER IF EXISTS upd_vouchers;
+-- DROP TRIGGER IF EXISTS upd_voucher;
 
 -- DELIMITER $$
 

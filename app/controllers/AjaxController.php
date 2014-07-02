@@ -7,23 +7,23 @@ class AjaxController extends BaseController {
         $this->layout = 'format.ajax';
     }
 
-	public function postSearch()
-	{
-		return [];
-	}
+    public function postSearch()
+    {
+        return [];
+    }
 
-	public function getSearchRecomendations()
-	{
-		$tips = [
-			'Florianópolis',
-			'Rio de Janeiro',
-			'Veneza',
-			'Toquio',
-		];
+    public function getSearchRecomendations()
+    {
+        $tips = [
+            'Florianópolis',
+            'Rio de Janeiro',
+            'Veneza',
+            'Toquio',
+        ];
 
-		return Response::json($tips);
-	}
-	public function getSearchOffers()
+        return Response::json($tips);
+    }
+    public function getSearchOffers()
     {
         $q = Input::get('q');
         $page = Input::get('page_limit', 10);
@@ -143,11 +143,13 @@ class AjaxController extends BaseController {
 
                     'destinies.name as destname')
                     ->join('destinies', 'offers.destiny_id', '=', 'destinies.id')
-                    ->join('offers_groups', 'offers.id', '=', 'offers_groups.offer_id')
                     ->whereIn('offers.id',explode(',', $id));
         if($group_id){
-            $results->where('offers_groups.group_id', $group_id)
+            $results->join('offers_groups', 'offers.id', '=', 'offers_groups.offer_id')
+            ->where('offers_groups.group_id', $group_id)
                     ->orderBy('offers_groups.display_order', 'asc');
+        }else{
+            $results->orderByRaw(DB::raw("FIELD(offers.id, $id)")); // Ordenar pela sequência de IDs
         }
         $results = $results->get();
         $data['count'] = count($results);
@@ -155,7 +157,6 @@ class AjaxController extends BaseController {
         //print_r($data);
         return Response::json($data)->setCallback(Input::get('callback'));
     }
-
     public function postMyaccount(){
         $fields = [
             'email',

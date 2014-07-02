@@ -63,7 +63,7 @@
                             {{$offer->format_features}}
 						</p>
 					</div>
-					
+                    @if($offer->can_sell)
 					<ul class="buy-itens buy-options">
 						<h3>Opções da oferta <span class="glyphicon glyphicon-chevron-down"></span></h3>
                         @foreach($offer->offer_option()->get() as $k => $option)
@@ -80,8 +80,9 @@
 						</li>
                         @endforeach
 					</ul>
+                    @endif
 
-                    @if($offer->offer_additional->toArray())
+                    @if($offer->offer_additional->toArray() && $offer->can_sell)
                     <ul class="buy-itens buy-combo">
                         <h3>Inclua também <span class="glyphicon glyphicon-chevron-down"></span></h3>
                         @foreach($offer->offer_additional as $k => $additional)
@@ -130,6 +131,7 @@
 		
 				<div class="col-4 col-sm-4 col-lg-4 buy-box-container">
 					<div id="buy-box">
+                        @if($offer->can_sell)
 						<div id="total-price" class="hidden">Total R$ <strong></strong></div>
 						<div id="buy-alert" class="hidden"><span class="entypo chevron-left"></span>Escolha suas opções</div>
 						<div class="tooltip" data-tip="Escolha suas opções antes de comprar">
@@ -150,6 +152,11 @@
 						</div>
 						<div class="offer-remain">{{$offer->sold}} cupons vendidos</div>
 						<!-- <div class="offer-remain">Restam 12</div> -->
+                        @else
+                        <div class="tooltip" data-tip="Oferta Esgotada :(">
+                            <button id="buy-sold" class="btn sold disabled">Esgotado</button>
+                        </div>
+                        @endif
 					</div>
 				</div>
             <input type="hidden" value="{{$offer->id}}" name="offer">
