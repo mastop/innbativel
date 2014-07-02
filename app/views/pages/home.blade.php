@@ -54,7 +54,7 @@
 		  <div itemscope class="offer-grid-item col-6 col-sm-6 col-lg-6 clearfix">
               @include('partials.oferta', array('offer'=>$offer))
 		  </div>
-          @if($k == 3) @break @endif
+          @if($k == 5) @break @endif
 		  @endforeach
 		  <a class="more" href="{{ $group->url }}">Veja mais ofertas de <strong>{{ $group->short_title }}</strong></a>
 
