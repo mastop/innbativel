@@ -920,7 +920,9 @@ class PageController extends BaseController {
                 ->from('orders')
                 ->whereRaw('orders.id = vouchers.order_id')
                 ->whereRaw('orders.user_id = '.Auth::user()->id);
-        })->get();
+        })
+        ->orderBy('id', 'desc')
+        ->get();
         $this->layout->title = 'Minha Conta no INNBatível';
         $this->layout->content = View::make('pages.minha-conta', compact('vouchers'));
     }
