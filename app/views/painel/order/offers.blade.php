@@ -5,7 +5,7 @@
 		<div class="navbar-inner">
 			<h6>Ofertas</h6>
 	        <div class="nav pull-right">
-	            <a href="{{ route('painel.order.offers') }}" title="Listar ofertas" class="dropdown-toggle navbar-icon"><i class="icon-taggs"></i></a>
+	            <a href="{{ route('painel.order.offers') }}" title="Listar ofertas" class="dropdown-toggle navbar-icon"><i class="icon-tags"></i></a>
 	            <a href="{{ route('painel.order.voucher') }}" title="Listar vouchers" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
 	        </div>
 		</div>
