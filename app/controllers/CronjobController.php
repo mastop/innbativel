@@ -4,6 +4,13 @@ class CronjobController extends BaseController {
 
 	public function getFechamentoQuinzenal($payment_id)
 	{
+        if($payment_id == 'teste'){
+            $data = "Cronjob Teste INNBatível";
+            Mail::send('emails.simple_mail', $data, function($message){
+            $message->to('fernando@mastop.com.br', 'INNBatível')->replyTo('programacao@innbativel.com.br', 'INNBatível')->subject('Cronjob funfando');
+            });
+            return Response::json(['OK']);
+        }
     try {
       $payment = Payment::find($payment_id);
 
