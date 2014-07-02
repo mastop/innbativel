@@ -11,10 +11,10 @@
 
         <div class="control-group required">
             <b class="control-label">Nome</b>
-            <div class="controls">{{ link_to_route('admin.user.view', $order->user->first_name.(isset($order->user->last_name)?(' '.$order->user->last_name):''), ['id' =>$order->user->id], ['title' => 'Ver usuário']) }}</div>
+            <div class="controls">{{ link_to_route('admin.user.view', (isset($order->buyer->profile->first_name)?$order->buyer->profile->first_name:'').(isset($order->buyer->profile->last_name)?(' '.$order->buyer->profile->last_name):''), ['id' =>$order->buyer->id], ['title' => 'Ver usuário']) }}</div>
 
             <b class="control-label">E-mail</b>
-            <div class="controls">{{ $order->user->email }}</div>
+            <div class="controls">{{ $order->buyer->email }}</div>
         </div>
 
         <div class="control-group"><h1>Pedido</h1></div>
@@ -63,12 +63,12 @@
         </div>
 
         <div class="control-group"><h1>Cupons</h1></div>
-
+        
         <div class="control-group required">
 	        {{ Table::open() }}
 			{{ Table::headers('Código', 'Status', 'Validado (usado)?', 'Cupom válido de', 'até', 'Código de rastreamento', 'Oferta', 'Opção escolhida', 'Ações') }}
 			{{ Table::body($order->offer_option_offer)
-				->ignore(['id', 'offer_id', 'title', 'subtitle', 'price_original', 'price_with_discount', 'transfer', 'min_qty', 'max_qty', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'display_order', 'pivot', 'offer'])
+				->ignore(['id', 'offer_id', 'title', 'subtitle', 'price_original', 'price_with_discount', 'transfer', 'min_qty', 'max_qty', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'display_order', 'pivot', 'offer', 'deleted_at'])
 				->display_code(function($body) {
 					if(isset($body->pivot)){
 						return $body->pivot->id.'-'.$body->pivot->display_code;

@@ -587,7 +587,7 @@ class AdminOrderController extends BaseController {
 		$order = $this->order
 					  ->findOrFail($id)
 					  ->with([
-						'user',
+						'buyer',
 						'offer_option_offer',
 						'discount_coupon',
 					  ])
