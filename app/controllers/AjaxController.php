@@ -128,7 +128,7 @@ class AjaxController extends BaseController {
     {
         $id = Input::get('id');
         $group_id = Input::get('group_id');
-        if(!$id || !$group_id){
+        if(!$id){
             return Response::json();
         }
         //print_r($id);
@@ -144,15 +144,18 @@ class AjaxController extends BaseController {
                     'destinies.name as destname')
                     ->join('destinies', 'offers.destiny_id', '=', 'destinies.id')
                     ->join('offers_groups', 'offers.id', '=', 'offers_groups.offer_id')
-                    ->whereIn('offers.id',explode(',', $id))
-                    ->where('offers_groups.group_id', $group_id)
-                    ->orderBy('offers_groups.display_order', 'asc')
-                    ->get();
+                    ->whereIn('offers.id',explode(',', $id));
+        if($group_id){
+            $results->where('offers_groups.group_id', $group_id)
+                    ->orderBy('offers_groups.display_order', 'asc');
+        }
+        $results = $results->get();
         $data['count'] = count($results);
         $data['offers'] = $results;
         //print_r($data);
         return Response::json($data)->setCallback(Input::get('callback'));
     }
+
     public function postMyaccount(){
         $fields = [
             'email',

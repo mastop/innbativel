@@ -13,7 +13,7 @@
 
 -- DELIMITER $$
 
-CREATE TRIGGER upd_vouchers AFTER UPDATE ON vouchers
+CREATE TRIGGER upd_voucher AFTER UPDATE ON vouchers
 FOR EACH ROW
 BEGIN
   IF (NEW.status = 'pago' AND OLD.status != 'pago') THEN

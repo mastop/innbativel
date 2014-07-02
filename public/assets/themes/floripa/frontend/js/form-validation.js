@@ -360,7 +360,8 @@
 					},
 					paymentCardCode: {
 						required: true,
-						digits: true
+						digits: true,
+						rangelength: [3,4]
 					},
 					paymentCardValidityMonth: {
 						required: true
@@ -374,12 +375,12 @@
 					},
 					paymentCardCPF: {
 						required: true,
-						rangelength: [11,11]
+						rangelength: [11,18]
 					},
 					paymentCardPhone: {
 						required: true,
 						digits: true,
-						rangelength: [10, 11]
+						rangelength: [10, 15]
 					},
 					paymentCardEULA: {
 						required: true
@@ -409,7 +410,7 @@
 					},
 					paymentCardCPF: {
 						required: "Campo CPF é obrigatório.",
-						rangelength: "Digite um CPF válido"
+						rangelength: "Digite um CPF ou CNPJ válido"
 					},
 					paymentCardPhone: {
 						required: "O campo telefone é obrigatório.",
