@@ -361,7 +361,6 @@
 					paymentCardCode: {
 						required: true,
 						digits: true,
-						rangelength: [3,4]
 					},
 					paymentCardValidityMonth: {
 						required: true
