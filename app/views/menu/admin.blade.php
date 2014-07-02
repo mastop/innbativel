@@ -6,6 +6,7 @@ $permissions = Permission::whereExists(function($query){
                                     ->whereRaw('permissions.id = permission_role.permission_id')
                                     ->whereRaw('role_user.user_id = '.Auth::user()->id);
                           })
+                          ->where('is_menu', true)
                           ->orderBy('display_order', 'asc')
                           ->select(['name', 'description'])
                           ->get();
