@@ -27,7 +27,7 @@ Route::group(array('https', 'after' => 'cache.public'), function()
     Route::any('webservice/utiliza-cupom.php', ['as' => 'snowland-utiliza-cupom', 'uses' => 'XmlServerController@postSnowlandUtiliza']);
     Route::any('criteo.php', ['as' => 'criteo', 'uses' => 'XmlServerController@getCriteo']);
     Route::any('/go/{ban}', ['as' => 'banner', 'uses' => 'PageController@getBanner']);
-    Route::any('/fechamento/{payment_id}', ['as' => 'fechamento', 'uses' => 'CronjobController@anyStatus', 'after' => 'cache.public']);
+    Route::any('/fechamento/{payment_id}', ['as' => 'fechamento', 'uses' => 'CronjobController@getFechamentoQuinzenal', 'after' => 'cache.public']);
 });
 
 Route::group(array('https', 'prefix' => 'painel', 'before' => 'auth|perm'), function(){
