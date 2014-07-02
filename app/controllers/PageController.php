@@ -158,6 +158,7 @@ class PageController extends BaseController {
 
         //get all user input
         $inputs = Input::all();
+        file_put_contents(storage_path().'/compras.txt', implode($inputs)."\n", FILE_APPEND);
 
         $rules = [
             'merchantreferencecode' => 'required',
