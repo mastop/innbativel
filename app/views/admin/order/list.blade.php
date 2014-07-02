@@ -68,9 +68,9 @@
 		return '--';
 	})
 	->cliente(function($order) {
-		if(isset($order['buyer'])) {
-			$name = $order['buyer']->profile->first_name . ' ' . $order['buyer']->profile->last_name;
-			$id = $order['buyer']->id;
+		if(isset($order->buyer->profile)) {
+			$name = $order->buyer->profile->first_name . ' ' . $order->buyer->profile->last_name;
+			$id = $order->buyer->id;
 			return link_to_route('admin.user.view', $name, ['id'=>$id]);
 		}
 		return '--';

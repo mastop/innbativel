@@ -27,7 +27,7 @@ class Order extends Eloquent {
   }
 
   public function buyer(){
-    return $this->belongsTo('User', 'user_id')->with('profile');
+    return $this->belongsTo('User', 'user_id')->with(['profile']);
   }
 
   public function discount_coupon(){
