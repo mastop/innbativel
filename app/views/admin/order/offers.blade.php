@@ -6,7 +6,7 @@
 			<h6>Pagamentos por oferta</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.order') }}" title="Listar todos os pagamentos" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
-	            <a href="{{ route('admin.order.offers') }}" title="Listar pagamentos por ofertas" class="dropdown-toggle navbar-icon"><i class="icon-taggs"></i></a>
+	            <a href="{{ route('admin.order.offers') }}" title="Listar pagamentos por ofertas" class="dropdown-toggle navbar-icon"><i class="icon-tags"></i></a>
 	            <a href="{{ route('admin.order.voucher') }}" title="Listar cupons" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
 	        </div>
 		</div>
@@ -39,7 +39,7 @@
 	</div>
 {{ Table::open() }}
 {{ Table::headers('ID Oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons usados', 'Máximo', 'Confirmados', 'Pendentes', 'Cancelados', 'Total', 'Ações') }}
-{{ Table::body($offersOptions)->ignore(['id', 'title', 'subtitle', 'included', 'price_original', 'price_with_discount', 'min_qty', 'max_qty', 'percent_off', 'transfer', 'voucher_validity_start', 'voucher_validity_end', 'rules', 'display_order', 'offer', 'qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers'])
+{{ Table::body($offersOptions)->ignore(['id', 'title', 'subtitle', 'included', 'price_original', 'price_with_discount', 'min_qty', 'max_qty', 'percent_off', 'transfer', 'voucher_validity_start', 'voucher_validity_end', 'rules', 'display_order', 'offer', 'qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'deleted_at'])
 	->main_offer(function($offer_option) {
 		if(isset($offer_option['offer'])) {
 			return $offer_option['offer']['destiny']->name;
