@@ -237,11 +237,13 @@ class PageController extends BaseController {
 
                 // save each ordered item now to create vouchers later (case the order go successfully)
                 for ($i = 0; $i < $qty_ordered; $i++) {
-                    $voucher['offer_option_id'] = $offer_option->id;
+                    $voucher['status'] = 'pendente';
                     $voucher['order_id'] = $order_id;
+                    $voucher['offer_option_id'] = $offer_option->id;
                     $voucher['display_code'] = $braspag_order_id . '-'. $offer_option->offer_id;
                     $voucher['price'] = $offer_option->price_with_discount;
-                    $vouchers[] = $voucher;
+                    
+                    Voucher::create($voucher);
                 }
 
                 // sum the total
@@ -729,16 +731,12 @@ class PageController extends BaseController {
         // status final
         $status = $order->status;
 
+        Voucher::update(['status' => $status])->where('order_id', $order_id);
+        
         // atualizar quantidade de discount_cupons usados, caso $discount != NULL, ou seja, caso o usuário tenha entrado com um cupom de desconto e ele tenha sido válido
         if(isset($discount) && $discount != NULL){
             $discount->qty_used++;
             $discount->save();
-        }
-
-        foreach ($vouchers as $voucher) {
-            // criar vouchers (remover o código da criação de vouchers antes de passar pelo antifraud/pagador)
-            $voucher['status'] = $status;
-            Voucher::create($voucher);
         }
 
         // atualizar creditos do usuario
