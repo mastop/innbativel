@@ -44,6 +44,7 @@ class AjaxController extends BaseController {
                     'destinies.name as destname')
                     ->join('offers_options', 'offers.id', '=', 'offers_options.offer_id')
                     ->join('destinies', 'offers.destiny_id', '=', 'destinies.id')
+                    ->whereNull('offers.deleted_at')
                     ->where('offers.starts_on','<', $now)
                     ->where('offers.ends_on','>', $now)
                     ->where('offers.is_active','=', 1)
@@ -83,6 +84,7 @@ class AjaxController extends BaseController {
                     ->join('offers_options', 'offers.id', '=', 'offers_options.offer_id')
                     ->join('destinies', 'offers.destiny_id', '=', 'destinies.id')
                     ->join('offers_additional', 'offers_options.id', '=', 'offers_additional.offer_additional_id')
+                    ->whereNull('offers.deleted_at')
                     ->whereIn('offers_options.id',explode(',', $id))
                     ->where('offers_additional.offer_main_id', $offer_id)
                     ->orderBy('offers_additional.display_order', 'asc')
@@ -110,6 +112,7 @@ class AjaxController extends BaseController {
 
                     'destinies.name as destname')
                     ->join('destinies', 'offers.destiny_id', '=', 'destinies.id')
+                    ->whereNull('offers.deleted_at')
                     ->where('offers.starts_on','<', $now)
                     ->where('offers.ends_on','>', $now)
                     ->where('offers.is_active','=', 1)
@@ -143,6 +146,7 @@ class AjaxController extends BaseController {
 
                     'destinies.name as destname')
                     ->join('destinies', 'offers.destiny_id', '=', 'destinies.id')
+                    ->whereNull('offers.deleted_at')
                     ->whereIn('offers.id',explode(',', $id));
         if($group_id){
             $results->join('offers_groups', 'offers.id', '=', 'offers_groups.offer_id')
