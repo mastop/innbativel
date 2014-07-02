@@ -4,13 +4,13 @@
 
 @section('content')
     <div id="main" class="container offer-page">
-        @if(Auth::check() && Auth::user()->is('administrador'))
-        <a href="{{route('admin.offer.edit', $offer->id)}}" class="btn btn-success" style="float:right"><span class="glyphicon glyphicon-edit"></span> Editar esta Oferta</a>
-        @endif
 		<div class="row">
 			<div class="col-8 col-sm-8 col-lg-8">
                 <p class="destiny_title">{{$offer->destiny->name}}</p>
 				<h1>{{$offer->title}}</h1>
+                @if(Auth::check() && Auth::user()->is('administrador'))
+                <a href="{{route('admin.offer.edit', $offer->id)}}" class="btn btn-success" style="float:right"><span class="glyphicon glyphicon-edit"></span> Editar esta Oferta</a>
+                @endif
 				<h2>{{$offer->subtitle}}</h2>
 				<div class="social-share">
 					<div class="fb-like" data-href="{{$offer->url}}" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div>
