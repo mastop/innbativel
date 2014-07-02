@@ -72,7 +72,7 @@
 								<input type="checkbox" id="opt{{$k}}" name="opt[]" data-price="{{intval($option->price_with_discount)}}" value="{{$option->id}}">
 								<div>
 									<strong>{{$option->title}}</strong>
-									<span>{{$option->subtitle}}</span>
+									<div>{{$option->subtitle}}</div>
 									<div>R$<strong>{{intval($option->price_with_discount)}}</strong></div>
 								</div>
 								<div class="percent-off"><span><strong>{{$option->percent_off}}</strong>OFF</span></div>
