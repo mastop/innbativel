@@ -6,7 +6,7 @@ class CronjobController extends BaseController {
 	{
         if($payment_id == 'teste'){
             $data = "Cronjob Teste INNBatível";
-            Mail::send('emails.simple_mail', $data, function($message){
+            Mail::send('emails.simple_mail', array( 'data' => $data ), function($message){
             $message->to('fernando@mastop.com.br', 'INNBatível')->replyTo('programacao@innbativel.com.br', 'INNBatível')->subject('Cronjob funfando');
             });
             return Response::json(['OK']);
