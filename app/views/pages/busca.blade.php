@@ -73,7 +73,7 @@
                         </li>
                         @endforeach
 					</ul>
-
+                    @if(!empty($holidays))
 					<ul id="holidays" class="search-filters">
 						<h4>Feriados</h4>
 						<!-- <li>
@@ -91,6 +91,7 @@
                         </li>
                         @endforeach
 					</ul>
+                    @endif
 
 					<!-- <ul class="search-filters">
 						<h4>Tipos de destino</h4>

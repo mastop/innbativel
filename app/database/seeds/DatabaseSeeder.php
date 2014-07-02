@@ -41,11 +41,11 @@ class DatabaseSeeder extends Seeder {
 		// $this->call('SuggestATripTableSeeder');
 		// $this->call('ContractsTableSeeder');
 		// $this->call('ContractsOptionsTableSeeder');
-		$this->call('PaymentsTableSeeder');
+		// $this->call('PaymentsTableSeeder');
 		// $this->call('PaymentsPartnersTableSeeder');
 		// $this->call('TransactionsTableSeeder');
 		// $this->call('TransactionsVouchersTableSeeder');
-		// $this->call('Triggers');
+		   $this->call('Triggers');
 	}
 
 }

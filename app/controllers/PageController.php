@@ -840,7 +840,12 @@ class PageController extends BaseController {
             return Redirect::route('home')->with('error', 'Digite um termo para sua busca');
         }
         $qArray = explode(' ', $q);
-        $tags = Tag::whereIn('title', $qArray)->lists('id');
+        foreach($qArray as $k => $v){
+            if(strlen($v) < 3){
+                unset($qArray[$k]);
+            }
+        }
+        $tags = (!empty($qArray)) ? Tag::whereIn('title', $qArray)->lists('id') : [];
         $offers = Offer::query()
             ->select('offers.*')
             ->leftJoin('offers_options', 'offers.id', '=', 'offers_options.offer_id')
@@ -848,8 +853,8 @@ class PageController extends BaseController {
             ->leftJoin('offers_tags', 'offers.id', '=', 'offers_tags.offer_id')
             ->where(function($query) use ($q, $tags){
                 $query->orWhere('offers.title','like', "%$q%")
-                    ->orWhere('destinies.name','like', "%$q%")
-                    ->orWhere('offers_options.title','like', "%$q%");
+                    ->orWhere('offers.subtitle','like', "%$q%")
+                    ->orWhere('destinies.name','like', "%$q%");
                 if(count($tags) > 0) $query->orWhereIn('offers_tags.tag_id', $tags);
             })
             ->orderBy('offers.display_order', 'asc')
@@ -899,7 +904,6 @@ class PageController extends BaseController {
                 if($dateMax >= $dateEnd) $dateEnd = $dateMax;
             }
             // Para formar o filtro de datas
-            $dateEnd = strtotime('+1 month', $dateEnd);
             while ($dateStart <= $dateEnd) {
                 $dates[date('Ym', $dateStart)] = $months[date('n', $dateStart)].' '.date('Y', $dateStart);
                 $dateStart = strtotime('+1 month', $dateStart);
