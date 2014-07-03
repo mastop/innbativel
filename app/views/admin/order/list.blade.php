@@ -107,6 +107,7 @@
 		return '--';
 	})
 	->acoes(function($order) {
+		$order['braspag_order_id_string'] = isset($order['braspag_order_id_string'])?$order['braspag_order_id_string']:$order['created_at'];
 		if($order['status'] == 'revisao'){
 	        return DropdownButton::normal('Ações',
 			  	Navigation::links([
