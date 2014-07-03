@@ -455,6 +455,7 @@ class AuthController extends BaseController {
 
 	public function postCreate()
 	{
+        $destination = Input::get('destination', Session::get('destination', '/'));
 		$inputs = Input::all();
 
 		$rules = [
@@ -469,6 +470,12 @@ class AuthController extends BaseController {
 
 		if ($validation->passes())
 		{
+            // Checa se o email existe
+            $emailExists = User::where('email', '=', Input::get('registerEmail'))->first();
+            if (!is_null($emailExists))
+            {
+                return Redirect::to($destination.'?open=pass-recover')->with('warning', 'O e-mail <strong>'.Input::get('registerEmail').'</strong> já está cadastrado em nosso site.');
+            }
             $userData = [];
             $userData['username'] = Str::lower(Str::slug(Input::get('registerEmail')));
             $userData['api_key'] = md5($userData['username']);
@@ -487,7 +494,6 @@ class AuthController extends BaseController {
 
                 $user->profile()->create($profileData);
 
-                $user->roles()->sync(array(10)); // 10 = Cliente
 
                 // Email de boas vindas
                 Mail::send('emails.auth.welcome', $user, function($message) use ($user){
@@ -499,7 +505,7 @@ class AuthController extends BaseController {
                     'email'      => $userData['email'],
                     'password'   => $userData['password']
                 );
-                $destination = Input::get('destination', Session::get('destination', '/'));
+
                 try
                 {
                     if ( Auth::attempt($userdata ) ) {
