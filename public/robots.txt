@@ -4,4 +4,4 @@ Disallow: /facebook
 Disallow: /minha-conta
 Disallow: /sair
 Disallow: /recuperar/
-
+Disallow: /go/
