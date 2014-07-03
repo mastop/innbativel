@@ -178,6 +178,7 @@ class AdminPermController extends BaseController {
 
 			if ($perm)
 			{
+				$perm->is_menu = ($inputs['is_menu'] == 1)?true:false;
 				$perm->update($inputs);
 			}
 
@@ -236,6 +237,36 @@ class AdminPermController extends BaseController {
 		Session::flash('success', 'Papel de usuário excluído com sucesso.');
 
 		return Redirect::route('admin.perm');
+	}
+
+	public function getSort(){
+		/*
+		 * Obj
+		 */
+		$perm_testimonyObj = $this->perm;
+
+		/*
+		 * Finally Obj
+		 */
+		$perms = $perm_testimonyObj->where('is_menu', true)->orderBy('display_order', 'asc')
+						    ->get();
+
+		/*
+		 * Layout / View
+		 */
+		$this->layout->content = View::make('admin.perm.sort', compact('perms'));
+	}
+
+	public function postSort(){
+		$perms = Input::get('perms');
+
+		foreach ($perms as $display_order => $id) {
+			$p = Permission::find($id);
+			$p->display_order = $display_order;
+			$p->save();
+		}
+
+		return Redirect::route('admin.perm.sort');
 	}
 
 }

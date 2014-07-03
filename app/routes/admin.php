@@ -111,6 +111,9 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::get('perm/delete/{id}', ['as' => 'admin.perm.delete', 'uses' => 'AdminPermController@getDelete']);
 	Route::post('perm/delete/{id}', ['as' => 'admin.perm.destroy', 'uses' => 'AdminPermController@postDelete']);
 
+	Route::get('perm/sort', ['as' => 'admin.perm.sort', 'uses' => 'AdminPermController@getSort']);
+	Route::post('perm/sort', ['as' => 'admin.perm.save_sort', 'uses' => 'AdminPermController@postSort']);
+
 	/*
 	 * Offers
 	 */
