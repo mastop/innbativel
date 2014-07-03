@@ -124,8 +124,11 @@ class AdminCouponController extends BaseController {
 		$inputs = Input::except('user_email');
 
 		$rules = [
-        	'display_code' => 'required',
+        	'display_code' => 'required|unique:discount_coupons',
         	'value' => 'required|numeric',
+        	'qty' => 'required|integer',
+            'starts_on' => 'required',
+            'ends_on' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -185,7 +188,11 @@ class AdminCouponController extends BaseController {
 		$inputs = Input::except('user_email');
 
         $rules = [
-            'display_code' => 'required',
+            'display_code' => 'required|unique:discount_coupons',
+        	'value' => 'required|numeric',
+        	'qty' => 'required|integer',
+            'starts_on' => 'required',
+            'ends_on' => 'required',
         ];
 
 	    $validation = Validator::make($inputs, $rules);

@@ -3,7 +3,11 @@
     <div class="well widget row-fluid">
 
         {{ Former::horizontal_open()->rules([
-        	'name' => 'required',
+            'display_code' => 'required|unique:discount_coupons',
+        	'value' => 'required',
+            'qty' => 'required|integer',
+            'starts_on' => 'required',
+            'ends_on' => 'required',
         ]) }}
 
         {{ Former::populate($coupon) }}
