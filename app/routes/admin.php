@@ -529,6 +529,19 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 
 	Route::any('transaction/export', function(){ return Redirect::route('admin.transaction'); });
 	Route::get('transaction/export/{date_start?}/{date_end?}', ['as' => 'admin.transaction.export', 'uses' => 'AdminTransactionController@getExport']);
+
+	/*
+	 * Logs
+	 */
+
+	Route::any('log', ['as' => 'admin.log', 'uses' => 'AdminLogController@anyIndex']);
+
+	Route::any('log/delete', function(){ return Redirect::route('admin.log'); });
+	Route::get('log/delete/{id}', ['as' => 'admin.log.delete', 'uses' => 'AdminLogController@getDelete']);
+	Route::post('log/delete/{id}', ['as' => 'admin.log.destroy', 'uses' => 'AdminLogController@postDelete']);
+
+	Route::get('log/reset', ['as' => 'admin.log.reset', 'uses' => 'AdminLogController@getReset']);
+	Route::post('log/reset', ['as' => 'admin.log.truncate', 'uses' => 'AdminLogController@postReset']);
     
     /*
 	 * Newsletter
