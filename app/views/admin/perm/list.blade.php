@@ -3,9 +3,11 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Lista de Permissões</h6>
+			<h6>Ordenar menu</h6>
 	        <div class="nav pull-right">
+				<a href="{{ route('admin.perm') }}" title="Listar Permissões" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
 	            <a href="{{ route('admin.perm.create') }}" title="Criar Permissão" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
+				<a href="{{ route('admin.perm.sort') }}" title="Ordenar Menu" class="dropdown-toggle navbar-icon"><i class="icon-random"></i></a>
 	        </div>
 		</div>
 	</div>
@@ -35,7 +37,7 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('ID', 'Nome', 'Descrição', 'Ações') }}
+	{{ Table::headers('ID', 'Nome', 'Descrição', 'Listado no menu?', 'Ações') }}
 	{{ Table::body($perm)
 		->ignore(['created_at', 'updated_at'])
 		->acoes(function($body) {
