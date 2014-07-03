@@ -64,6 +64,7 @@
 		return DropdownButton::normal('Ações',
 		  	Navigation::links([
 				['Ver', route('admin.partner.view', $body['id'])],
+				['Fazer login na conta', route('admin.user.login', $body['id'])],
 				['Editar', route('admin.partner.edit', $body['id'])],
 				['Excluir', route('admin.partner.delete', $body['id'])],
 		    ])
