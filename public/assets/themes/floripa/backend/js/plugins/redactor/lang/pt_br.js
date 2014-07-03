@@ -1,4 +1,4 @@
-(function ($) {
+;(function ($) {
 $.Redactor.opts.langs['pt_br'] = {
 	html: 'Ver HTML',
 	video: 'V&iacute;deo',
