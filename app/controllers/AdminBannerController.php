@@ -269,7 +269,7 @@ class AdminBannerController extends BaseController {
 
                 $img = urlencode(Input::get('img'));
 
-                if(substr($img, 0, 2) != '//'){
+                if(substr(Input::get('img'), 0, 2) != '//'){
                     // Deleta a imagem velha
                     $imagem_velha = "banners/{$banner->id}/{$banner->getOriginal('img')}";
                     //$imagem_velha_thumb = "banners/{$banner->id}/thumb/{$banner->getOriginal('img')}";
