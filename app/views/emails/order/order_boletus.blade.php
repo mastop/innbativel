@@ -4,6 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>INNBatível - Viaje mais por menos</title>
 </head>
+<style type="text/css">
+a, a:link, a:visited, a:hover, a:focus, a:active{
+  color:#fff;
+}
+</style>
 <body>
 <center>
     <table width="600" border="0" cellspacing="0" cellpadding="0">
