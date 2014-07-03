@@ -122,7 +122,8 @@ Blade::extend(function($value)
     return preg_replace('/(\s*)@(break|continue)(\s*)/', '$1<?php $2; ?>$3', $value);
 });
 
-Event::listen('laravel.log', function($type,$message)
+Log::listen(function($level, $message, $context)
 {
-    Logs::set($type, $message);
+    $add = (!empty($context)) ? "\r\nContext: ".print_r($context, true) : '';
+    Logs::set($level, $message.$add);
 });
