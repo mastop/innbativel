@@ -148,6 +148,14 @@ class PageController extends BaseController {
         }
     }
 
+    private function logPagar($inputs, $error_message, $validation_message, $user_id){
+        $inputs['user_id'] = $user_id;
+        $inputs['error_message'] = $error_message;
+        $inputs['validation_message'] = $validation_message;
+
+        Logs::debug(json_encode($inputs));
+    }
+
     public function postPagar(){
         if(!Auth::check()){
             $error = 'Sua sessão expirou, faça login para finalizar sua compra.';
@@ -158,8 +166,15 @@ class PageController extends BaseController {
 
         //get all user input
         $inputs = Input::all();
-        file_put_contents(storage_path().'/compras.txt', implode($inputs)."\n", FILE_APPEND);
+        // print('<pre>'); print_r($inputs); print('</pre>'); die();
 
+        if(!isset($inputs['paymentCardEULA'])){
+            $error = 'Para concluir sua compra é necessário aceitar o regulamento da oferta e os termos de uso.';
+            Session::flash('error', $error);
+            return Redirect::back()
+                           ->withInput();
+        }
+        
         $rules = [
             'merchantreferencecode' => 'required',
             'donation' => 'required',
@@ -169,6 +184,7 @@ class PageController extends BaseController {
         $validation = Validator::make($inputs, $rules);
 
         if (!$validation->passes()){
+            $this->logPagar($inputs, 'Nenhuma', $validation->messages(), Auth::user()->id);
             return Redirect::back()
                             ->withInput()
                             ->withErrors($validation);
@@ -229,6 +245,7 @@ class PageController extends BaseController {
             if($qty_ordered > $max_qty_allowed){
                 // ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
                 $error = 'A quantidade selecionada para a oferta "' . $offer_option->offer->title . '" é maior do que a quantidade em estoque.';
+                $this->logPagar($inputs, $error, 'Nenhuma', $user_id);
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
@@ -331,6 +348,7 @@ class PageController extends BaseController {
             $validation = Validator::make($inputs, $rules);
 
             if (!$validation->passes()){
+                $this->logPagar($inputs, 'Nenhuma', $validation->messages(), $user_id);
                 return Redirect::back()
                                 ->withInput()
                                 ->withErrors($validation);
@@ -376,6 +394,7 @@ class PageController extends BaseController {
             }
             else{
                 $error = 'Número de parcelas inválido.';
+                $this->logPagar($inputs, $error, 'Nenhuma', $user_id);
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
@@ -656,6 +675,7 @@ class PageController extends BaseController {
             $validation = Validator::make($inputs, $rules);
 
             if (!$validation->passes()){
+                $this->logPagar($inputs, 'Nenhuma', $validation->messages(), $user_id);
                 return Redirect::back()
                                 ->withInput()
                                 ->withErrors($validation);
@@ -692,6 +712,7 @@ class PageController extends BaseController {
 
             if ($client->fault) {
                 $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 039). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                $this->logPagar($inputs, $message, $client, $user_id);
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
@@ -699,12 +720,14 @@ class PageController extends BaseController {
               $err = $client->getError();
               if ($err) {
                 $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 040). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                $this->logPagar($inputs, $message, $err, $user_id);
                 Session::flash('error', $error);
                 return Redirect::back()
                                 ->withInput();
               } else {
                 if($result['CreateBoletoResult']['status'] == NULL){
                     $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 041). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
+                    $this->logPagar($inputs, $message, $result, $user_id);
                     Session::flash('error', $error);
                     return Redirect::back()
                                    ->withInput();
@@ -732,7 +755,7 @@ class PageController extends BaseController {
         // status final
         $status = $order->status;
 
-        Voucher::update(['status' => $status])->where('order_id', $order_id);
+        Voucher::where('order_id', $order_id)->update(['status' => $status]);
         
         // atualizar quantidade de discount_cupons usados, caso $discount != NULL, ou seja, caso o usuário tenha entrado com um cupom de desconto e ele tenha sido válido
         if(isset($discount) && $discount != NULL){
