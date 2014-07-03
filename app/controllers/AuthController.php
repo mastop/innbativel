@@ -441,6 +441,11 @@ class AuthController extends BaseController {
                 $user = User::find($created);
                 $user->profile()->create($createdUser);
 
+                // Email de boas vindas
+                Mail::send('emails.auth.welcome', ['user' => $user], function($message) use ($user){
+                    $message->to($user->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Bem-vindo ao INNBatível');
+                });
+
                 Auth::login($user);
                 return Redirect::to($destination)->with('success', 'Seja bem-vindo, <strong>'.$user->profile->first_name.'</strong>!');
             }
