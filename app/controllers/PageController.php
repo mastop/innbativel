@@ -109,7 +109,7 @@ class PageController extends BaseController {
 
     public function anyFeriados()
     {
-        $feriados = Holiday::with('offer', 'offer.genre', 'offer.genre2', 'offer.destiny', 'offer.included')->remember(5)->get();
+        $feriados = Holiday::with('offer')->remember(5)->get();
         $this->layout->title = 'Viaje no Feriado - INNBatível';
         $this->layout->description = 'Ofertas INNBatíveis para você viajar no Feriado!';
         $this->layout->og_type = 'article';
