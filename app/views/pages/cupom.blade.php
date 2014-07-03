@@ -69,7 +69,7 @@
                   <td align="center" style="font-size:17px; font-family:Arial, Helvetica, sans-serif; color:#626262; font-weight:bold;">Nome </td>
                 </tr>
                 <tr>
-                  <td align="center" style="font-size:20px; font-family:Arial, Helvetica, sans-serif; color:#626262; font-style:italic;">{{ $voucher->order_buyer->buyer->full_name }}</td>
+                  <td align="center" style="font-size:20px; font-family:Arial, Helvetica, sans-serif; color:#626262; font-style:italic;">{{ isset($voucher->order_buyer->buyer->profile)?$voucher->order_buyer->buyer->full_name:'' }}</td>
                 </tr>
                 <tr>
                   <td>&nbsp;</td>
