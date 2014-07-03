@@ -255,26 +255,28 @@ class AdminOfferController extends BaseController {
                     $ext = pathinfo($cover_img, PATHINFO_EXTENSION);
                     // Cria um novo nome para a imagem
                     $newname = "{$offer->slug}-cover.$ext";
-                    $newpath = "ofertas/{$offer->id}/$newname";
-                    // Copia a imagem para o lugar definitivo
-                    $s3->copyObject(array(
-                        'Bucket'     => $s3bucket,
-                        'Key'        => "$newpath",
-                        'CopySource' => "{$s3bucket}/temp/{$cover_img}",
-                        'ACL'        => 'public-read',
-                        'CacheControl' => 'max-age=315360000',
-                        'ContentType' => '^',
-                        'Expires'    => $expires
-                    ));
-                    // Coloca o novo nome da imagem em $offer
-                    $offer->cover_img = $newname;
 
-                    // Criando o Thumb da imagem Principal
+                    // Pega a imagem de TEMP para tratar
                     $result = $s3->getObject(array(
                         'Bucket' => $s3bucket,
-                        'Key' => "$newpath"
+                        'Key' => "temp/{$cover_img}"
                     ));
+                    // Redimensiona a Imagem Principal
+                    $thumb_cover = Image::make((string)$result['Body'])->resize(753, 314);
+                    // Redimensiona o Thumb da Imagem Principa;
                     $thumb = Image::make((string)$result['Body'])->resize(537, 224);
+
+                    // Joga a imagem principal tratada na Amazon
+                    $s3->putObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => "ofertas/{$offer->id}/$newname",
+                        'Body'   => $thumb_cover->encode($ext, 65), // 65 é a Qualidade
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => $result['ContentType'],
+                        'Expires'    => $expires
+                    ));
+                    // Joga o Thumb na Amazon
                     $s3->putObject(array(
                         'Bucket' => $s3bucket,
                         'Key'    => "ofertas/{$offer->id}/thumb/$newname",
@@ -284,6 +286,9 @@ class AdminOfferController extends BaseController {
                         'ContentType' => $result['ContentType'],
                         'Expires'    => $expires
                     ));
+
+                    // Coloca o novo nome da imagem em $offer
+                    $offer->cover_img = $newname;
                 }
 
                 // Imagem de Newsletter
@@ -324,15 +329,23 @@ class AdminOfferController extends BaseController {
                             $ext = pathinfo($i, PATHINFO_EXTENSION);
                             // Cria um novo nome para a imagem
                             $newname = "{$offer->slug}-imagem-$k.$ext";
-                            $newpath = "ofertas/{$offer->id}/$newname";
-                            // Copia a imagem para o lugar definitivo
-                            $s3->copyObject(array(
-                                'Bucket'     => $s3bucket,
-                                'Key'        => "$newpath",
-                                'CopySource' => "{$s3bucket}/temp/{$i}",
+
+                            // Pega a imagem de TEMP para tratar
+                            $result = $s3->getObject(array(
+                                'Bucket' => $s3bucket,
+                                'Key' => "temp/{$i}"
+                            ));
+                            // Redimensiona a Imagem
+                            $thumb = Image::make((string)$result['Body'])->resize(753, 314);
+
+                            // Joga a imagem tratada na Amazon
+                            $s3->putObject(array(
+                                'Bucket' => $s3bucket,
+                                'Key'    => "ofertas/{$offer->id}/$newname",
+                                'Body'   => $thumb->encode($ext, 65), // 65 é a Qualidade
                                 'ACL'        => 'public-read',
                                 'CacheControl' => 'max-age=315360000',
-                                'ContentType' => '^',
+                                'ContentType' => $result['ContentType'],
                                 'Expires'    => $expires
                             ));
                             // Coloca a nova imagem em $offer
@@ -547,26 +560,28 @@ class AdminOfferController extends BaseController {
                     $ext = pathinfo($cover_img, PATHINFO_EXTENSION);
                     // Cria um novo nome para a imagem
                     $newname = "{$offer->slug}-cover.$ext";
-                    $newpath = "ofertas/{$offer->id}/$newname";
-                    // Copia a imagem para o lugar definitivo
-                    $s3->copyObject(array(
-                        'Bucket'     => $s3bucket,
-                        'Key'        => "$newpath",
-                        'CopySource' => "{$s3bucket}/temp/{$cover_img}",
-                        'ACL'        => 'public-read',
-                        'CacheControl' => 'max-age=315360000',
-                        'ContentType' => '^',
-                        'Expires'    => $expires
-                    ));
-                    // Coloca o novo nome da imagem em $offer
-                    $offer->cover_img = $newname;
 
-                    // Criando o Thumb da imagem Principal
+                    // Pega a imagem de TEMP para tratar
                     $result = $s3->getObject(array(
                         'Bucket' => $s3bucket,
-                        'Key' => "$newpath"
+                        'Key' => "temp/{$cover_img}"
                     ));
+                    // Redimensiona a Imagem Principal
+                    $thumb_cover = Image::make((string)$result['Body'])->resize(753, 314);
+                    // Redimensiona o Thumb da Imagem Principa;
                     $thumb = Image::make((string)$result['Body'])->resize(537, 224);
+
+                    // Joga a imagem principal tratada na Amazon
+                    $s3->putObject(array(
+                        'Bucket' => $s3bucket,
+                        'Key'    => "ofertas/{$offer->id}/$newname",
+                        'Body'   => $thumb_cover->encode($ext, 65), // 65 é a Qualidade
+                        'ACL'        => 'public-read',
+                        'CacheControl' => 'max-age=315360000',
+                        'ContentType' => $result['ContentType'],
+                        'Expires'    => $expires
+                    ));
+                    // Joga o Thumb na Amazon
                     $s3->putObject(array(
                         'Bucket' => $s3bucket,
                         'Key'    => "ofertas/{$offer->id}/thumb/$newname",
@@ -576,6 +591,9 @@ class AdminOfferController extends BaseController {
                         'ContentType' => $result['ContentType'],
                         'Expires'    => $expires
                     ));
+
+                    // Coloca o novo nome da imagem em $offer
+                    $offer->cover_img = $newname;
                 }
 
                 // Imagem de Newsletter
@@ -634,15 +652,23 @@ class AdminOfferController extends BaseController {
                                 $ext = pathinfo($i, PATHINFO_EXTENSION);
                                 // Cria um novo nome para a imagem
                                 $newname = "{$offer->slug}-imagem-$k.$ext";
-                                $newpath = "ofertas/{$offer->id}/$newname";
-                                // Copia a imagem para o lugar definitivo
-                                $s3->copyObject(array(
-                                    'Bucket'     => $s3bucket,
-                                    'Key'        => "$newpath",
-                                    'CopySource' => "{$s3bucket}/temp/{$i}",
+
+                                // Pega a imagem de TEMP para tratar
+                                $result = $s3->getObject(array(
+                                    'Bucket' => $s3bucket,
+                                    'Key' => "temp/{$i}"
+                                ));
+                                // Redimensiona a Imagem
+                                $thumb = Image::make((string)$result['Body'])->resize(753, 314);
+
+                                // Joga a imagem tratada na Amazon
+                                $s3->putObject(array(
+                                    'Bucket' => $s3bucket,
+                                    'Key'    => "ofertas/{$offer->id}/$newname",
+                                    'Body'   => $thumb->encode($ext, 65), // 65 é a Qualidade
                                     'ACL'        => 'public-read',
                                     'CacheControl' => 'max-age=315360000',
-                                    'ContentType' => '^',
+                                    'ContentType' => $result['ContentType'],
                                     'Expires'    => $expires
                                 ));
                                 // Coloca a nova imagem em $offer

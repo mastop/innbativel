@@ -10,9 +10,9 @@
     <ul id="menu-participe">
         <li><strong>Participe</strong></li>
         <li><a href="#faq" data-toggle="modal">Perguntas Frequentes</a></li>
-        <li><a href="#parceiro" data-toggle="modal">Seja Nosso Parceiro</a></li>
+    {{--    <li><a href="#parceiro" data-toggle="modal">Seja Nosso Parceiro</a></li>
         <li><a href="#sugira" data-toggle="modal">Sugira uma Viagem</a></li>
-        <li><a href="#conte-pra-gente" data-toggle="modal">Conte pra Gente</a></li>
+        <li><a href="#conte-pra-gente" data-toggle="modal">Conte pra Gente</a></li>   --}}
         <!-- <li><a href="#">Indique e Ganhe</a></li> -->
     </ul>
     <ul id="menu-institucional">

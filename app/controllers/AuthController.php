@@ -315,7 +315,7 @@ class AuthController extends BaseController {
             // Create the logout URL (logout page should destroy the session)
             // $logoutURL = $helper->getLogoutUrl( $session, 'http://yourdomain.com/logout' );
         }else{
-            return Redirect::back()
+            return Redirect::to($destination)
                 ->with('warning', 'Erro ao se comunicar com o Facebook')
                 ->withInput();
         }

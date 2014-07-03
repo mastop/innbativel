@@ -5,13 +5,14 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title"><span class="entypo mail"></span>Receba ofertas por Email</h4>
             </div>
-            {{ Former::horizontal_open(route('newsletter.save'))
+            {{ Former::horizontal_open()
                 ->rules([
                     'name' => 'Required|Max:255',
                     'email' => 'Required|Max:255|Email'
                 ])
                 ->id('newsletterForm')
                 ->name('newsletterForm')
+                ->class('form-horizontal')
             }}
                 <div class="modal-body">
                     <p>
@@ -20,13 +21,13 @@
                     <div class="form-group">
                         <label class="control-label col-md-3" for="name">Seu nome</label>
                         <div class="col-md-8">
-                            {{ Former::text('name')->label('')->class('form-control')->placeholder('Seu nome')->autofocus(); }}
+                            {{ Former::text('newsletterName')->label('')->class('form-control')->placeholder('Seu nome')->autofocus(); }}
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3" for="email">Seu email</label>
                         <div class="col-md-8 input-group">
-                            {{ Former::email('email')->label('')->class('form-control')->placeholder('Seu email'); }}
+                            {{ Former::email('newsletterEmail')->label('')->class('form-control')->placeholder('Seu email'); }}
                         </div>
                     </div>
                     <div class="form-group">
@@ -58,29 +59,3 @@
         </div>
     </div>
 </div>
-
-<script>
-jQuery( document ).ready( function( $ ) {
-    $('#newsletterForm').on('submit', function() {
-        $.post(
-            $( this ).prop('action'),
-            {
-                "_token": $( this ).find( 'input[name=_token]' ).val(),
-                "name": $('#name').val(),
-                "email": $('#email').val()
-            },
-            function( data ) {
-               if(data.status=="error"){
-                   alert(data.msg);
-               }else{
-                   $('#newsletterForm').get(0).reset();
-                   $("#newsletter").modal('hide');
-                   $('#newsletterResponse').modal('show');
-               }
-            },
-            'json'
-        );
-        return false;
-    });
-});
-</script>
