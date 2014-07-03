@@ -27,9 +27,7 @@
                                     <div class="text-center">{{$voucher->offer_option_offer->voucher_validity_start}} a {{$voucher->offer_option_offer->voucher_validity_end}}</div>
                                     <div class="text-center">&nbsp;</div>
                                     <div class="text-center">
-                                        @if($voucher->used == 1)
-                                        Utilizado
-                                        @elseif(($voucher->status != 'pendente' && $voucher->status != 'pago') || $voucher->offer_option_offer->is_expired)
+                                        @if(($voucher->status != 'pendente' && $voucher->status != 'pago') || $voucher->offer_option_offer->is_expired)
                                         Finalizado
                                         @elseif($voucher->status == 'pendente')
                                         Aguardando
@@ -38,9 +36,7 @@
                                         @endif
                                     </div>
                                     <div class="buttons">
-                                        @if($voucher->used == 1)
-                                        <!-- Qual botão vai aqui? -->
-                                        @elseif(($voucher->status != 'pendente' && $voucher->status != 'pago') || $voucher->offer_option_offer->is_expired)
+                                        @if(($voucher->status != 'pendente' && $voucher->status != 'pago') || $voucher->offer_option_offer->is_expired)
                                         <!-- Aqui não vai nada? -->
                                         @elseif($voucher->status == 'pendente' && $voucher->order->payment_terms == 'Boleto')
                                             @if($voucher->order->payment_terms == 'Boleto')
