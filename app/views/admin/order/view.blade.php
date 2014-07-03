@@ -107,7 +107,7 @@
 				})
 				->offerr(function($body) {
 					if(isset($body->offer_id)){
-						return $body->offer_id.' | '.$body->offer->destiny->name;
+						return $body->offer_id.' | '.(isset($body->offer->destiny)?$body->offer->destiny->name:$body->offer->title);
 					}
 					return '--';
 				})
