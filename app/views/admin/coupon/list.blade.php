@@ -53,7 +53,7 @@
 		})
 		->userr(function($body) {
 			if(isset($body['user'])) {
-				return $body['user']->first_name.' '.$body['user']->last_name.' | '.$body['user']->email;
+				return $body->user->profile->first_name.' '.$body->user->profile->last_name.' | '.$body->user->email;
 			}
 			return 'Todos';
 		})

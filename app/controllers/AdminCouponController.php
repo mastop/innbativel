@@ -93,6 +93,7 @@ class AdminCouponController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Gerenciar Cupons de Desconto';
 		$this->layout->content = View::make('admin.coupon.list', compact('sort', 'order', 'pag', 'coupon'));
 	}
 
@@ -108,6 +109,7 @@ class AdminCouponController extends BaseController {
 		 * Layout / View
 		 */
 
+        $this->layout->page_title = 'Novo Cupom de Desconto';
 		$this->layout->content = View::make('admin.coupon.create');
 	}
 
@@ -119,7 +121,7 @@ class AdminCouponController extends BaseController {
 
 	public function postCreate()
 	{
-		$inputs = Input::all();
+		$inputs = Input::except('user_email');
 
 		$rules = [
         	'display_code' => 'required',
@@ -130,11 +132,12 @@ class AdminCouponController extends BaseController {
 
 		if ($validation->passes())
 		{
+            $user = User::where('email', '=', Input::get('user_email'))->first();
 			$inputs['offer_id'] = ($inputs['offer_id'] != '')?$inputs['offer_id']:null;
-			$inputs['user_id'] = ($inputs['user_id'] != '')?$inputs['user_id']:null;
+			$inputs['user_id'] = (!is_null($user))?$user->id:null;
 			$this->coupon->create($inputs);
 
-			return Redirect::route('admin.coupon');
+			return Redirect::route('admin.coupon')->with('success', 'Cupom criado com sucesso');
 		}
 
 		/*
@@ -164,6 +167,7 @@ class AdminCouponController extends BaseController {
 		 * Layout / View
 		 */
 
+        $this->layout->page_title = 'Editando Cupom de Desconto '.$coupon->display_code;
 		$this->layout->content = View::make('admin.coupon.edit', compact('coupon'));
 	}
 
@@ -178,11 +182,11 @@ class AdminCouponController extends BaseController {
 		/*
 		 * Permuration
 		 */
-		$inputs = Input::all();
+		$inputs = Input::except('user_email');
 
-		$rules = [
-        	'name' => 'required',
-		];
+        $rules = [
+            'display_code' => 'required',
+        ];
 
 	    $validation = Validator::make($inputs, $rules);
 
@@ -192,10 +196,13 @@ class AdminCouponController extends BaseController {
 
 			if ($coupon)
 			{
+                $user = User::where('email', '=', Input::get('user_email'))->first();
+                $inputs['user_id'] = (!is_null($user))?$user->id:null;
+                $inputs['offer_id'] = ($inputs['offer_id'] != '')?$inputs['offer_id']:null;
 				$coupon->update($inputs);
 			}
 
-			return Redirect::route('admin.coupon');
+			return Redirect::route('admin.coupon')->with('success', 'Cupom de Desconto atualizado com sucesso');
 		}
 
 		/*
@@ -233,6 +240,7 @@ class AdminCouponController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Desativar Cupom de Desconto';
 
 		$this->layout->content = View::make('admin.coupon.delete', $data);
 	}
@@ -318,6 +326,7 @@ class AdminCouponController extends BaseController {
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Gerenciar Cupons de Desconto Desativados';
 		$this->layout->content = View::make('admin.coupon.deleted.list', compact('sort', 'order', 'pag', 'coupon'));
 	}
 
