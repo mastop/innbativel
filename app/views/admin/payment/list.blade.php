@@ -6,6 +6,7 @@
 			<h6>Lista de Pagamentos aos Parceiros</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.payment') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
+	            <a href="{{ route('admin.payment.voucher') }}" title="Listar cupons" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
 	        </div>
 		</div>
 	</div>

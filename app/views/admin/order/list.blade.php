@@ -26,6 +26,7 @@
 	        	->addOption('', '')
 	        	->addOption('Cartão', 'cartão')
 	        	->addOption('Boleto', 'boleto')
+	        	->addOption('Créditos e/ou Cupom de desconto', 'créditos')
 	        }}
 			{{ Former::text('name')->class('input-medium')->placeholder('Nome')->label('Nome') }}
 			{{ Former::text('email')->class('input-medium')->placeholder('E-mail')->label('E-mail') }}
