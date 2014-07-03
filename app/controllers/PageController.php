@@ -1022,7 +1022,6 @@ class PageController extends BaseController {
         $id = base64_decode($id);
         $voucher = Voucher::with(['order_buyer', 'offer_partner'])
                           ->where('id', $id)
-                          ->where('used', '0')
                           ->where('status', 'pago')
                           ->whereExists(function($query){
                                 $query->select(DB::raw(1))
