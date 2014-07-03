@@ -42,11 +42,6 @@ App::error(function(Exception $exception, $code)
   }
 });
 
-Event::listen('laravel.log', function($type,$message)
-{
-    Logs::set($type, $message);
-});
-
 /*
 |--------------------------------------------------------------------------
 | Maintenance Mode Handler
