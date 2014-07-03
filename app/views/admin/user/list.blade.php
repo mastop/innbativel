@@ -36,7 +36,7 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('ID', 'E-mail', 'Nome', 'Cidade', 'Tipo', 'Criado', 'Ações') }}
+{{ Table::headers('ID', 'E-mail', 'Nome', 'Cidade', 'Cargo', 'Criado', 'Ações') }}
 {{ Table::body($user)
 	->ignore(['profile', 'roles', 'created_at'])
 	->nome(function($user) {
@@ -67,6 +67,7 @@
 		return DropdownButton::normal('Ações',
 		  	Navigation::links([
 				['Ver', route('admin.user.view', $body['id'])],
+				['Fazer login na conta', route('admin.user.login', $body['id'])],
 				['Editar', route('admin.user.edit', $body['id'])],
 				['Excluir', route('admin.user.delete', $body['id'])],
 		    ])

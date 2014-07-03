@@ -656,4 +656,18 @@ class AdminUserController extends BaseController {
 		return Redirect::route('admin.user.deleted');
 	}
 
+	public function anyLogin($id)
+	{
+		if(!$id){
+			Session::flash('error', 'Especifique um usuário que vocẽ gostaria de fazer login na conta.');
+			return Redirect::back();
+		}
+
+		$user = User::find($id);
+		Auth::login($user);
+
+		Session::flash('success', 'Você está logado na conta do usuário <b>'.(isset($user->profile)?$user->profile->first_name:$user->email).'</b>');
+		return Redirect::route('minha-conta');
+	}
+
 }

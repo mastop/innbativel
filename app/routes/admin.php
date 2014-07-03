@@ -40,6 +40,8 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::get('user/deleted/restore/{id}', ['as' => 'admin.user.deleted.restore', 'uses' => 'AdminUserController@getDeletedRestore']);
 	Route::post('user/deleted/restore/{id}', ['as' => 'admin.user.deleted.reactivate', 'uses' => 'AdminUserController@postDeletedRestore']);
 
+	Route::any('user/login/{id}', ['as' => 'admin.user.login', 'uses' => 'AdminUserController@anyLogin']);
+
 	/*
 	 * Partners (users whose role is 'partner')
 	 */
