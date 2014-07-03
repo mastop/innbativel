@@ -21,6 +21,8 @@ ofertas_tipos AS ot
 
 ON o.id = ot.id_oferta
 
+WHERE o.id > 1092 AND ot.id_oferta >1092 
+
 INTO OUTFILE "/tmp/offers_options.csv"
 CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''

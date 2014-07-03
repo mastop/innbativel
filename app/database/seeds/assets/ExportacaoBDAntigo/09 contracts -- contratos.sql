@@ -46,6 +46,8 @@ DATE_FORMAT(con.datahora , '%Y-%m-%d %H:%i:%s') AS updated_at
 
 FROM contratos AS con
 
+WHERE con.id > 182
+
 INTO OUTFILE "/tmp/contracts.csv"
 CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''

@@ -26,7 +26,7 @@ u.cep AS zip,
 
 FROM usuarios u
 
-WHERE (u.email LIKE '%@%' OR u.id IN (42981,40525,38265,37245,35422,32303,26957,12499,11635,7603,6768,6728,6420,6355,5990,4610,3562)) 
+WHERE u.id > 68246 
 
 UNION
 
@@ -56,6 +56,9 @@ e.coordenadas AS coordinates
 
 FROM empresas e
 
+WHERE e.id > 319
+
 INTO OUTFILE "/tmp/profiles.csv"
+CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''
 LINES TERMINATED BY "\n";
