@@ -19,7 +19,7 @@
 					@if(count($vouchers) > 0)
                         @foreach($vouchers as $voucher)
                             <li>
-                                <figure><img src="{{($voucher->offer_option_offer->offer->thumb == null)?$voucher->offer_option_offer->offer->thumb:'//innbativel.s3.amazonaws.com/oferta-default.png'}}"></figure>
+                                <figure><img src="{{($voucher->offer_option_offer->offer->thumb != null)?$voucher->offer_option_offer->offer->thumb:'//innbativel.s3.amazonaws.com/oferta-default.png'}}"></figure>
                                 <div class="offer-combo cupom">
                                     <a href="#combo{{$voucher->id}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{isset($voucher->offer_option_offer->offer->destiny)?$voucher->offer_option_offer->offer->destiny->name:$voucher->offer_option_offer->offer->title}} <span class="entypo chevron-right"></span> {{$voucher->offer_option_offer->title}}</a>
                                 </div>
@@ -177,7 +177,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close over-img" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<img src="{{($voucher->offer_option_offer->offer->thumb == null)?$voucher->offer_option_offer->offer->thumb:'//innbativel.s3.amazonaws.com/oferta-default.png'}}" alt="{{$voucher->offer_option_offer->offer->title}}">
+					<img src="{{($voucher->offer_option_offer->offer->thumb != null)?$voucher->offer_option_offer->offer->thumb:'//innbativel.s3.amazonaws.com/oferta-default.png'}}" alt="{{$voucher->offer_option_offer->offer->title}}">
 					<h4 class="modal-title">{{isset($voucher->offer_option_offer->offer->destiny)?$voucher->offer_option_offer->offer->destiny->name:$voucher->offer_option_offer->offer->title}} <span class="entypo chevron-right"></span> {{$voucher->offer_option_offer->title}}</h4>
 				</div>
 				<div class="modal-body">
