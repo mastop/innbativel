@@ -206,7 +206,9 @@ class AuthController extends BaseController {
 		$credentials = array('email' => Input::get('email', Input::get('passRecoverEmail')));
         $ret = [];
         try{
-            Password::remind($credentials);
+            Password::remind($credentials, function($message){
+                $message->subject('INNBatível - Esqueci minha senha');
+            });
             $ret['error'] = 0;
             $ret['message'] = 'Senha enviada por e-mail';
         }catch (Exception $v){
@@ -474,7 +476,7 @@ class AuthController extends BaseController {
             $emailExists = User::where('email', '=', Input::get('registerEmail'))->first();
             if (!is_null($emailExists))
             {
-                return Redirect::to($destination.'?open=pass-recover')->with('warning', 'O e-mail <strong>'.Input::get('registerEmail').'</strong> já está cadastrado em nosso site.');
+                return Redirect::to($destination.'?open=pass-recover')->with('warning', 'Não foi possível criar seu cadastro.<br /> Em nosso sistema já existe um cliente cadastrado com o email <strong>'.Input::get('registerEmail').'</strong>.');
             }
             $userData = [];
             $userData['username'] = Str::lower(Str::slug(Input::get('registerEmail')));
