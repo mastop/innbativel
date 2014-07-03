@@ -143,7 +143,7 @@ class AdminBannerController extends BaseController {
                     array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
                 );
                 // Imagem Principal
-                $img = Input::get('img');
+                $img = urlencode(Input::get('img'));
 
                 if($img){
                     // Pega a extensão da imagem
@@ -267,7 +267,7 @@ class AdminBannerController extends BaseController {
                     array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
                 );
 
-                $img = Input::get('img');
+                $img = urlencode(Input::get('img'));
 
                 if(substr($img, 0, 2) != '//'){
                     // Deleta a imagem velha

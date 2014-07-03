@@ -14,7 +14,7 @@
   <body>
     <table class="body"><tr><td class="center" align="center" valign="top"><center><table class="container"><tr><td><div class="inner">
 
-		<h2 class="title">Password Reset</h2>
+		<h2 class="title">Redefina sua Senha</h2>
 		<p>Clique <a href="{{ URL::to('recuperar/senha', $token) }}" target="_blank">aqui</a> para alterar sua senha de acesso.</p>
 
     </div></td></tr></table></center></td></tr></table>

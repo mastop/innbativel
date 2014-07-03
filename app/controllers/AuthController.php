@@ -206,7 +206,9 @@ class AuthController extends BaseController {
 		$credentials = array('email' => Input::get('email', Input::get('passRecoverEmail')));
         $ret = [];
         try{
-            Password::remind($credentials);
+            Password::remind($credentials, function($message){
+                $message->subject('INNBatível - Esqueci minha senha');
+            });
             $ret['error'] = 0;
             $ret['message'] = 'Senha enviada por e-mail';
         }catch (Exception $v){
@@ -455,6 +457,7 @@ class AuthController extends BaseController {
 
 	public function postCreate()
 	{
+        $destination = Input::get('destination', Session::get('destination', '/'));
 		$inputs = Input::all();
 
 		$rules = [
@@ -469,6 +472,12 @@ class AuthController extends BaseController {
 
 		if ($validation->passes())
 		{
+            // Checa se o email existe
+            $emailExists = User::where('email', '=', Input::get('registerEmail'))->first();
+            if (!is_null($emailExists))
+            {
+                return Redirect::to($destination.'?open=pass-recover')->with('warning', 'Não foi possível criar seu cadastro.<br /> Em nosso sistema já existe um cliente cadastrado com o email <strong>'.Input::get('registerEmail').'</strong>.');
+            }
             $userData = [];
             $userData['username'] = Str::lower(Str::slug(Input::get('registerEmail')));
             $userData['api_key'] = md5($userData['username']);
@@ -487,7 +496,6 @@ class AuthController extends BaseController {
 
                 $user->profile()->create($profileData);
 
-                $user->roles()->sync(array(10)); // 10 = Cliente
 
                 // Email de boas vindas
                 Mail::send('emails.auth.welcome', $user, function($message) use ($user){
@@ -499,7 +507,7 @@ class AuthController extends BaseController {
                     'email'      => $userData['email'],
                     'password'   => $userData['password']
                 );
-                $destination = Input::get('destination', Session::get('destination', '/'));
+
                 try
                 {
                     if ( Auth::attempt($userdata ) ) {

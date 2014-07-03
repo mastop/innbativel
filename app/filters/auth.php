@@ -73,6 +73,6 @@ Route::filter('perm', function()
 
 	if (Auth::check() && !Auth::user()->can($perm))
 	{
-		return App::abort('403');
+        return Response::view('error.403', [], 403);
 	}
 });
