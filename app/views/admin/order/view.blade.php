@@ -217,6 +217,8 @@
         <div class="control-group"><h1>Ações</h1></div>
 
         <div class="control-group required">
+        	
+        	<?php $order->braspag_order_id = isset($order->braspag_order_id)?$order->braspag_order_id:$order->created_at; ?>
 
 			@if($order->status == 'revisao')
 			
