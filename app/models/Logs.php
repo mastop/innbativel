@@ -49,6 +49,10 @@ class Logs extends BaseModel {
     Logs::create(['type' => 'alert', 'message' => $message]);
   }
 
+  public function getMessageAttribute($value){
+    return '<pre>'.$value.'</pre>';
+  }
+
   public function getCreatedAtAttribute($value){
     return date('d/m/Y H:i:s', strtotime($value));;
   }
