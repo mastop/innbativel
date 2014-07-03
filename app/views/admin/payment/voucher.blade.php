@@ -5,7 +5,8 @@
 		<div class="navbar-inner">
 			<h6>Lista de Transações de Cupons</h6>
 	        <div class="nav pull-right">
-	            <a href="{{ route('admin.payment.voucher') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
+	            <a href="{{ route('admin.payment') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
+	            <a href="{{ route('admin.payment.voucher') }}" title="Listar cupons" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
 	        </div>
 		</div>
 	</div>
@@ -44,6 +45,8 @@
 		text-align: right;
 	}
 	</style>
+
+	<?php //print('<pre>'); print_r($paymentPartnerData->toArray()); print('</pre>'); die(); ?>
 
 	{{ Table::open() }}
 	<thead>
@@ -86,7 +89,7 @@
 			})
 			->offer(function($data) {
 				if(isset($data->voucher->offer_option_offer->offer->id)){
-					return link_to_route('oferta', $data->voucher->offer_option_offer->offer->id.' | '.$data->voucher->offer_option_offer->offer->destiny->name, ['slug' => $data->voucher->offer_option_offer->offer->slug]).' ('.$data->voucher->offer_option_offer->title.')';
+					return link_to_route('oferta', $data->voucher->offer_option_offer->offer->id.' | '.(isset($data->voucher->offer_option_offer->offer->destiny->name)?$data->voucher->offer_option_offer->offer->destiny->name:substr($data->voucher->offer_option_offer->offer->title,0,30).'...'), ['slug' => $data->voucher->offer_option_offer->offer->slug]).' ('.substr($data->voucher->offer_option_offer->title,0,40).(strlen($data->voucher->offer_option_offer->title)>40?'...':'').')';
 				}
 				return '--';
 			})

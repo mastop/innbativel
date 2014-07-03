@@ -39,7 +39,7 @@
             <tr>
               <td width="398"><table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td align="center" style="font-size:35px; font-family:Arial, Helvetica, sans-serif; color:#626262;">{{ $voucher->offer_partner->offer->destiny->name }}</td>
+                  <td align="center" style="font-size:35px; font-family:Arial, Helvetica, sans-serif; color:#626262;">{{ isset($voucher->offer_partner->offer->destiny)?$voucher->offer_partner->offer->destiny->name:$voucher->offer_partner->offer->title }}</td>
                 </tr>
                 <tr>
                   <td align="center" style="font-size:23px; font-family:Arial, Helvetica, sans-serif; color:#626262;">{{ $voucher->offer_partner->offer->partner2->full_name }}</td>

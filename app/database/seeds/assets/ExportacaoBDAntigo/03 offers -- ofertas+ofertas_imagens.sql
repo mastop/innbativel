@@ -18,6 +18,8 @@ NOW() AS deleted_at
 
 FROM ofertas AS o
 
+WHERE o.id > 1092
+
 INTO OUTFILE "/tmp/offers.csv"
 CHARACTER SET 'LATIN1'
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '¨' ESCAPED BY ''

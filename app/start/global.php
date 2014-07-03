@@ -123,7 +123,9 @@ Blade::extend(function($value)
 });
 
 Log::listen(function($level, $message, $context)
-{
+{   
+    $user = Auth::check()?'Usuário: '.Auth::user()->id.' | '.Auth::user()->email.','."\r\n":'';
+    $url = 'URL: '.Request::url().','."\r\n";
     $add = (!empty($context)) ? "\r\nContext: ".print_r($context, true) : '';
-    Logs::set($level, $message.$add);
+    Logs::set($level, $user.$url.$message.$add);
 });
