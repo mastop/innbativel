@@ -20,7 +20,8 @@ class Holiday extends Eloquent {
   );
 
     public function offer(){
-        return $this->belongsToMany('Offer', 'offers_holidays', 'holiday_id', 'offer_id')->where('offers.starts_on', '<=', Carbon::now()->toDateTimeString())
+        return $this->belongsToMany('Offer', 'offers_holidays', 'holiday_id', 'offer_id')->with(['genre', 'genre2', 'destiny', 'included'])
+            ->where('offers.starts_on', '<=', Carbon::now()->toDateTimeString())
             ->where('offers.ends_on'  , '>=', Carbon::now()->toDateTimeString())
             ->where('offers.is_available'  , '=', 1)
             ->where('offers.is_active'  , '=', 1);
