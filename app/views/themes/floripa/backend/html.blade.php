@@ -32,7 +32,7 @@
 		<div id="sidebar">
 			<div class="sidebar-tabs">
 				<ul class="tabs-nav three-items">
-					@if(Auth::user()->is('administrador'))
+					@if(Auth::user()->is(['administrador', 'comercial', 'gerente', 'Marketing', 'atendimento', 'jornalista', 'designer']))
                         <li><a href="#admin" title=""><i class="icon-key"></i></a></li>
                     @endif
                     @if(Auth::user()->is('parceiro'))
@@ -42,7 +42,7 @@
                         <li><a href="#stuff" title=""><i class="icon-cogs"></i></a></li>
                     @endif
 				</ul>
-                @if(Auth::user()->is('administrador'))
+                @if(Auth::user()->is(['administrador', 'comercial', 'gerente', 'Marketing', 'atendimento', 'jornalista', 'designer']))
 				<div id="admin">
 					@include('menu.admin')
 				</div>
