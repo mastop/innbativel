@@ -123,7 +123,8 @@ class AdminRoleController extends BaseController {
 
 		$permissions = [];
 		foreach (Permission::all() as $permission) {
-			$permissions[$permission->description.($permission->is_menu == true?' (está no menu)':'')] = [
+			$label = $permission->description.($permission->is_menu == true?' (está no menu)':'');
+			$permissions[$label] = [
 				'value' => $permission->id,
 				'name' => 'permissions['. $permission->name .']',
 				'checked' => in_array($permission->name, $permAllowed) ? 'checked' : null,

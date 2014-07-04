@@ -65,4 +65,8 @@ class Order extends Eloquent {
     return $this->belongsToMany('OptionalItem', 'orders_optional_itens', 'order_id', 'optional_item_id');
   }
 
+  public function getHistoryAttribute($value){
+    return '<pre>'.$value.'</pre>';
+  }
+
 }

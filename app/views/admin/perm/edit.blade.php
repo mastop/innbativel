@@ -10,6 +10,7 @@
 
         {{ Former::text('name', 'Nome')->class('span12') }}
         {{ Former::text('description', 'Descrição')->class('span12') }}
+        {{ Former::text('menu_name', 'Nome no menu (caso seja listado no menu)')->class('span12') }}
         {{ Former::select('is_menu', 'Listar no menu?')
                  ->addOption('Não', 0)
                  ->addOption('Sim', 1)
