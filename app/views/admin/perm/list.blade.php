@@ -37,7 +37,7 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('ID', 'Nome', 'Descrição', 'Listado no menu?', 'Ações') }}
+	{{ Table::headers('ID', 'Nome', 'Descrição', 'Nome no menu', 'Listado no menu?', 'Ações') }}
 	{{ Table::body($perm)
 		->ignore(['created_at', 'updated_at'])
 		->acoes(function($body) {
