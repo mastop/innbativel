@@ -599,7 +599,7 @@ class AdminOrderController extends BaseController {
 
 		$transaction = Transaction::where('order_id', $id)->get();
 
-		$this->layout->content = View::make('admin.order.view', compact('order', 'transaction'));
+		return View::make('admin.order.view', compact('order', 'transaction'));
 	}
 
 	public function getVoucherCancel(){

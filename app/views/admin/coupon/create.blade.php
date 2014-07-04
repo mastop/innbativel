@@ -3,14 +3,18 @@
     <div class="well widget row-fluid">
 
         {{ Former::horizontal_open()->rules([
-        	'name' => 'required',
+        	'display_code' => 'required|unique:discount_coupons',
+            'value' => 'required',
+            'qty' => 'required|integer',
+            'starts_on' => 'required',
+            'ends_on' => 'required',
         ]) }}
 
         {{ Former::text('display_code', 'Código')->class('span12') }}
         {{ Former::text('value', 'Valor')->class('span12') }}
         {{ Former::number('qty', 'Quantidade máxima')->class('span12') }}
-        {{ Former::date('starts_on', 'Data início')->class('span12') }}
-        {{ Former::date('ends_on', 'Data fim')->class('span12') }}
+        {{ Former::date('starts_on', 'Data início (formato: mm/dd/aaaa)')->class('span12') }}
+        {{ Former::date('ends_on', 'Data fim (formato: mm/dd/aaaa)')->class('span12') }}
         {{ Former::text('user_email', 'E-mail do Usuário')->class('span12') }}
 		{{ Former::select('offer_id', 'Oferta')
 			 	 ->addOption('-- selecione uma opção --', null)
