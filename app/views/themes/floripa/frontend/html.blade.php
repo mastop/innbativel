@@ -54,7 +54,7 @@
                 @if(Auth::check())
                 <a class="btn-login" href="{{ route('minha-conta') }}" title="Acesse sua conta INNBatível">Minha conta <span class="entypo user"></span></a>
                 <a class="btn-login" href="{{ route('logout') }}" data-toggle="modal" title="Sair de sua conta INNBatível">Sair <span class="entypo logout"></span></a>
-                    @if(Auth::user()->is('administrador'))
+                    @if(Auth::user()->is(['administrador', 'comercial', 'programador', 'gerente', 'Marketing', 'atendimento', 'jornalista', 'designer']))
                         <a class="btn-login" href="{{ route('admin') }}" title="Acesse a Administração">Admin <span class="entypo key"></span></a>
                     @elseif(Auth::user()->is('parceiro'))
                         <a class="btn-login" href="{{ route('painel') }}" title="Acesse o Painel do Parceiro">Painel do Parceiro <span class="entypo key"></span></a>
@@ -99,7 +99,7 @@
                 @if(Auth::check())
                     <a class="btn-login" href="{{ route('logout') }}" data-toggle="modal" title="Sair de sua conta INNBatível">Sair <span class="entypo logout"></span></a>
                     <a class="btn-login" href="{{ route('minha-conta') }}" title="Acesse sua conta INNBatível">Minha conta <span class="entypo user"></span></a>
-                    @if(Auth::user()->is('administrador'))
+                    @if(Auth::user()->is(['administrador', 'comercial', 'programador', 'gerente', 'Marketing', 'atendimento', 'jornalista', 'designer']))
                         <a class="btn-login" href="{{ route('admin') }}" title="Acesse a Administração">Admin <span class="entypo key"></span></a>
                     @elseif(Auth::user()->is('parceiro'))
                         <a class="btn-login" href="{{ route('painel') }}" title="Acesse o Painel do Parceiro">Painel do Parceiro <span class="entypo key"></span></a>
