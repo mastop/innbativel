@@ -8,11 +8,11 @@ $permissions = Permission::whereExists(function($query){
                           })
                           ->where('is_menu', true)
                           ->orderBy('display_order', 'asc')
-                          ->select(['name', 'description'])
+                          ->select(['name', 'menu_name'])
                           ->get();
 $menu[] = [Navigation::HEADER, 'Menu Administrativo', false, false, null, 'tasks'];
 foreach ($permissions as $permission) {
-    $menu[] = [$permission->description, route($permission->name), false, false, null, 'tasks'];
+    $menu[] = [$permission->menu_name, route($permission->name), false, false, null, 'tasks'];
 }
 ?>
 
