@@ -101,7 +101,7 @@ class PainelOrderController extends BaseController {
 	public function anyVouchers($offer_option_id = null){
 		$vouchers = $this->voucher;
 
-		$offers = Offer::with(['offer_option'])->where('partner_id', Auth::user()->id)->get();
+		$offers = Offer::withTrashed()->with(['offer_option'])->where('partner_id', Auth::user()->id)->get();
 
 		// Exibe somente vouchers pagos
 		$vouchers = $vouchers->where('status', 'pago');
@@ -109,8 +109,8 @@ class PainelOrderController extends BaseController {
 		if($offers->count() < 1){
 			// nenhuma oferta
 			$error = 'Nenhum voucher (nenhuma venda) para a oferta.';
-			return Redirect::route('painel.order.offers')
-						   ->withErrors($error);
+			Session::flash('error', $error);
+			return Redirect::route('painel.order.offers');
 		}
 
 		// $offersOptions irá preencher o <select> da opção da qual estamos visualizando os vouchers/cupons
@@ -167,6 +167,7 @@ class PainelOrderController extends BaseController {
 				 		                  ->whereRaw('orders.status = "pago"')
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
+		               	   	 ->where('status', 'pago')
 							 ->orderBy($sort, $order)
 							 ->paginate($pag)
 							 ->appends([

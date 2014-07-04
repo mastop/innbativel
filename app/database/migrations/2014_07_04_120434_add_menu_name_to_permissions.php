@@ -13,7 +13,7 @@ class AddMenuNameToPermissions extends Migration {
 	{
 		Schema::table('permissions', function($table)
         {
-            $table->string('menu_name');
+            $table->string('menu_name')->after('description');
         });
 	}
 

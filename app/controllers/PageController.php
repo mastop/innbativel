@@ -148,7 +148,8 @@ class PageController extends BaseController {
         }
     }
 
-    private function logPagar($inputs, $error_message, $validation_message, $user_id){
+    private function logPagar($inputs, $error_message, $validation_message, $user_id, $user_email){
+        $inputs['user_email'] = $user_email;
         $inputs['user_id'] = $user_id;
         $inputs['error_message'] = $error_message;
         $inputs['validation_message'] = $validation_message;
@@ -184,7 +185,7 @@ class PageController extends BaseController {
         $validation = Validator::make($inputs, $rules);
 
         if (!$validation->passes()){
-            $this->logPagar($inputs, 'Nenhuma', $validation->messages(), Auth::user()->id);
+            $this->logPagar($inputs, 'Nenhuma', $validation->messages(), Auth::user()->id, Auth::user()->email);
             return Redirect::back()
                             ->withInput()
                             ->withErrors($validation);
@@ -197,7 +198,7 @@ class PageController extends BaseController {
         $discount_coupon_code = $inputs['promoCode'];
         $total = 0;
         $qty_total = 0;
-        $history = date('d/m/Y h:i:s').' - Transação iniciada.';
+        $history = date('d/m/Y h:i:s').' - Transação iniciada.'."\r\n";
         $status = 'pendente';
 
         // as vezes houve uma tentativa de compra com o braspag order id que teve erros, 
@@ -245,7 +246,7 @@ class PageController extends BaseController {
             if($qty_ordered > $max_qty_allowed){
                 // ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
                 $error = 'A quantidade selecionada para a oferta "' . $offer_option->offer->title . '" é maior do que a quantidade em estoque.';
-                $this->logPagar($inputs, $error, 'Nenhuma', $user_id);
+                $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
@@ -321,7 +322,7 @@ class PageController extends BaseController {
             $order->coupon_discount = $coupon_discount_value;
             $order->coupon_id = $coupon_discount_id;
             $order->payment_terms = 'Créditos e/ou cupom de disconto';
-            $order->history .= '<br/>'.date('d/m/Y h:i:s').' - Pagamento feito completamente com créditos do usuário e/ou cupom de disconto';
+            $order->history .= date('d/m/Y h:i:s').' - Pagamento feito completamente com créditos do usuário e/ou cupom de disconto'."\r\n";
             $order->save();
         }
 
@@ -340,7 +341,7 @@ class PageController extends BaseController {
                 'paymentCardNumber' => 'required',
                 'paymentCardValidityMonth' => 'required|digits:2',
                 'paymentCardValidityYear' => 'required|digits:4',
-                'paymentCardCode' => 'required|digitsbetween:3,4',
+                'paymentCardCode' => 'required',
                 'paymentCardName' => 'required',
                 'paymentCardInstallment' => 'required',
             ];
@@ -348,7 +349,7 @@ class PageController extends BaseController {
             $validation = Validator::make($inputs, $rules);
 
             if (!$validation->passes()){
-                $this->logPagar($inputs, 'Nenhuma', $validation->messages(), $user_id);
+                $this->logPagar($inputs, 'Nenhuma', $validation->messages(), Auth::user()->id, Auth::user()->email);
                 return Redirect::back()
                                 ->withInput()
                                 ->withErrors($validation);
@@ -394,7 +395,7 @@ class PageController extends BaseController {
             }
             else{
                 $error = 'Número de parcelas inválido.';
-                $this->logPagar($inputs, $error, 'Nenhuma', $user_id);
+                $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
@@ -469,7 +470,7 @@ class PageController extends BaseController {
                 $returnBD = 'Ocorreu um erro na solicitação.';
 
                 $order->status = $status = 'cancelado';
-                $order->history .= $history = date('d/m/Y H:i:s') . " - Pagador: " . $returnBD . " (ReturnCode = ? e Status =  ? e ErrorMesage = ".(isset($response->ErrorReportDataCollection->ErrorReportDataResponse->ErrorMessage)?$response->ErrorReportDataCollection->ErrorReportDataResponse->ErrorMessage:'?').")";
+                $order->history .= $history = date('d/m/Y H:i:s') . " - Pagador: " . $returnBD . " (ReturnCode = ? e Status =  ? e ErrorMesage = ".(isset($response->ErrorReportDataCollection->ErrorReportDataResponse->ErrorMessage)?$response->ErrorReportDataCollection->ErrorReportDataResponse->ErrorMessage:'?').")"."\r\n";
 
                 $order->save();
 
@@ -647,7 +648,7 @@ class PageController extends BaseController {
 
                 $order->status = $status = 'cancelado';
                 $order->braspag_id = $braspag_id;
-                $order->history .= $history = date('d/m/Y H:i:s') . " - Pagador: " . $returnBD . " (ReturnCode = " . $response->PaymentDataCollection->PaymentDataResponse->ReturnCode . " e Status =  " . $response->PaymentDataCollection->PaymentDataResponse->Status . ")";
+                $order->history .= $history = date('d/m/Y H:i:s') . " - Pagador: " . $returnBD . " (ReturnCode = " . $response->PaymentDataCollection->PaymentDataResponse->ReturnCode . " e Status =  " . $response->PaymentDataCollection->PaymentDataResponse->Status . ")"."\r\n";
 
                 $order->save();
 
@@ -659,7 +660,7 @@ class PageController extends BaseController {
             
             $order->status = 'pago';
             $order->braspag_id = $braspag_id;
-            $order->history .= date('d/m/Y H:i:s') . " - Pagador: Transação capturada";
+            $order->history .= date('d/m/Y H:i:s') . " - Pagador: Transação capturada"."\r\n";
             $order->save();
 
         }
@@ -675,11 +676,21 @@ class PageController extends BaseController {
             $validation = Validator::make($inputs, $rules);
 
             if (!$validation->passes()){
-                $this->logPagar($inputs, 'Nenhuma', $validation->messages(), $user_id);
+                $this->logPagar($inputs, 'Nenhuma', $validation->messages(), Auth::user()->id, Auth::user()->email);
                 return Redirect::back()
                                 ->withInput()
                                 ->withErrors($validation);
             }
+
+            $order->total = $total;
+            $order->card_boletus_rate = Configuration::get('boletus-value');
+            $order->credit_discount = $credit_discount_value;
+            $order->coupon_discount = $coupon_discount_value;
+            $order->coupon_id = $coupon_discount_id;
+            $order->telephone = $inputs['paymentBoletoPhone'];
+            $order->payment_terms = "Boleto";
+
+            $order->save();
 
             //////////////////////////////////////
             require_once app_path().'/braspag/vars.php';
@@ -712,7 +723,7 @@ class PageController extends BaseController {
 
             if ($client->fault) {
                 $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 039). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-                $this->logPagar($inputs, $message, $client, $user_id);
+                $this->logPagar($inputs, $message, $client, Auth::user()->id, Auth::user()->email);
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
@@ -720,14 +731,14 @@ class PageController extends BaseController {
               $err = $client->getError();
               if ($err) {
                 $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 040). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-                $this->logPagar($inputs, $message, $err, $user_id);
+                $this->logPagar($inputs, $message, $err, Auth::user()->id, Auth::user()->email);
                 Session::flash('error', $error);
                 return Redirect::back()
                                 ->withInput();
               } else {
                 if($result['CreateBoletoResult']['status'] == NULL){
                     $error = 'Houve um erro ao processar o seu pagamento, tente novamente em alguns instantes (CÓD: 041). Se o erro persistir, entre em contato conosco pelo e-mail faleconosco@innbativel.com.br';
-                    $this->logPagar($inputs, $message, $result, $user_id);
+                    $this->logPagar($inputs, $message, $result, Auth::user()->id, Auth::user()->email);
                     Session::flash('error', $error);
                     return Redirect::back()
                                    ->withInput();
@@ -737,17 +748,9 @@ class PageController extends BaseController {
 
             $boletus_url = $result['CreateBoletoResult']['url'];
 
-            $order->total = $total;
-            $order->credit_discount = $credit_discount_value;
-            $order->coupon_discount = $coupon_discount_value;
-            $order->coupon_id = $coupon_discount_id;
-            $order->status = 'pendente';
-            $order->card_boletus_rate = Configuration::get('boletus-value');
             $order->braspag_id = $result['CreateBoletoResult']['boletoNumber'];
             $order->boleto = $boletus_url;
-            $order->telephone = $inputs['paymentBoletoPhone'];
-            $order->payment_terms = "Boleto";
-            $order->history .= date('d/m/Y H:i:s') . " - Boleto emitido";
+            $order->history .= date('d/m/Y H:i:s') . " - Boleto emitido"."\r\n";
 
             $order->save();
         }

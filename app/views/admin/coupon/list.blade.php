@@ -71,13 +71,13 @@
 		})
 		->starts_onn(function($body) {
 			if(isset($body->starts_on)) {
-				return $body->starts_on;
+				return date('d/m/Y H:i:s', strtotime($body->starts_on));
 			}
 			return '--';
 		})
 		->ends_onn(function($body) {
 			if(isset($body->ends_on)) {
-				return $body->ends_on;
+				return date('d/m/Y H:i:s', strtotime($body->ends_on));
 			}
 			return '--';
 		})

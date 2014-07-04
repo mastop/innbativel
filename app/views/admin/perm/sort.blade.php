@@ -17,7 +17,7 @@
 			<ul>
 				@foreach ($perms as $perm)
 				<li>
-					{{ $perm->description.' | '.$perm->name }}
+					{{ $perm->menu_name.' | '.$perm->name }}
 					{{ Former::hidden('perms[]', '')->value($perm->id) }}
 				</li>
 				@endforeach
