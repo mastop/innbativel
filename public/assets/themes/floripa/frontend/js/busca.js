@@ -250,7 +250,7 @@
 					return false;
 				}
 				// If a holidays filter is active and no value is in the array
-				if ( holidays.length > 0 && !valueInArray(data.holidays, holidays) && !arrayContainsArray(data.holidays, holidays) ) {
+                if (typeof(holidays) != 'undefined' && holidays.length > 0 && !valueInArray(data.holidays, holidays) && !arrayContainsArray(data.holidays, holidays) ) {
 					return false;
 				}
 				// If a date filter is active and no value is in the array
