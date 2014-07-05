@@ -63,8 +63,8 @@
 		return '--';
 	})
 	->braspag_order_idd(function($order) {
-		if(isset($order['braspag_order_id'])) {
-			return $order['braspag_order_id'];
+		if(isset($order['id'])) {
+			return '<a href=\'javascript: view('.$order['id'].')\'>'.$order['braspag_order_id_string'].'</a>';
 		}
 		return '--';
 	})
@@ -81,7 +81,7 @@
 			$id = '| ';
 			foreach ($order->offer_option_offer as $offer_option) {
 				if(strpos($id, $offer_option->offer_id) == false){
-					$id .= $offer_option->offer_id.' | ';
+					$id .= link_to_route('oferta', $offer_option->offer_id, ['slug' => $offer_option->offer->slug]).' | ';
 				}
 			}
 			return $id;
@@ -195,7 +195,38 @@ function exportar(url){
 	window.location.href = url;
 };
 
-</script>
+function view(id){
+	if (!$('#viewOrder').length) {
+		var modal = '<div id="viewOrder" class="modal" style="width: 80%; height:80%; margin-left:0px; left:10%; margin-top:0px; top:10%; overflow:scroll;" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">'
+						+'<div class="modal-header" style="text-align: right;">'
+							+'<button type="button" class="btn btn-danger" data-dismiss="modal" aria-hidden="true">×</button>'
+						+'</div>'
+						+'<div class="modal-footer" id="viewOrderContent" style="text-align: left;">'
+						+'</div>'
+					+'</div>';
+			    $('body').append(modal);
+	}
+
+	var url = "{{ route('admin.order.view', ['id' => '_id_']) }}";
+	url = url.replace('_id_', id);
+	
+    $.ajax({
+        type: "GET",
+        url: url,
+        success: function(data){
+            $('#viewOrderContent').html(data);
+            $('#viewOrder').modal({show:true});
+            $('.modal-backdrop').on('click', function (e) {
+				e.preventDefault();
+				$('#viewOrder').modal('hide');
+			});
+        },
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}'
+        }
+    });
+}
+
 </script>
 
 @stop

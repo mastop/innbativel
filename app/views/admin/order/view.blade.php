@@ -1,5 +1,4 @@
 	@stylesheets('backend')
-	@javascripts('backend')
 	<style type="text/css">
 	.column-totall, .column-creditDiscount, .column-couponDiscount{
 		text-align: right;
