@@ -7,16 +7,22 @@
             </div>
             <div class="modal-body">
                 <p>
-                    A ECOA foi criada em 1989, em Campo Grande - MS, por um grupo de pesquisadores de diversas áreas profissionais, dentre elas as de biologia, comunicação, arquitetura, ciências sociais, engenharia e educação, para estabelecer um espaço de reflexão, debates e formulações e também desenvolver projetos e políticas públicas para a conservação ambiental e a sustentabilidade tanto no meio urbano quanto no rural. Nesta perspectiva o Pantanal e a bacia hidrográfica do rio da Prata foram identificados como as regiões prioritárias, sendo que no caso Pantanal concentraram-se as ações de base comunitária, o que indica, também, uma das razões para a criação da organização.
+                    Ao fazer uma DOAÇÃO para a ECOA você estará fazendo parte, junto com o INNBatível, de um grupo de notáveis doadores que compartilham a visão e o comprometimento de um Brasil mais consciente e responsável com seu Meio Ambiente. É uma maneira fácil, rápida e eficaz de construir um legado de apoio a essa missão, que é de todos nós brasileiros.
                 </p>
                 <p>
-                    A Ecoa associa investigação cientifica e ação política no sentido amplo do termo, envolvendo comunidades, instituições de ensino e pesquisa, instituições governamentais e outras organizações não governamentais.  Como ferramentas promovem campanhas e processos de diálogos multisetoriais para criar espaços de reflexão, negociação e decisão frente a questões prioritárias para a conservação ambiental e a sustentabilidade.
+                    A ECOA foi criada em 1989, em Campo Grande - MS, por um grupo de pesquisadores de diversas áreas profissionais para desenvolver projetos e políticas públicas para a conservação ambiental e a sustentabilidade, tanto no meio urbano quanto no rural e estabelecer um espaço de reflexão, debates e formulações.
                 </p>
                 <p>
-                    Uma das principais características da instituição são o permanente suporte para o surgimento e desenvolvimento de redes, fóruns, articulações e organizações locais no Brasil e em outros países.
+                    Nesta perspectiva o Pantanal e a bacia hidrográfica do rio da Prata foram identificados como as regiões prioritárias, sendo que no caso Pantanal concentraram-se as ações de base comunitária, o que indica, também, uma das razões para a criação da organização.
                 </p>
                 <p>
-                    É membro da União Internacional para a Conservação da Natureza (IUCN) e o Ponto Focal do Comitê Holandês da IUCN para a bacia do rio da Prata. É a Secretaria Executiva da Rede Pantanal de Ongs e Movimentos Sociais. É membro da coordenação da Articulação Frente  a Infraestrutura e Energia na América do Sul, da  Aliança Sistema Paraná Paraguai de Áreas Úmidas, da RedeBio e da Rede de Conhecimento sobre Bicombustíveis. Faz parte também do Conselho do Centro de Pesquisas do Pantanal (CPP) e outras redes nacionais e internacionais.
+                    Quer saber mais sobre essa organização? Então acesse <a href="www.ecoa.org.br">www.ecoa.org.br</a>
+                </p>
+                <p>
+                    E promova você também a transformação ambiental do Brasil no futuro. 
+                </p>
+                <p>
+                    Faça parte desse legado junto com o INNBatível. 
                 </p>
             </div>
         </div>

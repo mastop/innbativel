@@ -8,7 +8,7 @@
 				</div>
 			</div>
 			<div class="well body">
-				<div class="fancy-count">{{ Offer::where('partner_id', Auth::user()->id)->withTrashed()>count() }}</div>
+				<div class="fancy-count">{{ Offer::withTrashed()->where('partner_id', Auth::user()->id)->count() }}</div>
 			</div>
 		</div>
 	</div>
