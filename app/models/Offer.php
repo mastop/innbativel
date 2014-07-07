@@ -339,5 +339,15 @@ class Offer extends BaseModel {
                 ->count();
     }
 
-
+    /**
+     * Formata o popup_features, de forma que
+     * se estiver vazio, retorna os features
+     *
+     * @param $value
+     * @return void
+     */
+    public function getPopupFeaturesAttribute($value)
+    {
+        return (empty($value)) ? $this->features : $value;
+    }
 }
