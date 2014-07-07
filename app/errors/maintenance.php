@@ -25,7 +25,9 @@ App::error(function(Exception $exception, $code)
 
   if (Config::getEnvironment() == 'production' || Config::getEnvironment() == 'elastic')
   {
-      $this->layout->body_classes = 'innbativel frontend no-sidebar';
+      $body_classes = 'innbativel frontend no-sidebar';
+      $title = 'Página Não Encontrada - INNBatível';
+      View::share(compact('body_classes', 'title'));
       switch ($code) {
           case 403:
           case 404:

@@ -1,5 +1,4 @@
 @section('content')
-
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
@@ -19,9 +18,9 @@
 			{{ Former::text('id')->class('input-medium')->placeholder('ID')->label('ID') }}
 			{{ Former::text('destiny')->class('input-medium')->placeholder('Destino')->label('Destino') }}
 			{{ Former::text('title')->class('input-medium')->placeholder('Título')->label('Título') }}
-			{{ Former::select('genre_id', 'Gênero')
+			{{ Former::select('partner_id', 'Parceiro')
 	        	->addOption('', null)
-				->fromQuery(DB::table('genres')->get(['title', 'id']), 'title', 'id')
+				->fromQuery(User::getAllByRole('parceiro'))
 	        }}
 			{{ Former::date('starts_on')->class('input-medium')->placeholder('Data início')->label('Data início') }}
 			{{ Former::date('ends_on')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
@@ -44,17 +43,23 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('ID', 'Título', 'Destino', 'Início', 'Fim', 'Ações') }}
+	{{ Table::headers('ID', 'Título', 'Parceiro', 'Destino', 'Início', 'Fim', 'Vendidos', 'Ações') }}
 	{{ Table::body($offer)
-		->ignore(['slug', 'destiny', 'partner', 'is_active', 'is_available'])
+		->ignore(['slug', 'destiny', 'partner', 'is_active', 'is_available', 'offer_option'])
         ->destiny_id__noreplace__(function($body) {
-            return $body->getFullDestinnyAttribute();
+            return ($body->destiny) ? $body->destiny->name : 'Não Atribuído';
+        })
+        ->partner_id__noreplace__(function($body) {
+            return ($body->partner) ? $body->partner->profile->company_name : 'Não Atribuído';
         })
 		->id(function($body) {
 			return '<a href="'.route('oferta', $body->slug).'" target="_blank">'.$body->id.'</a>';
 		})
         ->title(function($body) {
             return ($body->can_sell) ? $body->title : '<span style="color: red">'.$body->title.'</span>';
+        })
+        ->soldpaid(function($body) {
+            return $body->sold_paid;
         })
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',

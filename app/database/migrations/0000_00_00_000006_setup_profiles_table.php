@@ -24,7 +24,7 @@ class SetupProfilesTable extends Migration {
          */
         $table->increments('id');
         $table->integer('user_id')->unsigned()->index();
-        $table->integer('facebook_id')->nullable();
+        $table->string('facebook_id', 30)->nullable();
         $table->string('first_name')->nullable();
         $table->string('last_name')->nullable();
         $table->date('birthday')->nullable();

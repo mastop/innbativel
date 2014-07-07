@@ -2473,6 +2473,12 @@ dl.listing dt { clear: left; width: 15%; text-align: right; }
 	margin: 20px;
 	border-radius: 1000px;
 }
+.fancy-count.ok {
+	background: #268c22;
+}
+.fancy-count.gray {
+	background: #CCC;
+}
 
 .dropzone {
     background: #fefefe;

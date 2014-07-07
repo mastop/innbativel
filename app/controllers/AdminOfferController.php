@@ -71,8 +71,8 @@ class AdminOfferController extends BaseController {
 			$offer = $offer->where('title', 'like', '%'. Input::get('title') .'%');
 		}
 
-		if (Input::has('genre_id')) {
-			$offer = $offer->where('genre_id', Input::get('genre_id'));
+		if (Input::has('partner_id')) {
+			$offer = $offer->where('partner_id', Input::get('partner_id'));
 		}
 
 		if (Input::has('starts_on')) {
@@ -87,8 +87,8 @@ class AdminOfferController extends BaseController {
 		 * Finally Obj
 		 */
 		$offer = $offer
-			->with(['partner', 'destiny'])
-			->select(['id', 'slug', 'title', 'destiny_id', 'starts_on', 'ends_on', 'is_active', 'is_available'])
+			->with(['partner', 'destiny', 'offer_option'])
+			->select(['id', 'slug', 'title', 'partner_id', 'destiny_id', 'starts_on', 'ends_on', 'is_active', 'is_available'])
 			->whereExists(function($query){
                 if (Input::has('destiny')) {
 					$query->select(DB::raw(1))

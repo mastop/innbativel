@@ -134,12 +134,13 @@ class AuthController extends BaseController {
 		if($auth){
 
 			$destination = Input::get('destination', Session::get('destination'));
+            $msg = 'Seja bem-vindo, <strong>'.Auth::user()->profile->first_name.'</strong>!';
 
 			if (!is_null($destination))
 			{
 				Session::forget('destination');
 				return Redirect::to($destination)
-				->with('success', Lang::get('auth.loggin-success'));
+				->with('success', Lang::get($msg));
 			}
 
 			if (Auth::user()->is('programador') ||
@@ -147,28 +148,28 @@ class AuthController extends BaseController {
 				Auth::user()->is('gerente'))
 			{
 				return Redirect::route('admin')
-				->with('success', Lang::get('auth.loggin-success'))
-				->with('success', Lang::get('auth.loggin-as-god'));
+				->with('success', Lang::get($msg))
+				->with('success', Lang::get($msg));
 			}
 
 			elseif (Auth::user()->is('parceiro'))
 			{
 				return Redirect::route('painel')
-				->with('success', Lang::get('auth.loggin-success'))
-				->with('success', Lang::get('auth.loggin-as-partner'));
+				->with('success', Lang::get($msg))
+				->with('success', Lang::get($msg));
 			}
 
 			elseif (Auth::user()->is('cliente'))
 			{
 				return Redirect::back()
-				->with('success', Lang::get('auth.loggin-success'))
-				->with('success', Lang::get('auth.loggin-as-customer'));
+				->with('success', Lang::get($msg))
+				->with('success', Lang::get($msg));
 			}
 
 			else
 			{
 				return Redirect::back()
-				->with('success', Lang::get('auth.loggin-success'));
+				->with('success', Lang::get($msg));
 			}
 
 		}
