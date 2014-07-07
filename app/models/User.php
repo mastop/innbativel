@@ -39,7 +39,8 @@ class User extends BaseUser {
      */
     public function getFullNameAttribute()
     {
-        return isset($this->profile) ? $this->profile->first_name . ' ' . $this->profile->last_name : $this->username;
+        if(!$this->profile) return null;
+        return ($this->profile->company_name) ? $this->profile->company_name : $this->profile->first_name . ' ' . $this->profile->last_name;
     }
 
     public function getFullAddressAttribute(){
@@ -79,6 +80,7 @@ class User extends BaseUser {
                 $ret[$u->id] = $u->fullName;
             }
         }
+        asort($ret);
         return $ret;
     }
 }
