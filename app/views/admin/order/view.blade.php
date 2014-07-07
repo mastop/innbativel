@@ -56,6 +56,9 @@
 
 	            <b class="control-label">CPF ou CNPJ do titular do cartão</b>
             	<div class="controls">{{ isset($order->cpf)?$order->cpf:'--' }}</div>
+            @elseif(strpos($order->payment_terms, 'Boleto') !== false)
+	            <b class="control-label">Link do boleto</b>
+	            <div class="controls">{{ $order->boleto }}</div>
             @endif
 
             <b class="control-label">Telefone</b>
