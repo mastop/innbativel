@@ -204,7 +204,7 @@ class PageController extends BaseController {
         // as vezes houve uma tentativa de compra com o braspag order id que teve erros, 
         // mas o usuario permanece na mesma página (com o mesmo braspag order id), tal compra
         // deve ser deletada, para uma nova (sem erros) ser criada em seguida
-        Order::where('braspag_order_id', $braspag_order_id)->delete();
+        // Order::where('braspag_order_id', $braspag_order_id)->delete();
 
         $order = New Order;
 
@@ -660,6 +660,7 @@ class PageController extends BaseController {
             
             $order->status = 'pago';
             $order->braspag_id = $braspag_id;
+            $order->capture_date = date('Y-m-d H:i:s');
             $order->history .= date('d/m/Y H:i:s') . " - Pagador: Transação capturada"."\r\n";
             $order->save();
 
@@ -750,6 +751,7 @@ class PageController extends BaseController {
 
             $order->braspag_id = $result['CreateBoletoResult']['boletoNumber'];
             $order->boleto = $boletus_url;
+            $order->status = 'pendente';
             $order->history .= date('d/m/Y H:i:s') . " - Boleto emitido"."\r\n";
 
             $order->save();
@@ -810,6 +812,57 @@ class PageController extends BaseController {
         else{
             return Redirect::route('sucesso', array('status' => $status));
         }
+    }
+
+    public function postBraspagReturn(){
+        $server_addr = array(
+            '10.144.84.94',
+            '209.134.48.121',
+            '209.235.236.174',
+            '209.134.53.179',
+            '209.235.236.162',
+            '209.134.48.120',
+            '209.235.236.164',
+            '209.134.48.122',
+            '209.134.48.211',
+            '209.134.48.69',
+            '209.134.53.185',
+            '209.235.206.3',
+            '209.134.53.180',
+            '209.134.48.123',
+            '209.235.236.161',
+        );
+
+        if (
+          empty($_SERVER['HTTP_X_FORWARDED_FOR']) ||
+          !in_array($_SERVER['HTTP_X_FORWARDED_FOR'], $server_addr) ||
+          // empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+          // !strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' &&
+          !isset($_POST) ||
+          empty($_POST)
+        ) {
+          return Response::make('<status>Acesso Negado</status>', 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
+        }
+
+        $braspag_id = $_POST['NumPedido'];
+        // $codpagamento = $_POST['CODPAGAMENTO'];
+
+        $status = $_POST['Status'] == '0' ? 'pago' : 'cancelado' ;
+
+        $order = Order::where('braspag_id', $braspag_id)->first();
+
+        $user_id = $order->user_id;
+        $order_id = $order->id;
+
+        $order->historico .= date('d/m/Y H:i:s')." - Status alterado para ".$status.", atualizado pelo retorno da Braspag"."\r\n";
+        $order->status = $status;
+        $order->save();
+
+        Voucher::where('order_id', $order_id)->update(['status' => $status]);
+
+        Controller::call('AdminOrderController@sendTransactionalEmail', ['order' => $order, 'new_status' => $status]);
+
+        return Response::make('<status>OK</status>', 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
     }
 
     public function postValidateCoupon(){

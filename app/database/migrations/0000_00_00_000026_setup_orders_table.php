@@ -42,7 +42,7 @@ class SetupOrdersTable extends Migration {
 		$table->boolean('is_gift')->default(false);
 		$table->string('payment_terms')->nullable();
 		$table->string('boleto')->nullable();
-		$table->string('capture_date')->nullable();
+		$table->datetime('capture_date')->nullable();
 		$table->text('history')->nullable();
 
         /*

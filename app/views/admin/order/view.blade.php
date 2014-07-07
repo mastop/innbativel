@@ -56,6 +56,9 @@
 
 	            <b class="control-label">CPF ou CNPJ do titular do cartão</b>
             	<div class="controls">{{ isset($order->cpf)?$order->cpf:'--' }}</div>
+            @elseif(strpos($order->payment_terms, 'Boleto') !== false)
+	            <b class="control-label">Link do boleto</b>
+	            <div class="controls">{{ $order->boleto }}</div>
             @endif
 
             <b class="control-label">Telefone</b>
@@ -89,13 +92,13 @@
 				})
 				->validity_start(function($body) {
 					if(isset($body->voucher_validity_start)){
-						return date('d/m/Y H:i:s', strtotime($body->voucher_validity_start));
+						return $body->voucher_validity_start;
 					}
 					return '--';
 				})
 				->validity_end(function($body) {
 					if(isset($body->voucher_validity_end)){
-						return date('d/m/Y H:i:s', strtotime($body->voucher_validity_end));
+						return $body->voucher_validity_end;
 					}
 					return '--';
 				})
@@ -211,7 +214,7 @@
             <div class="controls">{{ date('d/m/Y H:i:s', strtotime($order->capture_date)) }}</div>
 
             <b class="control-label">Histórico</b>
-            <div class="controls">{{ $order->history }}</div>
+            <div class="controls">{{ $order->display_history }}</div>
         </div>
 
         <div class="control-group"><h1>Ações</h1></div>

@@ -334,9 +334,7 @@ class Offer extends BaseModel {
      * @return string
      */
     public function getSoldPaidAttribute(){
-        return Voucher::whereIn('offer_option_id', $this->offer_option->lists('id'))
-                ->where('vouchers.status', 'pago')
-                ->count();
+        return $this->sold + Voucher::whereIn('offer_option_id', $this->offer_option->lists('id'))->count();
     }
 
     /**

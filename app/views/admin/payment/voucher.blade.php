@@ -164,10 +164,10 @@ $(function() {
   					 ->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')
   					 ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
   					 ->where('roles.id', 9)
-  					 ->get(['profiles.first_name']);
+  					 ->get(['profiles.first_name', 'profiles.last_name']);
 
   		foreach ($partners as $partner) {
-  			echo '"'.$partner->first_name.'", ';
+  			echo '"'.$partner->first_name.' '.$partner->last_name.'", ';
   		}
   	?>
   ];
