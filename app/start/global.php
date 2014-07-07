@@ -123,11 +123,11 @@ Blade::extend(function($value)
 });
 
 Log::listen(function($level, $message, $context)
-{   
+{
     $add = Auth::check()?'Usuário: '.Auth::user()->id.' | '.Auth::user()->email."\r\n":'';
     $add .= 'URL: '.Request::url()."\r\n";
     $add .= 'IP: '.Request::getClientIp()."\r\n";
-    $add .= 'Method: '.Request::method()."\r\n";
+    $add .= 'Method: '.Request::getMethod()."\r\n";
     $message .= (!empty($context)) ? "\r\nContext: ".print_r($context, true) : '';
     Logs::set($level, $add.$message);
 });
