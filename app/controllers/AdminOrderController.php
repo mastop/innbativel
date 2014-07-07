@@ -1132,57 +1132,6 @@ class AdminOrderController extends BaseController {
 	// 	return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' via boleto cancelado com sucesso. Ainda é necessário reembolsar o cliente.');
 	// }
 
-	public function postBraspagReturn(){
-		$server_addr = array(
-		  '10.144.84.94',
-		  '209.134.48.121',
-		  '209.235.236.174',
-		  '209.134.53.179',
-		  '209.235.236.162',
-		  '209.134.48.120',
-		  '209.235.236.164',
-		  '209.134.48.122',
-		  '209.134.48.211',
-		  '209.134.48.69',
-		  '209.134.53.185',
-		  '209.235.206.3',
-		  '209.134.53.180',
-		  '209.134.48.123',
-		  '209.235.236.161',
-		);
-
-		if (
-		  empty($_SERVER['HTTP_X_FORWARDED_FOR']) ||
-		  !in_array($_SERVER['HTTP_X_FORWARDED_FOR'], $server_addr) ||
-		  // empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-		  // !strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' &&
-		  !isset($_POST) ||
-		  empty($_POST)
-		) {
-		  return Response::make('<status>Acesso Negado</status>', 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
-		}
-
-		$braspag_order_id = $_POST['NumPedido'];
-		// $codpagamento = $_POST['CODPAGAMENTO'];
-
-		$status = ($_POST['Status'] == '0')?'pago':'cancelado';
-
-		$order = $this->order->where('braspag_order_id', $braspag_order_id)->get();
-
-		$user_id = $order->user_id;
-		$order_id = $order->id;
-
-		$order->historico .= '<br/>'.date('d/m/Y H:i:s')." - Status alterado para ".$status.", atualizado pelo retorno da Braspag";
-		$order->status = $status;
-		$order->save();
-
-		Voucher::where('order_id', $order_id)->update(array('status' => $status));
-
-		$this->sendTransactionalEmail($order, $status);
-
-		return Response::make('<status>OK</status>', 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
-	}
-
 	public function teste(){
 		$offers_options = OfferOption::with(['offer', 'used_vouchers'])
 									->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty'])
