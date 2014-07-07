@@ -92,13 +92,13 @@
 				})
 				->validity_start(function($body) {
 					if(isset($body->voucher_validity_start)){
-						return date('d/m/Y H:i:s', strtotime($body->voucher_validity_start));
+						return $body->voucher_validity_start;
 					}
 					return '--';
 				})
 				->validity_end(function($body) {
 					if(isset($body->voucher_validity_end)){
-						return date('d/m/Y H:i:s', strtotime($body->voucher_validity_end));
+						return $body->voucher_validity_end;
 					}
 					return '--';
 				})
