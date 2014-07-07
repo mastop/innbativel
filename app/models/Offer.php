@@ -118,7 +118,7 @@ class Offer extends BaseModel {
 	}
 
 	public function partner(){
-		return $this->belongsTo('User', 'partner_id')->leftJoin('profiles', 'profiles.user_id', '=', 'users.id');
+		return $this->belongsTo('User', 'partner_id')->with(['profile']);
 	}
 
     public function partner2(){
@@ -173,12 +173,6 @@ class Offer extends BaseModel {
         );
         return str_ireplace($search, $replace, $this->features);
     }
-
-	public function getFullDestinnyAttribute(){
-        $destiny = Destiny::find($this->destiny_id);
-		//return $destiny->city.'-'.$destiny->state_id;
-		return $destiny->name;
-	}
 
     /**
      * Esta função é necessária para substituir string vazia por NULL.
@@ -332,6 +326,17 @@ class Offer extends BaseModel {
     public function getCanSellAttribute(){
         $now = date('Y-m-d H:i:s');
         return ($this->getOriginal('starts_on') < $now && $this->getOriginal('ends_on') > $now && $this->is_active && $this->is_available);
+    }
+
+    /**
+     * Retorna o número de cupons vendidos
+     * como $offer->sold_paid
+     * @return string
+     */
+    public function getSoldPaidAttribute(){
+        return Voucher::whereIn('offer_option_id', $this->offer_option->lists('id'))
+                ->where('vouchers.status', 'pago')
+                ->count();
     }
 
 
