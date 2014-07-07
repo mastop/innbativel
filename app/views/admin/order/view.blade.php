@@ -214,7 +214,7 @@
             <div class="controls">{{ date('d/m/Y H:i:s', strtotime($order->capture_date)) }}</div>
 
             <b class="control-label">Histórico</b>
-            <div class="controls">{{ $order->history }}</div>
+            <div class="controls">{{ $order->display_history }}</div>
         </div>
 
         <div class="control-group"><h1>Ações</h1></div>
