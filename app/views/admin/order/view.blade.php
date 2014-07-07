@@ -211,7 +211,7 @@
             <div class="controls">{{ date('d/m/Y H:i:s', strtotime($order->updated_at)) }}</div>
 
             <b class="control-label">Data e hora da captura</b>
-            <div class="controls">{{ date('d/m/Y H:i:s', strtotime($order->capture_date)) }}</div>
+            <div class="controls">{{ $order->capture_date != '0000-00-00 00:00:00' ? date('d/m/Y H:i:s', strtotime($order->capture_date)) : '--' }}</div>
 
             <b class="control-label">Histórico</b>
             <div class="controls">{{ $order->display_history }}</div>

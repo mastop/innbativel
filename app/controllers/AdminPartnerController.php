@@ -189,6 +189,7 @@ class AdminPartnerController extends BaseController {
 
 		$rules = [
 			'email' => 'required|email|unique:users,email',
+			'api_key' => 'required|unique:users,api_key',
         	'profile.first_name' => 'required',
         	'profile.company_name' => 'required',
         	'profile.cnpj' => 'required',
@@ -268,10 +269,11 @@ class AdminPartnerController extends BaseController {
 		 */
 		$inputs = Input::all();
 
-		$inputs['partnername'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
+		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
 			'email' => 'required|email|unique:users,email,'.$id,
+			'api_key' => 'required|unique:users,api_key',
         	'profile.first_name' => 'required',
         	'profile.company_name' => 'required',
         	'profile.cnpj' => 'required',
@@ -500,7 +502,7 @@ class AdminPartnerController extends BaseController {
 		 */
 		$inputs = Input::all();
 
-		$inputs['partnername'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
+		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
 			'email' => 'required|email|unique:partners,email,'. $id,

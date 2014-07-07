@@ -150,7 +150,7 @@
 								</ul>
 							</div>
 						</div>
-						<div class="offer-remain">{{$offer->sold_paid}} cupons vendidos</div>
+						<div class="offer-remain">{{$offer->sold_total}} cupons vendidos</div>
 						<!-- <div class="offer-remain">Restam 12</div> -->
                         @else
                         <div class="tooltip" data-tip="Oferta Esgotada :(">
