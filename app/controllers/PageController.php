@@ -204,7 +204,7 @@ class PageController extends BaseController {
         // as vezes houve uma tentativa de compra com o braspag order id que teve erros, 
         // mas o usuario permanece na mesma página (com o mesmo braspag order id), tal compra
         // deve ser deletada, para uma nova (sem erros) ser criada em seguida
-        Order::where('braspag_order_id', $braspag_order_id)->delete();
+        // Order::where('braspag_order_id', $braspag_order_id)->delete();
 
         $order = New Order;
 
