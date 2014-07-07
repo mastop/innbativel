@@ -82,11 +82,11 @@ class AdminPaymentController extends BaseController {
 
 		$paymentPartnerData = $payment_partner->with(['payment', 'partner'])
 											  ->whereExists(function($query){
-									                if (Input::has('partner_name')) {
+									                if (Input::has('nome')) {
 														$query->select(DB::raw(1))
 										                      ->from('profiles')
 															  ->whereRaw('payments_partners.partner_id = profiles.user_id')
-															  ->whereRaw('profiles.first_name LIKE \'%'.Input::get('partner_name').'%\'');
+															  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name) LIKE \'%'.Input::get('nome').'%\'');
 													}
 										      })
 											  ->orderBy($sort, $order)
@@ -96,7 +96,7 @@ class AdminPaymentController extends BaseController {
 													'order' => $order,
 													'pag' => $pag,
 													'id' => Input::get('id'),
-													'partner_name' => Input::get('partner_name'),
+													'nome' => Input::get('nome'),
 													'payment_id' => Input::get('payment_id'),
 											  ]);
 

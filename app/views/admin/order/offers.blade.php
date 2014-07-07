@@ -42,7 +42,7 @@
 {{ Table::body($offersOptions)->ignore(['id', 'title', 'subtitle', 'included', 'price_original', 'price_with_discount', 'min_qty', 'max_qty', 'percent_off', 'transfer', 'voucher_validity_start', 'voucher_validity_end', 'rules', 'display_order', 'offer', 'qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'deleted_at'])
 	->main_offer(function($offer_option) {
 		if(isset($offer_option['offer'])) {
-			return $offer_option['offer']['destiny']->name;
+			return isset($offer_option['offer']['destiny'])?$offer_option['offer']['destiny']->name:$offer_option['offer']->title;
 		}
 		return '--';
 	})
