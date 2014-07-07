@@ -751,6 +751,7 @@ class PageController extends BaseController {
 
             $order->braspag_id = $result['CreateBoletoResult']['boletoNumber'];
             $order->boleto = $boletus_url;
+            $order->status = 'pendente';
             $order->history .= date('d/m/Y H:i:s') . " - Boleto emitido"."\r\n";
 
             $order->save();
