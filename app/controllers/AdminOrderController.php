@@ -649,6 +649,20 @@ class AdminOrderController extends BaseController {
 
 	}
 
+	public function getUpdateStatus($id, $status, $comment){
+        if($status != 'pago' && $status != 'cancelado'){
+            Session::flash('error', 'O status deve ser "pago" ou "cancelado"');
+            return Redirect::back();
+        }
+
+        $order = Order::where('id', $id)->first();
+
+        $this->updateOrder($order, $status, $comment);
+        $this->sendTransactionalEmail($order, $status);
+
+        return Redirect::route('admin.order', ['braspag_order_id' => $order->braspag_order_id])->with('success', 'O pagamento '.$order->braspag_order_id.' foi marcado como pago.');
+    }
+
 	private function updateOrder($order, $new_status, $comment){
 		$old_status = $order->status;
 		$order->status = $new_status;
@@ -658,15 +672,15 @@ class AdminOrderController extends BaseController {
 		Voucher::where('order_id', $order->id)->where('status', $old_status)->update(['status' => $new_status]);
 
 		// inserir creditos por indicação
-		$credit_ind_user = UserCredit::where('new_user_id', '=', $order->user_id)->first();
+		// $credit_ind_user = UserCredit::where('new_user_id', '=', $order->user_id)->first();
 
-		if($credit_ind_user){
-			$indicator_user = Profile::where('user_id', '=', $credit_ind_user->user_id)->first();
-			$indicator_user->credit += $credit_ind_user->value;
-			$indicator_user->save();
+		// if($credit_ind_user){
+		// 	$indicator_user = Profile::where('user_id', '=', $credit_ind_user->user_id)->first();
+		// 	$indicator_user->credit += $credit_ind_user->value;
+		// 	$indicator_user->save();
 
-			$credit_ind_user->delete();
-		}
+		// 	$credit_ind_user->delete();
+		// }
 	}
 
 	// public function getVoid($id, $braspag_order_id, $comment){
