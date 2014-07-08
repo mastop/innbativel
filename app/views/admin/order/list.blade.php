@@ -130,6 +130,7 @@
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
 			  		['Ver detalhes', 'javascript: view('.$order['id'].')'],
+			  		['Marcar como "pago"', 'javascript: action(\''.route('admin.order.update_status', ['id' => $order['id'], 'status' => "pago", 'comment' => 'motivo: ']).'\', \'marcar como pago\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
 			)->pull_right()->split();
 	    }
