@@ -618,31 +618,31 @@ class AdminOrderController extends BaseController {
 		return Redirect::back()->with('error', 'Voucher '.$voucher->id.'-'.$voucher->display_code.' não pôde ser cancelado pois já estava cancelado.');
 	}
 
-	private function sendTransactionalEmail($order, $new_status){
+	public function sendTransactionalEmail($order, $new_status){
 		$ids = array();
 		$qties = array();
 		$products_email = '';
 
-		$vouchers = Voucher::with(['offer_option'])->get();
+		$vouchers = Voucher::with(['offer_option_offer'])->where('order_id', $order->id)->get();
 
 		foreach ($vouchers as $voucher) {
-			$products_email .= '<a href="' . route('oferta', $voucher->offer_option->slug) . '">' . $voucher->offer_option->offer_title . ' | ' . $voucher->offer_option->title . '</a><br/>';
+			$products_email .= '<a href="' . route('oferta', $voucher->offer_option_offer->offer->slug) . '">' . (isset($voucher->offer_option_offer->offer->destiny)?$voucher->offer_option_offer->offer->destiny->name:$voucher->offer_option_offer->offer->title) . ' | ' . $voucher->offer_option_offer->title . '</a><br/>';
 		}
 
 		// Removendo o último </br>
 		$products_email = substr($products_email, 0, -5);
 
-		$user = User::find($order->user_id)->with('profile');
+		$user = User::where('id',$order->user_id)->with(['profile'])->first();
 
         $data = array('name' => $user->profile->first_name, 'products' => $products_email);
 
         if($new_status == 'pago'){
-        	Mail::send('emails.order.order_approved', $data, function($message){
+        	Mail::send('emails.order.order_approved', $data, function($message) use ($user){
 				$message->to($user->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra aprovada');
 			});
         }
         else{ // $new_status = 'cancelado'
-        	Mail::send('emails.order.order_rejected', $data, function($message){
+        	Mail::send('emails.order.order_rejected', $data, function($message) use ($user){
 				$message->to($user->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Pagamento não aprovado');
 			});
         }

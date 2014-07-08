@@ -79,7 +79,7 @@
 			})
 			->offer(function($data) {
 				if(isset($data->voucher->offer_option_offer->offer->id)){
-					return link_to_route('offer', $data->voucher->offer_option_offer->offer->id.' | '.$data->voucher->offer_option_offer->offer->title, ['slug' => $data->voucher->offer_option_offer->offer->slug]).' ('.$data->voucher->offer_option_offer->title.')';
+					return link_to_route('oferta', $data->voucher->offer_option_offer->offer->id.' | '.$data->voucher->offer_option_offer->offer->title, ['slug' => $data->voucher->offer_option_offer->offer->slug]).' ('.$data->voucher->offer_option_offer->title.')';
 				}
 				return '--';
 			})

@@ -111,7 +111,7 @@
 		if($order['status'] == 'revisao'){
 	        return DropdownButton::normal('Ações',
 			  	Navigation::links([
-			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
+			  		['Ver detalhes', 'javascript: view('.$order['id'].')'],
 					['Aprovar', 'javascript: action(\''.route('admin.order.approve', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'aprovar\', \''.$order['braspag_order_id_string'].'\');'],
 					['Rejeitar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'rejeitar\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
@@ -120,7 +120,7 @@
 	    else if($order['status'] == 'pago'){
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
-			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
+			  		['Ver detalhes', 'javascript: view('.$order['id'].')'],
 					['Cancelar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'cancelar\', \''.$order['braspag_order_id_string'].'\');'],
 					['Cancelar e converter valor em créditos', 'javascript: action(\''.route('admin.order.convert_value_2_credit', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'converter valor em créditos\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
@@ -129,7 +129,7 @@
 	    else{
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
-			  		['Ver detalhes', route('admin.order.view', ['id' => $order['id']])],
+			  		['Ver detalhes', 'javascript: view('.$order['id'].')'],
 			    ])
 			)->pull_right()->split();
 	    }

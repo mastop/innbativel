@@ -66,7 +66,7 @@ class AdminPaymentController extends BaseController {
 		/*
 		 * Order filter
 		 */
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+    	$order = Input::get('order') === 'asc' ? 'asc' : 'desc';
 
     	/*
 		 * Search filters
@@ -76,17 +76,17 @@ class AdminPaymentController extends BaseController {
 			$payment_partner = $payment_partner->where('id', Input::get('id'));
 		}
 
-		if (Input::has('payment_id') AND Input::get('payment_id') == 'atual') {
+		if (Input::has('payment_id')) {
 			$payment_partner = $payment_partner->where('payment_id', Input::get('payment_id'));
 		}
 
 		$paymentPartnerData = $payment_partner->with(['payment', 'partner'])
 											  ->whereExists(function($query){
-									                if (Input::has('nome')) {
+									                if (Input::has('partner_name')) {
 														$query->select(DB::raw(1))
 										                      ->from('profiles')
 															  ->whereRaw('payments_partners.partner_id = profiles.user_id')
-															  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name) LIKE \'%'.Input::get('nome').'%\'');
+															  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name) LIKE \'%'.Input::get('partner_name').'%\'');
 													}
 										      })
 											  ->orderBy($sort, $order)
@@ -96,7 +96,7 @@ class AdminPaymentController extends BaseController {
 													'order' => $order,
 													'pag' => $pag,
 													'id' => Input::get('id'),
-													'nome' => Input::get('nome'),
+													'partner_name' => Input::get('partner_name'),
 													'payment_id' => Input::get('payment_id'),
 											  ]);
 
@@ -151,7 +151,7 @@ class AdminPaymentController extends BaseController {
 		/*
 		 * Order filter
 		 */
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+    	$order = Input::get('order') === 'asc' ? 'asc' : 'desc';
 
 
 		$transactionVoucherData = $transaction_voucher->with(['voucher' => function($query){ 
@@ -163,7 +163,7 @@ class AdminPaymentController extends BaseController {
 																                      ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
 																                      ->join('profiles', 'profiles.user_id', '=', 'offers.partner_id')
 																					  ->whereRaw('offers_options.id = vouchers.offer_option_id')
-																					  ->whereRaw('profiles.first_name LIKE \'%'.Input::get('partner_name').'%\'');
+																					  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name) LIKE \'%'.Input::get('partner_name').'%\'');
 																			}
 												 					}); 
 															  }])
@@ -175,7 +175,7 @@ class AdminPaymentController extends BaseController {
 												                      ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
 												                      ->join('profiles', 'profiles.user_id', '=', 'offers.partner_id')
 																	  ->whereRaw('vouchers.id = transactions_vouchers.voucher_id')
-																	  ->whereRaw('profiles.first_name LIKE \'%'.Input::get('partner_name').'%\'');
+																	  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name) LIKE \'%'.Input::get('partner_name').'%\'');
 															}
 										              })
 										              ->whereExists(function($query){

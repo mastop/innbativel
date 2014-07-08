@@ -37,7 +37,7 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('ID Oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons usados', 'Máximo', 'Confirmados', 'Pendentes', 'Cancelados', 'Total', 'Ações') }}
+{{ Table::headers('ID Oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Vendidos', 'Ações') }}
 {{ Table::body($offersOptions)->ignore(['id', 'title', 'subtitle', 'included', 'price_original', 'price_with_discount', 'min_qty', 'max_qty', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'rules', 'display_order', 'offer', 'qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'transfer', 'deleted_at'])
 	->main_offer(function($offer_option) {
 		if(isset($offer_option['offer'])) {
@@ -72,28 +72,8 @@
 	->used_vouchers(function($offer_option) {
 		return isset($offer_option['used_vouchers']{0})?$offer_option['used_vouchers']{0}->qty:0;
 	})
-	->max(function($offer_option) {
-		if(isset($offer_option['max_qty'])) {
-			return $offer_option['max_qty'];
-		}
-		return '--';
-	})
 	->pago(function($offer_option) {
 		return isset($offer_option['qty_sold']{0})?$offer_option['qty_sold']{0}->qty:0;
-	})
-	->pendente(function($offer_option) {
-		return isset($offer_option['qty_pending']{0})?$offer_option['qty_pending']{0}->qty:0;
-	})
-	->cancelado(function($offer_option) {
-		return isset($offer_option['qty_cancelled']{0})?$offer_option['qty_cancelled']{0}->qty:0;
-	})
-	->total(function($offer_option) {
-		$approved = isset($offer_option['qty_sold']{0})?$offer_option['qty_sold']{0}->qty:0;
-		$pending = isset($offer_option['qty_pending']{0})?$offer_option['qty_pending']{0}->qty:0;
-		$cancelled = isset($offer_option['qty_cancelled']{0})?$offer_option['qty_cancelled']{0}->qty:0;
-
-		$total = $approved + $pending + $cancelled;
-		return $total;
 	})
 	->actions(function($offer_option) {
 		return DropdownButton::normal('Ações',

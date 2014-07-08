@@ -23,7 +23,7 @@ class PaymentPartner extends Eloquent {
   }
 
   public function partner(){
-    return $this->belongsTo('User', 'partner_id')->leftJoin('profiles', 'users.id', '=', 'profiles.user_id');;
+    return $this->belongsTo('User', 'partner_id')->with(['profile']);
   }
 
   public function transaction(){

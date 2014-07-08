@@ -64,7 +64,7 @@ class PainelOrderController extends BaseController {
     		$offersOptions = $offersOptions->where('offer_id', Input::get('offer_id'));
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'offer'])
+		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'offer' => function($query){ $query->withTrashed(); }])
 									   ->whereExists(function($query){
 							                if (Input::has('starts_on') || Input::has('ends_on')) {
 												$query->select(DB::raw(1))
@@ -273,7 +273,7 @@ class PainelOrderController extends BaseController {
     		$offersOptions = $offersOptions->where('offer_id', $offer_id);
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'offer'])
+		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'offer' => function($query){ $query->withTrashed(); }])
 									   ->whereExists(function($query) use($starts_on, $ends_on){
 							                if (isset($starts_on) || isset($ends_on)) {
 												$query->select(DB::raw(1))
@@ -298,26 +298,20 @@ class PainelOrderController extends BaseController {
 									   ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons usados', 'Máximo', 'Confirmados', 'Pendentes', 'Cancelados', 'Total');
+		$spreadsheet[] = array('ID da oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons usados', 'Vendidos');
 
 		foreach ($offersOptions as $offerOption) {
 			$ss = null;
 			$ss[] = $offerOption->offer_id;
-			$ss[] = $offerOption['offer']->title;
+			$ss[] = $offerOption->offer->title;
 			$ss[] = $offerOption->title;
-			$ss[] = $offerOption['offer']->starts_on;
-			$ss[] = $offerOption['offer']->ends_on;
+			$ss[] = $offerOption->offer->starts_on;
+			$ss[] = $offerOption->offer->ends_on;
 			$ss[] = $offerOption->price_with_discount;
-			$ss[] = $offerOption->max_qty;
 
-			$approved = isset($offerOption['qty_sold']{0})?$offerOption['qty_sold']{0}->qty:0;
-			$pending = isset($offerOption['qty_pending']{0})?$offerOption['qty_pending']{0}->qty:0;
-			$cancelled = isset($offerOption['qty_cancelled']{0})?$offerOption['qty_cancelled']{0}->qty:0;
+			$approved = isset($offerOption->qty_sold{0})?$offerOption->qty_sold{0}->qty:0;
 
 			$ss[] = $approved;
-			$ss[] = $pending;
-			$ss[] = $cancelled;
-			$ss[] = ($approved + $pending + $cancelled);
 
 			$spreadsheet[] = $ss;
 		}

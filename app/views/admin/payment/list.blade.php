@@ -61,50 +61,50 @@
 	{{ Table::body($paymentPartnerData)
 			->ignore(['id', 'partner_id', 'payment_id', 'total', 'paid_on', 'payment', 'partner'])
 			->idd(function($data) {
-				if(isset($data['id'])){
-					return '<a href="'.route('admin.payment.voucher', ['partner_id' => $data['partner_id'], 'payment_id' => $data['payment_id']]).'">'.$data['id'].'</a>';
+				if(isset($data->id)){
+					return '<a href="'.route('admin.payment.voucher', ['partner_name' => $data->partner->profile->first_name.' '.$data->partner->profile->last_name, 'payment_id' => $data->payment_id]).'">'.$data->id.'</a>';
 				}
 				return '--';
 			})
 			->partnerr(function($data) {
-				if(isset($data['partner']['first_name'])){
-					return $data['partner']['first_name'].' '.$data['partner']['last_name'];
+				if(isset($data->partner->profile)){
+					return $data->partner->profile->first_name.' '.$data->partner->profile->last_name;
 				}
 				return '--';
 			})
 			->period(function($data) {
-				if(isset($data['payment']['sales_from'])){
-					return date("d/m/Y H:i:s", strtotime($data['payment']['sales_from'])).' - '.date("d/m/Y H:i:s", strtotime($data['payment']['sales_to']));
+				if(isset($data->payment->sales_from)){
+					return date("d/m/Y H:i:s", strtotime($data->payment->sales_from)).' - '.date("d/m/Y H:i:s", strtotime($data->payment->sales_to));
 				}
 				return '--';
 			})
 			->date(function($data) {
-				if(isset($data['payment']['date'])){
-					return date("d/m/Y", strtotime($data['payment']['date']));
+				if(isset($data->payment->date)){
+					return date("d/m/Y", strtotime($data->payment->date));
 				}
 				return '--';
 			})
 			->paid_onn(function($data) {
-				return $data['paid_on'] != '0000-00-00 00:00:00'?date("d/m/Y", strtotime($data['paid_on'])):'<span class="text-error">Não pago</span>';
+				return $data->paid_on != '0000-00-00 00:00:00' ? date("d/m/Y", strtotime($data->paid_on)) : '<span class="text-error">Não pago</span>';
 			})
 			->totall(function($data) {
-				if(isset($data['total'])){
-					return number_format($data['total'], 2, ',', '.');
+				if(isset($data->total)){
+					return number_format($data->total, 2, ',', '.');
 				}
 				return '--';
 			})
 			->acoes(function($data) {
-				if(isset($data['paid_on'])){
+				if(isset($data->paid_on)){
 					return DropdownButton::normal('Ações',
 					  	Navigation::links([
-							['Marcar como não pago', route('admin.payment.update_status', $data['id'])],
+							['Marcar como não pago', route('admin.payment.update_status', $data->id)],
 					    ])
 					)->pull_right()->split();
 				}
 				else{
 					return DropdownButton::normal('Ações',
 					  	Navigation::links([
-					  		['Marcar como pago', 'javascript: marcar_pago(\''.route('admin.payment.update_status', ['id' => $data['id']]).'\','.$data['id'].');'],
+					  		['Marcar como pago', 'javascript: marcar_pago(\''.route('admin.payment.update_status', ['id' => $data->id]).'\','.$data->id.');'],
 					    ])
 					)->pull_right()->split();
 				}
@@ -171,10 +171,10 @@ $(function() {
   					 ->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')
   					 ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
   					 ->where('roles.id', 9)
-  					 ->get(['profiles.first_name']);
+  					 ->get(['profiles.first_name','profiles.last_name']);
 
   		foreach ($partners as $partner) {
-  			echo '"'.$partner->first_name.'", ';
+  			echo '"'.$partner->first_name.' '.$partner->last_name.'", ';
   		}
   	?>
   ];
