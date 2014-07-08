@@ -65,7 +65,7 @@ class PainelPaymentController extends BaseController {
 		/*
 		 * Order filter
 		 */
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+    	$order = Input::get('order') === 'asc' ? 'asc' : 'desc';
 
     	/*
 		 * Search filters
@@ -143,7 +143,7 @@ class PainelPaymentController extends BaseController {
 		/*
 		 * Order filter
 		 */
-    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+    	$order = Input::get('order') === 'asc' ? 'asc' : 'desc';
     	
 
 		$transactionVoucherData = $transaction_voucher->with(['voucher' => function($query){ 

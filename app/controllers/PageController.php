@@ -712,7 +712,7 @@ class PageController extends BaseController {
             $param = array(
               'merchantId'   => $MerchantId,
               'customerName'   => $name,
-              'orderId'   => $order_id,
+              'orderId'   => $braspag_order_id,
               'amount'   => number_format($total, 2, ',', ''),
               'expirationDate' => date('d/m/y', strtotime('+1 day')),
               'paymentMethod'   => '06',
