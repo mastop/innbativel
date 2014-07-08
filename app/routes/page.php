@@ -76,7 +76,7 @@ Route::group(array('https', 'prefix' => 'painel', 'before' => 'auth|perm'), func
     Route::get('pagamentos/export/{id?}/{payment_id?}', ['as' => 'painel.payment.export', 'uses' => 'PainelPaymentController@getExport']);
 });
 
-Route::post('braspag_retorno.php', ['as' => 'braspag_retorno', 'uses' => 'PageController@postBraspagReturn']);
+Route::post('braspag_retorno', ['as' => 'braspag_retorno', 'uses' => 'PageController@postBraspagReturn']);
 
 Route::any('/status', ['as' => 'status', 'uses' => 'PageController@anyStatus', 'after' => 'cache.public']);
 
