@@ -249,7 +249,7 @@ class AdminContractController extends BaseController {
 		$inputs['company_name'] = $partner->company_name;
 		$inputs['trading_name'] = $partner->first_name.' '.$partner->last_name;
 		$inputs['cnpj'] = $partner->cnpj;
-		$inputs['address'] = $partner->address.(isset($partner->number)?(', '.$partner->number):'');
+		$inputs['address'] = $partner->street.(isset($partner->number)?(', '.$partner->number):'');
 		$inputs['complement'] = $partner->complement;
 		$inputs['neighborhood'] = $partner->neighborhood;
 		$inputs['zip'] = $partner->zip;
