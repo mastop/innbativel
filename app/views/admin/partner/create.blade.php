@@ -3,7 +3,9 @@
     <div class="well widget row-fluid">
 
         {{ Former::horizontal_open()->rules([
-        	'email' => 'required|email',
+            'email' => 'required|email',
+        	'password' => 'required',
+            'api_key' => 'required|unique:users,api_key',
             'profile[first_name]' => 'required',
             'profile[company_name]' => 'required',
         	'profile[cnpj]' => 'required',
@@ -36,13 +38,17 @@
         {{ Former::text('profile[coordinates]', 'Coordenadas')->class('span12') }}
         {{ Former::text('profile[telephone]', 'Telefone')->class('span12') }}
         {{ Former::text('profile[telephone2]', 'Telefone 2')->class('span12') }}
+        {{ Former::password('password', 'Senha')->class('span12') }}
+        <div class="control-group">
+            <a href="javascript: generatePassword();">Gerar senha</a></label>
+        </div>
         {{ Former::text('api_key', 'API Key')->class('span12') }}
         <div class="control-group">
-        	<a href="javascript: generateAPIKey();">Gerar nova API Key</a></label>
+        	<a href="javascript: generateAPIKey();">Gerar API Key</a></label>
         </div>
 
         {{ Former::actions()
-          ->primary_submit('Enviar')
+          ->primary_submit('Cadastrar e enviar e-mail com senha para parceiro')
           ->inverse_reset('Limpar') }}
 
         {{ Former::close() }}
@@ -58,12 +64,16 @@
 	};
 
 	function guid() {
-	  return s4() + '-' + s4() + '-' + s4();
+	  return s4() + '-' + s4();
 	}
 
 	function generateAPIKey(){
-		document.getElementById('api_key').value = btoa(guid());
-	}
+        document.getElementById('api_key').value = btoa(guid());
+    }
+
+    function generatePassword(){
+        document.getElementById('password').value = btoa(s4());
+    }
 
     </script>
 

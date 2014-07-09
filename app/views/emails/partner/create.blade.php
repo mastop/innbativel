@@ -13,7 +13,7 @@ a{
 <center>
     <table width="600" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td align="center"><img src="http://innbativel.com.br/img/newsletters/cadastro/innbativel.jpg" width="600" height="354" alt="" style="display:block;"></td>
+        <td align="center"><img src="http://innb.s3.amazonaws.com/1381762472.jpg" width="600" height="354" alt="" style="display:block;"></td>
       </tr>
       <tr>
         <td align="center" bgcolor="#4060a6"><table width="550" border="0" cellspacing="0" cellpadding="0">
@@ -39,7 +39,16 @@ a{
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:19px; color:#FFF; font-style:italic; color:#f0cf31;"><a href="http://innbativel.com.br/recuperar/senha/{{ $token }}" style="font-family:Arial, Helvetica, sans-serif; font-size:20px; color:#FFF; font-style:italic; color:#f0cf31;">Antes de mais nada, clique aqui para criar uma senha para o e-mail {{ $email }}</a></td>
+            <td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:19px; color:#FFF; font-style:italic; color:#f0cf31;">Acesse o seu <a href="https://innbativel.com.br/painel">painel administrativo</a> com seus dados de acesso abaixo.</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:19px; font-style:italic; color:#f0cf31;">E-mail: <span style="color: #fff;">{{ $email }}</span></td>
+          </tr>
+          <tr>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:19px; font-style:italic; color:#f0cf31;">Senha: <span style="color: #fff;">{{ $password }}</span></td>
           </tr>
           <tr>
             <td>&nbsp;</td>
