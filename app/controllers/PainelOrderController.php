@@ -101,7 +101,7 @@ class PainelOrderController extends BaseController {
 	public function anyVouchers($offer_option_id = null){
 		$vouchers = $this->voucher;
 
-		$offers = Offer::withTrashed()->with(['offer_option'])->where('partner_id', Auth::user()->id)->get();
+		$offers = Offer::withTrashed()->with(['offer_option'])->where('partner_id', Auth::user()->id)->orderBy('id', 'desc')->get();
 
 		// Exibe somente vouchers pagos
 		$vouchers = $vouchers->where('status', 'pago');
@@ -240,12 +240,14 @@ class PainelOrderController extends BaseController {
 		// print('</pre>'); die();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('Cupom', 'ID da oferta', 'Validado?', 'Nome', 'Código de rastreamento');
+		$spreadsheet[] = array('Cupom', 'ID da oferta', 'Título da oferta', 'Opção', 'Validado?', 'Nome', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
-			$ss[] = $voucher['id'].'-'.$voucher['display_code'].'-'.$voucher['offer_option_offer']['offer_id'];
+			$ss[] = $voucher['id'].'-'.$voucher['display_code'];
 			$ss[] = $voucher['offer_option_offer']['id'];
+			$ss[] = $voucher['offer_option_offer']['offer']['title'];
+			$ss[] = $voucher['offer_option_offer']['title'];
 			$ss[] = ($voucher['used'] == 1)?'Sim':'Não';
 			$ss[] = $voucher['name'];
 			$ss[] = $voucher['tracking_code'];

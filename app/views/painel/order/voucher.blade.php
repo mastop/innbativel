@@ -14,7 +14,7 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('painel.order.voucher')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::select('offer_option_id', 'Oferta')->addOption('Todas', null)->options($offersOptions, $offer_option_id) }}
+			{{ Former::select('offer_option_id', 'Oferta e Opção')->addOption('Todas', null)->options($offersOptions, $offer_option_id) }}
 			{{ Former::number('id')->class('input-medium')->placeholder('Chave do cupom')->label('Chave do cupom (primeiros digitos)') }}
 			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('painel.order.voucher')) }}

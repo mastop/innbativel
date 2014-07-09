@@ -22,16 +22,13 @@
 </div>
 
 <div class="control-group">
-    <label for="popup_features" class="control-label">Início da Oferta</label>
+    <label for="popup_features" class="control-label">Destino</label>
     <div class="controls">
-        {{ $offer->starts_on }}
-    </div>
-</div>
-
-<div class="control-group">
-    <label for="popup_features" class="control-label">Fim da Oferta</label>
-    <div class="controls">
-        {{ $offer->ends_on }}
+        @if(isset($offer->destiny))
+        {{ $offer->destiny->name }}
+        @else
+        --
+        @endif
     </div>
 </div>
 
@@ -43,26 +40,6 @@
 <div class="control-group">
     <label for="popup_features" class="control-label">Política de Reagendamento/Cancelamento</label>
     <div class="controls">{{ $offer->rules }}</div>
-</div>
-
-<div class="control-group">
-    <label for="popup_features" class="control-label">Inclusos</label>
-    <div class="controls">
-        <ul>
-            @foreach ($offer->included as $item)
-            <li>{{ $item->icon . $item->title }}</li>
-            @endforeach
-        </ul>
-    </div>
-</div>
-
-<div class="control-group">
-    <label for="popup_features" class="control-label">Categoria</label>
-    <div class="controls">
-        @if(isset($offer->category))
-        {{ $offer->category->title }}
-        @endif
-    </div>
 </div>
 
 {{ Former::legend('Fotos')->id('OfferImagesLegend') }}
@@ -100,9 +77,7 @@
             <span class="badge badge-info offerOptionNumber">1</span>
             {{ Former::text('offer_options[0][title]', 'Título')->class('span12 required')->required() }}
             {{ Former::text('offer_options[0][subtitle]', 'Subtítulo')->class('span12') }}
-            {{ Former::text('offer_options[0][price_original]', 'Preço Original')->class('span12 currency PriceOriginal required')->required()->prepend('R$') }}
-            {{ Former::text('offer_options[0][price_with_discount]', 'Preço com Desconto')->class('span12 currency PriceWithDiscount required')->required()->prepend('R$') }}
-            {{ Former::text('offer_options[0][percent_off]', 'Total do Desconto')->class('span4 TotalDiscount required')->required()->append('% OFF')->value('0') }}
+            {{ Former::text('offer_options[0][price_with_discount]', 'Preço')->class('span12 currency PriceWithDiscount required')->required()->prepend('R$') }}
             {{ Former::text('offer_options[0][transfer]', 'Repasse ao Parceiro')->class('span12 currency TotalTransfer required')->required()->prepend('R$') }}
             {{ Former::text('offer_options[0][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker required')->required() }}
             {{ Former::text('offer_options[0][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker required')->required() }}
@@ -122,9 +97,7 @@
             {{ Former::hidden('offer_options['.$k.'][id]')->id('offer_options['.$k.'][id]')->value($offer_options['id']) }}
             {{ Former::text('offer_options['.$k.'][title]', 'Título')->class('span12 required')->required()->value($offer_options['title']) }}
             {{ Former::text('offer_options['.$k.'][subtitle]', 'Subtítulo')->class('span12')->value($offer_options['subtitle']) }}
-            {{ Former::text('offer_options['.$k.'][price_original]', 'Preço Original')->class('span12 currency PriceOriginal required')->required()->prepend('R$')->value($offer_options['price_original']) }}
-            {{ Former::text('offer_options['.$k.'][price_with_discount]', 'Preço com Desconto')->class('span12 currency PriceWithDiscount required')->required()->prepend('R$')->value($offer_options['price_with_discount']) }}
-            {{ Former::text('offer_options['.$k.'][percent_off]', 'Total do Desconto')->class('span4 TotalDiscount required')->required()->append('% OFF')->value($offer_options['percent_off']) }}
+            {{ Former::text('offer_options['.$k.'][price_with_discount]', 'Preço')->class('span12 currency PriceWithDiscount required')->required()->prepend('R$')->value($offer_options['price_with_discount']) }}
             {{ Former::text('offer_options['.$k.'][transfer]', 'Repasse ao Parceiro')->class('span12 currency TotalTransfer required')->required()->prepend('R$')->value($offer_options['transfer']) }}
             {{ Former::text('offer_options['.$k.'][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker required')->required()->value($offer_options['voucher_validity_start']) }}
             {{ Former::text('offer_options['.$k.'][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker required')->required()->value($offer_options['voucher_validity_end']) }}

@@ -217,6 +217,8 @@ class PageController extends BaseController {
 
         $order_id = $order->id;
 
+        $user_profile = Profile::where('user_id', $user_id)->first();
+
         $ids = array();
         $qties = array();
         $products = array();
@@ -260,6 +262,8 @@ class PageController extends BaseController {
                     $voucher['order_id'] = $order_id;
                     $voucher['offer_option_id'] = $offer_option->id;
                     $voucher['display_code'] = $braspag_order_id . '-'. $offer_option->offer_id;
+                    $voucher['name'] = $user_profile->first_name . ' ' . $user_profile->last_name;
+                    $voucher['email'] = Auth::user()->email;
                     $voucher['price'] = $offer_option->price_with_discount;
                     
                     Voucher::create($voucher);
@@ -282,8 +286,6 @@ class PageController extends BaseController {
                 $coupon_discount_id = $discount->id;
             }
         }
-
-        $user_profile = Profile::where('user_id', $user_id)->first();
 
         $credit_discount_value = $user_profile->credit;
 

@@ -31,7 +31,7 @@ class PainelOfferController extends BaseController {
 
     public function getView($id)
     {
-        $offer = $this->offer->where('id', $id)->withTrashed()->with(['offer_option', 'category', 'offer_image', 'included'])->first();
+        $offer = $this->offer->where('id', $id)->withTrashed()->with(['offer_option', 'destiny', 'offer_image'])->first();
 
         if (is_null($offer))
         {
