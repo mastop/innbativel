@@ -41,7 +41,7 @@ class SetupContractsTable extends Migration {
 		$table->string('agent2_cpf')->nullable();
 		$table->string('agent2_telephone')->nullable();
 		$table->string('bank_name')->nullable();
-		$table->integer('bank_number')->nullable();
+		$table->string('bank_number')->nullable();
 		$table->string('bank_holder')->nullable();
 		$table->string('bank_agency')->nullable();
 		$table->string('bank_account')->nullable();

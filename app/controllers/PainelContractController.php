@@ -208,15 +208,16 @@ class PainelContractController extends BaseController {
 
 			// INÍCIO E-MAIL
 
-			$partner = Profile::where('user_id', $contract->partner_id)->first();
+			$partner = User::where('user_id', $contract->partner_id)->with(['profile'])->first();
 
+			$partner_email = $partner->email;
 			$partner_name = $partner->profile->first_name.(isset($partner->profile->last_name)?' '.$partner->profile->last_name:'');
 
 			$data = array('partner_name' => $partner_name, 'id' => $id);
 			
-	    	Mail::send('emails.contract.sign', $data, function($message) use($partner_name, $id){
+	    	Mail::send('emails.contract.sign', $data, function($message) use($partner_name, $partner_email, $id){
 				$message->to('contrato@innbativel.com.br', 'INNBatível')
-						->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
+						->setReplyTo($partner_email, $partner_name)
 						->setSubject('O contrato ID: '.$id.' foi assinado | Parceiro: '.$partner_name);
 			});
 

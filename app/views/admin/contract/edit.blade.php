@@ -5,7 +5,6 @@
         {{ Former::horizontal_open()->rules([
             'partner_id' => 'required',
             'agent1_name' => 'required',
-            'agent1_cpf' => 'required',
             'agent1_telephone' => 'required',
             'bank_name' => 'required',
             'bank_number' => 'required',
@@ -13,6 +12,7 @@
             'bank_agency' => 'required',
             'bank_account' => 'required',
             'bank_cpf_cnpj' => 'required',
+            'bank_financial_email' => 'required',
             'initial_term' => 'required|date',
             'final_term' => 'required|date',
             'n_people' => 'required|integer',
