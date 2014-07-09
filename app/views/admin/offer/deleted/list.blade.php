@@ -54,7 +54,7 @@
             return ($body->partner) ? $body->partner->profile->company_name : 'Não Atribuído';
         })
 		->id(function($body) {
-			return '<a href="'.route('oferta', $body->slug).'" target="_blank">'.$body->id.'</a>';
+			return route_to_route('admin.offer.view', $body->id, $body->id);
 		})
         ->title(function($body) {
             return ($body->can_sell) ? $body->title : '<span style="color: red">'.$body->title.'</span>';
@@ -65,9 +65,8 @@
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 				Navigation::links([
-					['Editar', route('admin.offer.edit', $body['id'])],
+					['Ver', route('admin.offer.view', $body['id'])],
 					// ['Excluir', route('admin.offer.delete', $body['id'])],
-					['Ordenar comentários', route('admin.offer.sort_comment', $body['id'])],
 				])
 			)->pull_right()->split();
 		})

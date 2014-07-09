@@ -14,7 +14,7 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('painel.order.voucher')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::select('offer_option_id', 'Oferta')->addOption('Todas', null)->options($offersOptions, $offer_option_id) }}
+			{{ Former::select('offer_option_id', 'Oferta e Opção')->addOption('Todas', null)->options($offersOptions, $offer_option_id) }}
 			{{ Former::number('id')->class('input-medium')->placeholder('Chave do cupom')->label('Chave do cupom (primeiros digitos)') }}
 			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('painel.order.voucher')) }}
@@ -40,7 +40,7 @@
 {{ Table::body($vouchers)->ignore(['offer_option_id', 'order_id', 'name', 'email', 'status', 'tracking_code', 'used', 'order', 'offer_option_offer', 'created_at', 'updated_at', 'price'])
 	->offer_id(function($voucher) {
 		if(isset($voucher['offer_option_offer'])) {
-			return $voucher['offer_option_offer']['offer']['id'];
+			return link_to_route('painel.offer.view', $voucher['offer_option_offer']['offer']['id'], $voucher['offer_option_offer']['offer']['id']);
 		}
 		return '?';
 	})

@@ -101,7 +101,7 @@ class PainelOrderController extends BaseController {
 	public function anyVouchers($offer_option_id = null){
 		$vouchers = $this->voucher;
 
-		$offers = Offer::withTrashed()->with(['offer_option'])->where('partner_id', Auth::user()->id)->get();
+		$offers = Offer::withTrashed()->with(['offer_option'])->where('partner_id', Auth::user()->id)->orderBy('id', 'desc')->get();
 
 		// Exibe somente vouchers pagos
 		$vouchers = $vouchers->where('status', 'pago');
@@ -240,12 +240,14 @@ class PainelOrderController extends BaseController {
 		// print('</pre>'); die();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('Cupom', 'ID da oferta', 'Validado?', 'Nome', 'Código de rastreamento');
+		$spreadsheet[] = array('Cupom', 'ID da oferta', 'Título da oferta', 'Opção', 'Validado?', 'Nome', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
-			$ss[] = $voucher['id'].'-'.$voucher['display_code'].'-'.$voucher['offer_option_offer']['offer_id'];
+			$ss[] = $voucher['id'].'-'.$voucher['display_code'];
 			$ss[] = $voucher['offer_option_offer']['id'];
+			$ss[] = $voucher['offer_option_offer']['offer']['title'];
+			$ss[] = $voucher['offer_option_offer']['title'];
 			$ss[] = ($voucher['used'] == 1)?'Sim':'Não';
 			$ss[] = $voucher['name'];
 			$ss[] = $voucher['tracking_code'];
@@ -273,7 +275,7 @@ class PainelOrderController extends BaseController {
     		$offersOptions = $offersOptions->where('offer_id', $offer_id);
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'offer' => function($query){ $query->withTrashed(); }])
+		$offersOptions = $offersOptions->with(['qty_sold', 'used_vouchers', 'offer' => function($query){ $query->withTrashed(); }])
 									   ->whereExists(function($query) use($starts_on, $ends_on){
 							                if (isset($starts_on) || isset($ends_on)) {
 												$query->select(DB::raw(1))
@@ -298,7 +300,7 @@ class PainelOrderController extends BaseController {
 									   ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons usados', 'Vendidos');
+		$spreadsheet[] = array('ID da oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Vendidos');
 
 		foreach ($offersOptions as $offerOption) {
 			$ss = null;
@@ -309,8 +311,10 @@ class PainelOrderController extends BaseController {
 			$ss[] = $offerOption->offer->ends_on;
 			$ss[] = $offerOption->price_with_discount;
 
+			$used = isset($offerOption->used_vouchers{0})?$offerOption->used_vouchers{0}->qty:0;
 			$approved = isset($offerOption->qty_sold{0})?$offerOption->qty_sold{0}->qty:0;
 
+			$ss[] = $used;
 			$ss[] = $approved;
 
 			$spreadsheet[] = $ss;

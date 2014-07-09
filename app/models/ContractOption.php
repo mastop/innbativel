@@ -21,4 +21,28 @@ class ContractOption extends Eloquent {
   	return $this->belongsTo('Contract', 'contract_id');
   }
 
+  /**
+     * Formata o valor original, para transformar
+     * 1.2345,67 em 12345.76
+     *
+     * @param $value
+     * @return void
+     */
+    public function setPriceOriginalAttribute($value){
+        $v = str_replace(',', '.', str_replace('.', '', $value));
+        $this->attributes['price_original'] = $v;
+    }
+
+    /**
+     * Formata o valor com desconto, para transformar
+     * 1.2345,67 em 12345.76
+     *
+     * @param $value
+     * @return void
+     */
+    public function setPriceWithDiscountAttribute($value){
+        $v = str_replace(',', '.', str_replace('.', '', $value));
+        $this->attributes['price_with_discount'] = $v;
+    }
+
 }

@@ -67,10 +67,6 @@ class AdminContractController extends BaseController {
 			$contract = $contract->where('id', Input::get('id'));
 		}
 
-		if (Input::has('partner_id')) {
-			$contract = $contract->where('partner_id', Input::get('partner_id'));
-		}
-
 		if (Input::has('consultant_id')) {
 			$contract = $contract->where('consultant_id', Input::get('consultant_id'));
 		}
@@ -102,12 +98,21 @@ class AdminContractController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$contract = $contract->with(['partner', 'consultant'])->orderBy($sort, $order)->paginate($pag)->appends([
+		$contract = $contract->with(['partner', 'consultant'])
+		->whereExists(function($query){
+		    if (Input::has('partner_name')) {
+				$query->select(DB::raw(1))
+		              ->from('profiles')
+					  ->whereRaw('contracts.partner_id = profiles.user_id')
+					  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name) LIKE \'%'.Input::get('partner_name').'%\'');
+			}
+		})
+		->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
 			'pag' => $pag,
 			'id' => Input::get('id'),
-			'partner_id' => Input::get('partner_id'),
+			'partner_name' => Input::get('partner_name'),
 			'consultant_id' => Input::get('consultant'),
 			'is_signed' => Input::get('is_signed'),
 			'is_sent' => Input::get('is_sent'),
@@ -261,7 +266,6 @@ class AdminContractController extends BaseController {
 		$rules = [
         	'partner_id' => 'required',
         	'agent1_name' => 'required',
-        	'agent1_cpf' => 'required',
         	'agent1_telephone' => 'required',
         	'bank_name' => 'required',
         	'bank_number' => 'required',
@@ -269,6 +273,7 @@ class AdminContractController extends BaseController {
         	'bank_agency' => 'required',
         	'bank_account' => 'required',
         	'bank_cpf_cnpj' => 'required',
+        	'bank_financial_email' => 'required',
         	'initial_term' => 'required|date',
         	'final_term' => 'required|date',
 			'n_people' => 'required|integer',
@@ -389,7 +394,6 @@ class AdminContractController extends BaseController {
 		$rules = [
         	'partner_id' => 'required',
         	'agent1_name' => 'required',
-        	'agent1_cpf' => 'required',
         	'agent1_telephone' => 'required',
         	'bank_name' => 'required',
         	'bank_number' => 'required',
@@ -397,6 +401,7 @@ class AdminContractController extends BaseController {
         	'bank_agency' => 'required',
         	'bank_account' => 'required',
         	'bank_cpf_cnpj' => 'required',
+        	'bank_financial_email' => 'required',
         	'initial_term' => 'required|date',
         	'final_term' => 'required|date',
 			'n_people' => 'required|integer',
@@ -453,7 +458,7 @@ class AdminContractController extends BaseController {
 
 	public function getDelete($id)
 	{
-		$contract = $this->contract->with(['partner', 'consultant'])->find($id);
+		$contract = $this->contract->with(['partner', 'consultant', 'option'])->find($id);
 
 		if (is_null($contract))
 		{
@@ -461,28 +466,26 @@ class AdminContractController extends BaseController {
 			return Redirect::route('admin.contract');
 		}
 
-		$contract_option = $this->contract_option->where('contract_id', $contract->id)->get();
-
 		Session::flash('error', 'Você tem certeza que deleja excluir este contrato? Esta operação não poderá ser desfeita.');
 
 		$data['contractData'] = $contract->toArray();
-		$data['contractOptionData'] = $contract_option->toArray();
 		$data['contractArray'] = null;
 
 		foreach ($data['contractData'] as $key => $value) {
 			if(is_array($value)){
 				foreach ($value as $key2 => $value2) {
-					$data['contractArray'][Lang::get('contract.'. $key.'.'.$key2)] = (!empty($value2)?$value2:'--');
+					if(is_array($value2)){
+						foreach ($value2 as $key3 => $value3) {
+							$data['contractArray'][Lang::get('contract.'. $key.'.'.$key2.'.'.$key3)] = (!empty($value3)?$value3:'--');
+						}
+					}
+					else{
+						$data['contractArray'][Lang::get('contract.'. $key.'.'.$key2)] = (!empty($value2)?$value2:'--');
+					}
 				}
 			}
 			else{
 				$data['contractArray'][Lang::get('contract.'. $key)] = (!empty($value)?$value:'--');
-			}
-		}
-
-		foreach ($data['contractOptionData'] as $i => $contract_option) {
-			foreach ($contract_option as $key => $value) {
-				$data['contractArray'][Lang::get('contract_option.'.$key.'.'. $i)] = (!empty($value)?$value:'--');
 			}
 		}
 

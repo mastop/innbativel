@@ -41,6 +41,9 @@ Route::group(array('https', 'prefix' => 'painel', 'before' => 'auth|perm'), func
      */
     Route::any('ofertas', ['as' => 'painel.order.offers', 'uses' => 'PainelOrderController@anyListByOffer']);
 
+    Route::any('ofertas/ver', function(){ return Redirect::route('painel.order.offers'); });
+    Route::get('ofertas/ver/{id}', ['as' => 'painel.offer.view', 'uses' => 'PainelOfferController@getView']);
+
     Route::any('ofertas/exportar', function(){ return Redirect::route('painel.order.offers'); });
     Route::get('ofertas/exportar/{offer_id?}/{starts_on?}/{ends_on?}', ['as' => 'painel.order.list_offers_export', 'uses' => 'PainelOrderController@getListOffersExport']);
 

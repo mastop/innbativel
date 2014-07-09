@@ -89,7 +89,7 @@
 			})
 			->offer(function($data) {
 				if(isset($data->voucher->offer_option_offer->offer->id)){
-					return link_to_route('oferta', $data->voucher->offer_option_offer->offer->id.' | '.(isset($data->voucher->offer_option_offer->offer->destiny->name)?$data->voucher->offer_option_offer->offer->destiny->name:substr($data->voucher->offer_option_offer->offer->title,0,30).'...'), ['slug' => $data->voucher->offer_option_offer->offer->slug]).' ('.substr($data->voucher->offer_option_offer->title,0,40).(strlen($data->voucher->offer_option_offer->title)>40?'...':'').')';
+					return link_to_route('admin.offer.view', $data->voucher->offer_option_offer->offer->id.' | '.(isset($data->voucher->offer_option_offer->offer->destiny->name)?$data->voucher->offer_option_offer->offer->destiny->name:substr($data->voucher->offer_option_offer->offer->title,0,30).'...'), ['id' => $data->voucher->offer_option_offer->offer->id]).' ('.substr($data->voucher->offer_option_offer->title,0,40).(strlen($data->voucher->offer_option_offer->title)>40?'...':'').')';
 				}
 				return '--';
 			})

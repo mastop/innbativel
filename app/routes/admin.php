@@ -142,6 +142,11 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::get('offer/newsletter', ['as' => 'admin.offer.newsletter', 'uses' => 'AdminOfferController@getNewsletter']);
 	Route::post('offer/newsletter', ['as' => 'admin.offer.generate_newsletter', 'uses' => 'AdminOfferController@postNewsletter']);
 
+	Route::any('offer/deleted', ['as' => 'admin.offer.deleted', 'uses' => 'AdminOfferController@anyDeleted']);
+
+	Route::any('offer/view', function(){ return Redirect::route('admin.offer.deleted'); });
+	Route::get('offer/view/{id}', ['as' => 'admin.offer.view', 'uses' => 'AdminOfferController@getView']);
+
 	/*
 	 * Configs
 	 */

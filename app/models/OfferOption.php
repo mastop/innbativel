@@ -87,7 +87,7 @@ class OfferOption extends BaseModel {
 
 	public function used_vouchers(){
 		return $this->hasMany('Voucher', 'offer_option_id')
-					->where('vouchers.used', 1)
+					->where('vouchers.used', true)
 					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
 					->groupBy('vouchers.offer_option_id');
 	}

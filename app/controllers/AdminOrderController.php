@@ -184,7 +184,7 @@ class AdminOrderController extends BaseController {
     		$offersOptions = $offersOptions->where('offer_id', Input::get('offer_id'));
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'offer'])
+		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'offer' => function($query){ $query->withTrashed(); }])
 									   ->whereExists(function($query){
 							                if (Input::has('starts_on') || Input::has('ends_on')) {
 												$query->select(DB::raw(1))

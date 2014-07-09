@@ -81,7 +81,7 @@
 			$id = '| ';
 			foreach ($order->offer_option_offer as $offer_option) {
 				if(strpos($id, $offer_option->offer_id) == false){
-					$id .= link_to_route('oferta', $offer_option->offer_id, ['slug' => $offer_option->offer->slug]).' | ';
+					$id .= link_to_route('admin.offer.view', $offer_option->offer_id, ['id' => $offer_option->offer->id]).' | ';
 				}
 			}
 			return $id;
