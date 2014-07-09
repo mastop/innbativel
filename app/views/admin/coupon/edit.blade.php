@@ -3,8 +3,6 @@
     <div class="well widget row-fluid">
 
         {{ Former::horizontal_open()->rules([
-            'display_code' => 'required|unique:discount_coupons',
-        	'value' => 'required',
             'qty' => 'required|integer',
             'starts_on' => 'required',
             'ends_on' => 'required',
@@ -12,7 +10,7 @@
 
         {{ Former::populate($coupon) }}
 
-        {{ Former::text('display_code', 'Código')->class('span12') }}
+        {{ Former::uneditable('display_code', 'Código')->class('span12') }}
         {{ Former::uneditable('value', 'Valor')->class('span12') }}
         {{ Former::number('qty', 'Quantidade máxima')->class('span12') }}
         {{ Former::date('starts_on', 'Data início')->class('span12') }}

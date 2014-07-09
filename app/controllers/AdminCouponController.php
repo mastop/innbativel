@@ -188,7 +188,6 @@ class AdminCouponController extends BaseController {
 		$inputs = Input::except('user_email');
 
         $rules = [
-            'display_code' => 'required|unique:discount_coupons',
         	'qty' => 'required|integer',
             'starts_on' => 'required',
             'ends_on' => 'required',
