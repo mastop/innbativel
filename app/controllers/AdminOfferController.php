@@ -918,4 +918,114 @@ class AdminOfferController extends BaseController {
 		// $this->layout->content = View::make('admin.newsletter.html', compact('html'));
     }
 
+    /**
+     * Display all Perms.
+     *
+     * @return Response
+     */
+    public function anyDeleted()
+    {
+        /*
+         * Obj
+         */
+        $offer = $this->offer;
+
+        /*
+         * Paginate
+         */
+
+
+        $pag = Input::get('pag', 50);
+
+        /*
+         * Sort filter
+         */
+
+        $sort = in_array(Input::get('sort'), ['id']) ? Input::get('sort') : 'id';
+
+        /*
+         * Order filter
+         */
+
+        $order = Input::get('order') === 'asc' ? 'asc' : 'desc';
+
+        /*
+         * Search filters
+         */
+        if (Input::has('id')) {
+            $offer = $offer->where('id', Input::get('id'));
+        }
+
+        if (Input::has('title')) {
+            $offer = $offer->where('title', 'like', '%'. Input::get('title') .'%');
+        }
+
+        if (Input::has('partner_id')) {
+            $offer = $offer->where('partner_id', Input::get('partner_id'));
+        }
+
+        if (Input::has('starts_on')) {
+            $offer = $offer->where('starts_on', '>=', Input::get('starts_on'));
+        }
+
+        if (Input::has('ends_on')) {
+            $offer = $offer->where('ends_on', '<=', Input::get('ends_on'));
+        }
+
+        /*
+         * Finally Obj
+         */
+        $offer = $offer
+            ->onlyTrashed()
+            ->with(['partner', 'destiny', 'offer_option'])
+            ->select(['id', 'slug', 'title', 'partner_id', 'destiny_id', 'starts_on', 'ends_on', 'is_active', 'is_available'])
+            ->whereExists(function($query){
+                if (Input::has('destiny')) {
+                    $query->select(DB::raw(1))
+                          ->from('destinies')
+                          ->whereRaw('destinies.id = offers.destiny_id')
+                          ->whereRaw('destinies.name LIKE "%'.Input::get('destiny').'%"');
+                }
+
+            })
+            ->orderBy($sort, $order)
+            ->paginate($pag)->appends([
+                'sort' => $sort,
+                'order' => $order,
+                'id' => Input::get('id'),
+                'destiny' => Input::get('destiny'),
+                'title' => Input::get('title'),
+                'genre_id' => Input::get('genre_id'),
+                'starts_on' => Input::get('starts_on'),
+                'ends_on' => Input::get('ends_on'),
+                'pag' => $pag,
+            ]);
+
+        /*
+         * Layout / View
+         */
+        $this->layout->page_title = 'Lista de Ofertas Antigas';
+        $this->layout->content = View::make('admin.offer.deleted.list', compact('sort', 'order', 'pag', 'offer'));
+    }
+
+    /**
+     * Display Offer Create Page.
+     *
+     * @return Response
+     */
+
+    public function getView($id)
+    {
+        $offer = $this->offer->where('id', $id)->withTrashed()->with(['offer_option', 'offer_additional_offer', 'category', 'ngo', 'offer_image', 'group', 'genre', 'genre2', 'destiny', 'partner', 'tell_us', 'holiday', 'included', 'tag'])->first();
+
+        if (is_null($offer))
+        {
+            Session::flash('error', 'Oferta #'.$id.' não encontrada.');
+            return Redirect::route('admin.offer');
+        }
+
+        $this->layout->page_title = 'Visualizando Oferta #'.$offer->id.' '.$offer->title;
+        $this->layout->content = View::make('admin.offer.view', compact('offer'));
+    }
+
 }

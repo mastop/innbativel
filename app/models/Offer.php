@@ -78,8 +78,12 @@ class Offer extends BaseModel {
 	}
 
 	public function offer_additional(){
-		return $this->belongsToMany('OfferOption', 'offers_additional', 'offer_main_id', 'offer_additional_id')->withPivot('display_order')->orderBy('offers_additional.display_order', 'asc');
-	}
+        return $this->belongsToMany('OfferOption', 'offers_additional', 'offer_main_id', 'offer_additional_id')->withPivot('display_order')->orderBy('offers_additional.display_order', 'asc');
+    }
+
+    public function offer_additional_offer(){
+        return $this->belongsToMany('OfferOption', 'offers_additional', 'offer_main_id', 'offer_additional_id')->withPivot('display_order')->with(['offer'])->orderBy('offers_additional.display_order', 'asc');
+    }
 
 	public function offer_option(){
 		return $this->hasMany('OfferOption')->orderBy('display_order', 'asc');

@@ -7,7 +7,7 @@
 <body>
 <center>
     <br/>
-    <input type="button" onclick="javascript: printDiv('printableArea')" value="Imprimir este cupom" />
+    <input type="button" onclick="javascript: printDiv('printableArea')" value="Imprimir este cupom ou salva-lo como PDF" />
     <br/>
     <br/>
 </center>
@@ -20,7 +20,7 @@
         <tr>
           <td align="center"><table width="500" border="0" cellspacing="0" cellpadding="0">
             <tr>
-              <td width="246" align="left"><a href="INNBatível - Viaje mais por menos"><img src="//innbativel.s3.amazonaws.com/logo.png" alt="" width="246" height="68" border="0" style="display:block;"></a></td>
+              <td width="246" align="left"><a href="INNBatível - Viaje mais por menos"><img src="//{{Configuration::get("s3url")}}logo.png" alt="" width="246" height="68" border="0" style="display:block;"></a></td>
               <td align="right" style="font-size:27px; font-family:Arial, Helvetica, sans-serif; color:#626262;">Cupom</td>
             </tr>
           </table></td>
@@ -63,7 +63,7 @@
                   <td align="center" style="font-size:15px; font-family:Arial, Helvetica, sans-serif; color:#626262;">{{ $voucher->offer_partner->title }}</td>
                 </tr>
               </table></td>
-              <td width="7" align="center"><img src="http://innbativel.com.br/img/newsletters/cupom/linha-separadora-vertical.jpg" alt="" width="7" height="202" style="display:block;" border="0"></td>
+              <td width="7" align="center"><img src="//{{Configuration::get("s3url")}}/linha-separadora-vertical.jpg" alt="" width="7" height="202" style="display:block;" border="0"></td>
               <td width="195"><table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td align="center" style="font-size:17px; font-family:Arial, Helvetica, sans-serif; color:#626262; font-weight:bold;">Nome </td>
