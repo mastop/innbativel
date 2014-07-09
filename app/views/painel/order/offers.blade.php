@@ -78,6 +78,7 @@
 	->actions(function($offer_option) {
 		return DropdownButton::normal('Ações',
 				  	Navigation::links([
+				  		['Ver', route('painel.offer.view', $offer_option['offer']['id'])],
 						['Ver Cupons', route('painel.order.voucher', ['offer_option_id' => $offer_option['id']])],
 				    ])
 				)->pull_right()->split();
