@@ -273,7 +273,7 @@ class PainelOrderController extends BaseController {
     		$offersOptions = $offersOptions->where('offer_id', $offer_id);
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'offer' => function($query){ $query->withTrashed(); }])
+		$offersOptions = $offersOptions->with(['qty_sold', 'used_vouchers', 'offer' => function($query){ $query->withTrashed(); }])
 									   ->whereExists(function($query) use($starts_on, $ends_on){
 							                if (isset($starts_on) || isset($ends_on)) {
 												$query->select(DB::raw(1))
@@ -298,7 +298,7 @@ class PainelOrderController extends BaseController {
 									   ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons usados', 'Vendidos');
+		$spreadsheet[] = array('ID da oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Vendidos');
 
 		foreach ($offersOptions as $offerOption) {
 			$ss = null;
@@ -309,8 +309,10 @@ class PainelOrderController extends BaseController {
 			$ss[] = $offerOption->offer->ends_on;
 			$ss[] = $offerOption->price_with_discount;
 
+			$used = isset($offerOption->used_vouchers{0})?$offerOption->used_vouchers{0}->qty:0;
 			$approved = isset($offerOption->qty_sold{0})?$offerOption->qty_sold{0}->qty:0;
 
+			$ss[] = $used;
 			$ss[] = $approved;
 
 			$spreadsheet[] = $ss;
