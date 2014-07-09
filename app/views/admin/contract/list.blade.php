@@ -18,10 +18,7 @@
 	        	->addOption('', null)
 				->fromQuery(DB::table('profiles')->select('profiles.first_name AS name', 'profiles.user_id AS id')->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')->where('roles.id', 5), 'name', 'id')
 	        }}
-			{{ Former::select('partner_id', 'Empresa')
-	        	->addOption('', null)
-				->fromQuery(DB::table('profiles')->select('profiles.first_name AS name', 'profiles.user_id AS id')->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')->where('roles.id', 9), 'name', 'id')
-	        }}
+			{{ Former::text('partner_name')->class('input-medium')->placeholder('Parceiro')->label('Parceiro') }}
 			{{ Former::select('is_signed', 'Assinado?')
 	        	->addOption('', null)
 	        	->addOption('Sim', '1')
@@ -148,5 +145,26 @@
 		{{ $contract->links() }}
 	</div>
 </div>
+
+<script type="text/javascript">
+$(function() {
+  var availableTags = [
+  	<?php
+  		$partners = DB::table('profiles')
+  					 ->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')
+  					 ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
+  					 ->where('roles.id', 9)
+  					 ->get(['profiles.first_name','profiles.last_name']);
+
+  		foreach ($partners as $partner) {
+  			echo '"'.$partner->first_name.' '.$partner->last_name.'", ';
+  		}
+  	?>
+  ];
+  $("#partner_name").autocomplete({
+    source: availableTags
+  });
+});
+</script>
 
 @stop

@@ -67,10 +67,6 @@ class AdminContractController extends BaseController {
 			$contract = $contract->where('id', Input::get('id'));
 		}
 
-		if (Input::has('partner_id')) {
-			$contract = $contract->where('partner_id', Input::get('partner_id'));
-		}
-
 		if (Input::has('consultant_id')) {
 			$contract = $contract->where('consultant_id', Input::get('consultant_id'));
 		}
@@ -102,12 +98,21 @@ class AdminContractController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$contract = $contract->with(['partner', 'consultant'])->orderBy($sort, $order)->paginate($pag)->appends([
+		$contract = $contract->with(['partner', 'consultant'])
+		->whereExists(function($query){
+		    if (Input::has('partner_name')) {
+				$query->select(DB::raw(1))
+		              ->from('profiles')
+					  ->whereRaw('contracts.partner_id = profiles.user_id')
+					  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name) LIKE \'%'.Input::get('partner_name').'%\'');
+			}
+		})
+		->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
 			'pag' => $pag,
 			'id' => Input::get('id'),
-			'partner_id' => Input::get('partner_id'),
+			'partner_name' => Input::get('partner_name'),
 			'consultant_id' => Input::get('consultant'),
 			'is_signed' => Input::get('is_signed'),
 			'is_sent' => Input::get('is_sent'),
