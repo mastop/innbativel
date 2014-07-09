@@ -189,7 +189,6 @@ class AdminCouponController extends BaseController {
 
         $rules = [
             'display_code' => 'required|unique:discount_coupons',
-        	'value' => 'required|numeric',
         	'qty' => 'required|integer',
             'starts_on' => 'required',
             'ends_on' => 'required',
