@@ -9,6 +9,9 @@
     	h2 { display: block;  }
     	.container { border: 1px solid #eee; background: #fff; }
     	.inner { margin: 30px; }
+      a, a:link, a:visited, a:hover, a:focus, a:active{
+        color:#fff;
+      }
     </style>
   </head>
   <body>

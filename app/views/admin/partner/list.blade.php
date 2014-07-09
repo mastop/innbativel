@@ -66,7 +66,7 @@
 				['Ver', route('admin.partner.view', $body['id'])],
 				['Fazer login na conta', route('admin.user.login', $body['id'])],
 				['Editar', route('admin.partner.edit', $body['id'])],
-				['Atualizar senha', route('admin.partner.edit_password', $body['id'])],
+				['Editar senha', route('admin.partner.edit_password', $body['id'])],
 				['Excluir', route('admin.partner.delete', $body['id'])],
 		    ])
 		)->pull_right()->split();
