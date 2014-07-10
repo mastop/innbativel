@@ -915,7 +915,7 @@ class PageController extends BaseController {
      */
     public function anyBusca()
     {
-        $q = Input::get('q');
+        $q = e(Input::get('q'));
         if(empty($q)){
             return Redirect::route('home')->with('error', 'Digite um termo para sua busca');
         }

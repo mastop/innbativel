@@ -14,7 +14,7 @@
 'genre_id' => 'required',
 ])->id('formOffer')->populate($offer) }}
 
-{{ Former::populateField('offers_included', $offer->included()->lists('included_id')) }}
+{{ Former::populateField('offers_included', implode(',', $offer->included()->lists('included_id'))) }}
 {{ Former::populateField('offers_additional', implode(',', $offer->offer_additional()->lists('offer_additional_id'))) }}
 {{ Former::populateField('offers_tags', implode(',', $offer->tag()->lists('tag_id'))) }}
 
@@ -51,10 +51,14 @@
 {{ Former::textarea('rules', 'Política de Reagendamento/Cancelamento')->rows(10)->columns(20)->class('span12 redactor')->placeholder('Insira a Política de Reagendamento/Cancelamento da Oferta') }}
 
 
-{{ Former::multiselect('offers_included', 'Inclusos')
-->fromQuery(Included::getAllArray())
-->data_placeholder('Selecione os Itens Inclusos')
-->class('span12') }}
+<div class="control-group">
+    <label for="offers_included" class="control-label">Inclusos</label>
+    <div class="controls">
+        {{ Former::hidden('offers_included')
+        ->id('offers_included')
+        ->class('span12') }}
+    </div>
+</div>
 
 {{ Former::select('tell_us_id', 'Depoimento de Cliente')
 ->addOption(null)
@@ -354,6 +358,30 @@
                 $(this).parent().fadeIn();
                 $(this).parent().sortable({connectWith: ".multifiles"});
             }
+        });
+        // Itens Inclusos
+        var included_data = [
+                    @foreach(Included::getAllArray() as $k => $v) {id:{{$v['value']}},icon:"{{$v['data-icon']}}",text:"{{$k}}"},@endforeach
+        ];
+        function selectIncluded(item) {
+            return "<span class='entypo entypo-"+item.icon+"' style='margin-top:7px;'></span>" + item.text;
+        }
+
+        $("#offers_included").select2({
+            data:{ results: included_data },
+            multiple: true,
+            maximumSelectionSize: 5,
+            formatResult: selectIncluded,
+            formatSelection: selectIncluded,
+            escapeMarkup: function(m) { return m; }
+        });
+
+        $("#offers_included").on("change", function() { $(this).html($(this).val()); $("#offers_included").select2("container").find("ul.select2-choices").sortable('refresh');});
+
+        $("#offers_included").select2("container").find("ul.select2-choices").sortable({
+            containment: 'parent',
+            start: function() { $("#offers_included").select2("onSortStart"); },
+            update: function() { $("#offers_included").select2("onSortEnd"); }
         });
         // Tags
         $('#offers_tags').select2({tags:[@foreach (DB::table('tags')->lists('title', 'id') as $id => $tag) {"id": {{$id}}, "text" : "{{$tag}}"}, @endforeach],tokenSeparators: [",", " "]});

@@ -2,7 +2,7 @@
 
 namespace Mastop\Facebook;
 
-class Facebook extends \Facebook\FacebookRedirectLoginHelper
+class Facebook extends \Facebook\Helpers\FacebookRedirectLoginHelper
 {
     /**
      * @var string Prefix to use for session variables
