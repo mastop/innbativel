@@ -14,6 +14,13 @@ class AdminOrderController extends BaseController {
 	protected $order;
 
 	/**
+	 * Information Restriction
+	 *
+	 * @var comercial_restriction
+	 */
+	protected $comercial_restriction;
+
+	/**
 	 * Construct Instance
 	 */
 	public function __construct(Order $order)
@@ -29,6 +36,11 @@ class AdminOrderController extends BaseController {
 		 */
 
 		$this->actions = 'admin.order';
+
+		/*
+		 * Comercial role can't see offers by Tourin (partner_id = 999999999), additional SQL
+		 */
+		$this->comercial_restriction = Auth::user()->is('comercial') ? 'offers.partner_id != 70080' : NULL;
 
 		/*
 		 * Models Instance
@@ -102,6 +114,17 @@ class AdminOrderController extends BaseController {
 											  ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
 						                      ->whereRaw('vouchers.order_id = orders.id')
 						                      ->whereRaw('offers_options.offer_id = '.Input::get('offer_id'));
+									}
+
+					            })
+					            ->whereExists(function($query){
+					                if (isset($this->comercial_restriction)) {
+										$query->select(DB::raw(1))
+						                      ->from('vouchers')
+											  ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
+											  ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+						                      ->whereRaw('vouchers.order_id = orders.id')
+						                      ->whereRaw($this->comercial_restriction);
 									}
 
 					            })
@@ -199,6 +222,15 @@ class AdminOrderController extends BaseController {
 											}
 
 							           })
+							           ->whereExists(function($query){
+							                if (isset($this->comercial_restriction)) {
+												$query->select(DB::raw(1))
+								                      ->from('offers')
+								                      ->whereRaw('offers.id = offers_options.offer_id')
+								                      ->whereRaw($this->comercial_restriction);
+											}
+
+							            })
 									   ->orderBy($sort, $order)
 									   ->paginate($pag)
 									   ->appends([
@@ -239,6 +271,15 @@ class AdminOrderController extends BaseController {
 								                	if (isset($ends_on)) {
 								                		$query->whereRaw('offers.ends_on <= "'.$ends_on.'"');
 								                	}
+												}
+
+								            })
+								            ->whereExists(function($query){
+								                if (isset($this->comercial_restriction)) {
+													$query->select(DB::raw(1))
+									                      ->from('offers')
+									                      ->whereRaw('offers.id = offers_options.offer_id')
+									                      ->whereRaw($this->comercial_restriction);
 												}
 
 								            })
@@ -326,12 +367,23 @@ class AdminOrderController extends BaseController {
 									}
 
 					            })
+					            ->whereExists(function($query){
+					                if (isset($this->comercial_restriction)) {
+										$query->select(DB::raw(1))
+						                      ->from('vouchers')
+											  ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
+											  ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+						                      ->whereRaw('vouchers.order_id = orders.id')
+						                      ->whereRaw($this->comercial_restriction);
+									}
+
+					            })
 								->whereExists(function($query) use($name){
 					                if ($name) {
 										$query->select(DB::raw(1))
 						                      ->from('profiles')
 											  ->whereRaw('profiles.user_id = orders.user_id')
-											  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.$name.'%"');
+											  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE "%'.$name.'%"');
 									}
 
 					            })
@@ -402,8 +454,8 @@ class AdminOrderController extends BaseController {
 													else{
 														$query->where('vouchers.offer_option_id', $offer_option_id);
 													}
-												},
-									   ])
+												}
+								])
 								->whereExists(function($query) use($offer_option_id, $status){
 									if(isset($status)){
 										if($status == 'cancelado'){
@@ -427,6 +479,17 @@ class AdminOrderController extends BaseController {
 											  ->whereRaw('vouchers.order_id = orders.id')
 											  ->whereRaw('vouchers.offer_option_id = "'.$offer_option_id.'"');
 									}
+					            })
+								->whereExists(function($query){
+					                if (isset($this->comercial_restriction)) {
+										$query->select(DB::raw(1))
+						                      ->from('vouchers')
+											  ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
+											  ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+						                      ->whereRaw('vouchers.order_id = orders.id')
+						                      ->whereRaw($this->comercial_restriction);
+									}
+
 					            })
 								->get();
 
@@ -468,7 +531,13 @@ class AdminOrderController extends BaseController {
 		// Exibe somente vouchers pagos
 		$vouchers = $vouchers->where('status', 'pago');
 
-		$offers = Offer::with(['offer_option'])->get();
+		$offers = new Offer;
+
+		if(isset($this->comercial_restriction)){
+			$offers = $offers->whereRaw($this->comercial_restriction);
+		}
+
+		$offers = $offers->with(['offer_option'])->orderBy('id', 'desc')->get();
 
 		// $offersOptions irá preencher o <select> da opção da qual estamos visualizando os vouchers/cupons
 		foreach ($offers as $offer) {
@@ -517,6 +586,16 @@ class AdminOrderController extends BaseController {
 				 		                  ->whereRaw('orders.status = "pago"')
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
+		               	   	 ->whereExists(function($query){
+				                if (isset($this->comercial_restriction)) {
+									$query->select(DB::raw(1))
+					                      ->from('offers_options')
+										  ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+					                      ->whereRaw('offers_options.id = vouchers.offer_option_id')
+					                      ->whereRaw($this->comercial_restriction);
+								}
+
+				             })
 							 ->orderBy($sort, $order)
 							 ->paginate($pag)
 							 ->appends([
@@ -558,6 +637,16 @@ class AdminOrderController extends BaseController {
 				 		                  ->whereRaw('orders.status = "pago"')
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
+		               	   	 ->whereExists(function($query){
+				                if (isset($this->comercial_restriction)) {
+									$query->select(DB::raw(1))
+					                      ->from('offers_options')
+										  ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
+					                      ->whereRaw('offers_options.id = vouchers.offer_option_id')
+					                      ->whereRaw($this->comercial_restriction);
+								}
+
+				             })
 		 					 ->orderBy('id', 'asc')
 		 					 ->get();
 

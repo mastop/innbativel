@@ -17,6 +17,13 @@ class AdminPartnerController extends BaseController {
 	protected $profile;
 
 	/**
+	 * Information Restriction
+	 *
+	 * @var comercial_restriction
+	 */
+	protected $comercial_restriction;
+
+	/**
 	 * Construct Instance
 	 */
 	public function __construct(User $partner, Profile $profile)
@@ -32,6 +39,11 @@ class AdminPartnerController extends BaseController {
 		 */
 
 		$this->actions = 'admin.partner';
+
+		/*
+		 * Comercial role can't see nothing about Tourin (partner_id = 999999999), additional SQL
+		 */
+		$this->comercial_restriction = Auth::user()->is('comercial') ? 'users.id != 70080' : NULL;
 
 		/*
 		 * Models Instance
@@ -83,6 +95,10 @@ class AdminPartnerController extends BaseController {
 			$partner = $partner->where('email', 'like', '%'. Input::get('email') .'%');
 		}
 
+		if(isset($this->comercial_restriction)){
+			$partner = $partner->whereRaw($this->comercial_restriction);
+		}
+
 		/*
 		 * Finally Obj
 		 */
@@ -92,7 +108,7 @@ class AdminPartnerController extends BaseController {
 						$query->select(DB::raw(1))
 			                  ->from('profiles')
 			                  ->whereRaw('profiles.user_id = users.id')
-			                  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE "%'.Input::get('nome').'%"');
+			                  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE "%'.Input::get('nome').'%"');
 		            }
 		         })
                  ->whereIn('id', Role::where('name', '=', 'parceiro')->first()->users()->lists('id')) // Só Parceiros

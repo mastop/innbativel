@@ -73,7 +73,7 @@ class AdminUserController extends BaseController {
 		 * Order filter
 		 */
 
-		$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+		$order = Input::get('order') === 'asc' ? 'asc' : 'desc';
 
 		/*
 		 * Search filters
@@ -90,7 +90,7 @@ class AdminUserController extends BaseController {
 						$query->select(DB::raw(1))
 							  ->from('profiles')
 							  ->whereRaw('profiles.user_id = users.id')
-							  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.Input::get('name').'%"');
+							  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE "%'.Input::get('name').'%"');
 					}
 				})
                 ->whereNotIn('id', Role::where('name', '=', 'parceiro')->first()->users()->lists('id')) // Sem Parceiros
@@ -414,7 +414,7 @@ class AdminUserController extends BaseController {
 						$query->select(DB::raw(1))
 							  ->from('profiles')
 							  ->whereRaw('profiles.user_id = users.id')
-							  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.Input::get('name').'%"');
+							  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE "%'.Input::get('name').'%"');
 					}
 				})
 				->orderBy($sort, $order)->paginate($pag)->appends([
