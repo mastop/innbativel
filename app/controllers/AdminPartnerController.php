@@ -286,7 +286,7 @@ class AdminPartnerController extends BaseController {
 		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
-			'email' => 'required|email|unique:users,email',
+			'email' => 'required|email|unique:users,email,'.$id,
 			'api_key' => 'required|unique:users,api_key',
         	'profile.first_name' => 'required',
         	'profile.company_name' => 'required',
@@ -362,7 +362,8 @@ class AdminPartnerController extends BaseController {
 		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
-			'password' => 'required',
+			'password' => 'required|min:6|confirmed',
+            'password_confirmation' => 'required|min:6',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -381,13 +382,13 @@ class AdminPartnerController extends BaseController {
 
 			Session::flash('success', 'Senha do parceiro <em>#'. $partner->id .' - '. $partner->email .'</em> atualizada.');
 
-			return Redirect::route('admin.partner');
+			return Redirect::route('admin.partner.edit_password', $id);
 		}
 
 		/*
 		 * Return and display Errors
 		 */
-		return Redirect::route('admin.partner.edit', $id)
+		return Redirect::route('admin.partner.edit_password', $id)
 			->withInput()
 			->withErrors($validation);
 	}
