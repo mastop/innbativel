@@ -192,9 +192,10 @@ class AdminOfferController extends BaseController {
                 $offer->percent_off = $percent_off;
 
                 // Salva os itens inclusos
-                $offers_included = Input::get('offers_included');
+                $offers_included = explode(',', Input::get('offers_included'));
                 if(is_array($offers_included)){
                     foreach($offers_included as $k => $v){
+                        if(empty($v)) continue;
                         $offer->included()->attach($v, array('display_order' => $k));
                     }
                 }
@@ -471,10 +472,11 @@ class AdminOfferController extends BaseController {
                 $offer->percent_off = $percent_off;
 
                 // Atualiza os itens inclusos
-                $offers_included = Input::get('offers_included');
+                $offers_included = explode(',', Input::get('offers_included'));
                 $included = array();
                 if(is_array($offers_included)){
                     foreach($offers_included as $k => $v){
+                        if(empty($v)) continue;
                         $included[$v] = array('display_order' => $k);
                     }
                     $offer->included()->sync($included);

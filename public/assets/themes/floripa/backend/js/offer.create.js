@@ -27,12 +27,6 @@
     }).maskMoney('mask');
 
     $(".select2").select2({allowClear: true});
-    $("#offers_included").select2({
-        maximumSelectionSize: 5,
-        formatResult: formatGenre,
-        formatSelection: selectIncluded,
-        escapeMarkup: function(m) { return m; }
-    });
 
     $(document).bind('dragover', function (e)
     {
@@ -268,9 +262,5 @@
     function selectGenre(data) {
         var originalOption = data.element;
         return "<span class='entypo entypo-"+$(originalOption).data('icon')+"' style='margin-top:13px'></span>" + data.text;
-    }
-    function selectIncluded(data) {
-        var originalOption = data.element;
-        return "<span class='entypo entypo-"+$(originalOption).data('icon')+"' style='margin-top:7px; font-size:1.9em;'></span>" + data.text;
     }
 })(jQuery);
