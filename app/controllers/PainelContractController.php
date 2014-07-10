@@ -208,7 +208,7 @@ class PainelContractController extends BaseController {
 
 			// INÍCIO E-MAIL
 
-			$partner = User::where('user_id', $contract->partner_id)->with(['profile'])->first();
+			$partner = User::where('id', Auth::user()->id)->with(['profile'])->first();
 
 			$partner_email = $partner->email;
 			$partner_name = $partner->profile->first_name.(isset($partner->profile->last_name)?' '.$partner->profile->last_name:'');
