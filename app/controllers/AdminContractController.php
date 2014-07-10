@@ -104,7 +104,7 @@ class AdminContractController extends BaseController {
 				$query->select(DB::raw(1))
 		              ->from('profiles')
 					  ->whereRaw('contracts.partner_id = profiles.user_id')
-					  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name) LIKE \'%'.Input::get('partner_name').'%\'');
+					  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE \'%'.Input::get('partner_name').'%\'');
 			}
 		})
 		->orderBy($sort, $order)->paginate($pag)->appends([
@@ -249,7 +249,7 @@ class AdminContractController extends BaseController {
 		$inputs['company_name'] = $partner->company_name;
 		$inputs['trading_name'] = $partner->first_name.' '.$partner->last_name;
 		$inputs['cnpj'] = $partner->cnpj;
-		$inputs['address'] = $partner->address.(isset($partner->number)?(', '.$partner->number):'');
+		$inputs['address'] = $partner->street.(isset($partner->number)?(', '.$partner->number):'');
 		$inputs['complement'] = $partner->complement;
 		$inputs['neighborhood'] = $partner->neighborhood;
 		$inputs['zip'] = $partner->zip;

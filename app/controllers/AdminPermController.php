@@ -178,8 +178,11 @@ class AdminPermController extends BaseController {
 
 			if ($perm)
 			{
+				$perm->name = $inputs['name'];
+				$perm->description = $inputs['description'];
+				$perm->menu_name = $inputs['menu_name'];
 				$perm->is_menu = ($inputs['is_menu'] == 1)?true:false;
-				$perm->update($inputs);
+				$perm->save();
 			}
 
 			return Redirect::route('admin.perm');
