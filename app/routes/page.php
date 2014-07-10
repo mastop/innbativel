@@ -39,6 +39,12 @@ Route::group(array('https', 'prefix' => 'painel', 'before' => 'auth|perm'), func
     /*
      * Painel
      */
+    Route::get('minha-conta', ['as' => 'painel.account.edit', 'uses' => 'PainelAccountController@getEdit']);
+    Route::post('minha-conta', ['as' => 'painel.account.update', 'uses' => 'PainelAccountController@postEdit']);
+
+    Route::get('alterar-senha', ['as' => 'painel.password.edit', 'uses' => 'PainelAccountController@getEditPassword']);
+    Route::post('alterar-senha', ['as' => 'painel.password.update', 'uses' => 'PainelAccountController@postEditPassword']);
+
     Route::any('ofertas', ['as' => 'painel.order.offers', 'uses' => 'PainelOrderController@anyListByOffer']);
 
     Route::any('ofertas/ver', function(){ return Redirect::route('painel.order.offers'); });

@@ -7,7 +7,12 @@
       <span>{{ $username }} <b class="caret"></b></span>
     </a>
     <ul class="dropdown-menu">
-      <li><a href="#" title=""><i class="icon-user"></i>Meu Perfil</a></li>
+      @if(Auth::user()->is('parceiro'))
+      <li><a href="{{ route('painel.account.edit') }}" title=""><i class="icon-user"></i>Minha conta</a></li>
+      <li><a href="{{ route('painel.password.edit') }}" title=""><i class="icon-lock"></i>Alterar senha</a></li>
+      @else
+      <li><a href="{{ route('minha-conta') }}" title=""><i class="icon-user"></i>Minha conta</a></li>
+      @endif
       <li><a href="{{ route('logout') }}" title=""><i class="icon-remove"></i>Sair</a></li>
     </ul>
   </li>
