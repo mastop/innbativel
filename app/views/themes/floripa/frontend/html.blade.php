@@ -46,6 +46,15 @@
 </head>
 
 <body class="innbativel frontend no-sidebar {{ isset($body_classes) ? $body_classes : '' }}">
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-P8KJDZ"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-P8KJDZ');</script>
+<!-- End Google Tag Manager -->
 
     <div id="header" class="navbar navbar-default navbar-fixed-top {{ (isset($comprar)) ? ' border-bottom' : '' }}">
         <div class="topbar">
@@ -82,7 +91,7 @@
                 <div class="clearfix super-search">
                     <form accept-charset="utf-8" class="form-inline" method="GET" action="{{ route('busca') }}">
                         <div class="control-group required">
-                            <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{Input::get('q')}}"><button class="btn"><span class="entypo search"></span></button></div>
+                            <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{e(Input::get('q'))}}"><button class="btn"><span class="entypo search"></span></button></div>
                         </div>
                     </form>
                 </div>
