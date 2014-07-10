@@ -56,6 +56,9 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::get('partner/edit/{id}', ['as' => 'admin.partner.edit', 'uses' => 'AdminPartnerController@getEdit']);
 	Route::post('partner/edit/{id}', ['as' => 'admin.partner.update', 'uses' => 'AdminPartnerController@postEdit']);
 
+	Route::get('partner/edit_password/{id}', ['as' => 'admin.partner.edit_password', 'uses' => 'AdminPartnerController@getEditPassword']);
+	Route::post('partner/edit_password/{id}', ['as' => 'admin.partner.update_password', 'uses' => 'AdminPartnerController@postEditPassword']);
+
 	Route::any('partner/delete', function(){ return Redirect::route('admin.partner'); });
 	Route::get('partner/delete/{id}', ['as' => 'admin.partner.delete', 'uses' => 'AdminPartnerController@getDelete']);
 	Route::post('partner/delete/{id}', ['as' => 'admin.partner.destroy', 'uses' => 'AdminPartnerController@postDelete']);

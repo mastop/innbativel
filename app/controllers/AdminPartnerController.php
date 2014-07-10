@@ -92,7 +92,7 @@ class AdminPartnerController extends BaseController {
 						$query->select(DB::raw(1))
 			                  ->from('profiles')
 			                  ->whereRaw('profiles.user_id = users.id')
-			                  ->whereRaw('CONCAT(profiles.first_name," ",profiles.last_name," ",profiles.company_name) LIKE "%'.Input::get('nome').'%"');
+			                  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE "%'.Input::get('nome').'%"');
 		            }
 		         })
                  ->whereIn('id', Role::where('name', '=', 'parceiro')->first()->users()->lists('id')) // Só Parceiros
@@ -189,6 +189,7 @@ class AdminPartnerController extends BaseController {
 
 		$rules = [
 			'email' => 'required|email|unique:users,email',
+			'password' => 'required',
 			'api_key' => 'required|unique:users,api_key',
         	'profile.first_name' => 'required',
         	'profile.company_name' => 'required',
@@ -221,13 +222,10 @@ class AdminPartnerController extends BaseController {
 
 			// INÍCIO E-MAIL DE BOAS VINDAS
 
-			$token = Hash::make($inputs['email']);
 			$email = $inputs['email'];
 			$name = $inputs['profile']['first_name'];
 
-			DB::insert('insert into password_reminders (email, token) values (?, ?)', array($email, $token));
-
-			$data = array('name' => $name, 'email' => $email, 'token' => $token);
+			$data = array('name' => $name, 'email' => $email, 'password' => $inputs['password']);
 
         	Mail::send('emails.partner.create', $data, function($message) use($email, $name){
 				$message->to($email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Sejam bem vindos, '.$name);
@@ -235,7 +233,7 @@ class AdminPartnerController extends BaseController {
 
         	// FIM E-MAIL DE BOAS VINDAS
 
-        	Session::flash('success', 'Empresa '.$name.' cadastrada com sucesso.');
+        	Session::flash('success', 'A empresa '.$name.' foi cadastrada e um e-mail com sua senha foi enviado para '.$email.' com sucesso.');
 
 			return Redirect::route('admin.partner');
 		}
@@ -272,7 +270,7 @@ class AdminPartnerController extends BaseController {
 		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
 
 		$rules = [
-			'email' => 'required|email|unique:users,email,'.$id,
+			'email' => 'required|email|unique:users,email',
 			'api_key' => 'required|unique:users,api_key',
         	'profile.first_name' => 'required',
         	'profile.company_name' => 'required',
@@ -312,6 +310,60 @@ class AdminPartnerController extends BaseController {
 			}
 
 			Session::flash('success', 'Parceiro <em>#'. $partner->id .' - '. $partner->email .'</em> atualizado.');
+
+			return Redirect::route('admin.partner');
+		}
+
+		/*
+		 * Return and display Errors
+		 */
+		return Redirect::route('admin.partner.edit', $id)
+			->withInput()
+			->withErrors($validation);
+	}
+
+	public function getEditPassword($id)
+	{
+		$partner = $this->partner->with(['profile', 'roles'])->find($id);
+
+		if (is_null($partner))
+		{
+			return Redirect::route('admin.partner');
+		}
+
+        Former::populate($partner);
+        $this->layout->page_title = 'Editando o password do Parceiro #'.$partner->id.' '.$partner->profile->company_name;
+		$this->layout->content = View::make('admin.partner.edit_password', compact('partner'));
+	}
+
+	public function postEditPassword($id)
+	{
+		/*
+		 * partner
+		 */
+		$inputs = Input::all();
+
+		$inputs['username'] = Str::lower(Str::slug(Input::get('email')) . '-' .Str::random(16));
+
+		$rules = [
+			'password' => 'required',
+		];
+
+	    $validation = Validator::make($inputs, $rules);
+
+		if ($validation->passes())
+		{
+			$partner = $this->partner->with(['profile', 'roles'])->find($id);
+
+			if ($partner)
+			{
+				/*
+				 * User
+				 */
+				$partner->update($inputs);
+			}
+
+			Session::flash('success', 'Senha do parceiro <em>#'. $partner->id .' - '. $partner->email .'</em> atualizada.');
 
 			return Redirect::route('admin.partner');
 		}

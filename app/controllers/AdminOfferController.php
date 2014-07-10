@@ -384,7 +384,7 @@ class AdminOfferController extends BaseController {
 
 	public function getEdit($id)
 	{
-		$offer = $this->offer->find($id);
+		$offer = $this->offer->withTrashed()->find($id);
 
 		if (is_null($offer))
 		{

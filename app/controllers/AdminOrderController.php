@@ -110,7 +110,7 @@ class AdminOrderController extends BaseController {
 										$query->select(DB::raw(1))
 						                      ->from('profiles')
 											  ->whereRaw('profiles.user_id = orders.user_id')
-											  ->whereRaw('CONCAT(profiles.first_name, " ", profiles.last_name) LIKE "%'.Input::get('name').'%"');
+											  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE "%'.Input::get('name').'%"');
 									}
 
 					            })

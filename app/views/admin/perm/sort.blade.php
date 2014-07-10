@@ -25,7 +25,7 @@
 		</div>
 
 	    {{ Former::submit('Salvar') }}
-	    {{ Former::link('Resetar', route('admin.perm.sor')) }}
+	    {{ Former::link('Resetar', route('admin.perm.sort')) }}
 
 	    {{ Former::close() }}
 	</div>

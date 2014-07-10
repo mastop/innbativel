@@ -3,6 +3,7 @@
 
         {{ Former::horizontal_open()->rules([
         	'email' => 'required|email',
+            'api_key' => 'required|unique:users,api_key',
             'profile[first_name]' => 'required',
             'profile[company_name]' => 'required',
         	'profile[cnpj]' => 'required',
@@ -37,7 +38,7 @@
         {{ Former::text('profile[telephone2]', 'Telefone')->class('span12') }}
         {{ Former::text('api_key', 'API Key')->class('span12') }}
         <div class="control-group">
-        	<a href="javascript: generateAPIKey();">Gerar nova API Key</a></label>
+            <a href="javascript: generateAPIKey();">Gerar nova API Key</a></label>
         </div>
 
 		{{ Former::hidden('username') }}
@@ -53,18 +54,18 @@
     <script type="text/javascript">
 
     function s4() {
-	  return Math.floor((1 + Math.random()) * 0x10000)
-	             .toString(16)
-	             .substring(1);
-	};
+      return Math.floor((1 + Math.random()) * 0x10000)
+                 .toString(16)
+                 .substring(1);
+    };
 
-	function guid() {
-	  return s4() + '-' + s4() + '-' + s4();
-	}
+    function guid() {
+      return s4() + '-' + s4();
+    }
 
-	function generateAPIKey(){
-		document.getElementById('api_key').value = btoa(guid());
-	}
+    function generateAPIKey(){
+        document.getElementById('api_key').value = btoa(guid());
+    }
 
     </script>
 
