@@ -5,7 +5,9 @@
 		<div class="navbar-inner">
 			<h6>Pagamentos por oferta</h6>
 	        <div class="nav pull-right">
+	            @if(Auth::user()->can('admin.order'))
 	            <a href="{{ route('admin.order') }}" title="Listar todos os pagamentos" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
+	            @endif
 	            <a href="{{ route('admin.order.offers') }}" title="Listar pagamentos por ofertas" class="dropdown-toggle navbar-icon"><i class="icon-tags"></i></a>
 	            <a href="{{ route('admin.order.voucher') }}" title="Listar cupons" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
 	        </div>
