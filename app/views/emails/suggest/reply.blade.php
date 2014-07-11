@@ -13,10 +13,10 @@
     menores pre&ccedil;os.
 <hr>
 <p>
-    <b>Nome:</b>{{ $name }}<br />
-    <b>E-mail:</b>{{ $email }}<br />
-    <b>Destino:</b>{{ $destiny }}<br />
-    <b>Sugest&atilde;o:</b>{{ $suggestion }}<br />
+    <b>Nome: </b>{{ $name }}<br />
+    <b>E-mail: </b>{{ $email }}<br />
+    <b>Destino: </b>{{ $destiny }}<br />
+    <b>Sugest&atilde;o: </b>{{ $suggestion }}<br />
 
 </p>
 </body>

@@ -115,69 +115,61 @@
 
 			$('#conteForm').validate({
 				rules:{ 
-					conteFullName:{ 
+					name:{ 
 						required: true,
 						minlength: 5
 					},
-					conteEmail: {
+					email: {
 						required: true,
 						email: true
 					},
-					conteDestiny: {
+					destiny: {
 						required: true
 					},
-					conteDate: {
+					travel_date: {
 						required: true,
-						date: true
 					},
-					conteDepo: {
+					depoiment: {
 						required: true,
 						rangelength: [30, 200]
 					},
-					conteFoto: {
+					img: {
 						required: true
 					},
-					conteVideo: {
-						url: true
-					},
-					conteAutorizo: {
+					authorize: {
 						required: true
 					}
 				},
 				messages:{
-					conteFullName:{ 
+					name:{ 
 						required: "O campo nome completo é obrigatório.",
 						minlength: "Deve conter no mínimo 5 caracteres."
 					},
-					conteEmail: {
+					email: {
 						required: "O campo email é obrigatório.",
 						email: "Digite um email válido."
 					},
-					conteDestiny: {
+					destiny: {
 						required: "O campo destino é obrigatório."
 					},
-					conteDate: {
+					travel_date: {
 						required: "O campo data é obrigatório.",
-						date: "Digite uma data válida."
 					},
-					conteDepo: {
+					depoiment: {
 						required: "O campo depoimento é obrigatório.",
 						rangelength: "Deve conter de 30 a 200 caracteres."
 					},
-					conteFoto: {
+					img: {
 						required: "A foto é obrigatória."
 					},
-					conteVideo: {
-						url: "Digite um URL válido, começando com http://."
-					},
-					conteAutorizo: {
+					authorize: {
 						required: "Campo obrigatório."
 					}
 				},
 				submitHandler: function(form) {
-					//form.submit();
-					$('#conte-pra-gente').modal('hide');
-					$('#conte-pra-gente-response').modal('show');
+					form.submit();
+					// $('#conte-pra-gente').modal('hide');
+					// $('#conte-pra-gente-response').modal('show');
 				}
 			});
 
@@ -283,37 +275,63 @@
 
 			$('#sugiraForm').validate({
 				rules:{ 
-					sugiraName:{ 
+					name:{ 
 						required: true,
 						minlength: 3
 					},
-					sugiraEmail: {
+					email: {
 						required: true,
 						email: true
 					},
-					sugiraMessage: {
+					destiny:{ 
+						required: true,
+						minlength: 2
+					},
+					suggestion: {
 						required: true,
 						minlength: 10
 					}
 				},
 				messages:{
-					sugiraName:{ 
+					name:{ 
 						required: "O campo nome é obrigatório.",
 						minlength: "Deve conter no mínimo 3 caracteres."
 					},
-					sugiraEmail: {
+					email: {
 						required: "O campo email é obrigatório.",
 						email: "Digite um email válido."
 					},
-					sugiraMessage: {
+					destiny: {
+						required: "O campo destino é obrigatório.",
+						minlength: "Deve conter no mínimo 2 caracteres."
+					},
+					suggestion: {
 						required: "O campo sugestão é obrigatório.",
 						minlength: "Deve conter no mínimo 10 caracteres."
 					}
 				},
 				submitHandler: function(form) {
-					//form.submit();
-					$('#sugira').modal('hide');
-					$('#sugiraResponse').modal('show');
+					$.ajax({
+						type: "POST",
+						dataType: 'json',
+						url: $(form).attr('action'),
+						data: $(form).serialize(),
+						success: function(data){
+							if(data.error == 0){
+								$('#sugira').modal('hide');
+								$('#sugiraResponse').modal('show');
+							}
+							else{
+								alert(data.message)
+							}
+						},
+						error: function(data) {
+							alert('Houve um erro interno. Por favor, tente novamente mais tarde. Se o erro persistir, envie-nos um e-mail para faleconosco@innbativel.com.br');
+						},
+						headers: {
+							'X-CSRF-Token': $(form).find('input[name="_token"]').val()
+						}
+					});
 				}
 			});
 

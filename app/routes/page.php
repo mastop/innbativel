@@ -85,25 +85,9 @@ Route::group(array('https', 'prefix' => 'painel', 'before' => 'auth|perm'), func
     Route::get('pagamentos/export/{id?}/{payment_id?}', ['as' => 'painel.payment.export', 'uses' => 'PainelPaymentController@getExport']);
 });
 
-Route::post('braspag_retorno', ['as' => 'braspag_retorno', 'uses' => 'PageController@postBraspagReturn']);
-
-Route::any('/status', ['as' => 'status', 'uses' => 'PageController@anyStatus', 'after' => 'cache.public']);
-
 /*
- * Newsletter
+ * Área do cliente
  */
-Route::post('newsletter/gravar', ['as' => 'newsletter.save', 'uses' => 'NewsletterController@postNewsletter']);
-
-/*
- * Suggest a trip
- */
-
-Route::any('suggest', ['as' => 'suggest', 'uses' => 'SuggestATripController@anyIndex']);
-
-
-Route::get('suggest/create', ['as' => 'suggest.create', 'uses' => 'SuggestATripController@getCreate']);
-Route::post('suggest/create', ['as' => 'suggest.save', 'uses' => 'SuggestATripController@postCreate']);
-
 Route::group(array('https', 'prefix' => 'minha-conta', 'before' => 'auth'), function(){
     
     /*
@@ -114,14 +98,10 @@ Route::group(array('https', 'prefix' => 'minha-conta', 'before' => 'auth'), func
 
 });
 
-/*
- * Tell Us
- */
+Route::post('braspag_retorno', ['as' => 'braspag_retorno', 'uses' => 'PageController@postBraspagReturn']);
 
-Route::any('tellus', ['as' => 'tellus', 'uses' => 'TellUsController@anyIndex']);
+Route::any('/status', ['as' => 'status', 'uses' => 'PageController@anyStatus', 'after' => 'cache.public']);
 
-Route::get('tellus/create', ['as' => 'tellus.create', 'uses' => 'TellUsController@getCreate']);
-Route::post('tellus/create', ['as' => 'tellus.save', 'uses' => 'TellUsController@postCreate']);
+Route::post('newsletter/gravar', ['as' => 'newsletter.save', 'uses' => 'NewsletterController@postNewsletter']);
 
 Route::get('{slug}', ['as' => 'category.offer', 'uses' => 'CategoryController@anyCategory', 'after' => 'cache.public']);//->where('slug', '[A-Za-z]+');
-

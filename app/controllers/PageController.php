@@ -1227,5 +1227,125 @@ class PageController extends BaseController {
         }
         return Redirect::to($banner->link);
     }
+
+    public function postSuggestATrip(){
+        $inputs = Input::all();
+
+        $rules = [
+            'name' => 'required|min:3', 
+            'email' => 'required|email',
+            'destiny' => 'required|min:2',
+            'suggestion' => 'required|min:10'
+        ];
+
+        $validation = Validator::make($inputs, $rules);
+
+        if ($validation->passes())
+        {
+            SuggestATrip::create($inputs);
+
+            //Início e-mail
+            $name = $inputs['name'];
+            $email = $inputs['email'];
+            $destiny = $inputs['destiny'];
+            $suggestion = $inputs['suggestion'];
+
+            $data = array('name' => $name, 'email' => $email, 'destiny' => $destiny, 'suggestion' => $suggestion);
+
+            //Manda e-mail
+            Mail::send('emails.suggest.create', $data,
+                function($message) use($name){
+                    $message->to('comercial@innbativel.com.br', 'INNBatível')
+                            ->setSubject('[INNBatível] Recebemos uma sugestão de '.$name);
+                }
+            );
+
+            //Retorna para o cliente
+            Mail::send('emails.suggest.reply', $data,
+                function($message) use($name, $email){
+                    $message->to($email, $email)
+                            ->setSubject('[INNBatível] '.$name.', recebemos sua sugestão');
+                }
+            );
+
+            $this->layout = 'format.ajax';
+            return Response::json(['error' => 0]);
+        }
+
+        /*
+         * Return and display Errors
+         */
+        $this->layout = 'format.ajax';
+        return Response::json(['error' => 1, 'message' => 'Ocorreu um erro. Por favor verifique os dados prencidos e tente novamente.']);
+    }
+
+    public function postTellUs(){
+        $inputs = Input::all();
+
+        $rules = [
+            'name' => 'required|min:5',
+            'email' => 'required|email',
+            'destiny' => 'required',
+            'img' => 'required|image',
+            'travel_date' => 'required|date_format:d/m/Y',
+            'depoiment' => 'required|min:30',
+            'authorize' => 'accepted',
+        ];
+
+        $validation = Validator::make($inputs, $rules);
+
+        if ($validation->passes()) {
+            $img = $inputs['img'];
+            $directory = 'conte_pra_gente';
+            $img_name = $img->getClientOriginalName();
+
+            $inputs['img'] = $img_name;
+            $inputs['approved'] = false;
+            unset($inputs['authorize']);
+
+            $id = TellUs::create($inputs)->id;
+
+            $img_url = ImageUpload::upload($img, $directory, $id, $img_name);
+
+            //Início e-mail
+            $name = $inputs['name'];
+            $email = $inputs['email'];
+
+            $data = [
+                'name' => $inputs['name'], 
+                'email' => $inputs['email'], 
+                'destiny' => $inputs['destiny'], 
+                'travel_date' => $inputs['travel_date'],
+                'depoiment' => $inputs['depoiment'], 
+                'img_url' => $img_url,
+            ];
+
+            //Manda e-mail
+            Mail::send('emails.tellus.create', $data,
+                function ($message) use ($name, $email) {
+                    $message->to('comercial@innbativel.com.br', 'INNBatível')
+                        ->setSubject('[INNBatível] Recebemos um depoimento de '.$name);
+                }
+            );
+
+            //Retorna para o cliente
+            Mail::send('emails.tellus.reply', $data,
+                function ($message) use ($name, $email) {
+                    $message->to($email, $name)
+                        ->setSubject('[INNBatível] '.$name.', recebemos seu depoimento'
+                        );
+                }
+            );
+
+            Input::merge(['modal' => 'conte-pra-gente-response']);
+            return Redirect::back()->withInput();
+        }
+
+        /*
+         * Return and display Errors
+         */
+        Input::merge(['modal' => 'conte-pra-gente']);
+        return Redirect::back()->withInput()->withErrors($validation);
+    }
 }
 
