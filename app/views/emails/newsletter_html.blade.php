@@ -95,7 +95,7 @@
         <td width="120" style="text-align:center; border-right: 1px dashed #FFCFB3; padding: 20px 0;"><a href="{{url('/pacotes-nacionais')}}" style="color:#004286; text-decoration:none; font-size:14px;">Pacotes<br />Nacionais</a></td>
         <td width="120" style="text-align:center; border-right: 1px dashed #FFCFB3; padding: 20px 0;"><a href="{{url('/pacotes-internacionais')}}" style="color:#004286; text-decoration:none; font-size:14px;">Pacotes<br />Internacionais</a></td>
         <td width="120" style="text-align:center; border-right: 1px dashed #FFCFB3; padding: 20px 0;"><a href="{{url('/feriados')}}" class="single-line" style="color:#004286; text-decoration:none; font-size:14px;"><span>Feriados</span></a></td>
-        <td width="120" style="text-align:center"><a href="{{url('/passeios')}}" style="color:#004286; text-decoration:none; font-size:14px;">Passeios &amp;<br />Gastronomia</a></td>
+        <td width="120" style="text-align:center"><span style="color:#004286; text-decoration:none; font-size:14px;">Passeios &amp;<br />Gastronomia</span>  <span class="badge" style="color: #666; font-size:0.8em; font-weight: 400;">(Breve)</span></td>
     </tr>
 </table>
 

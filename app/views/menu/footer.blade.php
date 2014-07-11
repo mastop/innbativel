@@ -5,7 +5,7 @@
         <li><a href="{{url('pacotes-nacionais')}}">Pacotes Nacionais</a></li>
         <li><a href="{{url('pacotes-internacionais')}}">Pacotes Internacionais</a></li>
         <li><a href="{{url('feriados')}}">Feriados</a></li>
-        <li><a href="{{url('passeios-gastronomia')}}">Passeios &amp; Gatronomia</a></li>
+        <li><a href="{{-- url('passeios-gastronomia') --}}#">Passeios &amp; Gatronomia  <span class="badge" style="background-color: #999; font-size:0.8em;">Breve</span></a></li>
     </ul>
     <ul id="menu-participe">
         <li><strong>Participe</strong></li>
