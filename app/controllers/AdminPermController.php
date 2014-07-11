@@ -269,6 +269,8 @@ class AdminPermController extends BaseController {
 			$p->save();
 		}
 
+		Session::flash('success', 'Reordenação realizada com sucesso.');
+
 		return Redirect::route('admin.perm.sort');
 	}
 

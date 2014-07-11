@@ -22,4 +22,8 @@ class SuggestATrip extends Eloquent {
   	'email' => 'required',
   );
 
+  public function getSuggestionAttribute($value){
+    return '<pre>'.$value.'</pre>';
+  }
+
 }

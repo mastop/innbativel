@@ -2,86 +2,33 @@
 
 class ImageUpload {
 
-	protected $s3;
-	protected $basePath;
-	protected $style;
+	public static function upload($img, $directory, $id, $name){
+        $s3access = Configuration::get('s3access');
+        $s3secret = Configuration::get('s3secret');
+        $s3region = Configuration::get('s3region');
+        $s3bucket = Configuration::get('s3bucket');
 
-    public function __construct(AWS $aws)
-    {
-        $this->s3 = $aws->get('s3');
+        $expires = gmdate("D, d M Y H:i:s T", strtotime("+5 years"));
+
+        $s3 = Aws\S3\S3Client::factory(
+            array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
+        );
+
+        $path = $img->getRealPath();
+        $mime = $img->getMimeType();
+        $newpath = "$directory/$id/$name";
+        
+        $s3->putObject(array(
+            'Bucket'     => $s3bucket,
+            'Key'        => "$newpath",
+            'Body'      => file_get_contents($path),
+            'ACL'        => 'public-read',
+            'CacheControl' => 'max-age=315360000',
+            'ContentType' => $mime,
+            'Expires'    => $expires
+        ));
+
+        return '//'.Configuration::get('s3url').'/'.$newpath;
     }
-
-    private static function generateName($path)
-    {
-    	$name = Str::lower(Str::random(32));
-
-    	if (!File::exists($path))
-    	{
-    		File::makeDirectory($path,  $mode = 0777, $recursive = true);
-    	}
-
-    	if (File::exists($path . $name))
-    	{
-    		static::generateName($path);
-    	}
-
-    	return $name;
-    }
-
-	public static function createFrom($input = null, $style = null)
-	{
-		if (is_null($input) || is_null($style))
-		{
-			return null;
-		}
-
-		$return = [];
-
-		$file = $input;
-		$mime = $file->getMimeType();
-		$mext = FileMime::get($mime);
-		$type = '.' . $mext;
-
-		foreach ($style as $styleName) {
-			foreach ($styleName as $key => $val) {
-				if (!in_array($mime, $val['mimes']))
-				{
-					return null;
-				}
-
-				if ($key === 'original')
-				{
-					$name = static::generateName($val['path']);
-					$full = $val['path'] . $name . $type;
-					$file->move($val['path'], $name . $type);
-				}
-
-				else
-				{
-					if (isset($full)) {
-						$name = static::generateName($val['path']);
-						Image::make($full)
-							// ->resize($val['style']['width'], $val['style']['height'], true, true)
-							->grab($val['style']['width'], $val['style']['height'])
-							->save($val['path'] . $name . $type);
-					}
-				}
-
-				$pathToDb = str_replace(public_path(), '', $val['path'] . $name . $type);
-
-				$return[] = $key . ':' . $pathToDb;
-			}
-		}
-
-		// // $s3 = AWS::get('s3');
-		// // $s3->putObject(array(
-		// //     'Bucket'     => 'innbativel',
-		// //     'Key'        => Str::random(16) . $cover_img_name,
-		// //     'SourceFile' => $cover_img_normal . $cover_img_name,
-		// // ));
-
-		return implode($return, ',');
-		// die;
-	}
 
 }

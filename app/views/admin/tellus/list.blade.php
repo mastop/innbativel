@@ -39,17 +39,20 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('Nome', 'Destino', 'Parceiro', 'Data da viagem', 'Depoimento', 'Ordem de exibição', 'Imagem', 'Aprovado?', 'Ações') }}
+	{{ Table::headers('ID', 'Nome', 'E-mail', 'Destino', 'Parceiro', 'Data da viagem', 'Depoimento', 'Imagem', 'Aprovado?', 'Ordem', 'Ações') }}
 	{{ Table::body($tellus)
-		->ignore(['id', 'img', 'approved', 'created_at', 'updated_at'])
-		->image(function($body) {
-			if(isset($body->img)){
-				return '<a href="'.$body->img.'">Link para a imagem</a>';
-			}
-			return '--';
+		->ignore(['depoiment', 'img', 'approved', 'display_order', 'created_at', 'updated_at'])
+		->depoimentt(function($body) {
+			return '<pre>'.$body->depoiment.'</pre>';
+		})
+		->imgg(function($body) {
+			return link_to($body->img, 'Foto', ['target' => 'blank']);
 		})
 		->approvedd(function($body) {
-			return ($body['approved'] == true)?'Sim':'Não';
+			return $body->approved;
+		})
+		->display_orderr(function($body) {
+			return $body->display_order;
 		})
 		->acoes(function($body) {
 			if($body['approved'] == true){
