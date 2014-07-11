@@ -698,7 +698,7 @@ class AdminOrderController extends BaseController {
 			$voucher->save();
 
 			$order = $this->order->where('id', Input::get('order_id'))->first();
-			$order->history .= "<br/>" . date('d/m/Y H:i:s') . " - Cancelamento parcial de cupom (\"" . Input::get('comment') . "\" por " . Auth::user()->email . ")";
+			$order->history .= date('d/m/Y H:i:s') . " - Cancelamento parcial de cupom (\"" . Input::get('comment') . "\" por " . Auth::user()->email . ")"."\r\n";
 			$order->save();
 
 			return Redirect::back()->with('success', 'Voucher '.$voucher->id.'-'.$voucher->display_code.' cancelado com sucesso.');
@@ -755,7 +755,7 @@ class AdminOrderController extends BaseController {
 	private function updateOrder($order, $new_status, $comment){
 		$old_status = $order->status;
 		$order->status = $new_status;
-		$order->history .= "<br/>" . date('d/m/Y H:i:s') . " - Status alterado para " . $new_status . " (\"" . $comment . "\" por " . Auth::user()->email . ")";
+		$order->history .= date('d/m/Y H:i:s') . " - Status alterado para " . $new_status . " (\"" . $comment . "\" por " . Auth::user()->email . ")"."\r\n";
 		$order->save();
 
 		Voucher::where('order_id', $order->id)->where('status', $old_status)->update(['status' => $new_status]);
