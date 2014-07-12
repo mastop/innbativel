@@ -30,6 +30,8 @@ $(function () {
         Holder.add_theme('simple', { background: '#3C3C3C', foreground: '#fff', size: 10 }).run();
 
         window.prettyPrint && prettyPrint();
+        // Faz com que o menu não ultrapasse o rodapé da Admin
+        $('#content').css('min-height', $('#sidebar').height()+'px');
     };
 
     $(window).ready(innbativel.init);

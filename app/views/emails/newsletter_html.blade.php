@@ -95,7 +95,7 @@
         <td width="120" style="text-align:center; border-right: 1px dashed #FFCFB3; padding: 20px 0;"><a href="{{url('/pacotes-nacionais')}}" style="color:#004286; text-decoration:none; font-size:14px;">Pacotes<br />Nacionais</a></td>
         <td width="120" style="text-align:center; border-right: 1px dashed #FFCFB3; padding: 20px 0;"><a href="{{url('/pacotes-internacionais')}}" style="color:#004286; text-decoration:none; font-size:14px;">Pacotes<br />Internacionais</a></td>
         <td width="120" style="text-align:center; border-right: 1px dashed #FFCFB3; padding: 20px 0;"><a href="{{url('/feriados')}}" class="single-line" style="color:#004286; text-decoration:none; font-size:14px;"><span>Feriados</span></a></td>
-        <td width="120" style="text-align:center"><a href="{{url('/passeios')}}" style="color:#004286; text-decoration:none; font-size:14px;">Passeios &amp;<br />Gastronomia</a></td>
+        <td width="120" style="text-align:center"><span style="color:#004286; text-decoration:none; font-size:14px;">Passeios &amp;<br />Gastronomia</span>  <span class="badge" style="color: #666; font-size:0.8em; font-weight: 400;">(Breve)</span></td>
     </tr>
 </table>
 
@@ -124,7 +124,7 @@
                     <td width="13">&nbsp;</td>
                     <td bgcolor="#ffffff" width="280" style="border: 1px solid #FFC4A1;">
                         <a href="{{$offer->url}}" target="_blank" title="{{$offer->short_title}}" style="text-decoration:none;">
-                            <img src="https:{{$offer->newsletter_img}}" width="280" height="117" alt="{{$offer->destiny->name}}" style="display:block;" border="0" />
+                            <img src="https:{{$offer->newsletter_img}}?{{time()}}" width="280" height="117" alt="{{$offer->destiny->name}}" style="display:block;" border="0" />
                             <h2 style="padding:0px 10px 0px 15px; color:#45454c; font-size:16px; font-weight:500">{{$offer->destiny->name}}</h2>
                             <p style="padding:0px 10px 0px 15px; color:#737480; font-size:13px; font-weight:400">
                                 @foreach ($offer->included as $in => $included)
