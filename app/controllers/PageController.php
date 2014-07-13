@@ -1323,7 +1323,7 @@ class PageController extends BaseController {
             //Manda e-mail
             Mail::send('emails.tellus.create', $data,
                 function ($message) use ($name, $email) {
-                    $message->to('comercial@innbativel.com.br', 'INNBatível')
+                    $message->to('contepragente@innbativel.com.br', 'INNBatível')
                         ->setSubject('[INNBatível] Recebemos um depoimento de '.$name);
                 }
             );
