@@ -103,10 +103,10 @@
                     @if(empty($contract_options))
                     <tr>
                         <td><input type="text" value="" name="options[title][]"/></td>
-                        <td><input type="text" value="" name="options[price_original][]"/></td>
-                        <td><input type="text" value="" name="options[price_with_discount][]"/></td>
+                        <td><input type="text" value="" name="options[price_original][]" class="money"/></td>
+                        <td><input type="text" value="" name="options[price_with_discount][]" class="money"/></td>
                         <td><input type="number" value="" name="options[percent_off][]"/></td>
-                        <td><input type="text" value="" name="options[transfer][]"/></td>
+                        <td><input type="text" value="" name="options[transfer][]" class="money"/></td>
                         <td><input type="number" value="" name="options[max_qty][]"/></td>
                         <td><button class="remove btn btn-danger">Remover esta opção</button></td>
                     </tr>
@@ -114,10 +114,10 @@
                         @foreach($contract_options AS $contract_option)
                         <tr>
                             <td><input type="text" value="{{ $contract_option->title }}" name="options[title][]"/></td>
-                            <td><input type="text" value="{{ $contract_option->price_original }}" name="options[price_original][]"/></td>
-                            <td><input type="text" value="{{ $contract_option->price_with_discount }}" name="options[price_with_discount][]"/></td>
+                            <td><input type="text" value="{{ $contract_option->price_original }}" name="options[price_original][]" class="money"/></td>
+                            <td><input type="text" value="{{ $contract_option->price_with_discount }}" name="options[price_with_discount][]" class="money"/></td>
                             <td><input type="number" value="{{ $contract_option->percent_off }}" name="options[percent_off][]"/></td>
-                            <td><input type="text" value="{{ $contract_option->transfer }}" name="options[transfer][]"/></td>
+                            <td><input type="text" value="{{ $contract_option->transfer }}" name="options[transfer][]" class="money"/></td>
                             <td><input type="number" value="{{ $contract_option->max_qty }}" name="options[max_qty][]"/></td>
                             <td><button class="remove btn btn-danger">Remover esta opção</button></td>
                         </tr>
@@ -133,6 +133,7 @@
                     var row = $("#options > tr:first-child").clone();
                     row.find('input').val('');
                     row.insertAfter("#options > tr:last-child");
+                    $('.money').mask('000.000.000.000.000,00', {reverse: true});
                     return false;
                 });
 
@@ -172,5 +173,12 @@
         {{ Former::close() }}
 
     </div>
+
+    <script src="{{ asset('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
+    <script>
+    $(document).ready(function(){
+        $('.money').mask('000.000.000.000.000,00', {reverse: true});
+    });
+    </script>
 
 @stop
