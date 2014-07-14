@@ -107,9 +107,35 @@
 					}
 				},
 				submitHandler: function(form) {
-					//form.submit();
-					$('#parceiro').modal('hide');
-					$('#parceiro-response').modal('show');
+					$.ajax({
+						type: "POST",
+						dataType: 'json',
+						url: $(form).attr('action'),
+						data: $(form).serialize(),
+						beforeSend: function(data) {
+							$('#parceiroForm button[type="submit"]').attr('disabled', true);
+							$('#parceiroForm button[type="submit"]').html('Aguarde . . .');
+						},
+						complete: function(data) {
+							$('#parceiroForm button[type="submit"]').attr('disabled', false);
+							$('#parceiroForm button[type="submit"]').html('Enviar');
+						},
+						success: function(data){
+							if(data.error == 0){
+								$('#parceiro').modal('hide');
+								$('#parceiro-response').modal('show');
+							}
+							else{
+								alert(data.message)
+							}
+						},
+						error: function(data) {
+							alert('Houve um erro interno. Por favor, tente novamente mais tarde. Se o erro persistir, envie-nos um e-mail para faleconosco@innbativel.com.br');
+						},
+						headers: {
+							'X-CSRF-Token': $(form).find('input[name="_token"]').val()
+						}
+					});
 				}
 			});
 
@@ -167,6 +193,8 @@
 					}
 				},
 				submitHandler: function(form) {
+					$('#conteForm button[type="submit"]').attr('disabled', true);
+					$('#conteForm button[type="submit"]').html('Aguarde . . .');
 					form.submit();
 					// $('#conte-pra-gente').modal('hide');
 					// $('#conte-pra-gente-response').modal('show');
@@ -267,9 +295,11 @@
 					}
 				},
 				submitHandler: function(form) {
-					//form.submit();
-					$('#trabalhe-conosco').modal('hide');
-					$('#trabalhe-conosco-response').modal('show');
+					$('#trabalheForm button[type="submit"]').attr('disabled', true);
+					$('#trabalheForm button[type="submit"]').html('Aguarde . . .');
+					form.submit();
+					// $('#trabalhe-conosco').modal('hide');
+					// $('#trabalhe-conosco-response').modal('show');
 				}
 			});
 
@@ -316,6 +346,14 @@
 						dataType: 'json',
 						url: $(form).attr('action'),
 						data: $(form).serialize(),
+						beforeSend: function(data) {
+							$('#sugiraForm button[type="submit"]').attr('disabled', true);
+							$('#sugiraForm button[type="submit"]').html('Aguarde . . .');
+						},
+						complete: function(data) {
+							$('#sugiraForm button[type="submit"]').attr('disabled', false);
+							$('#sugiraForm button[type="submit"]').html('Enviar');
+						},
 						success: function(data){
 							if(data.error == 0){
 								$('#sugira').modal('hide');
@@ -835,6 +873,14 @@
 						dataType: 'json',
 						url: $(form).attr('action'),
 						data: $(form).serialize(),
+						beforeSend: function(data) {
+							$('#contactForm button[type="submit"]').attr('disabled', true);
+							$('#contactForm button[type="submit"]').html('Aguarde . . .');
+						},
+						complete: function(data) {
+							$('#contactForm button[type="submit"]').attr('disabled', false);
+							$('#contactForm button[type="submit"]').html('Enviar');
+						},
 						success: function(data){
 							if(data.error == 0){
 								$('#contact').modal('hide');

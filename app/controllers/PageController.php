@@ -1347,5 +1347,57 @@ class PageController extends BaseController {
         Input::merge(['modal' => 'conte-pra-gente']);
         return Redirect::back()->withInput()->withErrors($validation);
     }
+
+    public function postBeOurPartner(){
+        $inputs = Input::all();
+
+        $rules = [
+            'parceiroFullName' => 'required|min:5', 
+            'parceiroBusinessName' => 'required|min:5', 
+            'parceiroEmail' => 'required|email', 
+            'parceiroPhone' => 'required|digits_between:10,11',
+            'parceiroCelular' => 'required|digits_between:10,11',
+            'parceiroCEP' => 'required|digits_between:8,8',
+            'parceiroAddress' => 'required',
+            'parceiroAddressBairro' => 'required',
+            'parceiroAddressCity' => 'required',
+            'parceiroAddressState' => 'required',
+            'parceiroURL' => 'required|url',
+            'parceiroAbout' => 'required|between:30,200',
+        ];
+
+        $validation = Validator::make($inputs, $rules);
+
+        if ($validation->passes())
+        {
+            $name = $inputs['parceiroBusinessName'];
+            $email = $inputs['parceiroEmail'];
+
+            //Manda e-mail
+            Mail::send('emails.be_our_partner.create', $inputs,
+                function($message) use($name){
+                    $message->to('programacao@innbativel.com.br', 'INNBatível')
+                            ->setSubject('[INNBatível] '.$name.' tem interesse em ser nosso parceiro');
+                }
+            );
+
+            //Retorna para o cliente
+            Mail::send('emails.be_our_partner.reply', $inputs,
+                function($message) use($name, $email){
+                    $message->to($email, $email)
+                            ->setSubject('[INNBatível] '.$name.', recebemos seu interesse em ser nosso parceiro');
+                }
+            );
+
+            $this->layout = 'format.ajax';
+            return Response::json(['error' => 0]);
+        }
+
+        /*
+         * Return and display Errors
+         */
+        $this->layout = 'format.ajax';
+        return Response::json(['error' => 1, 'message' => 'Ocorreu um erro. Por favor verifique os dados prencidos e tente novamente.']);
+    }
 }
 
