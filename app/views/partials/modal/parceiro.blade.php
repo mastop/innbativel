@@ -5,7 +5,24 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title"><span class="entypo users"></span>Seja Nosso Parceiro</h4>
             </div>
-            <form id="parceiroForm" class="form-horizontal" name="trabalheForm" method="post" action="#" novalidate="novalidate">
+            {{ Former::horizontal_open(route('be_our_partner.send'))
+                ->rules([
+                    'parceiroFullName' => 'required|min:5', 
+                    'parceiroBusinessName' => 'required|min:5', 
+                    'parceiroEmail' => 'required|email', 
+                    'parceiroPhone' => 'required|between:10,11|digits',
+                    'parceiroCelular' => 'required|between:10,11|digits',
+                    'parceiroCEP' => 'required|between:8,8|digits',
+                    'parceiroAddress' => 'required',
+                    'parceiroAddressBairro' => 'required',
+                    'parceiroAddressCity' => 'required',
+                    'parceiroAddressState' => 'required',
+                    'parceiroURL' => 'required|url',
+                    'parceiroAbout' => 'required|between:30,200',
+                ])
+                ->id('parceiroForm')
+                ->name('parceiroForm')
+            }}
                 <div class="modal-body">
                     <p>
                         Quer divulgar seu hotel, resort ou pousada para milhares de viajantes, melhorar seu movimento em qualquer época do ano e aumentar sua receita?
@@ -31,7 +48,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-4" for="parceiroEmail">Email</label>
+                        <label class="control-label col-md-4" for="parceiroEmail">E-mail</label>
                         <div class="col-md-8 input-group">
                             <input type="email" class="form-control" id="parceiroEmail" name="parceiroEmail" placeholder="Seu email">
                         </div>
@@ -127,11 +144,11 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-4 col-md-8">
-                            <button type="submit" class="btn">Enviar</button>
+                            <button type="submit" class="btn btn-primary">Enviar</button>
                         </div>
                     </div>
                 </div>
-            </form>
+            {{ Former::close() }}
         </div>
     </div>
 </div>

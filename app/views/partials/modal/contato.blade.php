@@ -26,7 +26,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-4" for="contactEmail">Email</label>
                         <div class="col-md-8 input-group">
-                            {{ Former::email('contactEmail')->label('')->class('form-control')->placeholder('Seu email'); }}
+                            {{ Former::email('contactEmail')->label('')->class('form-control')->placeholder('Seu email')->value(Auth::check()?Auth::user()->email:''); }}
                         </div>
                     </div>
                     <div class="form-group">

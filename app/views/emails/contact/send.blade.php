@@ -16,7 +16,7 @@
     <b>Telefone:</b> {{ $telefone }}<br />
     <b>Celular:</b> {{ $celuar }}<br />
     <b>P&aacute;gina:</b> {{ isset($url) ? link_to($url, $url) : '' }}<br />
-    <p>{{ $msg }}</p>
+    <p><pre>{{ $msg }}</pre></p>
 </p>
 </body>
 </html>
