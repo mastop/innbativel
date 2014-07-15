@@ -5,7 +5,25 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title"><span class="entypo users"></span>Trabalhe Conosco</h4>
             </div>
-            <form id="trabalheForm" class="form-horizontal" name="trabalheForm" method="post" action="send_form_trabalhe.php" novalidate="novalidate">
+            {{ Former::open_for_files(route('work_with_us.send'))
+                ->rules([
+                    'trabalheFullName' => 'required|min:5',
+                    'trabalheEmail' => 'required|email',
+                    'trabalheSexo' => 'required',
+                    'trabalhePhone' => 'required|digits_between:10,11',
+                    'trabalheCelular' => 'required|digits_between:10,11',
+                    'trabalheCEP' => 'required|digits_between:8,8',
+                    'trabalheAddress' => 'required',
+                    'trabalheAddressBairro' => 'required',
+                    'trabalheAddressCity' => 'required',
+                    'trabalheAddressState' => 'required',
+                    'trabalheAtuacao' => 'required',
+                    'trabalheCV' => 'required',
+                ])
+                ->id('trabalheForm')
+                ->name('trabalheForm')
+                ->setAttribute('files', true)
+            }}
                 <div class="modal-body">
                     <p>
                         O INNBatível está sempre à procura de talentos com espírito empreendedor e alto grau de energia. Se você tem esse perfil, então junte-se à nossa equipe e faça parte dessa experiência INNBatível.
@@ -17,7 +35,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-4" for="trabalheEmail">Email</label>
+                        <label class="control-label col-md-4" for="trabalheEmail">E-mail</label>
                         <div class="col-md-8 input-group">
                             <input type="email" class="form-control" id="trabalheEmail" name="trabalheEmail" placeholder="Seu email">
                         </div>
@@ -27,8 +45,8 @@
                         <div class="col-md-8">
                             <select class="form-control" id="trabalheSexo" name="trabalheSexo">
                                 <option value="" selected="selected">Selecione</option>
-                                <option value="mas">Masculino</option>
-                                <option value="fem">Feminino</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
                             </select>
                         </div>
                     </div>
@@ -132,11 +150,11 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-4 col-md-8">
-                            <button type="submit" class="btn">Enviar</button>
+                            <button type="submit" class="btn btn-primary">Enviar</button>
                         </div>
                     </div>
                 </div>
-            </form>
+            {{ Former::close() }}
         </div>
     </div>
 </div>

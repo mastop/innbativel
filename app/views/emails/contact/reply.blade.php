@@ -10,7 +10,12 @@
   Recebemos seu contato e agradecemos pelo interesse.
 </p>
 <p>
-&nbsp;<br />
+    <b>Nome:</b> {{ $name }}<br />
+    <b>E-mail:</b> {{ $email }}<br />
+    <b>Telefone:</b> {{ $telefone }}<br />
+    <b>Celular:</b> {{ $celuar }}<br />
+    <b>P&aacute;gina:</b> {{ isset($url) ? link_to($url, $url) : '' }}<br />
+    <p><pre>{{ $msg }}</pre></p><br />
 <br />
 Equipe InnBat&iacute;vel</p>
 </body>

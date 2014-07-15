@@ -15,7 +15,7 @@
     <b>E-mail: </b>{{ $email }}<br />
     <b>Destino: </b>{{ $destiny }}<br />
     <b>Data da Viagem: </b>{{ $travel_date }}<br />
-    <b>Depoimento: </b>{{ $depoiment }}<br />
+    <b>Depoimento: </b><pre>{{ $depoiment }}</pre><br />
     <b>{{ link_to($img_url, "Foto") }}</b><br />
 </p>
 </body>

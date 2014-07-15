@@ -14,7 +14,7 @@
     <b>Nome: </b>{{ $name }}<br />
     <b>E-mail: </b>{{ $email }}<br />
     <b>Destino: </b>{{ $destiny }}<br />
-    <b>Sugest&atilde;o: </b>{{ $suggestion }}<br />
+    <b>Sugest&atilde;o: </b><pre>{{ $suggestion }}</pre><br />
     <br />
     <b>{{ link_to_route('admin.suggest', 'Veja no admin') }}</b>
 

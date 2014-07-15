@@ -94,7 +94,7 @@
 				return '--';
 			})
 			->acoes(function($data) {
-				if(isset($data->paid_on)){
+				if(isset($data->paid_on) && $data->paid_on != '0000-00-00 00:00:00'){
 					return DropdownButton::normal('Ações',
 					  	Navigation::links([
 							['Marcar como não pago', route('admin.payment.update_status', $data->id)],
@@ -104,7 +104,8 @@
 				else{
 					return DropdownButton::normal('Ações',
 					  	Navigation::links([
-					  		['Marcar como pago', 'javascript: marcar_pago(\''.route('admin.payment.update_status', ['id' => $data->id]).'\','.$data->id.');'],
+					  		['Marcar como pago e enviar e-mail', 'javascript: marcar_pago(\''.route('admin.payment.update_status', ['id' => $data->id, 'send_mail' => 1]).'\','.$data->id.');'],
+					  		['Apenas marcar como pago', 'javascript: marcar_pago(\''.route('admin.payment.update_status', ['id' => $data->id, 'send_mail' => 0]).'\','.$data->id.');'],
 					    ])
 					)->pull_right()->split();
 				}
