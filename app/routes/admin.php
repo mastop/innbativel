@@ -516,7 +516,7 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 
 	Route::any('payment', ['as' => 'admin.payment', 'uses' => 'AdminPaymentController@anyIndex']);
 
-	Route::get('payment/update_status/{id}/{date?}', ['as' => 'admin.payment.update_status', 'uses' => 'AdminPaymentController@getUpdateStatus']);
+	Route::get('payment/update_status/{id}/{send_mail?}/{date?}', ['as' => 'admin.payment.update_status', 'uses' => 'AdminPaymentController@getUpdateStatus']);
 
 	Route::any('payment/vouchers', ['as' => 'admin.payment.voucher', 'uses' => 'AdminPaymentController@anyVoucher']);
 
