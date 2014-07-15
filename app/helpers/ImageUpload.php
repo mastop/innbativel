@@ -2,7 +2,7 @@
 
 class ImageUpload {
 
-	public static function upload($img, $directory, $id, $name){
+	public static function upload($file, $directory, $id, $name){
         $s3access = Configuration::get('s3access');
         $s3secret = Configuration::get('s3secret');
         $s3region = Configuration::get('s3region');
@@ -14,13 +14,13 @@ class ImageUpload {
             array('key' => $s3access, 'secret' => $s3secret, 'region' => $s3region)
         );
 
-        $path = $img->getRealPath();
-        $mime = $img->getMimeType();
+        $path = $file->getRealPath();
+        $mime = $file->getMimeType();
         $newpath = "$directory/$id/$name";
         
         $s3->putObject(array(
             'Bucket'     => $s3bucket,
-            'Key'        => "$newpath",
+            'Key'        => $newpath,
             'Body'      => file_get_contents($path),
             'ACL'        => 'public-read',
             'CacheControl' => 'max-age=315360000',

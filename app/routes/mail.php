@@ -9,3 +9,4 @@ Route::post ('/fale-conosco/enviar',['https', 'as' => 'contact.send',    'uses' 
 Route::post ('/sugira-uma-viagem/enviar',['https', 'as' => 'suggest.send',    'uses' => 'PageController@postSuggestATrip']);
 Route::post ('/conte-pra-gente/enviar',['https', 'as' => 'tell_us.send',    'uses' => 'PageController@postTellUs']);
 Route::post ('/seja-nosso-parceiro/enviar',['https', 'as' => 'be_our_partner.send',    'uses' => 'PageController@postBeOurPartner']);
+Route::post ('/trabalhe-conosco/enviar',['https', 'as' => 'work_with_us.send',    'uses' => 'PageController@postWorkWithUs']);

@@ -8,7 +8,7 @@
 <h1>CONTE PRA GENTE</h1>
 <p>
     Ol&aacute; Equipe InnBat&iacute;vel, <br /><br />
-    O  {{ $name }}, contou sua experi&ecirc;ncia conosco:
+    O  {{ $name }} contou sua experi&ecirc;ncia conosco:
 <hr>
 <p>
     <b>Nome: </b>{{ $name }}<br />
