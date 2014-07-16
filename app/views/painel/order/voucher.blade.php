@@ -18,7 +18,7 @@
 			{{ Former::number('id')->class('input-medium')->placeholder('Chave do cupom')->label('Chave do cupom (primeiros digitos)') }}
 			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('painel.order.voucher')) }}
-			{{ Former::link('Exportar pesquisa acima para excel', 'javascript: exportar(\''.route('painel.order.voucher_export', ['id' =>'id', 'offer_option_id' => 'offer_option_id']).'\');') }}
+			{{ Former::link('Exportar esta pesquisa para excel', 'javascript: exportar(\''.route('painel.order.voucher_export', ['id' =>'id', 'offer_option_id' => 'offer_option_id']).'\');') }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
