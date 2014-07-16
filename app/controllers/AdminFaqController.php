@@ -8,10 +8,12 @@ class AdminFaqController extends BaseController {
 	 * @var Faq
 	 */
 	protected $faq;
+	protected $faqGroup;
 
-	public function __construct(Faq $faq)
+	public function __construct(Faq $faq, FaqGroup $faqGroup)
 	{
 		$this->faq = $faq;
+		$this->faqGroup = $faqGroup;
 		$this->sidebar = true;
 	}
 
@@ -25,7 +27,7 @@ class AdminFaqController extends BaseController {
 		/*
 		 * Obj
 		 */
-		$faq = $this->faq->select(['id', 'question', 'answer', 'group_title']);
+		$faq = $this->faq;
 
 		/*
 		 * Paginate
@@ -37,7 +39,7 @@ class AdminFaqController extends BaseController {
 		 * Sort filter
 		 */
 
-    	$sort = in_array(Input::get('sort'), ['question', 'answer', 'group_title']) ? Input::get('sort') : 'id';
+    	$sort = in_array(Input::get('sort'), ['id', 'question', 'answer']) ? Input::get('sort') : 'display_order';
 
 		/*
 		 * Order filter
@@ -56,20 +58,15 @@ class AdminFaqController extends BaseController {
 			$faq = $faq->where('answer', 'like', '%'. Input::get('answer') .'%');
 		}
 
-		if (Input::has('group_title')) {
-			$faq = $faq->where('group_title', 'like', '%'. Input::get('group_title') .'%');
-		}
-
 		/*
 		 * Finally Obj
 		 */
-		$faq = $faq->orderBy($sort, $order)->paginate($pag)->appends([
+		$faq = $faq->with(['group'])->orderBy($sort, $order)->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
 			'pag' => $pag,
 			'question' => Input::get('question'),
 			'answer' => Input::get('answer'),
-			'group_title' => Input::get('group_title'),
 		]);
 
 		/*
@@ -87,17 +84,19 @@ class AdminFaqController extends BaseController {
 	public function postCreate()
 	{
 		$inputs = Input::all();
+		$inputs['faq_group_id'] = $inputs['faq_group_id'] == NULL ? NULL : $inputs['faq_group_id'];
 
 		$rules = [
 			'question' => 'required',
 			'answer' => 'required',
-			'group_title' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
+			Cache::forget('faq'); // Deleta do cache para atualizar o valor
+
 			$this->faq->create($inputs);
 
 			return Redirect::route('admin.faq');
@@ -129,11 +128,11 @@ class AdminFaqController extends BaseController {
 		 * Faq
 		 */
 		$inputs = Input::all();
+		$inputs['faq_group_id'] = $inputs['faq_group_id'] == NULL ? NULL : $inputs['faq_group_id'];
 
 		$rules = [
 			'question' => 'required',
 			'answer' => 'required',
-			'group_title' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -144,6 +143,8 @@ class AdminFaqController extends BaseController {
 
 			if ($faq)
 			{
+				Cache::forget('faq'); // Deleta do cache para atualizar o valor
+
 				$faq->update($inputs);
 			}
 
@@ -181,11 +182,215 @@ class AdminFaqController extends BaseController {
 
 	public function postDelete($id)
 	{
+		Cache::forget('faq'); // Deleta do cache para atualizar o valor
+
 		$this->faq->find($id)->delete();
 
 		Session::flash('success', 'FAQ excluída com sucesso.');
 
 		return Redirect::route('admin.faq');
+	}
+
+	public function getSort(){
+		/*
+		 * Obj
+		 */
+		$groups = $this->faqGroup->with(['faq'])->orderBy('display_order', 'asc')->get();
+		$faqs = $this->faq->whereNull('faq_group_id')->orderBy('display_order', 'asc')->get();
+		/*
+		 * Layout / View
+		 */
+		$this->layout->content = View::make('admin.faq.sort', compact('groups', 'faqs'));
+	}
+
+	public function postSort(){
+		$faqs_groups = Input::get('faqs_groups');
+
+		$fg_display_order = 1;
+
+		// só há um "problema": quando o bloco Grupo fica vazio, não é atualizado seu display_order
+		// porém não é realmente um problema pois nunca deverá haver um Grupo vazio, isso não faz sentido (seria um erro de quem configurou)
+		foreach ($faqs_groups as $faq_group_id => $faqs) {
+			if($faq_group_id != 0){
+				$fg = FaqGroup::find($faq_group_id);
+				$fg->display_order = $fg_display_order++;
+				$fg->save();
+
+				foreach ($faqs as $display_order => $faq_id) {
+					$f = Faq::find($faq_id);
+					$f->display_order = $display_order;
+					$f->faq_group_id = $faq_group_id;
+					$f->save();
+				}
+			}
+		}
+
+		Cache::forget('faq'); // Deleta do cache para atualizar o valor
+
+		return Redirect::route('admin.faq.sort');
+	}
+
+	/**
+	 * Display all Faqs.
+	 *
+	 * @return Response
+	 */
+	public function anyGroup()
+	{
+		/*
+		 * Obj
+		 */
+		$faqGroup = $this->faqGroup->select(['id', 'title']);
+
+		/*
+		 * Paginate
+		 */
+
+        $pag = Input::get('pag', 50);
+
+		/*
+		 * Sort filter
+		 */
+
+    	$sort = in_array(Input::get('sort'), ['id', 'title']) ? Input::get('sort') : 'display_order';
+
+		/*
+		 * Order filter
+		 */
+
+    	$order = Input::get('order') === 'desc' ? 'desc' : 'asc';
+
+		/*
+		 * Search filters
+		 */
+		if (Input::has('title')) {
+			$faqGroup = $faqGroup->where('title', 'like', '%'. Input::get('title') .'%');
+		}
+
+		/*
+		 * Finally Obj
+		 */
+		$faqGroup = $faqGroup->orderBy($sort, $order)->paginate($pag)->appends([
+			'sort' => $sort,
+			'order' => $order,
+			'pag' => $pag,
+			'title' => Input::get('title'),
+		]);
+
+		/*
+		 * Layout / View
+		 */
+		$this->layout->content = View::make('admin.faq.group.list', compact('sort', 'order', 'pag', 'faqGroup'));
+
+	}
+
+	public function getGroupCreate()
+	{
+		$this->layout->content = View::make('admin.faq.group.create');
+	}
+
+	public function postGroupCreate()
+	{
+		$inputs = Input::all();
+
+		$rules = [
+			'title' => 'required',
+		];
+
+	    $validation = Validator::make($inputs, $rules);
+
+		if ($validation->passes())
+		{
+			$this->faqGroup->create($inputs);
+
+			return Redirect::route('admin.faq.group');
+		}
+
+		/*
+		 * Return and display Errors
+		 */
+		return Redirect::route('admin.faq.group.create')
+			->withInput()
+			->withErrors($validation);
+	}
+
+	public function getGroupEdit($id)
+	{
+		$faqGroup = $this->faqGroup->find($id);
+
+		if (is_null($faqGroup))
+		{
+			return Redirect::route('admin.faq.group');
+		}
+
+		$this->layout->content = View::make('admin.faq.group.edit', compact('faqGroup'));
+	}
+
+	public function postGroupEdit($id)
+	{
+		/*
+		 * Faq
+		 */
+		$inputs = Input::all();
+
+		$rules = [
+			'title' => 'required',
+		];
+
+	    $validation = Validator::make($inputs, $rules);
+
+		if ($validation->passes())
+		{
+			$faqGroup = $this->faqGroup->find($id);
+
+			if ($faqGroup)
+			{
+				Cache::forget('faq'); // Deleta do cache para atualizar o valor
+
+				$faqGroup->update($inputs);
+			}
+
+			return Redirect::route('admin.faq.group');
+		}
+
+		/*
+		 * Return and display Errors
+		 */
+		return Redirect::route('admin.faq.group.edit', $id)
+			->withInput()
+			->withErrors($validation);
+	}
+
+	public function getGroupDelete($id)
+	{
+		$faqGroup = $this->faqGroup->find($id);
+
+		if (is_null($faqGroup))
+		{
+			return Redirect::route('admin.faq.group');
+		}
+
+		Session::flash('error', 'Você tem certeza que deleja excluir este Grupo de FAQs? Esta operação não poderá ser desfeita.');
+
+		$data['faqGroupData'] = $faqGroup->toArray();
+		$data['faqGroupArray'] = null;
+
+		foreach ($data['faqGroupData'] as $key => $value) {
+			$data['faqGroupArray'][Lang::get('faqGroup.'. $key)] = $value;
+		}
+
+		$this->layout->content = View::make('admin.faq.group.delete', $data);
+	}
+
+	public function postGroupDelete($id)
+	{
+		Cache::forget('faq'); // Deleta do cache para atualizar o valor
+		
+		$this->faqGroup->find($id)->delete();
+
+		Session::flash('success', 'Grupo de FAQs excluída com sucesso.');
+
+		return Redirect::route('admin.faq.group');
 	}
 
 }

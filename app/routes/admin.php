@@ -184,6 +184,26 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::get('faq/delete/{id}', ['as' => 'admin.faq.delete', 'uses' => 'AdminFaqController@getDelete']);
 	Route::post('faq/delete/{id}', ['as' => 'admin.faq.destroy', 'uses' => 'AdminFaqController@postDelete']);
 
+	Route::get('faq/sort', ['as' => 'admin.faq.sort', 'uses' => 'AdminFaqController@getSort']);
+	Route::post('faq/sort', ['as' => 'admin.faq.save_sort', 'uses' => 'AdminFaqController@postSort']);
+
+	/*
+	 * Grupos de Faqs
+	 */
+
+	Route::any('faq/group', ['as' => 'admin.faq.group', 'uses' => 'AdminFaqController@anyGroup']);
+
+	Route::get('faq/group/create', ['as' => 'admin.faq.group.create', 'uses' => 'AdminFaqController@getGroupCreate']);
+	Route::post('faq/group/create', ['as' => 'admin.faq.group.save', 'uses' => 'AdminFaqController@postGroupCreate']);
+
+	Route::any('faq/group/edit', function(){ return Redirect::route('admin.faq.group'); });
+	Route::get('faq/group/edit/{id}', ['as' => 'admin.faq.group.edit', 'uses' => 'AdminFaqController@getGroupEdit']);
+	Route::post('faq/group/edit/{id}', ['as' => 'admin.faq.group.update', 'uses' => 'AdminFaqController@postGroupEdit']);
+
+	Route::any('faq/group/delete', function(){ return Redirect::route('admin.faq.group'); });
+	Route::get('faq/group/delete/{id}', ['as' => 'admin.faq.group.delete', 'uses' => 'AdminFaqController@getGroupDelete']);
+	Route::post('faq/group/delete/{id}', ['as' => 'admin.faq.group.destroy', 'uses' => 'AdminFaqController@postGroupDelete']);
+
 	/*
 	 * Orders
 	 */
