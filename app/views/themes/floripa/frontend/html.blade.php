@@ -70,7 +70,7 @@
                     @endif
                 @else
                 <a class="btn-login" href="#login" data-toggle="modal" title="Entre com sua conta INNBatível">Entrar <span class="entypo login"></span></a>
-                <a href="{{ route('facebook', array('destination' => Input::get('destination', Request::getPathInfo()))) }}" title="Entre com sua conta do Facebook" class="btn-login login"><span class="entypo facebook"></span></a>
+                <a href="{{ route('facebook', array('destination' => e(Input::get('destination', Request::getPathInfo())))) }}" title="Entre com sua conta do Facebook" class="btn-login login"><span class="entypo facebook"></span></a>
                 @endif
             </div>
         </div>
@@ -233,7 +233,7 @@
 @endif
 @if(Input::get('open', Input::old('modal')))
 <script>
-    $("#{{Input::get('open', Input::old('modal'))}}").modal('show');
+    $("#{{{Input::get('open', Input::old('modal'))}}}").modal('show');
 </script>
 @endif
 </body>

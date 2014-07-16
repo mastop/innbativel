@@ -26,7 +26,7 @@ Route::get('facebook', ['as' => 'facebook', function()
 {
     $destination = Input::get('destination', Session::get('destination', '/'));
     if(!Session::has('destination')){
-        Session::put('destination', $destination);
+        Session::put('destination', e($destination));
     }
     $permissions = array(
         'email',

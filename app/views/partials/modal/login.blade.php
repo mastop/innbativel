@@ -9,7 +9,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-8">
-                            <a class="img-link" href="{{ route('facebook', array('destination' => Input::get('destination', Request::getPathInfo()))) }}"><img src="//innbativel.s3.amazonaws.com/fb-login.png" alt="Faça login com sua conta do Facebook"></a>
+                            <a class="img-link" href="{{ route('facebook', array('destination' => e(Input::get('destination', Request::getPathInfo())))) }}"><img src="//innbativel.s3.amazonaws.com/fb-login.png" alt="Faça login com sua conta do Facebook"></a>
                         </div>
                     </div>
                     <hr>
@@ -29,7 +29,7 @@
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-8">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
-                            <input type="hidden" name="destination" value="{{ Input::get('destination', Request::path()) }}"/>
+                            <input type="hidden" name="destination" value="{{{ Input::get('destination', Request::path()) }}}"/>
                             <button type="submit" class="btn">Entrar</button>
                             <a href="#pass-recover" class="pass-recover" data-toggle="modal" data-dismiss="modal">Esqueci minha senha</a>
                         </div>
