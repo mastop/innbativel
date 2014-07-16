@@ -498,7 +498,7 @@ class AdminPaymentController extends BaseController {
 				$data = "Você acabou de alterar o período de fechamento quinzenal para pagamento aos carceiros #".$inputs['id'].". Se você mudou alguma data, você precisa entrar em contato com o Fernando da Mastop para ele atualizar tais datas nos CronJobs que estão no servidor dele que estamos utilizando.";
 
 				Mail::send('emails.simple_mail', $data, function($message){
-                    $message->to(Auth::user()->email, 'INNBatível')->replyTo('programacao@innbativel.com.br', 'INNBatível')->subject('Mudança no periodo de fechamento quinzenal');
+                    $message->to(Auth::user()->email, 'INNBatível')->cc('programacao@innbativel.com.br', 'Programação INNBatível')->replyTo('programacao@innbativel.com.br', 'Programação INNBatível')->subject('Mudança no periodo de fechamento quinzenal');
                 });
 
 				$inputs['cronjob'] = $cronjob;
@@ -564,7 +564,7 @@ class AdminPaymentController extends BaseController {
 			$data = "Você acabou de excluir o período de fechamento quinzenal #".$id." das vendas de ".$sales_from." a ".$sales_to.". Você precisa entrar em contato com o Fernando da Mastop para ele atualizar os CronJobs que estão no servidor dele que estamos utilizando.";
 
 			Mail::send('emails.simple_mail', $data, function($message){
-	            $message->to(Auth::user()->email, 'INNBatível')->replyTo('programacao@innbativel.com.br', 'INNBatível')->subject('Mudança no periodo de fechamento quinzenal');
+	            $message->to(Auth::user()->email, 'INNBatível')->cc('programacao@innbativel.com.br', 'Programação INNBatível')->replyTo('programacao@innbativel.com.br', 'Programação INNBatível')->subject('Mudança no periodo de fechamento quinzenal');
 	        });
 
 	        $payment->delete();
