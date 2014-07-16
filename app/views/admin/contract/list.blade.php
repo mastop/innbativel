@@ -13,7 +13,7 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('admin.contract')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::number('id')->class('input-medium')->placeholder('ID')->label('ID') }}
+			{{ Former::number('id')->class('input-medium')->placeholder('ID do Contrato')->label('ID do Contrato') }}
 			{{ Former::select('consultant_id', 'Consultor')
 	        	->addOption('', null)
 				->fromQuery(DB::table('profiles')->select('profiles.first_name AS name', 'profiles.user_id AS id')->leftJoin('role_user', 'profiles.user_id', '=', 'role_user.user_id')->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')->where('roles.id', 5), 'name', 'id')

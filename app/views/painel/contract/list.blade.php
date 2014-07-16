@@ -12,7 +12,7 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('painel.contract')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::number('id')->class('input-medium')->placeholder('ID')->label('ID') }}
+			{{ Former::number('id')->class('input-medium')->placeholder('ID do Contrato')->label('ID do Contrato') }}
 			{{ Former::date('signed_at_begin')->class('input-medium')->placeholder('Data assinatura início')->label('Data assinatura início') }}
 			{{ Former::date('signed_at_end')->class('input-medium')->placeholder('Data assinatura fim')->label('Data assinatura fim') }}
 			{{ Former::submit('Enviar') }}
