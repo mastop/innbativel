@@ -7,7 +7,9 @@ Route::filter('csrf', function()
 	if(Request::url() != route('snowland-valida-cupom') && Request::url() != route('snowland-utiliza-cupom') && Request::url() != route('braspag_retorno')) {
 		if (Session::token() != $token)
 		{
-			throw new Illuminate\Session\TokenMismatchException;
+            $message = 'Token inválido!';
+            Logs::debug($message." -> Token Session: ".Session::token()." -> Token User: ".e($token));
+            return Redirect::route('home')->with('error', $message);
 		}
 	}
 });

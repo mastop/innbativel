@@ -128,14 +128,6 @@
                 $(this).parent().sortable({connectWith: ".multifiles"});
             }
         });
-        $('.redactor').redactor({
-            lang: 'pt_br',
-            linebreaks: true,
-            observeLinks: true,
-            convertVideoLinks: true,
-            plugins: ['fontsize'],
-            buttons: ['html', 'formatting',  'bold', 'italic', 'unorderedlist', 'orderedlist', 'image', 'video', 'file', 'table', 'link', 'alignment', 'horizontalrule']
-        });
         $(document).bind('dragover', function (e)
         {
             var dropZone = $('.dropzone'),

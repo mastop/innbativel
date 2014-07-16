@@ -70,7 +70,7 @@
                     @endif
                 @else
                 <a class="btn-login" href="#login" data-toggle="modal" title="Entre com sua conta INNBatível">Entrar <span class="entypo login"></span></a>
-                <a href="{{ route('facebook', array('destination' => Input::get('destination', Request::getPathInfo()))) }}" title="Entre com sua conta do Facebook" class="btn-login login"><span class="entypo facebook"></span></a>
+                <a href="{{ route('facebook', array('destination' => e(Input::get('destination', Request::getPathInfo())))) }}" title="Entre com sua conta do Facebook" class="btn-login login"><span class="entypo facebook"></span></a>
                 @endif
             </div>
         </div>
@@ -91,7 +91,7 @@
                 <div class="clearfix super-search">
                     <form accept-charset="utf-8" class="form-inline" method="GET" action="{{ route('busca') }}">
                         <div class="control-group required">
-                            <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{e(Input::get('q'))}}"><button class="btn"><span class="entypo search"></span></button></div>
+                            <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{{Input::get('q')}}}"><button class="btn"><span class="entypo search"></span></button></div>
                         </div>
                     </form>
                 </div>
@@ -132,7 +132,7 @@
                 <div class="clearfix super-search">
                     <form accept-charset="utf-8" class="form-inline" method="GET" action="{{ route('busca') }}">
                         <div class="control-group required">
-                            <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{Input::get('q')}}"><button class="btn"><span class="entypo search"></span></button></div>
+                            <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{{Input::get('q')}}}"><button class="btn"><span class="entypo search"></span></button></div>
                         </div>
                     </form>
                 </div>
@@ -143,7 +143,7 @@
                         <div class="clearfix super-search">
                             <form accept-charset="utf-8" class="form-inline" method="GET">
                                 <div class="control-group required">
-                                    <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{Input::get('q')}}"><a href="busca.html" class="btn"><span class="entypo search"></span></a></div>
+                                    <div class="search-controls"><input required="" type="text" name="q" placeholder="Para onde você quer ir?" value="{{{Input::get('q')}}}"><a href="busca.html" class="btn"><span class="entypo search"></span></a></div>
                                 </div>
                             </form>
                         </div>
@@ -233,7 +233,7 @@
 @endif
 @if(Input::get('open', Input::old('modal')))
 <script>
-    $("#{{Input::get('open', Input::old('modal'))}}").modal('show');
+    $("#{{{Input::get('open', Input::old('modal'))}}}").modal('show');
 </script>
 @endif
 </body>
