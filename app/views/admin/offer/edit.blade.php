@@ -346,7 +346,7 @@
         $('input.fileuploaded').each(function(){
             if($(this).val() != ''){
                 // Single file
-                var fileURL = ($(this).val().substring(0, 2) == '//') ? $(this).val() : url + 'temp/'+$(this).val();
+                var fileURL = ($(this).val().substring(0, 2) == '//') ? $(this).val()+'?'+Math.floor(Math.random() * 1000) : url + 'temp/'+$(this).val();
                 $(this).parent().find('div.dropzone').css("background-image", "url('"+fileURL+"')").css("background-position", "center center").css("background-repeat", "no-repeat");
                 $(this).parent().find('div.fileremove').show();
                 $(this).parent().find('div.dropinfo').hide();
