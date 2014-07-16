@@ -21,7 +21,7 @@ Route::filter('auth', function()
 
     if ($destination !== '/')
     {
-      Session::put('destination', $destination);
+      Session::put('destination', e($destination));
       return Redirect::route('home', array('destination' => $destination));
     }
 

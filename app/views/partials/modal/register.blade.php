@@ -124,8 +124,8 @@
                  </div>
              </div>
              </div>
-             {{ Former::hidden('destination')->value(Input::get('destination', Request::getPathInfo())) }}
-             {{ Former::hidden('modal')->value('register') }}
+            <input type="hidden" name="destination" value="{{{ Input::get('destination', Request::path()) }}}"/>
+            <input type="hidden" name="modal" value="register"/>
              {{Former::close()}}
              <div class="modal-footer">
                  Já tem sua conta? <a href="#login" data-toggle="modal" data-dismiss="modal">Faça login</a>
