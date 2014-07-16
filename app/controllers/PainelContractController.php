@@ -217,8 +217,8 @@ class PainelContractController extends BaseController {
 			
 	    	Mail::send('emails.contract.sign', $data, function($message) use($partner_name, $partner_email, $id){
 				$message->to('contrato@innbativel.com.br', 'INNBatível')
-						->setReplyTo($partner_email, $partner_name)
-						->setSubject('O contrato ID: '.$id.' foi assinado | Parceiro: '.$partner_name);
+						->replyTo($partner_email, $partner_name)
+						->subject('O contrato ID: '.$id.' foi assinado | Parceiro: '.$partner_name);
 			});
 
 			// FIM E-MAIL

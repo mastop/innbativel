@@ -789,7 +789,7 @@ class PageController extends BaseController {
             $data = array('name' => $user_profile->first_name, 'products' => $products_email);
 
             Mail::send('emails.order.order_approved', $data, function($message){
-                $message->setTo(Auth::user()->email, 'INNBatível')->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')->setSubject('Compra finalizada com sucesso');
+                $message->to(Auth::user()->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra finalizada com sucesso');
             });
 
             return Redirect::route('sucesso', array('status' => $status));
@@ -806,7 +806,7 @@ class PageController extends BaseController {
             $data = array('name' => $user_profile->first_name, 'products' => $products_email, 'boletus_url' => $boletus_url);
 
             Mail::send('emails.order.order_boletus', $data, function($message){
-                $message->setTo(Auth::user()->email, 'INNBatível')->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')->setSubject('Sua compra no INNBatível');
+                $message->to(Auth::user()->email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Sua compra no INNBatível');
             });
 
             return Redirect::route('sucesso', array('status' => $status, 'boletus_url' => base64_encode($boletus_url)));
@@ -1061,9 +1061,8 @@ class PageController extends BaseController {
             Mail::send('emails.offer_share', $data,
                 function($message) use($data) {
                     $message->to($data['receiverEmail'], $data['receiverName'])
-                        ->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
-                        ->setSubject('Uma sugestão INNBatível de '.$data['senderName']
-                        );
+                            ->replyTo('faleconosco@innbativel.com.br', 'INNBatível')
+                            ->subject('Uma sugestão INNBatível de '.$data['senderName']);
                 }
             );
             return Response::json(['error' => 0]);
@@ -1180,8 +1179,8 @@ class PageController extends BaseController {
             Mail::send('emails.contact.send', $data,
                 function($message) use ($name, $email){
                     $message->to("faleconosco@innbativel.com.br", 'INNBatível')
-                            ->setReplyTo($email, $name)
-                            ->setSubject('[INNBatível] Contato de '.$name);
+                            ->replyTo($email, $name)
+                            ->subject('[INNBatível] Contato de '.$name);
                 }
             );
 
@@ -1189,8 +1188,8 @@ class PageController extends BaseController {
             Mail::send('emails.contact.reply', $data,
                 function($message) use ($name, $email){
                     $message->to($email, 'INNBatível')
-                            ->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
-                            ->setSubject('[INNBatível] '.$name. ', recebemos seu contato.');
+                            ->replyTo('faleconosco@innbativel.com.br', 'INNBatível')
+                            ->subject('[INNBatível] '.$name. ', recebemos seu contato.');
                     }
             );
             // FIM E-MAIL
@@ -1254,8 +1253,8 @@ class PageController extends BaseController {
             Mail::send('emails.suggest.create', $data,
                 function($message) use ($name, $email) {
                     $message->to('comercial@innbativel.com.br', 'INNBatível')
-                            ->setReplyTo($email, $name)
-                            ->setSubject('[INNBatível] Recebemos uma sugestão de '.$name);
+                            ->replyTo($email, $name)
+                            ->subject('[INNBatível] Recebemos uma sugestão de '.$name);
                 }
             );
 
@@ -1263,8 +1262,8 @@ class PageController extends BaseController {
             Mail::send('emails.suggest.reply', $data,
                 function($message) use($name, $email){
                     $message->to($email, $email)
-                            ->setReplyTo('comercial@innbativel.com.br', 'INNBatível')
-                            ->setSubject('[INNBatível] '.$name.', recebemos sua sugestão');
+                            ->replyTo('comercial@innbativel.com.br', 'INNBatível')
+                            ->subject('[INNBatível] '.$name.', recebemos sua sugestão');
                 }
             );
 
@@ -1324,8 +1323,8 @@ class PageController extends BaseController {
             Mail::send('emails.tellus.create', $data,
                 function ($message) use ($name, $email) {
                     $message->to('contepragente@innbativel.com.br', 'INNBatível')
-                            ->setReplyTo($email, $name)
-                            ->setSubject('[INNBatível] Recebemos um depoimento de '.$name);
+                            ->replyTo($email, $name)
+                            ->subject('[INNBatível] Recebemos um depoimento de '.$name);
                 }
             );
 
@@ -1333,8 +1332,8 @@ class PageController extends BaseController {
             Mail::send('emails.tellus.reply', $data,
                 function ($message) use ($name, $email) {
                     $message->to($email, $name)
-                            ->setReplyTo('contepragente@innbativel.com.br', 'INNBatível')
-                            ->setSubject('[INNBatível] '.$name.', recebemos seu depoimento');
+                            ->replyTo('contepragente@innbativel.com.br', 'INNBatível')
+                            ->subject('[INNBatível] '.$name.', recebemos seu depoimento');
                 }
             );
 
@@ -1378,8 +1377,8 @@ class PageController extends BaseController {
             Mail::send('emails.be_our_partner.create', $inputs,
                 function($message) use($name, $email){
                     $message->to('comercial@innbativel.com.br', 'INNBatível')
-                            ->setReplyTo($email, $name)
-                            ->setSubject('[INNBatível] '.$name.' tem interesse em ser nosso parceiro');
+                            ->replyTo($email, $name)
+                            ->subject('[INNBatível] '.$name.' tem interesse em ser nosso parceiro');
                 }
             );
 
@@ -1387,8 +1386,8 @@ class PageController extends BaseController {
             Mail::send('emails.be_our_partner.reply', $inputs,
                 function($message) use($name, $email){
                     $message->to($email, $name)
-                            ->setReplyTo('comercial@innbativel.com.br', 'INNBatível')
-                            ->setSubject('[INNBatível] '.$name.', recebemos seu interesse em ser nosso parceiro');
+                            ->replyTo('comercial@innbativel.com.br', 'INNBatível')
+                            ->subject('[INNBatível] '.$name.', recebemos seu interesse em ser nosso parceiro');
                 }
             );
 
@@ -1438,8 +1437,8 @@ class PageController extends BaseController {
             Mail::send('emails.work_with_us.create', $inputs,
                 function ($message) use ($name, $email) {
                     $message->to('trabalheconosco@innbativel.com.br', 'INNBatível')
-                            ->setReplyTo($email, $name)
-                            ->setSubject('[INNBatível] '.$name.' tem interesse em trabalhar conosco');
+                            ->replyTo($email, $name)
+                            ->subject('[INNBatível] '.$name.' tem interesse em trabalhar conosco');
                 }
             );
 
@@ -1447,8 +1446,8 @@ class PageController extends BaseController {
             Mail::send('emails.work_with_us.reply', $inputs,
                 function ($message) use ($name, $email) {
                     $message->to($email, $name)
-                            ->setReplyTo('trabalheconosco@innbativel.com.br', 'INNBatível')
-                            ->setSubject('[INNBatível] '.$name.', recebemos seu interesse em trabalhar conosco');
+                            ->replyTo('trabalheconosco@innbativel.com.br', 'INNBatível')
+                            ->subject('[INNBatível] '.$name.', recebemos seu interesse em trabalhar conosco');
                 }
             );
 

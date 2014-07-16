@@ -176,9 +176,9 @@ class AdminContractController extends BaseController {
 
     	Mail::send('emails.contract.send', $data, function($message) use($email, $id){
 			$message->to($email, 'INNBatível')
-					->addCc('contrato@innbativel.com.br', 'INNBatível')
-					->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
-					->setSubject('Contrato ID: '.$id.' | INNBatível');
+					->cc('contrato@innbativel.com.br', 'INNBatível')
+					->replyTo('faleconosco@innbativel.com.br', 'INNBatível')
+					->subject('Contrato ID: '.$id.' | INNBatível');
 		});
 
 		$contract->is_sent = true;
@@ -317,8 +317,8 @@ class AdminContractController extends BaseController {
 			
 	    	Mail::send('emails.contract.create', $data, function($message) use($partner_name, $id){
 				$message->to('contrato@innbativel.com.br', 'INNBatível')
-						->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')
-						->setSubject('Contrato ID: '.$id.' cadastrado | Parceiro: '.$partner_name);
+						->replyTo('faleconosco@innbativel.com.br', 'INNBatível')
+						->subject('Contrato ID: '.$id.' cadastrado | Parceiro: '.$partner_name);
 			});
 
 			// FIM E-MAIL
