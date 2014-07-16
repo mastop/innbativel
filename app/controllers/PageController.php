@@ -789,7 +789,7 @@ class PageController extends BaseController {
             $data = array('name' => $user_profile->first_name, 'products' => $products_email);
 
             Mail::send('emails.order.order_approved', $data, function($message){
-                $message->to(Auth::user()->email, 'INNBatível')->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra finalizada com sucesso');
+                $message->setTo(Auth::user()->email, 'INNBatível')->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')->setSubject('Compra finalizada com sucesso');
             });
 
             return Redirect::route('sucesso', array('status' => $status));
@@ -806,7 +806,7 @@ class PageController extends BaseController {
             $data = array('name' => $user_profile->first_name, 'products' => $products_email, 'boletus_url' => $boletus_url);
 
             Mail::send('emails.order.order_boletus', $data, function($message){
-                $message->to(Auth::user()->email, 'INNBatível')->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Compra finalizada com sucesso');
+                $message->setTo(Auth::user()->email, 'INNBatível')->setReplyTo('faleconosco@innbativel.com.br', 'INNBatível')->setSubject('Sua compra no INNBatível');
             });
 
             return Redirect::route('sucesso', array('status' => $status, 'boletus_url' => base64_encode($boletus_url)));

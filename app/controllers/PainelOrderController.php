@@ -233,7 +233,7 @@ class PainelOrderController extends BaseController {
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
 		 					 ->orderBy('id', 'desc')
-		 					 ->get()->toArray();
+		 					 ->get();
 
 		// print('<pre>');
 		// print_r($vouchers);
@@ -244,13 +244,13 @@ class PainelOrderController extends BaseController {
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
-			$ss[] = $voucher['id'].'-'.$voucher['display_code'];
-			$ss[] = $voucher['offer_option_offer']['id'];
-			$ss[] = $voucher['offer_option_offer']['offer']['title'];
-			$ss[] = $voucher['offer_option_offer']['title'];
-			$ss[] = ($voucher['used'] == 1)?'Sim':'Não';
-			$ss[] = $voucher['name'];
-			$ss[] = $voucher['tracking_code'];
+			$ss[] = $voucher->id.'-'.$voucher->display_code;
+			$ss[] = $voucher->offer_option_offer->offer_id;
+			$ss[] = $voucher->offer_option_offer->offer->title;
+			$ss[] = $voucher->offer_option_offer->title;
+			$ss[] = ($voucher->used == 1)?'Sim':'Não';
+			$ss[] = $voucher->name;
+			$ss[] = $voucher->tracking_code;
 
 			$spreadsheet[] = $ss;
 		}

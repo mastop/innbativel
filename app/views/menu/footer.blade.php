@@ -13,6 +13,7 @@
         <li><a href="#parceiro" data-toggle="modal">Seja Nosso Parceiro</a></li>
         <li><a href="#sugira" data-toggle="modal">Sugira uma Viagem</a></li>
         <li><a href="#conte-pra-gente" data-toggle="modal">Conte pra Gente</a></li>
+        <li><a href="http://blogdeviagem.innbativel.com.br" data-toggle="modal">Blog</a></li>
         <!-- <li><a href="#">Indique e Ganhe</a></li> -->
     </ul>
     <ul id="menu-institucional">
