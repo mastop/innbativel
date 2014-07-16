@@ -69,4 +69,12 @@ $(function () {
         formatSelection: formatIconSelection,
         escapeMarkup: function(m) { return m; }
     });
+    $('.redactor').redactor({
+        lang: 'pt_br',
+        linebreaks: true,
+        observeLinks: true,
+        convertVideoLinks: true,
+        plugins: ['fontsize'],
+        buttons: ['html', 'formatting',  'bold', 'italic', 'unorderedlist', 'orderedlist', 'image', 'video', 'file', 'table', 'link', 'alignment', 'horizontalrule']
+    });
 });
