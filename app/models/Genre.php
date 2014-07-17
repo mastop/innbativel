@@ -26,7 +26,7 @@ class Genre extends Eloquent {
   }
 
     public function __toString(){
-        return '<span class="entypo '.$this->icon.'"></span> '.$this->title;
+        return '<span class="map-icon map-icon-'.$this->icon.'"></span> '.$this->title;
     }
 
     public static function getAllArray(){

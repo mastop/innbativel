@@ -38,7 +38,7 @@
 		->ignore(['id', 'created_at', 'updated_at'])
 		->icon(function($body) {
 			if(isset($body->icon)){
-				return '<span class="entypo entypo-'.$body->icon.'"></span>';
+				return '<span class="map-icon map-icon-'.$body->icon.'"></span>';
 			}
 			return '--';
 		})

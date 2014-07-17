@@ -191,7 +191,7 @@ class AdminGroupController extends BaseController {
 
 		if ($validation->passes())
 		{
-            $inputs['icon'] = str_replace('entypo-', '', $inputs['icon']);
+            $inputs['icon'] = str_replace('map-icon-', '', $inputs['icon']);
 			$this->group->create($inputs);
 
             Session::flash('success', 'Grupo criado com sucesso.');
@@ -256,7 +256,7 @@ class AdminGroupController extends BaseController {
 
 			if ($group)
 			{
-                $inputs['icon'] = str_replace('entypo-', '', $inputs['icon']);
+                $inputs['icon'] = str_replace('map-icon-', '', $inputs['icon']);
 				$group->update($inputs);
 			}
             Session::flash('success', 'Grupo alterado com sucesso.');

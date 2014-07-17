@@ -115,7 +115,7 @@ class AdminGenreController extends BaseController {
 
 		if ($validation->passes())
 		{
-			$inputs['icon'] = str_replace('entypo-', '', $inputs['icon']);
+			$inputs['icon'] = str_replace('map-icon-', '', $inputs['icon']);
 
 			$this->genre->create($inputs);
 
@@ -180,7 +180,7 @@ class AdminGenreController extends BaseController {
 
 			if ($genre)
 			{
-                $inputs['icon'] = str_replace('entypo-', '', $inputs['icon']);
+                $inputs['icon'] = str_replace('map-icon-', '', $inputs['icon']);
 				$genre->update($inputs);
 			}
             Session::flash('success', 'Gênero alterado com sucesso.');

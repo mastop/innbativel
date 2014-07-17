@@ -120,7 +120,7 @@ class AdminIncludedController extends BaseController {
 
 		if ($validation->passes())
 		{
-            $inputs['icon'] = str_replace('entypo-', '', $inputs['icon']);
+            $inputs['icon'] = str_replace('map-icon-', '', $inputs['icon']);
 			$this->included->create($inputs);
 
             Session::flash('success', 'Item Incluso criado com sucesso.');
@@ -184,7 +184,7 @@ class AdminIncludedController extends BaseController {
 
 			if ($included)
 			{
-                $inputs['icon'] = str_replace('entypo-', '', $inputs['icon']);
+                $inputs['icon'] = str_replace('map-icon-', '', $inputs['icon']);
 				$included->update($inputs);
 			}
             Session::flash('success', 'Item Incluso alterado com sucesso.');

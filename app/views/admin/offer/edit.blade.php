@@ -362,7 +362,7 @@
                     @foreach(Included::getAllArray() as $k => $v) {id:{{$v['value']}},icon:"{{$v['data-icon']}}",text:"{{$k}}"},@endforeach
         ];
         function selectIncluded(item) {
-            return "<span class='entypo entypo-"+item.icon+"' style='margin-top:7px;'></span>" + item.text;
+            return "<span class='map-icon map-icon-"+item.icon+"' style='margin-top:0px;'></span>" + item.text;
         }
 
         $("#offers_included").select2({

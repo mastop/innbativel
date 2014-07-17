@@ -40,7 +40,7 @@
 		->ignore(['icon', 'short_title', 'display_order'])
         ->iconn(function($body) {
             if(isset($body->icon)){
-                return '<span class="entypo entypo-'.$body->icon.'"></span>';
+                return '<span class="map-icon map-icon-'.$body->icon.'"></span>';
             }
             return '--';
         })
