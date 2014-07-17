@@ -113,8 +113,6 @@
     </div>
 </div>
 
-{{ Former::checkbox('display_map', '')
-->text('Exibir mapa na oferta')}}
 {{ Former::checkbox('is_available', '')
 ->text('Oferta será publicada')}}
 {{ Former::checkbox('is_product', '')

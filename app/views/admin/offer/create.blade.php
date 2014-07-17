@@ -66,9 +66,6 @@
 
         {{ Former::stacked_radios('category_id', 'Categoria')->radios(Category::getAllArray()) }}
 
-        {{ Former::checkbox('display_map', '')
-        ->text('Exibir mapa na oferta')
-        ->check() }}
         {{ Former::checkbox('is_available', '')
         ->text('Oferta será publicada')
         ->check() }}
