@@ -249,10 +249,10 @@
     });
     function formatGenre(data) {
         var originalOption = data.element;
-        return "<span class='entypo entypo-"+$(originalOption).data('icon')+"' style='margin-top:10px'></span>" + data.text;
+        return "<span class='map-icon map-icon-"+$(originalOption).data('icon')+"' style='margin-top:2px'></span>" + data.text;
     }
     function selectGenre(data) {
         var originalOption = data.element;
-        return "<span class='entypo entypo-"+$(originalOption).data('icon')+"' style='margin-top:13px'></span>" + data.text;
+        return "<span class='map-icon map-icon-"+$(originalOption).data('icon')+"'></span>" + data.text;
     }
 })(jQuery);

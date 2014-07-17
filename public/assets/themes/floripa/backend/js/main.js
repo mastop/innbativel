@@ -59,10 +59,10 @@ $(function () {
     });
 
     function formatIcon(o) {
-        return "<span class='entypo " + o.id + "' style='margin-top:10px'></span>" + o.text;
+        return "<span class='map-icon " + o.id + "' style='margin-top:2px'></span>" + o.text;
     }
     function formatIconSelection(o) {
-        return "<span class='entypo " + o.id + "' style='margin-top:13px'></span>" + o.text;
+        return "<span class='map-icon " + o.id + "'></span>" + o.text;
     }
     $("#icon").select2({
         formatResult: formatIcon,

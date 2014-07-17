@@ -39,9 +39,9 @@
 				<div itemscope class="col-8 col-sm-8 col-lg-8 clearfix buy-box-top">
 					
 					<!-- <div class="offer-label"><span class="entypo clock"></span>Período Limitado</div> -->
-					<div class="offer-label"><span class="entypo {{ $offer->genre->icon }}"></span> {{$offer->genre->title}}</div>
+					<div class="offer-label"><span class="map-icon map-icon-{{ $offer->genre->icon }}"></span> {{$offer->genre->title}}</div>
                     @if($offer->genre2_id > 0)
-					<div class="offer-label"><span class="entypo {{ $offer->genre2->icon }}"></span> {{$offer->genre2->title}}</div>
+					<div class="offer-label"><span class="map-icon map-icon-{{ $offer->genre2->icon }}"></span> {{$offer->genre2->title}}</div>
                     @endif
 					<div id="fotorama" class="fotorama" data-width="100%" data-ratio="600/250" data-nav="thumbs" data-thumbwidth="90" data-thumbheight="50" data-loop="true" data-autoplay="3000" data-transition="slide" data-arrows="true" data-click="false" data-swipe="true">
                         <a href="{{$offer->cover_img}}">
