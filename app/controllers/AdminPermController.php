@@ -111,7 +111,7 @@ class AdminPermController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-        	'name' => 'required',
+        	'name' => 'required|unique:permissions',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -167,7 +167,7 @@ class AdminPermController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-        	'name' => 'required',
+        	'name' => 'required|unique:permissions,name,'.$id,
 		];
 
 	    $validation = Validator::make($inputs, $rules);

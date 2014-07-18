@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>INNBatível - Viaje mais por menos</title>
-</head>
 <style type="text/css">
 a, a:link, a:visited, a:hover, a:focus, a:active{
-  color:#fff;
+  color: #f0cf31;
 }
 </style>
+</head>
 <body>
 <center>
     <table width="600" border="0" cellspacing="0" cellpadding="0">
@@ -30,7 +30,7 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF;">Obrigado por se cadastrar no INNBatível!</td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF;">Obrigado por cadastrar-se no INNBatível!</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
@@ -39,31 +39,13 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">
-                <p>Parabéns! Você fez uma excelente escolha ao se cadastrar no site com os melhores pacotes de viagens do Brasil.
-                </p></td>
-          </tr>
-          <tr>
-            <tr>
-            <td>&nbsp;</td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF; font-weight:bold;">Agora você poderá aproveitar as melhores experiências de viagem pelos menores preços.</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF; font-weight:bold;"><strong>Confira abaixo os seus dados: </strong></td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;"><strong>Nome: </strong> {{$user->profile->first_name}} {{$user->profile->last_name}}</td>
-          </tr>
-          <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;"><strong>Email: </strong> {{$user->email}}</td>
-          </tr>
-          <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;"><strong>Telefone: </strong> {{$user->profile->telephone}}</td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Confira <a style="font-family:Arial, Helvetica, sans-serif; font-size:17px; text-decoration:none;" title="INNBatível - viage mais por menos" target="_blank" href="https://www.innbativel.com.br">nossas ofertas</a>!</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
@@ -72,16 +54,10 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF; font-style:italic;">Desejamos a você uma ótima viagem e uma experiência INNBatível!</td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF; font-style:italic;">Dúvidas? Entre em contato: <a href='mailto: faleconosco@innbativel.com.br' style="font-family:Arial, Helvetica, sans-serif; color:#FFF; text-decoration: none; color:#f0cf31;">faleconosco@innbativel.com.br</a></td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF;">
+              INNBatível<br />
+              <span style="font-size:12px;font-style:italic;">viaje mais por menos</span>
+            </td>
           </tr>
           <tr>
             <td>&nbsp;</td>

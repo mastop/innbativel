@@ -20,7 +20,7 @@
         <tr>
           <td align="center"><table width="500" border="0" cellspacing="0" cellpadding="0">
             <tr>
-              <td width="246" align="left"><a href="INNBatível - Viaje mais por menos"><img src="//{{Configuration::get("s3url")}}logo.png" alt="" width="246" height="68" border="0" style="display:block;"></a></td>
+              <td width="246" align="left"><a href="INNBatível - Viaje mais por menos"><img src="//{{Configuration::get("s3url")}}/logo.png" alt="" width="246" height="68" border="0" style="display:block;"></a></td>
               <td align="right" style="font-size:27px; font-family:Arial, Helvetica, sans-serif; color:#626262;">Cupom</td>
             </tr>
           </table></td>
