@@ -85,7 +85,7 @@
 				return '--';
 			})
 			->paid_onn(function($data) {
-				return $data->paid_on != '0000-00-00 00:00:00' ? date("d/m/Y", strtotime($data->paid_on)) : '<span class="text-error">Não pago</span>';
+				return isset($data->paid_on) && $data->paid_on != '0000-00-00 00:00:00' ? date("d/m/Y", strtotime($data->paid_on)) : '<span class="text-error">Não pago</span>';
 			})
 			->totall(function($data) {
 				if(isset($data->total)){
@@ -106,6 +106,7 @@
 					  	Navigation::links([
 					  		['Marcar como pago e enviar e-mail', 'javascript: marcar_pago(\''.route('admin.payment.update_status', ['id' => $data->id, 'send_mail' => 1]).'\','.$data->id.');'],
 					  		['Apenas marcar como pago', 'javascript: marcar_pago(\''.route('admin.payment.update_status', ['id' => $data->id, 'send_mail' => 0]).'\','.$data->id.');'],
+					  		['Atualizar total', 'javascript: update_total(\''.route('admin.payment.update_total', ['id' => $data->id]).'\','.$data->id.');'],
 					    ])
 					)->pull_right()->split();
 				}
@@ -163,6 +164,40 @@ function marcar_pago(url, id){
 
 function submit_action(url){
 	window.location.href = url + '/' + $('#date').val().replace('/', '-').replace('/', '-');
+}
+
+function update_total(url, id){
+	var href = url;
+	var message = 'Informe o novo total do pagamento #'+id;
+	var title = 'Atualizar total do pagamento #'+id;
+
+	if (!$('#dataConfirmModal').length) {
+		var modal = '<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">'
+	    				+'<div class="modal-header">'
+								+'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'
+								+'<h3 id="dataConfirmLabel">'+title+'</h3></div><div class="modal-body">'
+								+'<p id="modal-message">'+message+'</p>'
+								+'<input type="text" id="new_total" style="width: 100%;" autofocus="autofocus" value=""/>'
+							+'</div>'
+							+'<div class="modal-footer">'
+								+'<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Voltar</button>'
+								+'<a class="btn btn-success" id="dataConfirmOK">Enviar</a>'
+							+'</div>'
+						+'</div>';
+
+	    $('body').append(modal);
+
+	    $('#new_total').mask('000.000.000.000,00', {reverse: true});
+	}
+
+	$('#dataConfirmModal').find('#modal-message').text(message);
+	$('#dataConfirmModal').find('#dataConfirmLabel').text(title);
+	$('#dataConfirmOK').attr('href', 'javascript: submit_update_total("'+url+'")');
+	$('#dataConfirmModal').modal({show:true});
+}
+
+function submit_update_total(url){
+	window.location.href = url + '/' + $('#new_total').val().replace('/', '-').replace('/', '-');
 }
 
 $(function() {

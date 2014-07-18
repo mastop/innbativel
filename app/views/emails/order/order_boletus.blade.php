@@ -3,17 +3,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>INNBatível - Viaje mais por menos</title>
-</head>
 <style type="text/css">
 a, a:link, a:visited, a:hover, a:focus, a:active{
-  color:#fff;
+  color: #f0cf31;
 }
 </style>
+</head>
 <body>
 <center>
     <table width="600" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td align="center"><img src="http://innb.s3.amazonaws.com/1381758288.jpg" width="600" height="300" alt="" style="display:block;"></td>
+        <td align="center"><img src="//{{Configuration::get("s3url")}}/logo.png" width="600" height="300" alt="" style="display:block;"></td>
       </tr>
       <tr>
         <td align="center" bgcolor="#4060a6"><table width="510" border="0" cellspacing="0" cellpadding="0">
@@ -57,7 +57,7 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Assim que o pagamento for identificado, seu cupom estará disponível em nosso site.</td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Assim que o pagamento for identificado, seu cupom estará disponível em nosso site, na sua conta INNBatível.</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
@@ -66,7 +66,19 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF; font-style:italic;">Dúvidas? Entre em contato: <a href='mailto: faleconosco@innbativel.com.br' style="font-family:Arial, Helvetica, sans-serif; color:#FFF; text-decoration: none; color:#f0cf31;">faleconosco@innbativel.com.br</a></td>
+            <td style="font-family:Arial, Helvetica, sans-serif; font-size:14px; color:#FFF; font-style:italic;">Dúvidas? Entre em contato: <a href='mailto: faleconosco@innbativel.com.br' style="font-family:Arial, Helvetica, sans-serif; color:#FFF; text-decoration: none; color:#f0cf31;">faleconosco@innbativel.com.br</a></td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td style="font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFF;">
+              INNBatível<br />
+              <span style="font-size:12px;font-style:italic;">viaje mais por menos</span>
+            </td>
           </tr>
           <tr>
             <td>&nbsp;</td>
