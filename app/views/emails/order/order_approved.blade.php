@@ -55,7 +55,7 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Resgate seu cupom em nosso site: <a style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF; text-decoration:none; color:#f0cf31;" title="INNBatível - viage mais por menos" target="_blank" href="http://www.innbativel.com.br">www.innbativel.com.br</a>.</td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Resgate seu cupom que está disponível em <a style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF; text-decoration:none; color:#f0cf31;" title="INNBatível - viage mais por menos" target="_blank" href="route('minha-conta')">sua conta no INNBatível</a>.</td>
           </tr>
           <tr>
             <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Utilize seu login e senha cadastrados, e não esqueça de imprimir seu cupom.</td>
