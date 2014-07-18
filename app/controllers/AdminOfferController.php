@@ -354,9 +354,8 @@ class AdminOfferController extends BaseController {
                         }
                     }
                 }
-                // Salva as flags is_active, display_map, is_available, is_product
+                // Salva as flags is_active, is_available, is_product
                 $offer->is_active = Input::get('is_active', 0);
-                $offer->display_map = Input::get('display_map', 0);
                 $offer->is_available = Input::get('is_available', 0);
                 $offer->is_product = Input::get('is_product', 0);
                 // Update na oferta
@@ -679,9 +678,8 @@ class AdminOfferController extends BaseController {
                         }
                     }
                 }
-                // Salva as flags is_active, display_map, is_available, is_product
+                // Salva as flags is_active, is_available, is_product
                 $offer->is_active = Input::get('is_active', 0);
-                $offer->display_map = Input::get('display_map', 0);
                 $offer->is_available = Input::get('is_available', 0);
                 $offer->is_product = Input::get('is_product', 0);
                 // Update na oferta

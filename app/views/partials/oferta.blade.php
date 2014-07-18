@@ -1,6 +1,6 @@
 <a href="{{$offer->url}}" class="offer-grid-inner clearfix">
-    @if($offer->genre_id > 0)<div class="offer-label"><span class="entypo {{$offer->genre->icon}}"></span> {{$offer->genre->title}}</div>@endif
-    @if($offer->genre2_id > 0)<div class="offer-label"><span class="entypo {{$offer->genre2->icon}}"></span> {{$offer->genre2->title}}</div>@endif
+    @if($offer->genre_id > 0)<div class="offer-label"><span class="map-icon map-icon-{{$offer->genre->icon}}"></span> {{$offer->genre->title}}</div>@endif
+    @if($offer->genre2_id > 0)<div class="offer-label"><span class="map-icon map-icon-{{$offer->genre2->icon}}"></span> {{$offer->genre2->title}}</div>@endif
     <figure>
         <img src="{{$offer->thumb}}" alt="{{$offer->title}}">
     </figure>
@@ -10,7 +10,7 @@
     <div class="content clearfix">
         <div class="info row" itemscope="" itemprop="offers">
             @foreach ($offer->included as $included)
-            <div class="col-lg-2 @if($included->description) tooltip" data-tip="{{ $included->description }}@endif"><span class="entypo {{ $included->icon }}"></span> {{ $included->title }}</div>
+            <div class="col-lg-2 @if($included->description) tooltip" data-tip="{{ $included->description }}@endif"><span class="map-icon map-icon-{{ $included->icon }}"></span> {{ $included->title }}</div>
             @endforeach
         </div>
         <div class="options clearfix">

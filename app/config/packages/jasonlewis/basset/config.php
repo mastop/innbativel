@@ -52,6 +52,7 @@ return [
         $collection->javascript('prettify-js')->apply('JsMin');
         $collection->javascript('main-js')->apply('JsMin');
         $collection->stylesheet('assets/themes/floripa/backend/css/entypo.css')->apply('UriRewriteFilter')->andApply('CssMin');
+        $collection->stylesheet('assets/themes/floripa/backend/css/map-icons.css')->apply('UriRewriteFilter')->andApply('CssMin');
       },
 
     ],

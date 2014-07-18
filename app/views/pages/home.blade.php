@@ -49,7 +49,7 @@
         @if($k == 0) @continue @endif
 		<div class="offer-grid row offer-group">
 
-		  <h3><span class="entypo {{ $group->icon }}"></span> {{ $group->title }}</h3>
+		  <h3><span class="map-icon map-icon-{{ $group->icon }}"></span> {{ $group->title }}</h3>
 
 		  @foreach ($group->offer as $k => $offer)
 		  <div itemscope class="offer-grid-item col-6 col-sm-6 col-lg-6 clearfix">

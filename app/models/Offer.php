@@ -36,7 +36,6 @@ class Offer extends BaseModel {
         'ends_on', // Data de Término
         'cover_img', // Imagem Principal
         'newsletter_img', // Imagem Newsletters
-        'display_map', // Exibir mapa?
         'is_product', // Será publicada?
         'is_active', // Oferta ativa?
         'sold', // Itens Vendidos
