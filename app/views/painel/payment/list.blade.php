@@ -77,7 +77,7 @@
 				return '--';
 			})
 			->paid_onn(function($data) {
-				return $data['paid_on'] != '0000-00-00 00:00:00'?date("d/m/Y", strtotime($data['paid_on'])):'<span class="text-error">Não pago</span>';
+				return isset($data['paid_on']) && $data['paid_on'] != '0000-00-00 00:00:00' ? date("d/m/Y", strtotime($data['paid_on'])) : '<span class="text-error">Não pago</span>';
 			})
 			->totall(function($data) {
 				if(isset($data['total'])){
