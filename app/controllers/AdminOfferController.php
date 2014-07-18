@@ -425,7 +425,7 @@ class AdminOfferController extends BaseController {
         if ($this->offer->passes() && $this->offer_option->passes(Input::get('offer_options')[0]))
         {
             // Pega a oferta
-            $offer = $this->offer->find($id);
+            $offer = $this->offer->withTrashed()->find($id);
 
             if($offer){
                 // Salva a oferta
