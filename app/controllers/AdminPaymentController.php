@@ -111,7 +111,7 @@ class AdminPaymentController extends BaseController {
 		// print_r($paymentPartnerData->toArray());
 		// print('</pre>'); die();
 
-		$ps = Payment::where('sales_to', '<', date('Y-m-d H:i:s'))->orderBy('id', 'asc')->get();
+		$ps = Payment::where('sales_to', '<', date('Y-m-d H:i:s'))->orderBy('id', 'desc')->get();
 		$paymData = array();
 
 		foreach ($ps as $p) {
@@ -613,12 +613,34 @@ class AdminPaymentController extends BaseController {
 				$email = $partner->email;
 
 	        	Mail::send('emails.payment.paid', $data, function($message) use($email){
-					$message->to($email, 'INNBatível')->replyTo('faleconosco@innbativel.com.br', 'INNBatível')->subject('Pagamento efetuado');
+					$message->to($email, 'INNBatível')->replyTo('financeiro@innbativel.com.br', 'INNBatível')->subject('Pagamento efetuado');
 				});
 			}
 
 			Session::flash('success', 'Pagamento #'.$id.' alterado para "pago em '.$date.'" com sucesso.');
 		}
+
+		return Redirect::back();
+	}
+
+	/**
+	 * Update approved attribute of comment.
+	 *
+	 * @return Response
+	 */
+	public function getUpdateTotal($id, $total = 0){
+		$payment_partner = $this->payment_partner->find($id);
+		
+		if($payment_partner){
+			$payment_partner->total = str_replace(',', '.', str_replace('.', '', $total));
+			$payment_partner->save();
+
+			Session::flash('success', 'O total do pagamento #'.$id.' foi alterado para R$'.$total.' com sucesso.');
+			
+			return Redirect::back();
+		}
+
+		Session::flash('error', 'Pagamento #'.$id.' não enconrtado.');
 
 		return Redirect::back();
 	}
