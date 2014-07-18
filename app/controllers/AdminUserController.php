@@ -137,7 +137,7 @@ class AdminUserController extends BaseController {
 
 		$blackList = [
 			'user_id',
-			// 'img',
+			'id',
 			// 'facebook_id',
 			// 'total_purchasses',
 			// 'credit',
