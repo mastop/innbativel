@@ -658,8 +658,8 @@ class AdminOrderController extends BaseController {
 			$ss[] = $voucher->offer_option_offer->offer->id;
 			$ss[] = $voucher->id.'-'.$voucher->display_code.'-'.$voucher->offer_option_offer->offer->id;
 			$ss[] = ($voucher->used == 1)?'Sim':'Não';
-			$ss[] = $voucher->order_customer->user['first_name'].' '.$voucher->order_customer->user['last_name'];
-			$ss[] = $voucher->order_customer->user['email'];
+			$ss[] = $voucher->order_customer->buyer->profile->first_name.' '.$voucher->order_customer->buyer->profile->last_name;
+			$ss[] = $voucher->order_customer->buyer->email;
 			$ss[] = $voucher->tracking_code;
 
 			$spreadsheet[] = $ss;

@@ -381,7 +381,7 @@ class AdminPaymentController extends BaseController {
 
 			$ss[] = date("d/m/Y H:i:s", strtotime($transactionVoucher->created_at));
 			$ss[] = $transactionVoucher->voucher->order_customer->braspag_order_id;
-			$ss[] = $transactionVoucher->voucher->order->user->first_name.' '.$transactionVoucher->voucher->order->user->last_name;
+			$ss[] = $transactionVoucher->voucher->order->buyer->profile->first_name.' '.$transactionVoucher->voucher->order->buyer->profile->last_name;
 			$ss[] = $transactionVoucher->voucher->id.'-'.$transactionVoucher->voucher->display_code.'-'.$transactionVoucher->voucher->offer_option_offer->offer->id;
 			$ss[] = $transactionVoucher->voucher->offer_option_offer->offer->id.' | '.$transactionVoucher->voucher->offer_option_offer->offer->title.' ('.$transactionVoucher->voucher->offer_option_offer->title.')';
 			$ss[] = $transactionVoucher->status;
