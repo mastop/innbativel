@@ -437,7 +437,7 @@ class AdminOrderController extends BaseController {
 		$ordersObj = $this->order;
 		
 		$ordersData = $ordersObj->with([
-										'user',
+										'buyer',
 										'discount_coupon',
 										'offer_option_offer' => function($query) use($offer_option_id){
 												   $query->where('offers_options.id', $offer_option_id);
@@ -505,8 +505,8 @@ class AdminOrderController extends BaseController {
 			$ss[] = $order->offer_option_offer{0}->title;
 			$ss[] = $order->offer_option_offer{0}->price_with_discount;
 			$ss[] = count($order->voucher);
-			$ss[] = $order['user']->first_name.' '.$order['user']->last_name;
-			$ss[] = $order['user']->email;
+			$ss[] = $order->buyer->profile->first_name.' '.$order->buyer->profile->last_name;
+			$ss[] = $order->buyer->email;
 			$ss[] = $order->payment_terms;
 			$ss[] = $order->holder_card;
 			$ss[] = $order->telephone;
@@ -693,18 +693,21 @@ class AdminOrderController extends BaseController {
 
 	public function getVoucherCancel(){
 		$voucher = Voucher::where('id', Input::get('id'))->first();
-		if($voucher->status == 'pago'){
-			$voucher->status = (Input::get('convert_credits') == 0)?'cancelado_parcial':'convercao_creditos_parcial';
-			$voucher->save();
+		$order = $this->order->where('id', Input::get('order_id'))->first();
 
-			$order = $this->order->where('id', Input::get('order_id'))->first();
-			$order->history .= date('d/m/Y H:i:s') . " - Cancelamento parcial de cupom (\"" . Input::get('comment') . "\" por " . Auth::user()->email . ")"."\r\n";
-			$order->save();
-
-			return Redirect::back()->with('success', 'Voucher '.$voucher->id.'-'.$voucher->display_code.' cancelado com sucesso.');
+		if($voucher->status != 'pago'){
+			return Redirect::route('admin.order', ['braspag_order_id' => $order->braspag_order_id])
+						   ->with('error', 'Voucher '.$voucher->id.'-'.$voucher->display_code.' não pôde ser cancelado pois já estava cancelado.');
 		}
 
-		return Redirect::back()->with('error', 'Voucher '.$voucher->id.'-'.$voucher->display_code.' não pôde ser cancelado pois já estava cancelado.');
+		$voucher->status = (Input::get('convert_credits') == 0)?'cancelado_parcial':'convercao_creditos_parcial';
+		$voucher->save();
+
+		$order->history .= date('d/m/Y H:i:s') . " - Cancelamento parcial de cupom (\"" . Input::get('comment') . "\" por " . Auth::user()->email . ")"."\r\n";
+		$order->save();
+
+		return Redirect::route('admin.order', ['braspag_order_id' => $order->braspag_order_id])->with('success', 'Voucher '.$voucher->id.'-'.$voucher->display_code.' cancelado com sucesso.');
+
 	}
 
 	public function sendTransactionalEmail($order, $new_status){
@@ -739,12 +742,12 @@ class AdminOrderController extends BaseController {
 	}
 
 	public function getUpdateStatus($id, $status, $comment){
+        $order = Order::where('id', $id)->first();
+
         if($status != 'pago' && $status != 'cancelado'){
             Session::flash('error', 'O status deve ser "pago" ou "cancelado"');
-            return Redirect::back();
+            return Redirect::route('admin.order', ['braspag_order_id' => $order->braspag_order_id]);
         }
-
-        $order = Order::where('id', $id)->first();
 
         $this->updateOrder($order, $status, $comment);
         $this->sendTransactionalEmail($order, $status);
@@ -929,17 +932,19 @@ class AdminOrderController extends BaseController {
 
 	public function getCancel($id, $braspag_order_id, $comment){
 		$order = Order::find($id);
+
 		if($order->braspag_order_id != $braspag_order_id){
 			$error = 'Erro #26';
-			return Redirect::back()
-				->withErrors($error);
+			return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+						   ->withErrors($error);
 		}
 
 		$new_status = 'cancelado';
 
 		$this->updateOrder($order, $new_status, $comment);
 
-		return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' via boleto cancelado com sucesso. IMPORTANTE: ainda é necessário reembolsar o cliente.');
+		return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+					   ->with('success', 'Pagamento '.$order->braspag_order_id.' via boleto cancelado com sucesso. IMPORTANTE: ainda é necessário reembolsar o cliente.');
 	}
 
 	// public function getReject($id, $braspag_order_id, $comment){
@@ -1021,10 +1026,11 @@ class AdminOrderController extends BaseController {
 
 	public function getApprove($id, $braspag_order_id, $comment){
 		$order = Order::where('id', $id)->first();
+
 		if($order->braspag_order_id != $braspag_order_id){
 			$error = 'Erro #16';
-			return Redirect::back()
-				->withErrors($error);
+			return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+						   ->withErrors($error);
 		}
 
 		//////////////////////////////////////
@@ -1040,8 +1046,8 @@ class AdminOrderController extends BaseController {
 
 	    if ($err) {
 	      	$error = 'Erro #17';
-			return Redirect::back()
-				->withErrors($error);
+			return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+						   ->withErrors($error);
 	    }
 
 	    $param = array(
@@ -1078,22 +1084,22 @@ class AdminOrderController extends BaseController {
 
 	    if ($client->fault || !$result) {
 	      	$error = 'Erro #18';
-			return Redirect::back()
-				->withErrors($error);
+			return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+						   ->withErrors($error);
 	    } else {
 	      $err = $client->getError();
 	      if ($err) {
 	        $error = 'Erro #19';
-			return Redirect::back()
-				->withErrors($error);
+			return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+						   ->withErrors($error);
 	      } else {
 	        // print("<pre>");
 	        // print_r($result);
 	        // print("</pre>");
 	        if($result['UpdateStatusResult']['Success'] != true){
 	        	$error = 'Erro #20';
-				return Redirect::back()
-					->withErrors($error);
+				return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+							   ->withErrors($error);
 	        }
 	      }
 	    }
@@ -1113,8 +1119,8 @@ class AdminOrderController extends BaseController {
 
 	    if ($err) {
 	      	$error = 'Erro #21';
-			return Redirect::back()
-				->withErrors($error);
+			return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+						   ->withErrors($error);
 	    }
 
 	    $param = array(
@@ -1156,14 +1162,14 @@ class AdminOrderController extends BaseController {
 
 	    if ($client_pagador->fault || !$result) {
 	    	$error = 'Erro #22';
-			return Redirect::back()
-				->withErrors($error);
+			return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+						   ->withErrors($error);
 	    } else {
 	      $err = $client_pagador->getError();
 	      if ($err) {
 	        $error = 'Erro #23';
-			return Redirect::back()
-				->withErrors($error);
+			return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+						   ->withErrors($error);
 	      } else {
 	        // print("<pre>");
 	        // print_r($result);
@@ -1175,21 +1181,23 @@ class AdminOrderController extends BaseController {
 	        }
 	        else{
 	        	$error = 'Erro #24';
-				return Redirect::back()
+				return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
 							   ->withErrors($error);
 	        }
 	      }
 	    }
 
-	    return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' aprovado com sucesso.');
+	    return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+	    			   ->with('success', 'Pagamento '.$order->braspag_order_id.' aprovado com sucesso.');
 	}
 
 	public function getConvertValue2Credit($id, $braspag_order_id, $comment){
 		$order = Order::find($id);
+
 		if($order->braspag_order_id != $braspag_order_id){
 			$error = 'Erro #25';
-			return Redirect::back()
-				->withErrors($error);
+			return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+						   ->withErrors($error);
 		}
 
 		$new_status = 'convercao_creditos';
@@ -1202,7 +1210,8 @@ class AdminOrderController extends BaseController {
 		// $profile->credit += $total;
 		// $profile->save();
 
-		return Redirect::back()->with('success', 'Pagamento '.$order->braspag_order_id.' convertido em créditos ao usuário com sucesso.');
+		return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
+					   ->with('success', 'Pagamento '.$order->braspag_order_id.' convertido em créditos ao usuário com sucesso.');
 	}
 
 	// public function getCancelBoletus($id, $braspag_order_id, $comment){
