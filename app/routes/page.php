@@ -28,6 +28,7 @@ Route::group(array('https', 'after' => 'cache.public'), function()
     Route::any('criteo.php', ['as' => 'criteo', 'uses' => 'XmlServerController@getCriteo']);
     Route::any('/go/{ban}', ['as' => 'banner', 'uses' => 'PageController@getBanner']);
     Route::any('/fechamento/{payment_id}', ['as' => 'fechamento', 'uses' => 'CronjobController@getFechamentoQuinzenal', 'after' => 'cache.public']);
+    Route::post('/braspag_retorno', ['as' => 'braspag_retorno', 'uses' => 'PageController@postBraspagReturn']);
 });
 
 Route::group(array('https', 'prefix' => 'painel', 'before' => 'auth|perm'), function(){
@@ -97,8 +98,6 @@ Route::group(array('https', 'prefix' => 'minha-conta', 'before' => 'auth'), func
     Route::any('/trocarsenha', ['as' => 'trocar-senha', 'uses' => 'PageController@postTrocarSenha', 'after' => 'cache.public']);
 
 });
-
-Route::post('braspag_retorno', ['as' => 'braspag_retorno', 'uses' => 'PageController@postBraspagReturn']);
 
 Route::any('/status', ['as' => 'status', 'uses' => 'PageController@anyStatus', 'after' => 'cache.public']);
 
