@@ -862,14 +862,14 @@ class PageController extends BaseController {
           return Response::make('<status>Acesso Negado</status>', 200, array('Content-Type' => 'application/xml; charset=UTF-8'));
         }
 
-        $braspag_id = $_POST['NumPedido'];
+        $braspag_order_id = $_POST['NumPedido'];
         // $codpagamento = $_POST['CODPAGAMENTO'];
 
         $status = $_POST['Status'] == '0' ? 'pago' : 'cancelado' ;
 
-        Logs::debug('braspag_id: '.$braspag_id);
+        Logs::debug('braspag_order_id: '.$braspag_order_id);
 
-        $order = Order::where('braspag_id', $braspag_id)->first();
+        $order = Order::where('braspag_order_id', $braspag_order_id)->first();
 
         $user_id = $order->user_id;
         $order_id = $order->id;
