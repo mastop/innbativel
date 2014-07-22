@@ -867,6 +867,8 @@ class PageController extends BaseController {
 
         $status = $_POST['Status'] == '0' ? 'pago' : 'cancelado' ;
 
+        Logs::debug('braspag_id: '.$braspag_id);
+
         $order = Order::where('braspag_id', $braspag_id)->first();
 
         $user_id = $order->user_id;
