@@ -241,10 +241,10 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	// Route::any('order/cancel_paid_by_credit', function(){ return Redirect::route('admin.order'); });
 	// Route::get('order/cancel_paid_by_credit/{id}/{braspag_order_id}/{comment}', ['as' => 'admin.order.cancel_boletus', 'uses' => 'AdminOrderController@getCancelPaidByCredit']);
 
-	Route::any('order/voucher/{offer_option_id?}', ['as' => 'admin.order.voucher', 'uses' => 'AdminOrderController@anyVouchers']);
+	Route::any('order/voucher/{offer_id?}', ['as' => 'admin.order.voucher', 'uses' => 'AdminOrderController@anyVouchers']);
 
 	Route::any('order/voucher/exportar', function(){ return Redirect::route('admin.order'); });
-	Route::get('order/voucher/exportar/{offer_option_id?}/{id?}', ['as' => 'admin.order.voucher_export', 'uses' => 'AdminOrderController@getVoucherExport']);
+	Route::get('order/voucher/exportar/{offer_id?}/{id?}', ['as' => 'admin.order.voucher_export', 'uses' => 'AdminOrderController@getVoucherExport']);
 
 	Route::get('order/update_status/{id}/{status}/{comment}', ['as' => 'admin.order.update_status', 'uses' => 'AdminOrderController@getUpdateStatus']);
 

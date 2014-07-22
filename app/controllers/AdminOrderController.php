@@ -525,26 +525,24 @@ class AdminOrderController extends BaseController {
 	         ->export('xls');
 	}
 
-	public function anyVouchers($offer_option_id = null){
+	public function anyVouchers($offer_id = null){
 		$vouchers = new Voucher;
 
 		// Exibe somente vouchers pagos
 		$vouchers = $vouchers->where('status', 'pago');
 
-		$offers = new Offer;
+		$offersObj = Offer::withTrashed();
 
 		if(isset($this->comercial_restriction)){
-			$offers = $offers->whereRaw($this->comercial_restriction);
+			$offersObj = $offersObj->whereRaw($this->comercial_restriction);
 		}
 
-		$offers = $offers->with(['offer_option'])->orderBy('id', 'desc')->get();
+		$offersObj = $offersObj->orderBy('id', 'desc')->get();
 
 		// $offersOptions irá preencher o <select> da opção da qual estamos visualizando os vouchers/cupons
-		foreach ($offers as $offer) {
-			foreach ($offer['offer_option'] as $offer_option) {
-				$t = $offer->id.' | '.$offer->title.' | '.$offer_option->title;
-				$offersOptions[$offer_option->id] = $t;
-			}
+		foreach ($offersObj as $offer) {
+			$t = $offer->id.' | '.$offer->title;
+			$offers[$offer->id] = $t;
 		}
 
 		/*
@@ -567,19 +565,15 @@ class AdminOrderController extends BaseController {
 		/*
 		 * Search filters
 		 */
-		if (Input::has('offer_option_id')) {
-			$offer_option_id = Input::get('offer_option_id');
-			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
-		}
-		else if(isset($offer_option_id)){
-			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
+		if (Input::has('offer_id')) {
+			$offer_id = Input::get('offer_id');
 		}
 
 		if(Input::has('id')){
 			$vouchers = $vouchers->where('id', Input::get('id'));
 		}
 
-		$vouchers = $vouchers->with(['offer_option_offer'])
+		$vouchers = $vouchers->with(['offer_option_offer', 'order_customer'])
 							 ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('orders')
@@ -596,13 +590,21 @@ class AdminOrderController extends BaseController {
 								}
 
 				             })
+				             ->whereExists(function($query) use($offer_id){
+				             	if(isset($offer_id)){
+									$query->select(DB::raw(1))
+					                      ->from('offers_options')
+					                      ->whereRaw('offers_options.id = vouchers.offer_option_id')
+					                      ->whereRaw('offers_options.offer_id = '.$offer_id);
+								}
+				             })
 							 ->orderBy($sort, $order)
 							 ->paginate($pag)
 							 ->appends([
 								 'sort' => $sort,
 								 'order' => $order,
 								 'pag' => $pag,
-								 'offer_option_id' => $offer_option_id,
+								 'offer_id' => $offer_id,
 								 'id' => Input::get('id'),
 							 ]);
 							 // ->get()->toArray();
@@ -611,20 +613,16 @@ class AdminOrderController extends BaseController {
 							 // print_r($vouchers);
 							 // print('</pre>'); die();
 
-		$this->layout->content = View::make('admin.order.voucher', compact('sort', 'order', 'pag', 'offer_option_id', 'vouchers', 'offersOptions'));
+		$this->layout->content = View::make('admin.order.voucher', compact('sort', 'order', 'pag', 'offer_id', 'vouchers', 'offers'));
 	}
 
-	public function getVoucherExport($offer_option_id = null, $id = null){
+	public function getVoucherExport($offer_id = null, $id = null){
 		$id = ($id == 'null')?null:$id;
-		$offer_option_id = ($offer_option_id == 'null')?null:$offer_option_id;
+		$offer_id = ($offer_id == 'null')?null:$offer_id;
 
 		$vouchers = new Voucher;
 
 		$vouchers = $vouchers->where('status', 'pago');
-
-		if(isset($offer_option_id)){
-			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
-		}
 
 		if(isset($id)){
 			$vouchers = $vouchers->where('id', $id);
@@ -647,7 +645,15 @@ class AdminOrderController extends BaseController {
 								}
 
 				             })
-		 					 ->orderBy('id', 'asc')
+				             ->whereExists(function($query) use($offer_id){
+				             	if(isset($offer_id)){
+									$query->select(DB::raw(1))
+					                      ->from('offers_options')
+					                      ->whereRaw('offers_options.id = vouchers.offer_option_id')
+					                      ->whereRaw('offers_options.offer_id = '.$offer_id);
+								}
+				             })
+		 					 ->orderBy('id', 'desc')
 		 					 ->get();
 
 		$spreadsheet = array();
