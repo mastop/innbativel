@@ -249,6 +249,7 @@ class PageController extends BaseController {
                 // ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
                 $error = 'A quantidade selecionada para a oferta "' . $offer_option->offer->title . '" é maior do que a quantidade em estoque.';
                 $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
+
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
@@ -476,6 +477,8 @@ class PageController extends BaseController {
 
                 $order->save();
 
+                Voucher::where('order_id', $order_id)->update(['status' => 'cancelado']);
+
                 // ERRO, NAO APROVADO, ETC...
                 Session::flash('error', $return);
                 return Redirect::back()
@@ -653,6 +656,8 @@ class PageController extends BaseController {
                 $order->history .= $history = date('d/m/Y H:i:s') . " - Pagador: " . $returnBD . " (ReturnCode = " . $response->PaymentDataCollection->PaymentDataResponse->ReturnCode . " e Status =  " . $response->PaymentDataCollection->PaymentDataResponse->Status . ")"."\r\n";
 
                 $order->save();
+
+                Voucher::where('order_id', $order_id)->update(['status' => 'cancelado']);
 
                 // ERRO, NAO APROVADO, ETC...
                 Session::flash('error', $return);
@@ -833,6 +838,16 @@ class PageController extends BaseController {
             '209.134.53.180',
             '209.134.48.123',
             '209.235.236.161',
+            '69.171.26.131',
+            '69.171.26.132',
+            '69.171.26.133',
+            '69.171.26.134',
+            '69.171.26.135',
+            '69.171.26.136',
+            '69.171.26.137',
+            '69.171.26.138',
+            '69.171.26.139',
+            '69.171.26.140',
         );
 
         if (
@@ -869,6 +884,11 @@ class PageController extends BaseController {
 
     public function postValidateCoupon(){
         $this->layout = 'format.ajax';
+
+        if(!Auth::check()){
+            return Response::json(['error' => 1, 'error_message' => 'Sua sessão expirou. Atualize esta página e faça login novamente para visualziar seu cupom.']);
+        }
+
         $display_code = Input::get('promoCode');
         $offers_options_ids = Input::get('opt', array());
         $offers = OfferOption::whereIn('id', $offers_options_ids)->get(['offer_id']);
@@ -1076,6 +1096,9 @@ class PageController extends BaseController {
      */
     public function getViewVoucher($id)
     {   
+        if(!Auth::check()){
+            return Redirect::route('minha-conta')->with('error', 'Sua sessão expirou, faça login novamente para visualziar seu cupom.');
+        }
         $id = base64_decode($id);
         $voucher = Voucher::with(['order_buyer', 'offer_partner'])
                           ->where('id', $id)

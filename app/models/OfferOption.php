@@ -73,7 +73,7 @@ class OfferOption extends BaseModel {
 
 	public function qty_pending(){
 		return $this->hasMany('Voucher', 'offer_option_id')
-					->where('vouchers.status', 'pendente')
+					->whereIn('vouchers.status', ['pendente', 'revisao'])
 					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
 					->groupBy('vouchers.offer_option_id');
 	}

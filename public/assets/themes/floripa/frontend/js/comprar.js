@@ -226,7 +226,9 @@
                     url: validaCupomURL,
                     data: $('#buy-form').serialize(),
                     success: function(data){
-                        if(data.value > 0){
+                    	if(data.error > 0){
+                    		alert(data.error_message);
+                    	}else if(data.value > 0){
                             promoCodeDiscount = data.value;
                             updatePrice();
                         }else{

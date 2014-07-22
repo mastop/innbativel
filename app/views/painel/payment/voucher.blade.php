@@ -66,8 +66,8 @@
 			})
 			
 			->customer(function($data) {
-				if(isset($data->voucher->order->user->first_name)){
-					return $data->voucher->order->user->first_name.' '.$data->voucher->order->user->last_name;
+				if(isset($data->voucher->order_customer->buyer) && isset($data->voucher->order_customer->buyer->profile)){
+					return $data->voucher->order_customer->buyer->profile->first_name.' '.$data->voucher->order_customer->buyer->profile->last_name;
 				}
 				return '--';
 			})

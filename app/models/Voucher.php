@@ -30,7 +30,7 @@ class Voucher extends Eloquent {
 
   public function order_customer(){
     return $this->belongsTo('Order', 'order_id')
-                ->with(['user']);
+                ->with(['buyer']);
   }
 
   public function order_buyer(){
