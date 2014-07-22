@@ -3,7 +3,7 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Pagamentos por oferta</h6>
+			<h6>Vendas por oferta</h6>
 	        <div class="nav pull-right">
 	            @if(Auth::user()->can('admin.order'))
 	            <a href="{{ route('admin.order') }}" title="Listar todos os pagamentos" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>

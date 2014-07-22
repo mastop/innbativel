@@ -2,7 +2,7 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Lista de Ofertas</h6>
+			<h6>Lista de Ofertas Antigas</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.offer.create') }}" title="Criar Oferta" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
 	            <a href="{{ route('admin.offer.sort') }}" title="Ordenar Ofertas" class="dropdown-toggle navbar-icon"><i class="icon-random"></i></a>
@@ -14,12 +14,14 @@
 
 	<div class="datatable-header">
 		<div class="dataTables_filter">
-			{{ Former::inline_open(route('admin.offer')) }}
+			{{ Former::inline_open(route('admin.offer.deleted')) }}
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::text('id')->class('input-medium')->placeholder('ID')->label('ID') }}
 			{{ Former::text('destiny')->class('input-medium')->placeholder('Destino')->label('Destino') }}
 			{{ Former::text('title')->class('input-medium')->placeholder('Título')->label('Título') }}
 			{{ Former::select('partner_id', 'Parceiro')
+				->class('admin-auto-complete')
+				->placeholder('Parceiro')
 	        	->addOption('', null)
 				->fromQuery(User::getAllByRole('parceiro'))
 	        }}
@@ -78,5 +80,7 @@
 		{{ $offer->links() }}
 	</div>
 </div>
+
+<script src="{{ asset('assets/themes/floripa/backend/js/auto-complete.js') }}"></script>
 
 @stop
