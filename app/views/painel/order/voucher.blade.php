@@ -14,11 +14,11 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('painel.order.voucher')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::select('offer_option_id', 'Oferta e Opção')->addOption('Todas', null)->options($offersOptions, $offer_option_id) }}
+			{{ Former::select('offer_id', 'Oferta')->addOption('Todas', null)->options($offers, $offer_id) }}
 			{{ Former::number('id')->class('input-medium')->placeholder('Chave do cupom')->label('Chave do cupom (primeiros digitos)') }}
 			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('painel.order.voucher')) }}
-			{{ Former::link('Exportar esta pesquisa para excel', 'javascript: exportar(\''.route('painel.order.voucher_export', ['id' =>'id', 'offer_option_id' => 'offer_option_id']).'\');') }}
+			{{ Former::link('Exportar esta pesquisa para excel', 'javascript: exportar(\''.route('painel.order.voucher_export', ['id' =>'id', 'offer_id' => 'offer_id']).'\');') }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
@@ -36,8 +36,26 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('Chave do cupom', 'Código', 'ID da Oferta', 'Validado?', 'Nome', 'Código de rastreamento', 'Ações') }}
-{{ Table::body($vouchers)->ignore(['offer_option_id', 'order_id', 'name', 'email', 'status', 'tracking_code', 'used', 'order', 'offer_option_offer', 'created_at', 'updated_at', 'price'])
+{{ Table::headers('Data', 'Chave do cupom', 'Código', 'ID da Oferta', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento', 'Ações') }}
+{{ Table::body($vouchers)->ignore(['id', 'display_code', 'offer_option_id', 'order_id', 'name', 'email', 'status', 'tracking_code', 'used', 'order', 'offer_option_offer', 'order_customer', 'created_at', 'updated_at', 'price'])
+	->datetime(function($voucher) {
+		if(isset($voucher['order_customer'])) {
+			return date('d/m/Y H:i:s', strtotime($voucher['order_customer']['created_at']));
+		}
+		return '?';
+	})
+	->idd(function($voucher) {
+		if(isset($voucher->id)) {
+			return $voucher->id;
+		}
+		return '?';
+	})
+	->display_codee(function($voucher) {
+		if(isset($voucher->display_code)) {
+			return $voucher->display_code;
+		}
+		return '?';
+	})
 	->offer_id(function($voucher) {
 		if(isset($voucher['offer_option_offer'])) {
 			return link_to_route('painel.offer.view', $voucher['offer_option_offer']['offer']['id'], $voucher['offer_option_offer']['offer']['id']);
@@ -53,6 +71,12 @@
 	->namee(function($voucher) {
 		if(isset($voucher)) {
 			return $voucher['name'];
+		}
+		return '?';
+	})
+	->emaill(function($voucher) {
+		if(isset($voucher)) {
+			return $voucher['email'];
 		}
 		return '?';
 	})
@@ -159,9 +183,9 @@ function update_tracking_code(url, voucher_id){
 function exportar(url){
 	//{offer_option_id?}/{id?}
 	var id = ($('#id').val() == '')?'null':$('#id').val();
-	var offer_option_id = ($('#offer_option_id').val() == '')?'null':$('#offer_option_id').val();
+	var offer_id = ($('#offer_id').val() == '')?'null':$('#offer_id').val();
 
-	url = url.replace('/offer_option_id', '/'+offer_option_id);
+	url = url.replace('/offer_id', '/'+offer_id);
 	url = url.replace('/id', '/'+id);
 
 	window.location.href = url;

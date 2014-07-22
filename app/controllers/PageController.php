@@ -193,6 +193,7 @@ class PageController extends BaseController {
 
         //organize some of the user inputs
         $user_id = Auth::user()->id;
+        $user_email = Auth::user()->email;
         $braspag_order_id = $inputs['merchantreferencecode'];
         $donation = $inputs['donation'];
         $discount_coupon_code = $inputs['promoCode'];
@@ -264,7 +265,7 @@ class PageController extends BaseController {
                     $voucher['offer_option_id'] = $offer_option->id;
                     $voucher['display_code'] = $braspag_order_id . '-'. $offer_option->offer_id;
                     $voucher['name'] = $user_profile->first_name . ' ' . $user_profile->last_name;
-                    $voucher['email'] = Auth::user()->email;
+                    $voucher['email'] = $user_email;
                     $voucher['price'] = $offer_option->price_with_discount;
                     
                     Voucher::create($voucher);

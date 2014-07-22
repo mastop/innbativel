@@ -39,7 +39,7 @@
 	{{ Table::open() }}
 	{{ Table::headers('ID', 'Nome', 'Descrição', 'Nome no menu', 'Listado no menu?', 'Ações') }}
 	{{ Table::body($perm)
-		->ignore(['created_at', 'updated_at'])
+		->ignore(['display_order', 'created_at', 'updated_at'])
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 				Navigation::links([

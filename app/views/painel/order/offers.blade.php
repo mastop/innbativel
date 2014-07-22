@@ -47,7 +47,7 @@
 	})
 	->offer_option(function($offer_option) {
 		if(isset($offer_option['title'])) {
-			return $offer_option['title'];
+			return $offer_option['title'].(isset($offer_option['subtitle']) && $offer_option['subtitle'] != ''?' ('.$offer_option['subtitle'].')':'');
 		}
 		return '--';
 	})

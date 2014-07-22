@@ -98,15 +98,15 @@ class PainelOrderController extends BaseController {
 		$this->layout->content = View::make('painel.order.offers', compact('sort', 'order', 'pag', 'offersOptions'));
 	}
 
-	public function anyVouchers($offer_option_id = null){
+	public function anyVouchers($offer_id = null){
 		$vouchers = $this->voucher;
-
-		$offers = Offer::withTrashed()->with(['offer_option'])->where('partner_id', Auth::user()->id)->orderBy('id', 'desc')->get();
 
 		// Exibe somente vouchers pagos
 		$vouchers = $vouchers->where('status', 'pago');
 
-		if($offers->count() < 1){
+		$offersObj = Offer::withTrashed()->where('partner_id', Auth::user()->id)->orderBy('id', 'desc')->get();
+
+		if($offersObj->count() < 1){
 			// nenhuma oferta
 			$error = 'Nenhum voucher (nenhuma venda) para a oferta.';
 			Session::flash('error', $error);
@@ -114,11 +114,9 @@ class PainelOrderController extends BaseController {
 		}
 
 		// $offersOptions irá preencher o <select> da opção da qual estamos visualizando os vouchers/cupons
-		foreach ($offers as $offer) {
-			foreach ($offer['offer_option'] as $offer_option) {
-				$t = $offer->id.' | '.$offer->title.' | '.$offer_option->title;
-				$offersOptions[$offer_option->id] = $t;
-			}
+		foreach ($offersObj as $offer) {
+			$t = $offer->id.' | '.$offer->title;
+			$offers[$offer->id] = $t;
 		}
 
 		/*
@@ -141,19 +139,15 @@ class PainelOrderController extends BaseController {
 		/*
 		 * Search filters
 		 */
-		if (Input::has('offer_option_id')) {
-			$offer_option_id = Input::get('offer_option_id');
-			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
-		}
-		else if(isset($offer_option_id)){
-			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
+		if (Input::has('offer_id')) {
+			$offer_id = Input::get('offer_id');
 		}
 
 		if(Input::has('id')){
 			$vouchers = $vouchers->where('id', Input::get('id'));
 		}
 
-		$vouchers = $vouchers->with(['offer_option_offer'])
+		$vouchers = $vouchers->with(['offer_option_offer', 'order_customer'])
 							 ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('offers')
@@ -167,6 +161,14 @@ class PainelOrderController extends BaseController {
 				 		                  ->whereRaw('orders.status = "pago"')
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
+		               	   	 ->whereExists(function($query) use($offer_id){
+				             	if(isset($offer_id)){
+									$query->select(DB::raw(1))
+					                      ->from('offers_options')
+					                      ->whereRaw('offers_options.id = vouchers.offer_option_id')
+					                      ->whereRaw('offers_options.offer_id = '.$offer_id);
+								}
+				             })
 		               	   	 ->where('status', 'pago')
 							 ->orderBy($sort, $order)
 							 ->paginate($pag)
@@ -174,7 +176,7 @@ class PainelOrderController extends BaseController {
 								 'sort' => $sort,
 								 'order' => $order,
 								 'pag' => $pag,
-								 'offer_option_id' => $offer_option_id,
+								 'offer_id' => $offer_id,
 								 'id' => Input::get('id'),
 							 ]);
 							 // ->get()->toArray();
@@ -183,7 +185,7 @@ class PainelOrderController extends BaseController {
 							 // print_r($vouchers);
 							 // print('</pre>'); die();
 
-		$this->layout->content = View::make('painel.order.voucher', compact('sort', 'order', 'pag', 'offer_option_id', 'vouchers', 'offersOptions'));
+		$this->layout->content = View::make('painel.order.voucher', compact('sort', 'order', 'pag', 'offer_id', 'vouchers', 'offers'));
 	}
 
 	public function getSchedule($id, $used){
@@ -202,17 +204,13 @@ class PainelOrderController extends BaseController {
 		return Redirect::back();
 	}
 
-	public function getVoucherExport($offer_option_id = null, $id = null){
+	public function getVoucherExport($offer_id = null, $id = null){
 		$id = ($id == 'null')?null:$id;
-		$offer_option_id = ($offer_option_id == 'null')?null:$offer_option_id;
+		$offer_id = ($offer_id == 'null')?null:$offer_id;
 
 		$vouchers = $this->voucher;
 
 		$vouchers = $vouchers->where('status', 'pago');
-
-		if(isset($offer_option_id)){
-			$vouchers = $vouchers->where('offer_option_id', $offer_option_id);
-		}
 
 		if(isset($id)){
 			$vouchers = $vouchers->where('id', $id);
@@ -232,6 +230,14 @@ class PainelOrderController extends BaseController {
 				 		                  ->whereRaw('orders.status = "pago"')
 				 						  ->whereRaw('orders.id = vouchers.order_id');
 		               	   	 })
+		               	   	 ->whereExists(function($query) use($offer_id){
+				             	if(isset($offer_id)){
+									$query->select(DB::raw(1))
+					                      ->from('offers_options')
+					                      ->whereRaw('offers_options.id = vouchers.offer_option_id')
+					                      ->whereRaw('offers_options.offer_id = '.$offer_id);
+								}
+				             })
 		 					 ->orderBy('id', 'desc')
 		 					 ->get();
 
@@ -240,7 +246,7 @@ class PainelOrderController extends BaseController {
 		// print('</pre>'); die();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('Cupom', 'ID da oferta', 'Título da oferta', 'Opção', 'Validado?', 'Nome', 'Código de rastreamento');
+		$spreadsheet[] = array('Cupom', 'ID da oferta', 'Título da oferta', 'Opção', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
@@ -250,6 +256,7 @@ class PainelOrderController extends BaseController {
 			$ss[] = $voucher->offer_option_offer->title;
 			$ss[] = ($voucher->used == 1)?'Sim':'Não';
 			$ss[] = $voucher->name;
+			$ss[] = $voucher->email;
 			$ss[] = $voucher->tracking_code;
 
 			$spreadsheet[] = $ss;

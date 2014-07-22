@@ -22,7 +22,7 @@
 			{{ Former::date('ends_on')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
 			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.order.offers')) }}
-			{{ Former::link('Exportar pesquisa acima para excel', 'javascript: exportar(\''.route('admin.order.list_offers_export', ['offer_id' =>'offer_id', 'starts_on' => 'starts_on', 'ends_on'=>'ends_on']).'\');') }}
+			{{ Former::link('Exportar esta pesquisa para excel', 'javascript: exportar(\''.route('admin.order.list_offers_export', ['offer_id' =>'offer_id', 'starts_on' => 'starts_on', 'ends_on'=>'ends_on']).'\');') }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
@@ -50,7 +50,7 @@
 	})
 	->offer_option(function($offer_option) {
 		if(isset($offer_option['title'])) {
-			return $offer_option['title'];
+			return $offer_option['title'].(isset($offer_option['subtitle']) && $offer_option['subtitle'] != ''?' ('.$offer_option['subtitle'].')':'');
 		}
 		return '--';
 	})
