@@ -874,7 +874,7 @@ class PageController extends BaseController {
         $user_id = $order->user_id;
         $order_id = $order->id;
 
-        $order->historico .= date('d/m/Y H:i:s')." - Status alterado para ".$status.", atualizado pelo retorno da Braspag"."\r\n";
+        $order->history .= date('d/m/Y H:i:s')." - Status alterado para ".$status.", atualizado pelo retorno da Braspag"."\r\n";
         $order->status = $status;
         $order->save();
 
