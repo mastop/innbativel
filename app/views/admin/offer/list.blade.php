@@ -20,6 +20,7 @@
 			{{ Former::text('destiny')->class('input-medium')->placeholder('Destino')->label('Destino') }}
 			{{ Former::text('title')->class('input-medium')->placeholder('Título')->label('Título') }}
 			{{ Former::select('partner_id', 'Parceiro')
+				->class('admin-auto-complete')
 	        	->addOption('', null)
 				->fromQuery(User::getAllByRole('parceiro'))
 	        }}
@@ -78,5 +79,7 @@
 		{{ $offer->links() }}
 	</div>
 </div>
+
+<script src="{{ asset('assets/themes/floripa/backend/js/auto-complete.js') }}"></script>
 
 @stop

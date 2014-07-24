@@ -21,7 +21,6 @@
 			{{ Former::text('title')->class('input-medium')->placeholder('Título')->label('Título') }}
 			{{ Former::select('partner_id', 'Parceiro')
 				->class('admin-auto-complete')
-				->placeholder('Parceiro')
 	        	->addOption('', null)
 				->fromQuery(User::getAllByRole('parceiro'))
 	        }}
