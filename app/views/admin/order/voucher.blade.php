@@ -39,7 +39,7 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('Data', 'Chave do cupom', 'Código', 'ID da Oferta', 'Agendado?', 'Nome', 'E-mail', 'Código de rastreamento') }}
+{{ Table::headers('Data', 'Chave do cupom', 'Código', 'ID da Oferta', 'Agendado?', 'Nome', 'E-mail', 'Código de rastreamento', 'Ações') }}
 {{ Table::body($vouchers)->ignore(['id', 'display_code', 'offer_option_id', 'order_id', 'status', 'price', 'tracking_code', 'name', 'email', 'used', 'order', 'offer_option_offer', 'order_customer', 'created_at', 'updated_at'])
 	->datetime(function($voucher) {
 		if(isset($voucher['order_customer'])) {
@@ -88,6 +88,13 @@
 			return $voucher->tracking_code;
 		}
 		return '-';
+	})
+	->acoes(function($voucher) {
+        return DropdownButton::normal('Ações',
+		  	Navigation::links([
+		  		['Visualizar', route('cupom', ['id' => base64_encode($voucher->id)])],
+		    ])
+		)->pull_right()->split();
 	})
 }}
 {{ Table::close() }}

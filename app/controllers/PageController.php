@@ -1107,16 +1107,20 @@ class PageController extends BaseController {
                           ->where('id', $id)
                           ->where('status', 'pago')
                           ->whereExists(function($query){
-                                $query->select(DB::raw(1))
-                                      ->from('orders')
-                                      ->whereRaw('orders.id = vouchers.order_id')
-                                      ->whereRaw('orders.user_id = '.Auth::user()->id);
+                                if(!Auth::user()->is('administrador')){
+                                    $query->select(DB::raw(1))
+                                          ->from('orders')
+                                          ->whereRaw('orders.id = vouchers.order_id')
+                                          ->whereRaw('orders.user_id = '.Auth::user()->id);
+                                }
                           })
                           ->whereExists(function($query){
-                                $query->select(DB::raw(1))
-                                      ->from('offers_options')
-                                      ->whereRaw('offers_options.id = vouchers.offer_option_id')
-                                      ->whereRaw('offers_options.voucher_validity_end >= "'.date('Y-m-d H:i:s').'"');
+                                if(!Auth::user()->is('administrador')){
+                                    $query->select(DB::raw(1))
+                                          ->from('offers_options')
+                                          ->whereRaw('offers_options.id = vouchers.offer_option_id')
+                                          ->whereRaw('offers_options.voucher_validity_end >= "'.date('Y-m-d H:i:s').'"');
+                                }
                           })
                           ->first()
                           ;

@@ -36,7 +36,7 @@
 			{{ Former::date('date_end')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
 			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.order')) }}
-			{{ Former::link('Exportar pesquisa acima para excel', 'javascript: exportar(\''.route('admin.order.list_paym_export', ['status'=>'status', 'terms'=>'terms', 'name'=>'name', 'email'=>'email', 'braspag_order_id'=>'braspag_order_id', 'offer_id'=>'offer_id', 'date_start'=>'date_start', 'date_end'=>'date_end']).'\');') }}
+			{{ Former::link('Exportar esta pesquisa para excel', 'javascript: exportar(\''.route('admin.order.list_paym_export', ['status'=>'status', 'terms'=>'terms', 'name'=>'name', 'email'=>'email', 'braspag_order_id'=>'braspag_order_id', 'offer_id'=>'offer_id', 'date_start'=>'date_start', 'date_end'=>'date_end']).'\');') }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
