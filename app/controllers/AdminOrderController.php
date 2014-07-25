@@ -657,15 +657,16 @@ class AdminOrderController extends BaseController {
 		 					 ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Cupom', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento');
+		$spreadsheet[] = array('Data e hora', 'ID da oferta', 'Cupom', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
+			$ss[] = date('d/m/Y H:i:s', strtotime($voucher->order_customer->created_at));
 			$ss[] = $voucher->offer_option_offer->offer->id;
 			$ss[] = $voucher->id.'-'.$voucher->display_code.'-'.$voucher->offer_option_offer->offer->id;
 			$ss[] = ($voucher->used == 1)?'Sim':'Não';
-			$ss[] = $voucher->order_customer->buyer->profile->first_name.' '.$voucher->order_customer->buyer->profile->last_name;
-			$ss[] = $voucher->order_customer->buyer->email;
+			$ss[] = $voucher->name;
+			$ss[] = $voucher->email;
 			$ss[] = $voucher->tracking_code;
 
 			$spreadsheet[] = $ss;
