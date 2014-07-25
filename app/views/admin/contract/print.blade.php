@@ -135,10 +135,10 @@ tr.grey {
     <?php $classe = (($cont)%2 == '0')?'class="grey"':''; ?>
     <tr {{ $classe }}>
         <td>{{ $contract_option->title }}</td>
-        <td>{{ number_format($contract_option->price_original, 2, ',', '.') }}</td>
-        <td>{{ number_format($contract_option->price_with_discount, 2, ',', '.') }}</td>
+        <td>{{ $contract_option->price_original }}</td>
+        <td>{{ $contract_option->price_with_discount }}</td>
         <td>{{ $contract_option->percent_off }}</td>
-        <td>{{ number_format($contract_option->trasfer, 2, ',', '.') }}</td>
+        <td>{{ $contract_option->trasfer }}</td>
         <td>{{ $contract_option->max_qty }}</td>
     </tr>
     <?php $cont++; ?>
