@@ -57,7 +57,7 @@
 			<th>Status</th>
 			<th style="text-align: right;">Valor do Cupom (R$)</th>
 			<th style="text-align: right;">Valor Parceiro (R$)</th>
-			<th style="text-align: right;">Qtdd</th>
+			<th style="text-align: right;">Quantidade</th>
 		</tr>
 	</thead>
 	{{ Table::body($transactionVoucherData)
