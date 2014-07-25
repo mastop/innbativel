@@ -698,6 +698,25 @@ class AdminOrderController extends BaseController {
 		return View::make('admin.order.view', compact('order', 'transaction'));
 	}
 
+	/**
+     * Show Termos de uso
+     */
+    public function getViewVoucher($id)
+    {   
+        $id = base64_decode($id);
+        $voucher = Voucher::with(['order_buyer', 'offer_partner'])
+                          ->where('id', $id)
+                          ->where('status', 'pago')
+                          ->first();
+
+        if($voucher){
+            return View::make('pages.cupom', compact('voucher'));
+        }
+        else{
+            return Redirect::route('admin.order.voucher')->with('error', 'Cupom #'.$id.' cancelado ou não encontrado.');
+        }
+    }
+
 	public function getVoucherCancel(){
 		$voucher = Voucher::where('id', Input::get('id'))->first();
 		$order = $this->order->where('id', Input::get('order_id'))->first();

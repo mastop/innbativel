@@ -92,7 +92,7 @@
 	->acoes(function($voucher) {
         return DropdownButton::normal('Ações',
 		  	Navigation::links([
-		  		['Visualizar', route('cupom', ['id' => base64_encode($voucher->id)])],
+		  		['Visualizar', route('admin.order.voucher.view', ['id' => base64_encode($voucher->id)])],
 		    ])
 		)->pull_right()->split();
 	})
