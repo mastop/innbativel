@@ -41,12 +41,10 @@
 	</div>
 
 	<style type="text/css">
-	.column-transfer, .column-price{
+	.column-qty, .column-transfer, .column-price{
 		text-align: right;
 	}
 	</style>
-
-	<?php //print('<pre>'); print_r($paymentPartnerData->toArray()); print('</pre>'); die(); ?>
 
 	{{ Table::open() }}
 	<thead>
@@ -59,6 +57,7 @@
 			<th>Status</th>
 			<th style="text-align: right;">Valor do Cupom (R$)</th>
 			<th style="text-align: right;">Valor Parceiro (R$)</th>
+			<th style="text-align: right;">Qtdd</th>
 		</tr>
 	</thead>
 	{{ Table::body($transactionVoucherData)
@@ -126,17 +125,21 @@
 				}
 				return '--';
 			})
+			->qty(function($data) {
+				return '1';
+			})
 	}}
 	<thead>
 		<tr>
-		<th>Total</th>
-		<th></th>
-		<th></th>
-		<th></th>
-		<th></th>
-		<th></th>
-		<th style="text-align: right;">{{ number_format($totals['voucher_price'], 2, ',', '.') }}</th>
-		<th style="text-align: right;">{{ number_format($totals['transfer'], 2, ',', '.') }}</th>
+			<th>Total</th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th style="text-align: right;">{{ number_format($totals['voucher_price'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ number_format($totals['transfer'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ $totals['n_vouchers'] }}</th>
 		</tr>
 	</thead>
 	{{ Table::close() }}
