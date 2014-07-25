@@ -356,7 +356,7 @@ class AdminOrderController extends BaseController {
 			$orderData = $orderData->where('created_at', '<=', $date_end);
 		}
 
-		$orderArray = $orderData->with(['user', 'voucher_offer'])
+		$orderArray = $orderData->with(['buyer', 'voucher_offer'])
 								->whereExists(function($query) use($offer_id){
 					                if ($offer_id) {
 										$query->select(DB::raw(1))
@@ -422,7 +422,7 @@ class AdminOrderController extends BaseController {
 
 			$ss[] = $order->payment_terms;
 			$ss[] = date('d/m/Y H:i:s', strtotime($order->created_at));
-			$ss[] = $order['user']->first_name.' '.$order['user']->last_name.' | '.$order['user']->email;
+			$ss[] = $order->buyer->profile->first_name.' '.$order->buyer->profile->last_name.' | '.$order->buyer->email;
 
 			$spreadsheet[] = $ss;
 		}
