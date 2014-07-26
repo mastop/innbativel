@@ -216,7 +216,7 @@ class PainelOrderController extends BaseController {
 			$vouchers = $vouchers->where('id', $id);
 		}
 
-		$vouchers = $vouchers->with(['offer_option_offer'])
+		$vouchers = $vouchers->with(['order_customer', 'offer_option_offer'])
 							 ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('offers')
@@ -246,10 +246,11 @@ class PainelOrderController extends BaseController {
 		// print('</pre>'); die();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('Cupom', 'ID da oferta', 'Título da oferta', 'Opção', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento');
+		$spreadsheet[] = array('Data e hora', 'Cupom', 'ID da oferta', 'Título da oferta', 'Opção', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
+			$ss[] = date('d/m/Y H:i:s', strtotime($voucher->order_customer->created_at));
 			$ss[] = $voucher->id.'-'.$voucher->display_code;
 			$ss[] = $voucher->offer_option_offer->offer_id;
 			$ss[] = $voucher->offer_option_offer->offer->title;

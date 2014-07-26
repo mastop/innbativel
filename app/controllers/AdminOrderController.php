@@ -356,7 +356,7 @@ class AdminOrderController extends BaseController {
 			$orderData = $orderData->where('created_at', '<=', $date_end);
 		}
 
-		$orderArray = $orderData->with(['user', 'voucher_offer'])
+		$orderArray = $orderData->with(['buyer', 'voucher_offer'])
 								->whereExists(function($query) use($offer_id){
 					                if ($offer_id) {
 										$query->select(DB::raw(1))
@@ -422,7 +422,7 @@ class AdminOrderController extends BaseController {
 
 			$ss[] = $order->payment_terms;
 			$ss[] = date('d/m/Y H:i:s', strtotime($order->created_at));
-			$ss[] = $order['user']->first_name.' '.$order['user']->last_name.' | '.$order['user']->email;
+			$ss[] = $order->buyer->profile->first_name.' '.$order->buyer->profile->last_name.' | '.$order->buyer->email;
 
 			$spreadsheet[] = $ss;
 		}
@@ -657,15 +657,16 @@ class AdminOrderController extends BaseController {
 		 					 ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Cupom', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento');
+		$spreadsheet[] = array('Data e hora', 'ID da oferta', 'Cupom', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
+			$ss[] = date('d/m/Y H:i:s', strtotime($voucher->order_customer->created_at));
 			$ss[] = $voucher->offer_option_offer->offer->id;
 			$ss[] = $voucher->id.'-'.$voucher->display_code.'-'.$voucher->offer_option_offer->offer->id;
 			$ss[] = ($voucher->used == 1)?'Sim':'Não';
-			$ss[] = $voucher->order_customer->buyer->profile->first_name.' '.$voucher->order_customer->buyer->profile->last_name;
-			$ss[] = $voucher->order_customer->buyer->email;
+			$ss[] = $voucher->name;
+			$ss[] = $voucher->email;
 			$ss[] = $voucher->tracking_code;
 
 			$spreadsheet[] = $ss;
@@ -696,6 +697,25 @@ class AdminOrderController extends BaseController {
 
 		return View::make('admin.order.view', compact('order', 'transaction'));
 	}
+
+	/**
+     * Show Termos de uso
+     */
+    public function getViewVoucher($id)
+    {   
+        $id = base64_decode($id);
+        $voucher = Voucher::with(['order_buyer', 'offer_partner'])
+                          ->where('id', $id)
+                          ->where('status', 'pago')
+                          ->first();
+
+        if($voucher){
+            return View::make('pages.cupom', compact('voucher'));
+        }
+        else{
+            return Redirect::route('admin.order.voucher')->with('error', 'Cupom #'.$id.' cancelado ou não encontrado.');
+        }
+    }
 
 	public function getVoucherCancel(){
 		$voucher = Voucher::where('id', Input::get('id'))->first();
