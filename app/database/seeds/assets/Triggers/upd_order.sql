@@ -39,7 +39,7 @@ BEGIN
     SET @credit_discount_refund = COALESCE(NEW.credit_discount, 0.00);
 
     IF(@credit_discount_refund > 0) THEN
-      UPDATE profiles SET credit = credit + @credit_discount_refund WHERE id = NEW.user_id;
+      UPDATE profiles SET credit = credit + @credit_discount_refund WHERE user_id = NEW.user_id;
     END IF;
 
   ELSEIF (NEW.status = 'convercao_creditos' AND OLD.status = 'pago') THEN
@@ -56,7 +56,7 @@ BEGIN
     UPDATE vouchers SET status = NEW.status WHERE order_id = NEW.id AND status = 'pago';
 
     IF(@credit_discount_refund > 0) THEN
-      UPDATE profiles SET credit = credit + @credit_discount_refund WHERE id = NEW.user_id;
+      UPDATE profiles SET credit = credit + @credit_discount_refund WHERE user_id = NEW.user_id;
     END IF;
 
   END IF;

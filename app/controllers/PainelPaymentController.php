@@ -199,10 +199,12 @@ class PainelPaymentController extends BaseController {
 		$totals = [];
 		$totals['transfer'] = 0;
 		$totals['voucher_price'] = 0;
+		$totals['n_vouchers'] = 0;
 
 		foreach ($transactionVoucherData as $transactionVoucher) {
 			$totals['transfer'] += ($transactionVoucher->voucher->offer_option_offer->transfer * ($transactionVoucher->status == 'pagamento'?1:-1));
 			$totals['voucher_price'] += ($transactionVoucher->voucher->offer_option_offer->price_with_discount * ($transactionVoucher->status == 'pagamento'?1:-1));
+			$totals['n_vouchers']++;
 		}
 
 		// print('<pre>');

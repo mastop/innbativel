@@ -162,6 +162,15 @@ class AjaxController extends BaseController {
         return Response::json($data)->setCallback(Input::get('callback'));
     }
     public function postMyaccount(){
+        $inputs = Input::all();
+        $rules = [
+            'email' => 'required|email|unique:users,email,'. Auth::user()->id,
+        ];
+        $validation = Validator::make($inputs, $rules);
+        if (!$validation->passes()){
+            return Response::json(['ERRO']);
+        }
+
         $fields = [
             'email',
             'first_name',

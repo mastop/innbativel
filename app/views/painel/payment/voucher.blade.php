@@ -39,7 +39,7 @@
 	</div>
 
 	<style type="text/css">
-	.column-transfer, .column-price{
+	.column-qty, .column-transfer, .column-price{
 		text-align: right;
 	}
 	</style>
@@ -54,6 +54,7 @@
 			<th>Status</th>
 			<th style="text-align: right;">Valor do Cupom (R$)</th>
 			<th style="text-align: right;">Valor a Receber (R$)</th>
+			<th style="text-align: right;">Quantidade</th>
 		</tr>
 	</thead>
 	{{ Table::body($transactionVoucherData)
@@ -116,6 +117,9 @@
 				}
 				return '--';
 			})
+			->qty(function($data) {
+				return '1';
+			})
 	}}
 	<thead>
 		<tr>
@@ -126,6 +130,7 @@
 			<th></th>
 			<th style="text-align: right;">{{ number_format($totals['voucher_price'], 2, ',', '.') }}</th>
 			<th style="text-align: right;">{{ number_format($totals['transfer'], 2, ',', '.') }}</th>
+			<th style="text-align: right;">{{ $totals['n_vouchers'] }}</th>
 		</tr>
 	</thead>
 	{{ Table::close() }}
