@@ -18,36 +18,9 @@ function getGUID(){
     }
 }
 
-function getGUID_semchave(){
-    if (function_exists('com_create_guid')){
-        return com_create_guid();
-    }else{
-        mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
-        $charid = strtoupper(md5(uniqid(rand(), true)));
-        $hyphen = chr(45);// "-"
-        $uuid = substr($charid, 0, 8).$hyphen
-            .substr($charid, 8, 4).$hyphen
-            .substr($charid,12, 4).$hyphen
-            .substr($charid,16, 4).$hyphen
-            .substr($charid,20,12);
-        return $uuid;
-    }
-}
-
-function generate_order_id(){
-    $charid = strtoupper(uniqid(rand(100, 999)));
-    $hyphen = chr(45);// "-"
-    $uuid = substr($charid, 0, 4).$hyphen
-           .substr($charid, 4, 4).$hyphen
-           .substr($charid,8, 4).$hyphen
-           .substr($charid,12, 16);
-    return $uuid;
-}
-
 $MerchantId                = "{663B1F6B-4B06-4EF0-DAAD-70B14E17FC63}";
 $MerchantIdAF                = "663B1F6B-4B06-4EF0-DAAD-70B14E17FC63";
 $OrgId                     = "1snn5n9w";
-$MerchantReferenceCode     = generate_order_id();
 
 $ambiente_pagador = 'production';
 $url_transacao = 'https://pagador.com.br/webservice/pagadorTransaction.asmx?WSDL';

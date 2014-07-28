@@ -183,7 +183,6 @@
 					</ul>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
                         <input type="hidden" name="offer" value="{{ $offer->id }}"/>
-                        <input type="hidden" name="merchantreferencecode" value="{{ $MerchantReferenceCode; }}">
                         <input type="hidden" name="payment_type" value=""/>
                     </form>
 
@@ -562,15 +561,5 @@
     $('#paymentCardInstallment').val("{{ Input::old('paymentCardInstallment') }}");
     @endif
 </script>
-
-<!--INICIO DEVICE FINGERPRINT-->
-<p style="background:url(https://h.online-metrix.net/fp/clear.png?org_id=k8vif92e&amp;session_id=braspag_innbativel{{ $MerchantReferenceCode; }}&amp;m=1)"></p>
-<img src="https://h.online-metrix.net/fp/clear.png?org_id=k8vif92e&amp;session_id=braspag_innbativel{{ $MerchantReferenceCode; }}&amp;m=2" alt="">
-<object type="application/x-shockwave-flash" data="https://h.online-metrix.net/fp/fp.swf?org_id=k8vif92e&amp;session_id=braspag_innbativel{{ $MerchantReferenceCode; }}" width="1" height="1" id="thm_fp">
-    <param name="movie" value="https://h.online-metrix.net/fp/fp.swf?org_id=k8vif92e&amp;session_id=braspag_innbativel{{ $MerchantReferenceCode; }}" />
-<div></div>
-</object>
-<script src="https://h.online-metrix.net/fp/check.js?org_id=k8vif92e&amp;session_id=braspag_innbativel{{ $MerchantReferenceCode; }}" type="text/javascript"></script>
-<!--FIM DEVICE FINGERPRINT-->
 
 @stop

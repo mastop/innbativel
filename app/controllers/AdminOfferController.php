@@ -1018,6 +1018,10 @@ class AdminOfferController extends BaseController {
     {
         $offer = $this->offer->where('id', $id)->withTrashed()->with(['offer_option', 'offer_additional_offer', 'category', 'ngo', 'offer_image', 'group', 'genre', 'genre2', 'destiny', 'partner', 'tell_us', 'holiday', 'included', 'tag'])->first();
 
+        if(is_null($offer->deleted_at)){
+            return Redirect::route('oferta', $offer->slug);
+        }
+
         if (is_null($offer))
         {
             Session::flash('error', 'Oferta #'.$id.' não encontrada.');
