@@ -95,16 +95,9 @@ class PageController extends BaseController {
             return Redirect::route('home')->with('warning', 'As vendas da oferta '.$offer->title.' foram encerradas');
         }
 
-
-        /////////////////////////////////////
-        /////////////////////////////////////
-        require_once app_path().'/braspag/vars.php';
-        /////////////////////////////////////
-        /////////////////////////////////////
-
         $this->layout->comprar = true;
         $this->layout->body_classes = 'checkout-page';
-        $this->layout->content = View::make('pages.comprar', compact('offer', 'opt', 'add', 'MerchantReferenceCode'));
+        $this->layout->content = View::make('pages.comprar', compact('offer', 'opt', 'add'));
     }
 
     public function anyFeriados()
@@ -177,7 +170,6 @@ class PageController extends BaseController {
         }
         
         $rules = [
-            'merchantreferencecode' => 'required',
             'donation' => 'required',
             'paymentCardEULA' => 'required',
         ];
@@ -191,10 +183,17 @@ class PageController extends BaseController {
                             ->withErrors($validation);
         }
 
+        /////////////////////////////////////
+        /////////////////////////////////////
+        require_once app_path().'/braspag/vars.php';
+        /////////////////////////////////////
+        /////////////////////////////////////
+
         //organize some of the user inputs
         $user_id = Auth::user()->id;
         $user_email = Auth::user()->email;
-        $braspag_order_id = $inputs['merchantreferencecode'];
+        $braspag_order_id = getGUID();
+        $mid_voucher = substr($braspag_order_id, 5, 19);
         $donation = $inputs['donation'];
         $discount_coupon_code = $inputs['promoCode'];
         $total = 0;
@@ -263,7 +262,7 @@ class PageController extends BaseController {
                     $voucher['status'] = 'pendente';
                     $voucher['order_id'] = $order_id;
                     $voucher['offer_option_id'] = $offer_option->id;
-                    $voucher['display_code'] = $braspag_order_id . '-'. $offer_option->offer_id;
+                    $voucher['display_code'] = $mid_voucher . '-'. $offer_option->offer_id;
                     $voucher['name'] = $user_profile->first_name . ' ' . $user_profile->last_name;
                     $voucher['email'] = $user_email;
                     $voucher['price'] = $offer_option->price_with_discount;
@@ -419,12 +418,6 @@ class PageController extends BaseController {
             $order->payment_terms = 'Cartão de crédito - ' . $flag . ' - ' . $installment . 'x';
 
             $order->save();
-
-            /////////////////////////////////////
-            /////////////////////////////////////
-            require_once app_path().'/braspag/vars.php';
-            /////////////////////////////////////
-            /////////////////////////////////////
 
             /////////////////////////////////////////////////
             /////////////////////////////////////////////////
@@ -701,12 +694,10 @@ class PageController extends BaseController {
 
             $order->save();
 
-            //////////////////////////////////////
-            require_once app_path().'/braspag/vars.php';
-            //////////////////////////////////////
-
+            ////////////////////////////////////////
             ////////////////////////////////////////
             require_once app_path().'/braspag/nusoap.php';
+            ////////////////////////////////////////
             ////////////////////////////////////////
 
             $name = $user_profile->first_name . ' ' . $user_profile->last_name;
@@ -866,8 +857,6 @@ class PageController extends BaseController {
         // $codpagamento = $_POST['CODPAGAMENTO'];
 
         $status = $_POST['Status'] == '0' ? 'pago' : 'cancelado' ;
-
-        Logs::debug('braspag_order_id: '.$braspag_order_id);
 
         $order = Order::where('braspag_order_id', $braspag_order_id)->first();
 
