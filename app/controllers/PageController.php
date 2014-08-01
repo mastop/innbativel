@@ -35,7 +35,7 @@ class PageController extends BaseController {
     public function anyOferta($slug)
     {
         $offer = Offer::where('slug', $slug)
-                      ->with(['offer_option', 'offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])
+                      ->with(['active_offer_option', 'active_offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])
                       ->first();
 
         if(!$offer){
@@ -48,6 +48,34 @@ class PageController extends BaseController {
 
         // SEO
         $this->layout->title = $offer->destiny->name.' - '.$offer->short_title;
+        $this->layout->description = $offer->subtitle.' A partir de R$ '.intval($offer->price_with_discount).' com '.$offer->percent_off.'% OFF!';
+        $this->layout->og_type = 'article';
+        $this->layout->image = 'https:'.$offer->thumb;
+
+        $this->layout->content = View::make('pages.oferta', compact('offer'));
+    }
+
+    /**
+     * Show Deleted (old) Offer
+     */
+    public function anyOfertaAntiga($slug)
+    {
+        $offer = Offer::where('slug', $slug)
+                      ->withTrashed()
+                      ->with(['active_offer_option', 'active_offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])
+                      ->first();
+
+        if(!$offer){
+            return Redirect::route('home')->with('warning', 'Oferta não encontrada');
+        }
+
+        if (!$offer->deleted_at)
+        {
+            return Redirect::route('oferta', $slug);
+        }
+
+        // SEO
+        $this->layout->title = isset($offer->destiny) ? $offer->destiny->name.' - '.$offer->short_title : $offer->short_title;
         $this->layout->description = $offer->subtitle.' A partir de R$ '.intval($offer->price_with_discount).' com '.$offer->percent_off.'% OFF!';
         $this->layout->og_type = 'article';
         $this->layout->image = 'https:'.$offer->thumb;
@@ -74,7 +102,7 @@ class PageController extends BaseController {
             $add = Session::get('add');
         }
 
-        $offer = Offer::with(['offer_option', 'offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])->find((int)$oId);
+        $offer = Offer::with(['active_offer_option', 'active_offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])->find((int)$oId);
 
         if(!$offer || !$opt){
             Session::flash('error', 'Oferta não encontrada');
@@ -192,8 +220,8 @@ class PageController extends BaseController {
         //organize some of the user inputs
         $user_id = Auth::user()->id;
         $user_email = Auth::user()->email;
-        $braspag_order_id = getGUID();
-        $mid_voucher = substr($braspag_order_id, 5, 19);
+        $braspag_order_id = getGUID_semchave();
+        $mid_voucher = substr($braspag_order_id, 4, 19);
         $donation = $inputs['donation'];
         $discount_coupon_code = $inputs['promoCode'];
         $total = 0;
@@ -243,17 +271,38 @@ class PageController extends BaseController {
         foreach ($offers_options as $offer_option) {
             $qty_ordered = array_shift($qties); // pega o primeiro elemento de $qties e joga no final do próprio array $qties, além de obter o valor manipulado em si, claro
             $qty_sold = isset($offer_option->qty_sold{0})?$offer_option->qty_sold{0}->qty:0;
+            $qty_sold_boletus = isset($offer_option->qty_sold_boletus{0})?$offer_option->qty_sold_boletus{0}->qty:0;
             $max_qty_allowed = $offer_option->max_qty - $qty_sold;
+            // $max_qty_allowed_boletus = $offer_option->min_qty - $qty_sold;
 
             if($qty_ordered > $max_qty_allowed){
                 // ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
-                $error = 'A quantidade selecionada para a oferta "' . $offer_option->offer->title . '" é maior do que a quantidade em estoque.';
+                if($max_qty_allowed <= 0){
+                    $error = 'Desculpe, mas a opção "'.$offer_option->title.'" acabou de se esgotar ):';
+                }
+                else{
+                    $error = 'Desculpe, mas a quantidade da opção "'.$offer_option->title.'" em estoque acabou de cair para '.$max_qty_allowed.'.';
+                }
                 $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
 
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
             }
+            // else if($inputs['payment_type'] == 'boletus' && $qty_ordered > $max_qty_allowed_boletus){
+            //     // ERRO: a quantidade comprada é maior que a quantidade em estoque permitida para compra via boleto
+            //     if($max_qty_allowed_boletus <= 0){
+            //         $error = 'Desculpe, mas a opção "'.$offer_option->title.'" não pode ser comprada via boleto. Por favor, selecione outro meio de pagamento.';
+            //     }
+            //     else{
+            //         $error = 'Desculpe, mas a quantidade da opção "'.$offer_option->title.'" em estoque acabou de cair para '.$max_qty_allowed_boletus.' para compra via boleto. Por favor, selecione outro meio de pagamento ou diminua a quantidade desta opção para compra.';
+            //     }
+            //     $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
+
+            //     Session::flash('error', $error);
+            //     return Redirect::back()
+            //                    ->withInput();
+            // }
             else{
                 $products[] = '<a href="' . route('oferta', $offer_option->offer->slug) . '">' . $qty_ordered . ' x ' . $offer_option->offer->title . ' | ' . $offer_option->title . '</a>';
 

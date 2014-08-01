@@ -6,7 +6,9 @@
     <div id="main" class="container offer-page">
 		<div class="row">
 			<div class="col-8 col-sm-8 col-lg-8">
+				@if(!is_null($offer->destiny))
                 <p class="destiny_title">{{$offer->destiny->name}}</p>
+                @endif
 				<h1>{{$offer->title}}</h1>
                 @if(Auth::check() && Auth::user()->is('administrador'))
                 <a href="{{route('admin.offer.edit', $offer->id)}}" class="btn btn-success" style="float:right"><span class="glyphicon glyphicon-edit"></span> Editar esta Oferta</a>
@@ -39,10 +41,15 @@
 				<div itemscope class="col-8 col-sm-8 col-lg-8 clearfix buy-box-top">
 					
 					<!-- <div class="offer-label"><span class="entypo clock"></span>Período Limitado</div> -->
+					@if($offer->genre_id > 0)
 					<div class="offer-label"><span class="map-icon map-icon-{{ $offer->genre->icon }}"></span> {{$offer->genre->title}}</div>
+					@endif
+
                     @if($offer->genre2_id > 0)
 					<div class="offer-label"><span class="map-icon map-icon-{{ $offer->genre2->icon }}"></span> {{$offer->genre2->title}}</div>
                     @endif
+
+                    @if($offer->cover_img)
 					<div id="fotorama" class="fotorama" data-width="100%" data-ratio="600/250" data-nav="thumbs" data-thumbwidth="90" data-thumbheight="50" data-loop="true" data-autoplay="3000" data-transition="slide" data-arrows="true" data-click="false" data-swipe="true">
                         <a href="{{$offer->cover_img}}">
                             <figure>
@@ -57,6 +64,7 @@
                         </a>
                         @endforeach
 					</div>
+					@endif
 					
 					<div class="offer-description">
                         <p>
@@ -66,7 +74,7 @@
                     @if($offer->can_sell)
 					<ul class="buy-itens buy-options">
 						<h3>Opções da oferta <span class="glyphicon glyphicon-chevron-down"></span></h3>
-                        @foreach($offer->offer_option()->get() as $k => $option)
+                        @foreach($offer->active_offer_option()->get() as $k => $option)
 						<li>
 							<label>
 								<input type="checkbox" id="opt{{$k}}" name="opt[]" data-price="{{intval($option->price_with_discount)}}" value="{{$option->id}}">
@@ -82,10 +90,10 @@
 					</ul>
                     @endif
 
-                    @if($offer->offer_additional->toArray() && $offer->can_sell)
+                    @if($offer->active_offer_additional->toArray() && $offer->can_sell)
                     <ul class="buy-itens buy-combo">
                         <h3>Inclua também <span class="glyphicon glyphicon-chevron-down"></span></h3>
-                        @foreach($offer->offer_additional as $k => $additional)
+                        @foreach($offer->active_offer_additional as $k => $additional)
                         <li>
                             <label>
                                 <input type="checkbox" id="combo{{$k}}" name="add[]" data-price="{{intval($additional->price_with_discount)}}" value="{{$additional->id}}">
@@ -131,7 +139,7 @@
 		
 				<div class="col-4 col-sm-4 col-lg-4 buy-box-container">
 					<div id="buy-box">
-                        @if($offer->can_sell)
+                        @if($offer->can_sell && !$offer->deleted_at)
 						<div id="total-price" class="hidden">Total R$ <strong></strong></div>
 						<div id="buy-alert" class="hidden"><span class="entypo chevron-left"></span>Escolha suas opções</div>
 						<div class="tooltip" data-tip="Escolha suas opções antes de comprar">

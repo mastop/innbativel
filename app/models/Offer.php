@@ -80,6 +80,14 @@ class Offer extends BaseModel {
         return $this->belongsToMany('OfferOption', 'offers_additional', 'offer_main_id', 'offer_additional_id')->withPivot('display_order')->orderBy('offers_additional.display_order', 'asc');
     }
 
+    public function active_offer_additional(){
+        return $this->belongsToMany('OfferOption', 'offers_additional', 'offer_main_id', 'offer_additional_id')
+                    ->withPivot('display_order')
+                    ->where('offers_options.is_active', 1)
+                    ->whereRaw('offers_options.max_qty > (SELECT COUNT(id) FROM vouchers WHERE vouchers.status = "pago" AND offers_options.id = vouchers.offer_option_id)')
+                    ->orderBy('offers_additional.display_order', 'asc');
+    }
+
     public function offer_additional_offer(){
         return $this->belongsToMany('OfferOption', 'offers_additional', 'offer_main_id', 'offer_additional_id')->withPivot('display_order')->with(['offer'])->orderBy('offers_additional.display_order', 'asc');
     }
@@ -87,6 +95,12 @@ class Offer extends BaseModel {
 	public function offer_option(){
 		return $this->hasMany('OfferOption')->orderBy('display_order', 'asc');
 	}
+    public function active_offer_option(){
+        return $this->hasMany('OfferOption')
+                    ->where('is_active', 1)
+                    ->whereRaw('offers_options.max_qty > (SELECT COUNT(id) FROM vouchers WHERE vouchers.status = "pago" AND offers_options.id = vouchers.offer_option_id)')
+                    ->orderBy('display_order', 'asc');
+    }
 
 	public function category(){
 		return $this->belongsTo('Category', 'category_id');
@@ -346,7 +360,7 @@ class Offer extends BaseModel {
      * @return string
      */
     public function getSoldTotalAttribute(){
-        return $this->sold + Voucher::whereIn('offer_option_id', $this->offer_option->lists('id'))->count();
+        return $this->sold + Voucher::whereIn('offer_option_id', isset($this->offer_option) ? $this->offer_option->lists('id') : $this->active_offer_option->lists('id'))->count();
     }
 
     /**
@@ -359,5 +373,50 @@ class Offer extends BaseModel {
     public function getPopupFeaturesAttribute($value)
     {
         return (empty($value)) ? $this->features : $value;
+    }
+
+    public function getMaxQtyAttribute(){
+        return $this->offer_option()->sum('max_qty');
+    }
+
+    public function getQtyAttribute(){
+        return Voucher::whereIn('offer_option_id', $this->offer_option->lists('id'))
+                      ->count();
+    }
+
+    public function getQtySoldAttribute(){
+        return Voucher::whereIn('offer_option_id', $this->offer_option->lists('id'))
+                      ->where('vouchers.status', 'pago')
+                      ->count();
+    }
+
+    public function getQtySoldBoletusAttribute(){
+        return Voucher::whereIn('offer_option_id', $this->offer_option->lists('id'))
+                      ->where('vouchers.status', 'pago')
+                      ->whereExists(function($query){
+                            $query->select(DB::raw(1))
+                                  ->from('orders')
+                                  ->whereRaw('orders.id = vouchers.order_id')
+                                  ->whereRaw('orders.payment_terms = "Boleto"');
+                      })
+                      ->count();
+    }
+
+    public function getQtyPendingAttribute(){
+        return Voucher::whereIn('offer_option_id', $this->offer_option->lists('id'))
+                      ->whereIn('vouchers.status', ['pendente', 'revisao'])
+                      ->count();
+    }
+
+    public function getQtyCancelledAttribute(){
+        return Voucher::whereIn('offer_option_id', $this->offer_option->lists('id'))
+                      ->whereIn('vouchers.status', ['cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial'])
+                      ->count();
+    }
+
+    public function getQtyUsedAttribute(){
+        return Voucher::whereIn('offer_option_id', $this->offer_option->lists('id'))
+                      ->where('vouchers.used', true)
+                      ->count();
     }
 }

@@ -122,6 +122,7 @@
             {{ Former::text('offer_options[0][max_qty]', 'Limite Total')->class('span4')->append('compras')->value('0') }}
             {{ Former::text('offer_options[0][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker required')->required() }}
             {{ Former::text('offer_options[0][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker required')->required() }}
+            {{ Former::checkbox('offer_options[0][is_active]', 'Opção disponível?')->class('span12 required')->check() }}
             {{ Former::button('Remover esta Opção de Venda')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
         </div>
         <div class="span1">
@@ -147,6 +148,11 @@
             {{ Former::text('offer_options['.$k.'][max_qty]', 'Limite Total')->class('span4')->append('compradores')->value($offer_options['max_qty']) }}
             {{ Former::text('offer_options['.$k.'][voucher_validity_start]', 'Início Val. Cupom')->class('span12 datepicker required')->required()->value($offer_options['voucher_validity_start']) }}
             {{ Former::text('offer_options['.$k.'][voucher_validity_end]', 'Fim Val. Cupom')->class('span12 datepicker required')->required()->value($offer_options['voucher_validity_end']) }}
+            @if($offer_options['is_active'] == 1)
+            {{ Former::checkbox('offer_options['.$k.'][is_active]', 'Opção disponível?')->class('span12 required')->check() }}
+            @else
+            {{ Former::checkbox('offer_options['.$k.'][is_active]', 'Opção disponível?')->class('span12 required') }}
+            @endif
             {{ Former::button('Remover esta Opção de Venda')->class('btn btn-large btn-block btn-danger btnOptRemove') }}
         </div>
         <div class="span1">
