@@ -35,4 +35,5 @@ return [
 	'transaction' => 'Transações',
 	'contract' => 'Contratos',
 	'group' => 'Grupos',
+	'sort' => 'Ordenar',
 ];

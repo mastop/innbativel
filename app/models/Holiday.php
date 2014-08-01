@@ -24,7 +24,8 @@ class Holiday extends Eloquent {
             ->where('offers.starts_on', '<=', Carbon::now()->toDateTimeString())
             ->where('offers.ends_on'  , '>=', Carbon::now()->toDateTimeString())
             ->where('offers.is_available'  , '=', 1)
-            ->where('offers.is_active'  , '=', 1);
+            ->where('offers.is_active'  , '=', 1)
+            ->orderBy('display_order', 'asc');
     }
     public static function getAllArray(){
         $holidays = parent::orderBy('title')->get(['id', 'title'])->toArray();
