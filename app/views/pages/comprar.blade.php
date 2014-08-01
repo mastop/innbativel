@@ -23,8 +23,8 @@
 				<div class="col-12 col-sm-12 col-lg-12 clearfix">
                     <ul class="buy-itens buy-combo checkout-combo nocheck">
                         <h3>Inclua também <span class="glyphicon glyphicon-chevron-down"></span></h3>
-                    @if($offer->offer_additional->toArray() && count($offer->offer_additional->toArray()) > count($add))
-                        @foreach($offer->offer_additional as $k => $additional)
+                    @if($offer->active_offer_additional->toArray() && count($offer->active_offer_additional->toArray()) > count($add))
+                        @foreach($offer->active_offer_additional as $k => $additional)
                             @if(!in_array($additional->id, $add))
                                 <li data-price="{{intval($additional->price_with_discount)}}">
                                     <figure><img src="{{$additional->offer->thumb}}" alt="{{$additional->offer->title}}"></figure>
@@ -61,7 +61,7 @@
 					<ul class="buy-itens checkout-itens nocheck">
 
 						<h3>Sua compra <span class="glyphicon glyphicon-chevron-down"></span></h3>
-                        @foreach($offer->offer_option()->get() as $k => $option)
+                        @foreach($offer->active_offer_option()->get() as $k => $option)
                             @if(in_array($option->id, $opt))
                                 <li data-price="{{intval($option->price_with_discount)}}">
                                     <figure><img src="{{$offer->thumb}}"></figure>
@@ -89,8 +89,8 @@
                                 </li>
                             @endif
                         @endforeach
-                        @if($offer->offer_additional->toArray() && count($add) > 0)
-                            @foreach($offer->offer_additional as $k => $additional)
+                        @if($offer->active_offer_additional->toArray() && count($add) > 0)
+                            @foreach($offer->active_offer_additional as $k => $additional)
                                 @if(in_array($additional->id, $add))
                                     <li data-price="{{intval($additional->price_with_discount)}}">
                                         <figure><img src="{{$additional->offer->thumb}}" alt="{{$additional->offer->title}}"></figure>
@@ -489,7 +489,7 @@
 			</div>
 		</div>
 	</div>
-    @foreach($offer->offer_additional as $k => $additional)
+    @foreach($offer->active_offer_additional as $k => $additional)
         <!-- Infos de {{$additional->title}}-->
         <div id="combo{{$additional->id}}-info" class="modal fade" tabindex="-1">
             <div class="modal-dialog modal-sm modal-combo combo-control">

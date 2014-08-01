@@ -35,7 +35,7 @@ class PageController extends BaseController {
     public function anyOferta($slug)
     {
         $offer = Offer::where('slug', $slug)
-                      ->with(['offer_option', 'offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])
+                      ->with(['active_offer_option', 'active_offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])
                       ->first();
 
         if(!$offer){
@@ -48,6 +48,34 @@ class PageController extends BaseController {
 
         // SEO
         $this->layout->title = $offer->destiny->name.' - '.$offer->short_title;
+        $this->layout->description = $offer->subtitle.' A partir de R$ '.intval($offer->price_with_discount).' com '.$offer->percent_off.'% OFF!';
+        $this->layout->og_type = 'article';
+        $this->layout->image = 'https:'.$offer->thumb;
+
+        $this->layout->content = View::make('pages.oferta', compact('offer'));
+    }
+
+    /**
+     * Show Deleted (old) Offer
+     */
+    public function anyOfertaAntiga($slug)
+    {
+        $offer = Offer::where('slug', $slug)
+                      ->withTrashed()
+                      ->with(['active_offer_option', 'active_offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])
+                      ->first();
+
+        if(!$offer){
+            return Redirect::route('home')->with('warning', 'Oferta não encontrada');
+        }
+
+        if (!$offer->deleted_at)
+        {
+            return Redirect::route('oferta', $slug);
+        }
+
+        // SEO
+        $this->layout->title = isset($offer->destiny) ? $offer->destiny->name.' - '.$offer->short_title : $offer->short_title;
         $this->layout->description = $offer->subtitle.' A partir de R$ '.intval($offer->price_with_discount).' com '.$offer->percent_off.'% OFF!';
         $this->layout->og_type = 'article';
         $this->layout->image = 'https:'.$offer->thumb;
@@ -74,7 +102,7 @@ class PageController extends BaseController {
             $add = Session::get('add');
         }
 
-        $offer = Offer::with(['offer_option', 'offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])->find((int)$oId);
+        $offer = Offer::with(['active_offer_option', 'active_offer_additional', 'offer_image', 'genre', 'genre2', 'partner'])->find((int)$oId);
 
         if(!$offer || !$opt){
             Session::flash('error', 'Oferta não encontrada');
@@ -192,8 +220,8 @@ class PageController extends BaseController {
         //organize some of the user inputs
         $user_id = Auth::user()->id;
         $user_email = Auth::user()->email;
-        $braspag_order_id = getGUID();
-        $mid_voucher = substr($braspag_order_id, 5, 19);
+        $braspag_order_id = getGUID_semchave();
+        $mid_voucher = substr($braspag_order_id, 4, 19);
         $donation = $inputs['donation'];
         $discount_coupon_code = $inputs['promoCode'];
         $total = 0;

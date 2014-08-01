@@ -176,6 +176,7 @@ class AdminOfferController extends BaseController {
                 foreach($offer_options as $k => $opt){
                     $opt['display_order'] = $k;
                     $opt['offer_id'] = $offer->id;
+                    $opt['is_active'] = isset($opt['is_active']) ? $opt['is_active'] : 0;
                     // A linha abaixo está comentada porque deste jeito não executa os Mutators
                     //$offer_option = $offer->offer_option()->create($opt);
                     $offer_option = $this->offer_option->create($opt);
@@ -422,6 +423,10 @@ class AdminOfferController extends BaseController {
 
 	public function postEdit($id)
 	{
+        // $inputs = Input::all();
+        // print('<pre>');
+        // print_r($inputs);
+        // print('</pre>'); die();
         if ($this->offer->passes() && $this->offer_option->passes(Input::get('offer_options')[0]))
         {
             // Pega a oferta
@@ -443,6 +448,7 @@ class AdminOfferController extends BaseController {
                 foreach($offer_options as $k => $opt){
                     $opt['display_order'] = $k;
                     $opt['offer_id'] = $offer->id;
+                    $opt['is_active'] = isset($opt['is_active']) ? $opt['is_active'] : 0;
                     if(isset($opt['id']) && $opt['id'] > 0){
                         $offer_option = $this->offer_option->find($opt['id']);
                         // Atualiza a opção da Oferta
@@ -461,6 +467,7 @@ class AdminOfferController extends BaseController {
                         $percent_off = $offer_option->percent_off;
                     }
                 }
+
                 // Se sobrou algum ID em $opt_ids, deleta
                 if(count($opt_ids) > 0){
                     foreach($opt_ids as $oid) $this->offer_option->find($oid)->delete();
@@ -1006,30 +1013,6 @@ class AdminOfferController extends BaseController {
          */
         $this->layout->page_title = 'Lista de Ofertas Antigas';
         $this->layout->content = View::make('admin.offer.deleted.list', compact('sort', 'order', 'pag', 'offer'));
-    }
-
-    /**
-     * Display Offer Create Page.
-     *
-     * @return Response
-     */
-
-    public function getView($id)
-    {
-        $offer = $this->offer->where('id', $id)->withTrashed()->with(['offer_option', 'offer_additional_offer', 'category', 'ngo', 'offer_image', 'group', 'genre', 'genre2', 'destiny', 'partner', 'tell_us', 'holiday', 'included', 'tag'])->first();
-
-        if(is_null($offer->deleted_at)){
-            return Redirect::route('oferta', $offer->slug);
-        }
-
-        if (is_null($offer))
-        {
-            Session::flash('error', 'Oferta #'.$id.' não encontrada.');
-            return Redirect::route('admin.offer');
-        }
-
-        $this->layout->page_title = 'Visualizando Oferta #'.$offer->id.' '.$offer->title;
-        $this->layout->content = View::make('admin.offer.view', compact('offer'));
     }
 
 }

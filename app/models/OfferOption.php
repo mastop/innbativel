@@ -23,6 +23,7 @@ class OfferOption extends BaseModel {
         'voucher_validity_start', // Início Validade Cupom
         'voucher_validity_end', // Fim Validade Cupom
         'display_order', // Ordem
+        'is_active', // Ativa
     ];
 
 	protected $softDelete = true;
