@@ -955,7 +955,7 @@ class PageController extends BaseController {
      */
     public function anyBusca()
     {
-        $q = e(Input::get('q'));
+        $q = str_replace(Array("\n", "'", "‘", "’", "′", "“", "”", "„", "″", '"'), '', strip_tags(Input::get('q')));
         if(empty($q)){
             return Redirect::route('home')->with('error', 'Digite um termo para sua busca');
         }

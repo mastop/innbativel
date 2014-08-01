@@ -1,32 +1,34 @@
 @section('content')
 <div class="widget">
-	<div class="navbar">
-		<div class="navbar-inner">
-			<h6>Ordenar ofertas</h6>
-	        <div class="nav pull-right">
-	            <a href="{{ route('admin.offer.create') }}" title="Criar Oferta" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
-	            <a href="{{ route('admin.offer.sort') }}" title="Ordenar Ofertas" class="dropdown-toggle navbar-icon"><i class="icon-random"></i></a>
-				<a href="{{ route('admin.offer.newsletter') }}" title="Gerar Newsletter" class="dropdown-toggle navbar-icon"><i class="icon-envelope"></i></a>
-				<a href="{{ route('admin.offer.deleted') }}" title="Ofertas antigas" class="dropdown-toggle navbar-icon"><i class="icon-folder-open-alt"></i></a>
-	        </div>
-		</div>
-	</div>
 	<div class="well widget row-fluid">
 		{{ Former::inline_open(route('admin.offer.save_sort')) }}
 
-		<div id="TabContainer">
+		<div id="TabContainer" style="padding: 10px;">
 			<ul>
 				@foreach ($offers as $offer)
-				<li>
-					{{ $offer->title }}
-					{{ Former::hidden('offers[]', $offer->id) }}
-				</li>
+                <li class="select2-results-dept-0 select2-result select2-result-selectable select2-highlighted" role="presentation">
+                    <div class="select2-result-label" role="option">
+                        <table class="offer-result">
+                            <tbody>
+                            <tr>
+                                <td class="offer-image"><img src="{{$offer->thumb}}" style="max-width:100px;"></td>
+                                <td class="offer-info">
+                                    <div class="offer-title"><b>#{{$offer->id}}</b> {{$offer->category->title}} / {{$offer->destiny->name}}</div>
+                                    <div class="offer-sub">R$ {{$offer->price_with_discount}} ({{$offer->percent_off}}% OFF)</div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {{ Former::hidden('offers[]')->value($offer->id) }}
+                </li>
 				@endforeach
 			</ul>
 		</div>
 
-	    {{ Former::submit('Enviar') }}
-		{{ Former::link('Resetar', route('admin.offer.sort')) }}
+        {{ Former::actions()
+        ->primary_submit('Ordenar')
+        ->inverse_link('Resetar', route('admin.offer.sort')) }}
 
 	    {{ Former::close() }}
 	</div>
