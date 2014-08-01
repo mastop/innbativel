@@ -271,17 +271,38 @@ class PageController extends BaseController {
         foreach ($offers_options as $offer_option) {
             $qty_ordered = array_shift($qties); // pega o primeiro elemento de $qties e joga no final do próprio array $qties, além de obter o valor manipulado em si, claro
             $qty_sold = isset($offer_option->qty_sold{0})?$offer_option->qty_sold{0}->qty:0;
+            $qty_sold_boletus = isset($offer_option->qty_sold_boletus{0})?$offer_option->qty_sold_boletus{0}->qty:0;
             $max_qty_allowed = $offer_option->max_qty - $qty_sold;
+            // $max_qty_allowed_boletus = $offer_option->min_qty - $qty_sold;
 
             if($qty_ordered > $max_qty_allowed){
                 // ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
-                $error = 'A quantidade selecionada para a oferta "' . $offer_option->offer->title . '" é maior do que a quantidade em estoque.';
+                if($max_qty_allowed <= 0){
+                    $error = 'Desculpe, mas a opção "'.$offer_option->title.'" acabou de se esgotar ):';
+                }
+                else{
+                    $error = 'Desculpe, mas a quantidade da opção "'.$offer_option->title.'" em estoque acabou de cair para '.$max_qty_allowed.'.';
+                }
                 $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
 
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
             }
+            // else if($inputs['payment_type'] == 'boletus' && $qty_ordered > $max_qty_allowed_boletus){
+            //     // ERRO: a quantidade comprada é maior que a quantidade em estoque permitida para compra via boleto
+            //     if($max_qty_allowed_boletus <= 0){
+            //         $error = 'Desculpe, mas a opção "'.$offer_option->title.'" não pode ser comprada via boleto. Por favor, selecione outro meio de pagamento.';
+            //     }
+            //     else{
+            //         $error = 'Desculpe, mas a quantidade da opção "'.$offer_option->title.'" em estoque acabou de cair para '.$max_qty_allowed_boletus.' para compra via boleto. Por favor, selecione outro meio de pagamento ou diminua a quantidade desta opção para compra.';
+            //     }
+            //     $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
+
+            //     Session::flash('error', $error);
+            //     return Redirect::back()
+            //                    ->withInput();
+            // }
             else{
                 $products[] = '<a href="' . route('oferta', $offer_option->offer->slug) . '">' . $qty_ordered . ' x ' . $offer_option->offer->title . ' | ' . $offer_option->title . '</a>';
 
