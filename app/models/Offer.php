@@ -84,6 +84,7 @@ class Offer extends BaseModel {
         return $this->belongsToMany('OfferOption', 'offers_additional', 'offer_main_id', 'offer_additional_id')
                     ->withPivot('display_order')
                     ->where('offers_options.is_active', 1)
+                    ->whereRaw('offers_options.max_qty > (SELECT COUNT(id) FROM vouchers WHERE vouchers.status = "pago" AND offers_options.id = vouchers.offer_option_id)')
                     ->orderBy('offers_additional.display_order', 'asc');
     }
 
@@ -97,6 +98,7 @@ class Offer extends BaseModel {
     public function active_offer_option(){
         return $this->hasMany('OfferOption')
                     ->where('is_active', 1)
+                    ->whereRaw('offers_options.max_qty > (SELECT COUNT(id) FROM vouchers WHERE vouchers.status = "pago" AND offers_options.id = vouchers.offer_option_id)')
                     ->orderBy('display_order', 'asc');
     }
 
