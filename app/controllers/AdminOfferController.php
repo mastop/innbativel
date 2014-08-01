@@ -785,26 +785,28 @@ class AdminOfferController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$offers = $offerObj->orderBy('display_order', 'asc')
-						   // ->where('ends_on', '>=', date("Y-m-d H:i:s"))
+		$offers = $offerObj->query()->with(['destiny', 'category'])->orderBy('display_order', 'asc')
 						   ->get();
 
 		/*
 		 * Layout / View
 		 */
+        $this->layout->page_title = 'Ordenar Ofertas';
 		$this->layout->content = View::make('admin.offer.sort', compact('offers'));
 	}
 
 	public function postSort(){
-		$offers = Input::get('offers');
+		$offers = Input::get('offers', array());
 
 		foreach ($offers as $display_order => $id) {
 			$o = Offer::find($id);
-			$o->display_order = $display_order;
-			$o->save();
+            if(is_object($o)){
+                $o->display_order = $display_order;
+                $o->save();
+            }
 		}
-
-		return Redirect::route('admin.offer.sort');
+        Session::flash('success', 'Ofertas Ordenadas');
+		return Redirect::route('admin.offer');
 	}
 
 	public function getSortComment($id){

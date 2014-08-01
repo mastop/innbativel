@@ -25,7 +25,7 @@ class Group extends Eloquent {
                 ->where('offers.ends_on'  , '>=', Carbon::now()->toDateTimeString())
                 ->where('offers.is_available'  , '=', 1)
                 ->where('offers.is_active'  , '=', 1)
-                ->orderBy('offers_groups.display_order', 'asc');
+                ->orderBy('offers.display_order', 'asc');
     }
 
     public static function getAllArray(){
