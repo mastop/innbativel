@@ -58,7 +58,7 @@
 	})
 	->offer_id(function($voucher) {
 		if(isset($voucher['offer_option_offer'])) {
-			return link_to_route('painel.offer.view', $voucher['offer_option_offer']['offer']['id'], $voucher['offer_option_offer']['offer']['id']);
+			return link_to_route('oferta-antiga', $voucher['offer_option_offer']['offer']['id'], ['slug' => $voucher['offer_option_offer']['offer']['slug']], ['target' => 'blank']);
 		}
 		return '?';
 	})

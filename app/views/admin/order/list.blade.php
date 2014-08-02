@@ -81,7 +81,7 @@
 			$id = '| ';
 			foreach ($order->offer_option_offer as $offer_option) {
 				if(strpos($id, $offer_option->offer_id) == false){
-					$id .= link_to_route('admin.offer.view', $offer_option->offer_id, ['id' => $offer_option->offer->id]).' | ';
+					$id .= link_to_route('oferta-antiga', $offer_option->offer_id, ['slug' => $offer_option->offer->slug], ['target' => 'blank']).' | ';
 				}
 			}
 			return $id;
@@ -126,11 +126,18 @@
 			    ])
 			)->pull_right()->split();
 	    }
-	    else{
+	    else if($order['status'] == 'pendente'){
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
 			  		['Ver detalhes', 'javascript: view('.$order['id'].')'],
 			  		['Marcar como "pago"', 'javascript: action(\''.route('admin.order.update_status', ['id' => $order['id'], 'status' => "pago", 'comment' => 'motivo: ']).'\', \'marcar como pago\', \''.$order['braspag_order_id_string'].'\');'],
+			    ])
+			)->pull_right()->split();
+	    }
+	    else{
+	    	return DropdownButton::normal('Ações',
+			  	Navigation::links([
+			  		['Ver detalhes', 'javascript: view('.$order['id'].')'],
 			    ])
 			)->pull_right()->split();
 	    }

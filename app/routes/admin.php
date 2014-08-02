@@ -147,9 +147,6 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 
 	Route::any('offer/deleted', ['as' => 'admin.offer.deleted', 'uses' => 'AdminOfferController@anyDeleted']);
 
-	Route::any('offer/view', function(){ return Redirect::route('admin.offer.deleted'); });
-	Route::get('offer/view/{id}', ['as' => 'admin.offer.view', 'uses' => 'AdminOfferController@getView']);
-
 	/*
 	 * Configs
 	 */
@@ -220,7 +217,7 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::any('order/offers', ['as' => 'admin.order.offers', 'uses' => 'AdminOrderController@anyListByOffer']);
 
 	Route::any('order/offers_export', function(){ return Redirect::route('admin.order'); });
-	Route::get('order/offers_export/{offer_option_id}/{status?}', ['as' => 'admin.order.offers_export', 'uses' => 'AdminOrderController@getOffersExport']);
+	Route::get('order/offers_export/{offer_id}/{status?}', ['as' => 'admin.order.offers_export', 'uses' => 'AdminOrderController@getOffersExport']);
 	Route::any('order/list_offers_export', function(){ return Redirect::route('admin.order.offers'); });
 	Route::get('order/list_offers_export/{offer_id?}/{starts_on?}/{ends_on?}', ['as' => 'admin.order.list_offers_export', 'uses' => 'AdminOrderController@getListOffersExport']);
 	Route::any('order/list_paym_export', function(){ return Redirect::route('admin.order'); });
@@ -245,7 +242,7 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::any('order/voucher/view/{id}', ['as' => 'admin.order.voucher.view', 'uses' => 'AdminOrderController@getViewVoucher']);
 
 	Route::any('order/voucher/exportar', function(){ return Redirect::route('admin.order'); });
-	Route::get('order/voucher/exportar/{offer_id?}/{id?}', ['as' => 'admin.order.voucher_export', 'uses' => 'AdminOrderController@getVoucherExport']);
+	Route::get('order/voucher/exportar/{sort}/{order}/{offer_id?}/{id?}', ['as' => 'admin.order.voucher_export', 'uses' => 'AdminOrderController@getVoucherExport']);
 
 	Route::get('order/update_status/{id}/{status}/{comment}', ['as' => 'admin.order.update_status', 'uses' => 'AdminOrderController@getUpdateStatus']);
 
