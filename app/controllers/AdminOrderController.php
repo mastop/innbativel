@@ -182,7 +182,9 @@ class AdminOrderController extends BaseController {
 	}
 
 	public function anyListByOffer(){
-		$offersOptions = new OfferOption;
+		$offers = new Offer;
+
+		$offers = $offers->withTrashed();
 
 		/*
 		 * Paginate
@@ -193,7 +195,7 @@ class AdminOrderController extends BaseController {
 		/*
 		 * Sort filter
 		 */
-		$sort = in_array(Input::get('sort'), ['id']) ? Input::get('sort') : 'offer_id';
+		$sort = in_array(Input::get('sort'), ['id']) ? Input::get('sort') : 'id';
 
 		/*
 		 * Order filter
@@ -204,49 +206,40 @@ class AdminOrderController extends BaseController {
 		 * Search filter
 		 */
     	if(Input::has('offer_id')){
-    		$offersOptions = $offersOptions->where('offer_id', Input::get('offer_id'));
+    		$offers = $offers->where('id', Input::get('offer_id'));
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'offer' => function($query){ $query->withTrashed(); }])
-									   ->whereExists(function($query){
-							                if (Input::has('starts_on') || Input::has('ends_on')) {
-												$query->select(DB::raw(1))
-								                      ->from('offers')
-													  ->whereRaw('offers.id = offers_options.offer_id');
-							                	if (Input::has('starts_on')) {
-							                		$query->whereRaw('offers.starts_on >= "'.Input::get('starts_on').'"');
-							                	}
-							                	if (Input::has('ends_on')) {
-							                		$query->whereRaw('offers.ends_on <= "'.Input::get('ends_on').'"');
-							                	}
-											}
+    	if(Input::has('starts_on')){
+    		$offers = $offers->where('starts_on', '>=', Input::get('starts_on'));
+    	}
 
-							           })
-							           ->whereExists(function($query){
-							                if (isset($this->comercial_restriction)) {
-												$query->select(DB::raw(1))
-								                      ->from('offers')
-								                      ->whereRaw('offers.id = offers_options.offer_id')
-								                      ->whereRaw($this->comercial_restriction);
-											}
+    	if(Input::has('ends_on')){
+    		$offers = $offers->where('ends_on', '<=', Input::get('ends_on'));
+    	}
 
-							            })
-									   ->orderBy($sort, $order)
-									   ->paginate($pag)
-									   ->appends([
-											'sort' => $sort,
-											'order' => $order,
-											'pag' => $pag,
-											'offer_id' => Input::get('offer_id'),
-											'starts_on' => Input::get('starts_on'),
-											'ends_on' => Input::get('ends_on'),
-									   ]);
+    	if (isset($this->comercial_restriction)) {
+			$offers = $offers->whereRaw($this->comercial_restriction);
+		}
 
-		$this->layout->content = View::make('admin.order.offers', compact('sort', 'order', 'pag', 'offersOptions'));
+		$offers = $offers->with(['offer_option', 'destiny'])
+					     ->orderBy($sort, $order)
+					     ->paginate($pag)
+					     ->appends([
+							'sort' => $sort,
+							'order' => $order,
+							'pag' => $pag,
+							'id' => Input::get('id'),
+							'starts_on' => Input::get('starts_on'),
+							'ends_on' => Input::get('ends_on'),
+					     ]);
+					     
+		$this->layout->content = View::make('admin.order.offers', compact('sort', 'order', 'pag', 'offers'));
 	}
 
 	public function getListOffersExport($offer_id, $starts_on, $ends_on){
-		$offersOptions = new OfferOption;
+		$offers = new Offer;
+
+		$offers = $offers->withTrashed();
 
 		$offer_id = ($offer_id == 'null')?null:$offer_id;
 		$starts_on = ($starts_on == 'null')?null:$starts_on;
@@ -256,63 +249,47 @@ class AdminOrderController extends BaseController {
 		 * Search filter
 		 */
     	if($offer_id){
-    		$offersOptions = $offersOptions->where('offer_id', $offer_id);
+    		$offers = $offers->where('id', $offer_id);
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'offer'])
-											->whereExists(function($query) use($starts_on, $ends_on){
-								                if (isset($starts_on) || isset($ends_on)) {
-													$query->select(DB::raw(1))
-									                      ->from('offers')
-														  ->whereRaw('offers.id = offers_options.offer_id');
-								                	if (isset($starts_on)) {
-								                		$query->whereRaw('offers.starts_on >= "'.$starts_on.'"');
-								                	}
-								                	if (isset($ends_on)) {
-								                		$query->whereRaw('offers.ends_on <= "'.$ends_on.'"');
-								                	}
-												}
+    	if($starts_on){
+    		$offers = $offers->where('starts_on', '>=', $starts_on);
+    	}
 
-								            })
-								            ->whereExists(function($query){
-								                if (isset($this->comercial_restriction)) {
-													$query->select(DB::raw(1))
-									                      ->from('offers')
-									                      ->whereRaw('offers.id = offers_options.offer_id')
-									                      ->whereRaw($this->comercial_restriction);
-												}
+    	if($ends_on){
+    		$offers = $offers->where('ends_on', '<=', $ends_on);
+    	}
 
-								            })
-											->orderBy('offer_id', 'desc')
-											->get();
+    	if (isset($this->comercial_restriction)) {
+			$offers = $offers->whereRaw($this->comercial_restriction);
+		}
+
+		$offers = $offers->with(['offer_option', 'destiny'])
+						 ->orderBy('id', 'desc')
+						 ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Máximo', 'Confirmados', 'Pendentes', 'Cancelados', 'Total');
+		$spreadsheet[] = array('ID', 'Oferta', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Máximo (todas opções)', 'Confirmados', 'Pendentes', 'Cancelados', 'Total');
 
-		foreach ($offersOptions as $offerOption) {
+		foreach ($offers as $offer) {
 			$ss = null;
-			$ss[] = $offerOption->offer_id;
-			$ss[] = $offerOption['offer']['destiny']->name;
-			$ss[] = $offerOption->title;
-			$ss[] = $offerOption['offer']->starts_on;
-			$ss[] = $offerOption['offer']->ends_on;
-			$ss[] = $offerOption->price_with_discount;
-			$ss[] = $offerOption->max_qty;
-
-			$approved = isset($offerOption['qty_sold']{0})?$offerOption['qty_sold']{0}->qty:0;
-			$pending = isset($offerOption['qty_pending']{0})?$offerOption['qty_pending']{0}->qty:0;
-			$cancelled = isset($offerOption['qty_cancelled']{0})?$offerOption['qty_cancelled']{0}->qty:0;
-
-			$ss[] = $approved;
-			$ss[] = $pending;
-			$ss[] = $cancelled;
-			$ss[] = ($approved + $pending + $cancelled);
+			$ss[] = $offer->id;
+			$ss[] = isset($offer->destiny) ? $offer->destiny->name . ' - ' . $offer->title : $offer->title;
+			$ss[] = $offer->starts_on;
+			$ss[] = $offer->ends_on;
+			$ss[] = $offer->price_with_discount;
+			$ss[] = $offer->qty_used;
+			$ss[] = $offer->max_qty;
+			$ss[] = $offer->qty_sold;
+			$ss[] = $offer->qty_pending;
+			$ss[] = $offer->qty_cancelled;
+			$ss[] = $offer->qty;
 
 			$spreadsheet[] = $ss;
 		}
 
-		Excel::create('PagamentosOfertas')
-	         ->sheet('PagamentosOfertas')
+		Excel::create('PagamentosOferta'.(isset($offer_id) ? '_#'.$offer_id : 's'))
+	         ->sheet('PagamentosOferta'.(isset($offer_id) ? '_#'.$offer_id : 's'))
 	            ->with($spreadsheet)
 	         ->export('xls');
 	}
@@ -433,51 +410,54 @@ class AdminOrderController extends BaseController {
 	         ->export('xls');
 	}
 
-	public function getOffersExport($offer_option_id, $status = NULL){
+	public function getOffersExport($offer_id, $status = NULL){
 		$ordersObj = $this->order;
 		
 		$ordersData = $ordersObj->with([
 										'buyer',
 										'discount_coupon',
-										'offer_option_offer' => function($query) use($offer_option_id){
-												   $query->where('offers_options.id', $offer_option_id);
+										'offer_option_offer' => function($query) use($offer_id){
+												   $query->where('offers_options.offer_id', $offer_id);
 											  	},
-										'voucher' => function($query) use($offer_option_id, $status){
+										'voucher' => function($query) use($offer_id, $status){
 													if(isset($status)){
 														if($status == 'cancelado'){
-															$query->where('vouchers.offer_option_id', $offer_option_id)->whereIn('vouchers.status', ['cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial']);
+															$query->whereIn('vouchers.offer_option_id', OfferOption::where('offer_id', $offer_id)->lists('id'))->whereIn('vouchers.status', ['cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial']);
 														}
 														else{
-															$query->where('vouchers.offer_option_id', $offer_option_id)->where('vouchers.status', $status);
+															$query->whereIn('vouchers.offer_option_id', OfferOption::where('offer_id', $offer_id)->lists('id'))->where('vouchers.status', $status);
 														}
 													}
 													else{
-														$query->where('vouchers.offer_option_id', $offer_option_id);
+														$query->whereIn('vouchers.offer_option_id', OfferOption::where('offer_id', $offer_id)->lists('id'));
 													}
 												}
 								])
-								->whereExists(function($query) use($offer_option_id, $status){
+								->whereExists(function($query) use($offer_id, $status){
 									if(isset($status)){
 										if($status == 'cancelado'){
 											$query->select(DB::raw(1))
 							                      ->from('vouchers')
+							                      ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
 												  ->whereRaw('vouchers.order_id = orders.id')
-												  ->whereRaw('vouchers.offer_option_id = "'.$offer_option_id.'"')
+												  ->whereRaw('offers_options.offer_id = "'.$offer_id.'"')
 												  ->whereRaw('vouchers.status IN ("cancelado", "cancelado_parcial", "convercao_creditos", "convercao_creditos_parcial")');
 										}
 										else{
 											$query->select(DB::raw(1))
 							                      ->from('vouchers')
+												  ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
 												  ->whereRaw('vouchers.order_id = orders.id')
-												  ->whereRaw('vouchers.offer_option_id = "'.$offer_option_id.'"')
+												  ->whereRaw('offers_options.offer_id = "'.$offer_id.'"')
 												  ->whereRaw('vouchers.status = "'.$status.'"');
 										}
 									}
 									else{
 										$query->select(DB::raw(1))
 						                      ->from('vouchers')
+											  ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
 											  ->whereRaw('vouchers.order_id = orders.id')
-											  ->whereRaw('vouchers.offer_option_id = "'.$offer_option_id.'"');
+											  ->whereRaw('offers_options.offer_id = "'.$offer_id.'"');
 									}
 					            })
 								->whereExists(function($query){
@@ -518,7 +498,7 @@ class AdminOrderController extends BaseController {
 
 			$spreadsheet[] = $ss;
 		}
-		$title = 'Ofertas'.(isset($status)?'_'.$status:'');
+		$title = 'Oferta_#'.$offer_id.(isset($status)?'_'.$status:'');
 		Excel::create($title)
 	         ->sheet($title)
 	            ->with($spreadsheet)
@@ -554,7 +534,7 @@ class AdminOrderController extends BaseController {
 		/*
 		 * Sort filter
 		 */
-		$sort = in_array(Input::get('sort'), ['display_code']) ? Input::get('sort') : 'id';
+		$sort = in_array(Input::get('sort'), ['offers_options.title']) ? Input::get('sort') : 'vouchers.id';
 
 		/*
 		 * Order filter
@@ -598,6 +578,8 @@ class AdminOrderController extends BaseController {
 					                      ->whereRaw('offers_options.offer_id = '.$offer_id);
 								}
 				             })
+				             ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
+				             ->select('vouchers.*','offers_options.title')
 							 ->orderBy($sort, $order)
 							 ->paginate($pag)
 							 ->appends([
@@ -607,7 +589,7 @@ class AdminOrderController extends BaseController {
 								 'offer_id' => $offer_id,
 								 'id' => Input::get('id'),
 							 ]);
-							 // ->get()->toArray();
+							 // ->take(50)->get()->toArray();
 
 							 // print('<pre>');
 							 // print_r($vouchers);
@@ -616,7 +598,7 @@ class AdminOrderController extends BaseController {
 		$this->layout->content = View::make('admin.order.voucher', compact('sort', 'order', 'pag', 'offer_id', 'vouchers', 'offers'));
 	}
 
-	public function getVoucherExport($offer_id = null, $id = null){
+	public function getVoucherExport($sort, $order, $offer_id = null, $id = null){
 		$id = ($id == 'null')?null:$id;
 		$offer_id = ($offer_id == 'null')?null:$offer_id;
 
@@ -628,7 +610,7 @@ class AdminOrderController extends BaseController {
 			$vouchers = $vouchers->where('id', $id);
 		}
 
-		$vouchers = $vouchers->with(['order_customer', 'offer_option_offer'])
+		$vouchers = $vouchers->with(['offer_option_offer', 'order_customer'])
 	               	   	     ->whereExists(function($query){
 				 	                $query->select(DB::raw(1))
 				 		                  ->from('orders')
@@ -653,17 +635,22 @@ class AdminOrderController extends BaseController {
 					                      ->whereRaw('offers_options.offer_id = '.$offer_id);
 								}
 				             })
-		 					 ->orderBy('id', 'desc')
+				             ->join('offers_options', 'offers_options.id', '=', 'vouchers.offer_option_id')
+				             ->select('vouchers.*','offers_options.title')
+		 					 ->orderBy($sort, $order)
 		 					 ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('Data e hora', 'ID da oferta', 'Cupom', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento');
+		$spreadsheet[] = array('Data e hora', 'Chave do cupom', 'Código', 'ID da oferta', 'Oferta', 'Opção', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento');
 
 		foreach ($vouchers as $voucher) {
 			$ss = null;
 			$ss[] = date('d/m/Y H:i:s', strtotime($voucher->order_customer->created_at));
+			$ss[] = $voucher->id;
+			$ss[] = $voucher->display_code.'-'.$voucher->offer_option_offer->offer->id;
 			$ss[] = $voucher->offer_option_offer->offer->id;
-			$ss[] = $voucher->id.'-'.$voucher->display_code.'-'.$voucher->offer_option_offer->offer->id;
+			$ss[] = isset($voucher->offer_option_offer->offer->destiny) ? $voucher->offer_option_offer->offer->destiny->name : substr($voucher->offer_option_offer->offer->title,0,40) . '...';
+			$ss[] = $voucher->offer_option_offer->title . (isset($voucher->offer_option_offer->subtitle) && $voucher->offer_option_offer->subtitle != ''?' (' . $voucher->offer_option_offer->subtitle . ')':'');
 			$ss[] = ($voucher->used == 1)?'Sim':'Não';
 			$ss[] = $voucher->name;
 			$ss[] = $voucher->email;
@@ -970,7 +957,7 @@ class AdminOrderController extends BaseController {
 		$this->updateOrder($order, $new_status, $comment);
 
 		return Redirect::route('admin.order', ['braspag_order_id' => $braspag_order_id])
-					   ->with('success', 'Pagamento '.$order->braspag_order_id.' via boleto cancelado com sucesso. IMPORTANTE: ainda é necessário reembolsar o cliente.');
+					   ->with('success', 'O pagamento '.$order->braspag_order_id.' foi cancelado com sucesso. IMPORTANTE: ainda é necessário reembolsar o cliente.');
 	}
 
 	// public function getReject($id, $braspag_order_id, $comment){

@@ -17,12 +17,12 @@
 		<div class="dataTables_filter">
 			{{ Former::inline_open(route('admin.order.offers')) }}
 			{{ Former::label('Pesquisar: ') }}
-			{{ Former::text('offer_id')->class('input-medium')->placeholder('ID da oferta')->label('ID da oferta') }}
+			{{ Former::text('offer_id')->class('input-medium')->placeholder('ID')->label('ID') }}
 			{{ Former::date('starts_on')->class('input-medium')->placeholder('Data início')->label('Data início') }}
 			{{ Former::date('ends_on')->class('input-medium')->placeholder('Data fim')->label('Data fim') }}
 			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('admin.order.offers')) }}
-			{{ Former::link('Exportar esta pesquisa para excel', 'javascript: exportar(\''.route('admin.order.list_offers_export', ['offer_id' =>'offer_id', 'starts_on' => 'starts_on', 'ends_on'=>'ends_on']).'\');') }}
+			{{ Former::link('Exportar esta pesquisa para excel', 'javascript: exportar(\''.route('admin.order.list_offers_export', ['offer_id' => 'offer_id', 'starts_on' => 'starts_on', 'ends_on'=>'ends_on']).'\');') }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
@@ -40,68 +40,54 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('ID Oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Máximo', 'Confirmados', 'Pendentes', 'Cancelados', 'Total', 'Ações') }}
-{{ Table::body($offersOptions)->ignore(['id', 'title', 'subtitle', 'included', 'price_original', 'price_with_discount', 'min_qty', 'max_qty', 'percent_off', 'transfer', 'voucher_validity_start', 'voucher_validity_end', 'rules', 'display_order', 'offer', 'qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'deleted_at'])
-	->main_offer(function($offer_option) {
-		if(isset($offer_option['offer'])) {
-			return isset($offer_option['offer']['destiny'])?$offer_option['offer']['destiny']->name:$offer_option['offer']->title;
+{{ Table::headers('ID', 'Oferta', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Máximo (todas opções)', 'Confirmados', 'Pendentes', 'Cancelados', 'Total', 'Ações') }}
+{{ Table::body($offers)->ignore(['partner_id','category_id','genre_id','genre2_id','destiny_id','ngo_id','tell_us_id','title','short_title','subtitle','price_original','price_with_discount','percent_off','rules','features','popup_features','slug','starts_on','ends_on','cover_img','newsletter_img','display_map','display_order','is_product','is_available','is_active','sold','created_at','updated_at','deleted_at', 'destiny', 'offer_option', 'deleted_at'])
+	->offer(function($offer) {
+		if(isset($offer->title)) {
+			return isset($offer->destiny) ? $offer->destiny->name . ' - ' . $offer->title : $offer->title;
 		}
 		return '--';
 	})
-	->offer_option(function($offer_option) {
-		if(isset($offer_option['title'])) {
-			return $offer_option['title'].(isset($offer_option['subtitle']) && $offer_option['subtitle'] != ''?' ('.$offer_option['subtitle'].')':'');
+	->starts_onn(function($offer) {
+		if(isset($offer->starts_on)) {
+			return $offer->starts_on;
 		}
 		return '--';
 	})
-	->starts_on(function($offer_option) {
-		if(isset($offer_option['offer'])) {
-			return $offer_option['offer']->starts_on;
+	->ends_onn(function($offer) {
+		if(isset($offer->ends_on)) {
+			return $offer->ends_on;
 		}
 		return '--';
 	})
-	->ends_on(function($offer_option) {
-		if(isset($offer_option['offer'])) {
-			return $offer_option['offer']->ends_on;
+	->price(function($offer) {
+		if(isset($offer->price_with_discount)) {
+			return $offer->price_with_discount;
 		}
 		return '--';
 	})
-	->price(function($offer_option) {
-		if(isset($offer_option['price_with_discount'])) {
-			return $offer_option['price_with_discount'];
-		}
-		return '--';
+	->used_vouchers(function($offer) {
+		return $offer->qty_used;
 	})
-	->used_vouchers(function($offer_option) {
-		return isset($offer_option['used_vouchers']{0})?$offer_option['used_vouchers']{0}->qty:0;
+	->max(function($offer) {
+		return $offer->max_qty;
 	})
-	->max(function($offer_option) {
-		if(isset($offer_option['max_qty'])) {
-			return $offer_option['max_qty'];
-		}
-		return '--';
+	->pago(function($offer) {
+		return link_to_route('admin.order.offers_export', $offer->qty_sold, ['offer_id' => $offer->id, 'status' => 'pago']);
 	})
-	->pago(function($offer_option) {
-		return link_to_route('admin.order.offers_export', (isset($offer_option['qty_sold']{0})?$offer_option['qty_sold']{0}->qty:0), ['offer_option_id' => $offer_option['id'], 'status' => 'pago']);
+	->pendente(function($offer) {
+		return link_to_route('admin.order.offers_export', $offer->qty_pending, ['offer_id' => $offer->id, 'status' => 'pendente']);
 	})
-	->pendente(function($offer_option) {
-		return link_to_route('admin.order.offers_export', (isset($offer_option['qty_pending']{0})?$offer_option['qty_pending']{0}->qty:0), ['offer_option_id' => $offer_option['id'], 'status' => 'pendente']);
+	->cancelado(function($offer) {
+		return link_to_route('admin.order.offers_export', $offer->qty_cancelled, ['offer_id' => $offer->id, 'status' => 'cancelado']);
 	})
-	->cancelado(function($offer_option) {
-		return link_to_route('admin.order.offers_export', (isset($offer_option['qty_cancelled']{0})?$offer_option['qty_cancelled']{0}->qty:0), ['offer_option_id' => $offer_option['id'], 'status' => 'cancelado']);
+	->total(function($offer) {
+		return link_to_route('admin.order.offers_export', $offer->qty, ['offer_id' => $offer->id]);
 	})
-	->total(function($offer_option) {
-		$approved = isset($offer_option['qty_sold']{0})?$offer_option['qty_sold']{0}->qty:0;
-		$pending = isset($offer_option['qty_pending']{0})?$offer_option['qty_pending']{0}->qty:0;
-		$cancelled = isset($offer_option['qty_cancelled']{0})?$offer_option['qty_cancelled']{0}->qty:0;
-
-		$total = $approved + $pending + $cancelled;
-		return link_to_route('admin.order.offers_export', $total, ['offer_option_id' => $offer_option['id']]);
-	})
-	->actions(function($offer_option) {
+	->actions(function($offer) {
 		return DropdownButton::normal('Ações',
 				  	Navigation::links([
-						['Ver vouchers', route('admin.order.voucher', ['offer_option_id' => $offer_option->id])],
+						['Ver vouchers', route('admin.order.voucher', ['offer_id' => $offer->id])],
 				    ])
 				)->pull_right()->split();
 	})
@@ -109,7 +95,7 @@
 {{ Table::close() }}
 </div>
 
-{{ $offersOptions->links() }}
+{{ $offers->links() }}
 
 <script type="text/javascript">
 

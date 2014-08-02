@@ -58,6 +58,14 @@ $(function () {
         $(this).closest('form').submit();
     });
 
+    // $('#sort').change(function(){
+    //     $(this).closest('form').submit();
+    // });
+
+    // $('#order').change(function(){
+    //     $(this).closest('form').submit();
+    // });
+
     function formatIcon(o) {
         return "<span class='map-icon " + o.id + "' style='margin-top:2px'></span>" + o.text;
     }
