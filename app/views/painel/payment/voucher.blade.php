@@ -118,7 +118,7 @@
 				return '--';
 			})
 			->qty(function($data) {
-				return '1';
+				return $data->status == 'pagamento' ? 1 : -1;
 			})
 	}}
 	<thead>

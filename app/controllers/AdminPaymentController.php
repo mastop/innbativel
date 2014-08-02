@@ -111,7 +111,7 @@ class AdminPaymentController extends BaseController {
 		// print_r($paymentPartnerData->toArray());
 		// print('</pre>'); die();
 
-		$ps = Payment::where('sales_to', '<', date('Y-m-d H:i:s'))->orderBy('id', 'desc')->get();
+		$ps = Payment::where('sales_to', '<', date('Y-m-d H:i:s'))->orderBy('id', 'asc')->get();
 		$paymData = array();
 
 		foreach ($ps as $p) {
@@ -219,7 +219,7 @@ class AdminPaymentController extends BaseController {
 		foreach ($transactionVoucherData as $transactionVoucher) {
 			$totals['transfer'] += ($transactionVoucher->voucher->offer_option_offer->transfer * ($transactionVoucher->status == 'pagamento'?1:-1));
 			$totals['voucher_price'] += ($transactionVoucher->voucher->offer_option_offer->price_with_discount * ($transactionVoucher->status == 'pagamento'?1:-1));
-			$totals['n_vouchers']++;
+			$totals['n_vouchers'] += $transactionVoucher->status == 'pagamento' ? 1 : -1;
 		}
 
 		// print('<pre>');
