@@ -47,7 +47,7 @@ tr.grey {
 <body>
 
 <div class="content">
-<img src="http://innb.s3.amazonaws.com/1397062768.png"/><br/>
+<img src="//{{Configuration::get("s3url")}}/logo.png"/><br/>
 <h1>Contrato INNBatível</h1>
 
 <h3>Identificação</h3>
