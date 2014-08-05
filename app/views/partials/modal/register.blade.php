@@ -16,7 +16,7 @@
             <div class="modal-body">
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-8">
-                    <a class="img-link" href="{{ route('login.facebook', array('destination' => Input::get('destination', Request::getPathInfo()))) }}"><img src="//innbativel.s3.amazonaws.com/fb-register.png" alt="Faça login com sua conta do Facebook"></a>
+                    <a class="img-link" href="{{ route('login.facebook', array('destination' => Input::get('destination', Request::getPathInfo()))) }}"><img src="//{{Configuration::get("s3url")}}/fb-register.png" alt="Faça login com sua conta do Facebook"></a>
                 </div>
             </div>
             <hr>

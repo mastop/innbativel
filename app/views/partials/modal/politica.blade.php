@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-sm modal-combo-">
         <div class="modal-content">
             <div class="modal-header">
-                <img src="//innbativel.s3.amazonaws.com/logo.png">
+                <img src="//{{Configuration::get("s3url")}}/logo.png">
             </div>
             <div class="modal-body">
                 <h4>​Política de privacidade do INNBatível​</h4>​

@@ -1,7 +1,7 @@
 <div id="widget-selos-checkout">
     <h4><span class="entypo lock"></span>Compre com Segurança</h4>
     <div id="selo-bandeiras" class="inline-block">
-        <figure><img src="//innbativel.s3.amazonaws.com/bandeiras.png" alt="Bandeiras de Cartão de Crédito" width="212" height="83"></figure>
+        <figure><img src="//{{Configuration::get("s3url")}}/bandeiras.png" alt="Bandeiras de Cartão de Crédito" width="212" height="83"></figure>
     </div>
     <div class="outros-selos inline-block">
         <div id="selo-ebit">
@@ -20,7 +20,7 @@
         </div>
         <div id="selo-embratur">
             <figure>
-                <img src="//innbativel.s3.amazonaws.com/embratur.png" alt="Embratur" width="140" height="19">
+                <img src="//{{Configuration::get("s3url")}}/embratur.png" alt="Embratur" width="140" height="19">
             </figure>
         </div>
         <div id="selo-footer">

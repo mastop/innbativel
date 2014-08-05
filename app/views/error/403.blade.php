@@ -6,7 +6,7 @@
     <div class="row">
 
       <div class="col-12 col-sm-12 col-lg-12">
-        <img src="//innbativel.s3.amazonaws.com/404.png">
+        <img src="//{{Configuration::get("s3url")}}/404.png">
         <h2>Ops... página INNexistente</h2>
         <h4>A página que você procura não está aqui, mas pelo menos você encontrou nosso gatinho perdido!</h4>
         <p>

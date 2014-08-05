@@ -15,7 +15,7 @@
 			</div>
 		</div>
 	    <a href="{{ route('facebook') }}">
-	        <img alt="Acesse via Facebook" src="//innbativel.s3.amazonaws.com/facebook-connect.png">
+	        <img alt="Acesse via Facebook" src="//{{Configuration::get("s3url")}}/facebook-connect.png">
 	    </a>
 	    <br /><br />
 		<div class="well">
