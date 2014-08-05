@@ -307,7 +307,7 @@ class Offer extends BaseModel {
      */
     public function getThumbAttribute()
     {
-        return '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/thumb/'.$this->getOriginal('cover_img');
+        return $this->getOriginal('cover_img') != null ? '//'.Configuration::get('s3url').'/ofertas/'.$this->id.'/thumb/'.$this->getOriginal('cover_img') : '//innbativel.s3.amazonaws.com/logo-icon.png';
     }
     /**
      * Retorna a data mínima para o uso da oferta, como $offer->min_date
