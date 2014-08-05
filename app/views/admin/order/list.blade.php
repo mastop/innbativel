@@ -81,7 +81,7 @@
 			$id = '| ';
 			foreach ($order->offer_option_offer as $offer_option) {
 				if(strpos($id, $offer_option->offer_id) == false){
-					$id .= link_to_route('oferta-antiga', $offer_option->offer_id, ['slug' => $offer_option->offer->slug], ['target' => 'blank']).' | ';
+					$id .= link_to_route('oferta-nova-ou-antiga', $offer_option->offer_id, ['slug' => $offer_option->offer->slug], ['target' => 'blank']).' | ';
 				}
 			}
 			return $id;

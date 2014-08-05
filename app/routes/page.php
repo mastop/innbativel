@@ -11,7 +11,7 @@ Route::group(array('https', 'after' => 'cache.public'), function()
     Route::any('/', ['as' => 'home', 'uses' => 'PageController@anyHome']);
     Route::post('/oferta/compratilhar', ['as' => 'offershare', 'uses' => 'PageController@postOfferShare']);
     Route::any('/oferta/{slug}', ['as' => 'oferta', 'uses' => 'PageController@anyOferta']);
-    Route::any('/demo/{slug}', ['as' => 'oferta-antiga', 'uses' => 'PageController@anyOfertaAntiga']);
+    Route::any('/demo/{slug}', ['as' => 'oferta-nova-ou-antiga', 'uses' => 'PageController@anyOfertaAntiga']);
     Route::any('/feriados', ['as' => 'feriados', 'uses' => 'PageController@anyFeriados']);
     Route::any('/comprar', ['as' => 'comprar', 'uses' => 'PageController@anyComprar']);
     Route::post('/pagar', ['as' => 'pagar', 'uses' => 'PageController@postPagar']);
