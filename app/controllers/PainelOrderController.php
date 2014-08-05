@@ -262,66 +262,52 @@ class PainelOrderController extends BaseController {
 	}
 
 	public function getListOffersExport($offer_id, $starts_on, $ends_on){
-		$offersOptions = new OfferOption;
+		$offers = new Offer;
+
+		$offers = $offers->withTrashed();
+		$offers = $offers->where('partner_id', Auth::user()->id);
 
 		$offer_id = ($offer_id == 'null')?null:$offer_id;
 		$starts_on = ($starts_on == 'null')?null:$starts_on;
 		$ends_on = ($ends_on == 'null')?null:$ends_on;
 
-		/*
+    	/*
 		 * Search filter
 		 */
     	if($offer_id){
-    		$offersOptions = $offersOptions->where('offer_id', $offer_id);
+    		$offers = $offers->where('id', $offer_id);
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'used_vouchers', 'offer' => function($query){ $query->withTrashed(); }])
-									   ->whereExists(function($query) use($starts_on, $ends_on){
-							                if (isset($starts_on) || isset($ends_on)) {
-												$query->select(DB::raw(1))
-								                      ->from('offers')
-													  ->whereRaw('offers.id = offers_options.offer_id');
-							                	if (isset($starts_on)) {
-							                		$query->whereRaw('offers.starts_on >= "'.$starts_on.'"');
-							                	}
-							                	if (isset($ends_on)) {
-							                		$query->whereRaw('offers.ends_on <= "'.$ends_on.'"');
-							                	}
-											}
+    	if($starts_on){
+    		$offers = $offers->where('starts_on', '>=', $starts_on);
+    	}
 
-							           })
-							           ->whereExists(function($query){
-								                $query->select(DB::raw(1))
-									                  ->from('offers')
-									                  ->whereRaw('offers.id = offers_options.offer_id')
-													  ->whereRaw('offers.partner_id = '.Auth::user()->id);
-							           })
-									   ->orderBy('offer_id', 'desc')
-									   ->get();
+    	if($ends_on){
+    		$offers = $offers->where('ends_on', '<=', $ends_on);
+    	}
+
+		$offers = $offers->with(['offer_option', 'destiny'])
+						 ->orderBy('id', 'desc')
+						 ->get();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID da oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Vendidos');
+		$spreadsheet[] = array('ID da oferta', 'Oferta', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Vendidos');
 
-		foreach ($offersOptions as $offerOption) {
+		foreach ($offers as $offer) {
 			$ss = null;
-			$ss[] = $offerOption->offer_id;
-			$ss[] = $offerOption->offer->title;
-			$ss[] = $offerOption->title;
-			$ss[] = $offerOption->offer->starts_on;
-			$ss[] = $offerOption->offer->ends_on;
-			$ss[] = $offerOption->price_with_discount;
-
-			$used = isset($offerOption->used_vouchers{0})?$offerOption->used_vouchers{0}->qty:0;
-			$approved = isset($offerOption->qty_sold{0})?$offerOption->qty_sold{0}->qty:0;
-
-			$ss[] = $used;
-			$ss[] = $approved;
+			$ss[] = $offer->id;
+			$ss[] = $offer->title;
+			$ss[] = $offer->starts_on;
+			$ss[] = $offer->ends_on;
+			$ss[] = $offer->price_with_discount;
+			$ss[] = $offer->qty_used;
+			$ss[] = $offer->qty_sold;
 
 			$spreadsheet[] = $ss;
 		}
 
-		Excel::create('OfertasINNBativel')
-	         ->sheet('OfertasINNBativel')
+		Excel::create('Oferta'.(isset($offer_id) ? '_#'.$offer_id.'_INNBatível' : 's'.'_INNBatíveis'))
+	         ->sheet('Oferta'.(isset($offer_id) ? '_#'.$offer_id.'_INNBatível' : 's'.'_INNBatíveis'))
 	            ->with($spreadsheet)
 	         ->export('xls');
 	}
