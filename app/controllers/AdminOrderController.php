@@ -647,7 +647,7 @@ class AdminOrderController extends BaseController {
 			$ss = null;
 			$ss[] = date('d/m/Y H:i:s', strtotime($voucher->order_customer->created_at));
 			$ss[] = $voucher->id;
-			$ss[] = $voucher->display_code.'-'.$voucher->offer_option_offer->offer->id;
+			$ss[] = $voucher->display_code;
 			$ss[] = $voucher->offer_option_offer->offer->id;
 			$ss[] = isset($voucher->offer_option_offer->offer->destiny) ? $voucher->offer_option_offer->offer->destiny->name : substr($voucher->offer_option_offer->offer->title,0,40) . '...';
 			$ss[] = $voucher->offer_option_offer->title . (isset($voucher->offer_option_offer->subtitle) && $voucher->offer_option_offer->subtitle != ''?' (' . $voucher->offer_option_offer->subtitle . ')':'');
@@ -659,8 +659,8 @@ class AdminOrderController extends BaseController {
 			$spreadsheet[] = $ss;
 		}
 
-		Excel::create('Vouchers')
-	         ->sheet('Vouchers')
+		Excel::create('Cupons'.(isset($offer_id)?'_Oferta_#'.$offer_id:''))
+	         ->sheet('Cupons'.(isset($offer_id)?'_Oferta_#'.$offer_id:''))
 	            ->with($spreadsheet)
 	         ->export('xls');
 	}

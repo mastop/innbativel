@@ -33,6 +33,7 @@
 			{{ Former::link('Limpar Filtros', route('admin.order.voucher')) }}
 			{{ Former::link('Exportar esta pesquisa para excel', 'javascript: exportar(\''.route('admin.order.voucher_export', ['sort' =>'sort', 'order' => 'order2', 'id' =>'id', 'offer_id' => 'offer_id']).'\');') }}
 			<div class="dataTables_length">
+			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
 	        	->addOption('5', '5')
 	        	->addOption('10', '10')
@@ -68,21 +69,21 @@
 	})
 	->offer_id(function($voucher) {
 		if(isset($voucher->offer_option_offer)) {
-			return $voucher->offer_option_offer->offer->id;
+			return link_to_route('oferta-nova-ou-antiga', $voucher->offer_option_offer->offer->id, ['slug' => $voucher->offer_option_offer->offer->slug], ['target' => 'blank']);
 		}
 		return '?';
 	})
 	->offer(function($voucher) {
-		if(isset($voucher->offer_option_offer->title) && isset($voucher->offer_option_offer->offer->title)) {
+		if(isset($voucher->offer_option_offer->title)) {
 			return isset($voucher->offer_option_offer->offer->destiny) ? $voucher->offer_option_offer->offer->destiny->name : substr($voucher->offer_option_offer->offer->title,0,40) . '...';
 		}
-		return '--';
+		return '?';
 	})
 	->offer_option(function($voucher) {
-		if(isset($voucher->offer_option_offer->title) && isset($voucher->offer_option_offer->offer->title)) {
+		if(isset($voucher->offer_option_offer->offer->title)) {
 			return $voucher->offer_option_offer->title . (isset($voucher->offer_option_offer->subtitle) && $voucher->offer_option_offer->subtitle != ''?'<br/>(' . $voucher->offer_option_offer->subtitle . ')':'');
 		}
-		return '--';
+		return '?';
 	})
 	->is_used(function($voucher) {
 		if(isset($voucher)) {
@@ -106,7 +107,7 @@
 		if(isset($voucher->tracking_code)) {
 			return $voucher->tracking_code;
 		}
-		return '-';
+		return '--';
 	})
 	->acoes(function($voucher) {
         return DropdownButton::normal('Ações',

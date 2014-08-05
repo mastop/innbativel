@@ -64,7 +64,7 @@ Route::group(array('https', 'prefix' => 'painel', 'before' => 'auth|perm'), func
     Route::get('ofertas/voucher/agendar/{id}/{used}', ['as' => 'painel.order.schedule', 'uses' => 'PainelOrderController@getSchedule']);
 
     Route::any('ofertas/voucher/exportar', function(){ return Redirect::route('painel.order.offers'); });
-    Route::get('ofertas/voucher/exportar/{offer_id?}/{id?}', ['as' => 'painel.order.voucher_export', 'uses' => 'PainelOrderController@getVoucherExport']);
+    Route::get('ofertas/voucher/exportar/{sort}/{order}/{offer_id?}/{id?}', ['as' => 'painel.order.voucher_export', 'uses' => 'PainelOrderController@getVoucherExport']);
 
     Route::any('contract', ['as' => 'painel.contract', 'uses' => 'PainelContractController@anyIndex']);
 
