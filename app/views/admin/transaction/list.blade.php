@@ -66,7 +66,7 @@
 		})
 		->order_id(function($transaction) {
 			if(isset($transaction->order->braspag_order_id)){
-				return link_to_route('admin.order.view', $transaction->order->braspag_order_id, ['id' => $transaction->order->id]);
+				return '<a href=\'javascript: view_order('.$transaction->order->id.')\'>'.$transaction->order->braspag_order_id.'</a>';
 			}
 			return '--';
 		})
@@ -235,6 +235,38 @@ function exportar(url){
 	url = url.replace('/date_end', '/'+date_end);
 
 	window.location.href = url;
+}
+
+function view_order(id){
+	if (!$('#viewOrder').length) {
+		var modal = '<div id="viewOrder" class="modal" style="width: 80%; height:80%; margin-left:0px; left:10%; margin-top:0px; top:10%; overflow:scroll;" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">'
+						+'<div class="modal-header" style="text-align: right;">'
+							+'<button type="button" class="btn btn-danger" data-dismiss="modal" aria-hidden="true">×</button>'
+						+'</div>'
+						+'<div class="modal-footer" id="viewOrderContent" style="text-align: left;">'
+						+'</div>'
+					+'</div>';
+			    $('body').append(modal);
+	}
+
+	var url = "{{ route('admin.order.view', ['id' => '_id_']) }}";
+	url = url.replace('_id_', id);
+	
+    $.ajax({
+        type: "GET",
+        url: url,
+        success: function(data){
+            $('#viewOrderContent').html(data);
+            $('#viewOrder').modal({show:true});
+            $('.modal-backdrop').on('click', function (e) {
+				e.preventDefault();
+				$('#viewOrder').modal('hide');
+			});
+        },
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}'
+        }
+    });
 }
 </script>
 @stop

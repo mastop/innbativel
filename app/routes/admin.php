@@ -12,6 +12,7 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 	Route::any('user', ['as' => 'admin.user', 'uses' => 'AdminUserController@anyIndex']);
 
 	Route::get('user/view/{id}', ['as' => 'admin.user.view', 'uses' => 'AdminUserController@getView']);
+	Route::get('user/popup_view/{id}', ['as' => 'admin.user.popup_view', 'uses' => 'AdminUserController@getPopupView']);
 
 	Route::get('user/create', ['as' => 'admin.user.create', 'uses' => 'AdminUserController@getCreate']);
 	Route::post('user/create', ['as' => 'admin.user.save', 'uses' => 'AdminUserController@postCreate']);
