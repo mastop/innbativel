@@ -39,7 +39,10 @@ class PainelOrderController extends BaseController {
 	}
 
 	public function anyListByOffer(){
-		$offersOptions = new OfferOption;
+		$offers = new Offer;
+
+		$offers = $offers->withTrashed();
+		$offers = $offers->where('partner_id', Auth::user()->id);
 
 		/*
 		 * Paginate
@@ -50,7 +53,7 @@ class PainelOrderController extends BaseController {
 		/*
 		 * Sort filter
 		 */
-		$sort = in_array(Input::get('sort'), ['id']) ? Input::get('sort') : 'offer_id';
+		$sort = in_array(Input::get('sort'), ['id']) ? Input::get('sort') : 'id';
 
 		/*
 		 * Order filter
@@ -61,41 +64,30 @@ class PainelOrderController extends BaseController {
 		 * Search filter
 		 */
     	if(Input::has('offer_id')){
-    		$offersOptions = $offersOptions->where('offer_id', Input::get('offer_id'));
+    		$offers = $offers->where('id', Input::get('offer_id'));
     	}
 
-		$offersOptions = $offersOptions->with(['qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'offer' => function($query){ $query->withTrashed(); }])
-									   ->whereExists(function($query){
-							                if (Input::has('starts_on') || Input::has('ends_on')) {
-												$query->select(DB::raw(1))
-								                      ->from('offers')
-													  ->whereRaw('offers.id = offers_options.offer_id');
-							                	if (Input::has('starts_on')) {
-							                		$query->whereRaw('offers.starts_on >= "'.Input::get('starts_on').'"');
-							                	}
-							                	if (Input::has('ends_on')) {
-							                		$query->whereRaw('offers.ends_on <= "'.Input::get('ends_on').'"');
-							                	}
-											}
-						               })
-						               ->whereExists(function($query){
-							                $query->select(DB::raw(1))
-								                  ->from('offers')
-								                  ->whereRaw('offers.id = offers_options.offer_id')
-												  ->whereRaw('offers.partner_id = '.Auth::user()->id);
-						               })
-									   ->orderBy($sort, $order)
-									   ->paginate($pag)
-									   ->appends([
-											'sort' => $sort,
-											'order' => $order,
-											'pag' => $pag,
-											'offer_id' => Input::get('offer_id'),
-											'starts_on' => Input::get('starts_on'),
-											'ends_on' => Input::get('ends_on'),
-									   ]);
+    	if(Input::has('starts_on')){
+    		$offers = $offers->where('starts_on', '>=', Input::get('starts_on'));
+    	}
 
-		$this->layout->content = View::make('painel.order.offers', compact('sort', 'order', 'pag', 'offersOptions'));
+    	if(Input::has('ends_on')){
+    		$offers = $offers->where('ends_on', '<=', Input::get('ends_on'));
+    	}
+
+		$offers = $offers->with(['offer_option', 'destiny'])
+						 ->orderBy($sort, $order)
+					     ->paginate($pag)
+					     ->appends([
+							'sort' => $sort,
+							'order' => $order,
+							'pag' => $pag,
+							'id' => Input::get('id'),
+							'starts_on' => Input::get('starts_on'),
+							'ends_on' => Input::get('ends_on'),
+					     ]);
+
+		$this->layout->content = View::make('painel.order.offers', compact('sort', 'order', 'pag', 'offers'));
 	}
 
 	public function anyVouchers($offer_id = null){

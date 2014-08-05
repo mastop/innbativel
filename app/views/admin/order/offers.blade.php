@@ -87,7 +87,7 @@
 	->actions(function($offer) {
 		return DropdownButton::normal('Ações',
 				  	Navigation::links([
-						['Ver vouchers', route('admin.order.voucher', ['offer_id' => $offer->id])],
+						['Ver cupons', route('admin.order.voucher', ['offer_id' => $offer->id])],
 				    ])
 				)->pull_right()->split();
 	})
