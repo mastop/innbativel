@@ -550,7 +550,7 @@ class AdminOrderController extends BaseController {
 		}
 
 		if(Input::has('id')){
-			$vouchers = $vouchers->where('id', Input::get('id'));
+			$vouchers = $vouchers->where('vouchers.id', Input::get('id'));
 		}
 
 		$vouchers = $vouchers->with(['offer_option_offer', 'order_customer'])
@@ -607,7 +607,7 @@ class AdminOrderController extends BaseController {
 		$vouchers = $vouchers->where('status', 'pago');
 
 		if(isset($id)){
-			$vouchers = $vouchers->where('id', $id);
+			$vouchers = $vouchers->where('vouchers.id', $id);
 		}
 
 		$vouchers = $vouchers->with(['offer_option_offer', 'order_customer'])
