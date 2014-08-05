@@ -1243,6 +1243,7 @@ class PageController extends BaseController {
             Mail::send('emails.contact.send', $data,
                 function($message) use ($name, $email){
                     $message->to("faleconosco@innbativel.com.br", 'INNBatível')
+                            ->from('envio@innbativel.com.br')
                             ->replyTo($email, $name)
                             ->subject('[INNBatível] Contato de '.$name);
                 }
