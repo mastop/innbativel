@@ -377,8 +377,7 @@
 				rules:{ 
 					paymentBoletoPhone: {
 						required: true,
-						digits: true,
-						rangelength: [10, 15]
+						rangelength: [10, 16]
 					},
 					paymentCardEULA: {
 						required: true
@@ -387,7 +386,6 @@
 				messages:{
 					paymentBoletoPhone: {
 						required: "O campo telefone é obrigatório.",
-						digits: "Digite apenas dígitos.",
 						rangelength: "Digite um número de telefone válido."
 					},
 					paymentCardEULA: {
@@ -434,8 +432,7 @@
 					},
 					paymentCardPhone: {
 						required: true,
-						digits: true,
-						rangelength: [10, 15]
+						rangelength: [10, 16]
 					},
 					paymentCardEULA: {
 						required: true
@@ -469,7 +466,6 @@
 					},
 					paymentCardPhone: {
 						required: "O campo telefone é obrigatório.",
-						digits: "Digite apenas dígitos.",
 						rangelength: "Digite um número de telefone válido."
 					},
 					paymentCardEULA: {

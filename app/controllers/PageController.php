@@ -388,7 +388,7 @@ class PageController extends BaseController {
 
             $rules = [
                 'paymentCardCPF' => 'required|digitsbetween:11,18',
-                'paymentCardPhone' => 'required|digitsbetween:10,15',
+                'paymentCardPhone' => 'required|between:10,16',
                 'paymentCardFlag' => 'required',
                 'paymentCardNumber' => 'required',
                 'paymentCardValidityMonth' => 'required|digits:2',
@@ -720,8 +720,10 @@ class PageController extends BaseController {
         // paying via boletus
         ////////////////////////////////////////////////////////////////////////////
         else{
+            $inputs['paymentBoletoPhone'] = preg_replace('/[^0-9]/', '', $inputs['paymentBoletoPhone']);
+
             $rules = [
-                'paymentBoletoPhone' => 'required|digitsbetween:10,15',
+                'paymentBoletoPhone' => 'required|between:10,16',
             ];
 
             $validation = Validator::make($inputs, $rules);
