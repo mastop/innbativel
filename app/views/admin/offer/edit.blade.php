@@ -440,7 +440,7 @@
         if (offer.cover_img !== undefined) {
             markup += "<td class='offer-image'><img src='" + offerIMGURL + "' style='max-width:100px;'/></td>";
         }else{
-            markup += "<td class='offer-image'><img src='//innbativel.s3.amazonaws.com/logo-backend.png'/></td>";
+            markup += "<td class='offer-image'><img src='//{{Configuration::get("s3url")}}/logo-backend.png'/></td>";
         }
         markup += "<td class='offer-info'><div class='offer-title'><b>#"+offer.ofid+"</b> " + offer.offer_title + " ( "+offer.destname+" )</div>";
         if (offer.optitle !== undefined) {

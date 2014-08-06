@@ -381,25 +381,25 @@ class AdminOrderController extends BaseController {
 		// print('</pre>'); die();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID', 'Status', 'Valor pago', 'Itens comprados', 'Forma de pagamento', 'Data e hora', 'Cliente');
+		$spreadsheet[] = array('Data e hora', 'Número do pedido', 'Cliente', 'Ofertas', 'Forma de pagamento', 'Status', 'Valor pago');
 
 		foreach ($orderArray as $order) {
 			$ss = null;
-			$ss[] = $order->id;
-			$ss[] = $order->status;
-			$ss[] = $order->total;
+			$ss[] = date('d/m/Y H:i:s', strtotime($order->created_at));
+			$ss[] = $order->braspag_order_id;
+			$ss[] = $order->buyer->profile->first_name.' '.$order->buyer->profile->last_name.' | '.$order->buyer->email;
 
 			$itens = '';
 
 			foreach ($order->voucher_offer as $voucher) {
-				if(isset($voucher->offer_option_offer)) $itens .= 'R$ '.number_format($voucher->offer_option_offer->price_with_discount, '2', ',', '.').' ('.$voucher->status.') #'.$voucher->offer_option_offer->offer->id.' '.$voucher->offer_option_offer->offer->title.' ('.$voucher->offer_option_offer->title.') | ';
+				if(isset($voucher->offer_option_offer)) $itens .= 'R$ '.number_format($voucher->offer_option_offer->price_with_discount, '2', ',', '.').' ('.$voucher->status.') #'.$voucher->offer_option_offer->offer->id.' '.(isset($voucher->offer_option_offer->offer->destiny)?$voucher->offer_option_offer->offer->destiny->name:$voucher->offer_option_offer->offer->title).' ('.$voucher->offer_option_offer->title.') | ';
 			}
 
 			$ss[] = substr($itens, 0, -3);
 
 			$ss[] = $order->payment_terms;
-			$ss[] = date('d/m/Y H:i:s', strtotime($order->created_at));
-			$ss[] = $order->buyer->profile->first_name.' '.$order->buyer->profile->last_name.' | '.$order->buyer->email;
+			$ss[] = $order->status;
+			$ss[] = $order->total;
 
 			$spreadsheet[] = $ss;
 		}
@@ -550,7 +550,7 @@ class AdminOrderController extends BaseController {
 		}
 
 		if(Input::has('id')){
-			$vouchers = $vouchers->where('id', Input::get('id'));
+			$vouchers = $vouchers->where('vouchers.id', Input::get('id'));
 		}
 
 		$vouchers = $vouchers->with(['offer_option_offer', 'order_customer'])
@@ -607,7 +607,7 @@ class AdminOrderController extends BaseController {
 		$vouchers = $vouchers->where('status', 'pago');
 
 		if(isset($id)){
-			$vouchers = $vouchers->where('id', $id);
+			$vouchers = $vouchers->where('vouchers.id', $id);
 		}
 
 		$vouchers = $vouchers->with(['offer_option_offer', 'order_customer'])
@@ -647,7 +647,7 @@ class AdminOrderController extends BaseController {
 			$ss = null;
 			$ss[] = date('d/m/Y H:i:s', strtotime($voucher->order_customer->created_at));
 			$ss[] = $voucher->id;
-			$ss[] = $voucher->display_code.'-'.$voucher->offer_option_offer->offer->id;
+			$ss[] = $voucher->display_code;
 			$ss[] = $voucher->offer_option_offer->offer->id;
 			$ss[] = isset($voucher->offer_option_offer->offer->destiny) ? $voucher->offer_option_offer->offer->destiny->name : substr($voucher->offer_option_offer->offer->title,0,40) . '...';
 			$ss[] = $voucher->offer_option_offer->title . (isset($voucher->offer_option_offer->subtitle) && $voucher->offer_option_offer->subtitle != ''?' (' . $voucher->offer_option_offer->subtitle . ')':'');
@@ -659,8 +659,8 @@ class AdminOrderController extends BaseController {
 			$spreadsheet[] = $ss;
 		}
 
-		Excel::create('Vouchers')
-	         ->sheet('Vouchers')
+		Excel::create('Cupons'.(isset($offer_id)?'_Oferta_#'.$offer_id:''))
+	         ->sheet('Cupons'.(isset($offer_id)?'_Oferta_#'.$offer_id:''))
 	            ->with($spreadsheet)
 	         ->export('xls');
 	}

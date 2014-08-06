@@ -16,9 +16,19 @@
 			{{ Former::label('Pesquisar: ') }}
 			{{ Former::select('offer_id', 'Oferta')->addOption('Todas', null)->options($offers, $offer_id) }}
 			{{ Former::number('id')->class('input-medium')->placeholder('Chave do cupom')->label('Chave do cupom (primeiros digitos)') }}
+			{{ Former::select('sort', 'Ordernar por')
+	        	->addOption('Chave do cupom', 'vouchers.id')
+	        	->addOption('Opção da oferta', 'offers_options.title')
+                ->select($sort)
+	        }}
+	        {{ Former::select('order', 'Em ordem')
+	        	->addOption('Crescente', 'asc')
+	        	->addOption('Decrescente', 'desc')
+                ->select($order)
+	        }}
 			{{ Former::submit('Enviar') }}
 			{{ Former::link('Limpar Filtros', route('painel.order.voucher')) }}
-			{{ Former::link('Exportar esta pesquisa para excel', 'javascript: exportar(\''.route('painel.order.voucher_export', ['id' =>'id', 'offer_id' => 'offer_id']).'\');') }}
+			{{ Former::link('Exportar esta pesquisa para excel', 'javascript: exportar(\''.route('painel.order.voucher_export', ['sort' =>'sort', 'order' => 'order2', 'id' =>'id', 'offer_id' => 'offer_id']).'\');') }}
 			<div class="dataTables_length">
 			{{ Former::label('Exibir: ') }}
 	        {{ Former::select('pag', 'Exibir')
@@ -30,14 +40,12 @@
 	        	->select($pag)
 	        }}
 	        </div>
-			{{ Former::hidden('sort', $sort) }}
-			{{ Former::hidden('order', $order) }}
 			{{ Former::close() }}
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('Data e hora', 'Chave do cupom', 'Código', 'ID da Oferta', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento', 'Ações') }}
-{{ Table::body($vouchers)->ignore(['id', 'display_code', 'offer_option_id', 'order_id', 'name', 'email', 'status', 'tracking_code', 'used', 'order', 'offer_option_offer', 'order_customer', 'created_at', 'updated_at', 'price'])
+{{ Table::headers('Data e hora', 'Chave do cupom', 'Código', 'ID da Oferta', 'Oferta', 'Opção', 'Validado?', 'Nome', 'E-mail', 'Código de rastreamento', 'Ações') }}
+{{ Table::body($vouchers)->ignore(['id', 'display_code', 'offer_option_id', 'order_id', 'status', 'price', 'tracking_code', 'name', 'email', 'used', 'order', 'offer_option_offer', 'order_customer', 'created_at', 'updated_at', 'offer_id','title','subtitle','price_original','price_with_discount','transfer','min_qty','max_qty','percent_off','voucher_validity_start','voucher_validity_end','display_order','deleted_at'])
 	->datetime(function($voucher) {
 		if(isset($voucher['order_customer'])) {
 			return date('d/m/Y H:i:s', strtotime($voucher['order_customer']['created_at']));
@@ -57,8 +65,20 @@
 		return '?';
 	})
 	->offer_id(function($voucher) {
-		if(isset($voucher['offer_option_offer'])) {
-			return link_to_route('oferta-antiga', $voucher['offer_option_offer']['offer']['id'], ['slug' => $voucher['offer_option_offer']['offer']['slug']], ['target' => 'blank']);
+		if(isset($voucher->offer_option_offer)) {
+			return link_to_route('oferta-nova-ou-antiga', $voucher->offer_option_offer->offer->id, ['slug' => $voucher->offer_option_offer->offer->slug], ['target' => 'blank']);
+		}
+		return '?';
+	})
+	->offer(function($voucher) {
+		if(isset($voucher->offer_option_offer->title)) {
+			return substr($voucher->offer_option_offer->offer->title,0,50) . '...';
+		}
+		return '?';
+	})
+	->offer_option(function($voucher) {
+		if(isset($voucher->offer_option_offer->offer->title)) {
+			return $voucher->offer_option_offer->title . (isset($voucher->offer_option_offer->subtitle) && $voucher->offer_option_offer->subtitle != ''?'<br/>(' . $voucher->offer_option_offer->subtitle . ')':'');
 		}
 		return '?';
 	})
@@ -84,7 +104,7 @@
 		if(isset($voucher['tracking_code'])) {
 			return $voucher['tracking_code'];
 		}
-		return '-';
+		return '--';
 	})
 	->acoes(function($voucher) {
         if($voucher['used'] == 1){
@@ -181,12 +201,16 @@ function update_tracking_code(url, voucher_id){
 }
 
 function exportar(url){
-	//{offer_option_id?}/{id?}
+	//{sort}/{order}/{offer_option_id?}/{id?}
+	var sort = $('#sort').val();
+	var order = $('#order').val();
 	var id = ($('#id').val() == '')?'null':$('#id').val();
 	var offer_id = ($('#offer_id').val() == '')?'null':$('#offer_id').val();
 
-	url = url.replace('/offer_id', '/'+offer_id);
+	url = url.replace('/sort', '/'+sort);
+	url = url.replace('/order2', '/'+order);
 	url = url.replace('/id', '/'+id);
+	url = url.replace('/offer_id', '/'+offer_id);
 
 	window.location.href = url;
 };

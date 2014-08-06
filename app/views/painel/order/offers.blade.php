@@ -37,50 +37,48 @@
 		</div>
 	</div>
 {{ Table::open() }}
-{{ Table::headers('ID Oferta', 'Oferta', 'Opção', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Vendidos', 'Ações') }}
-{{ Table::body($offersOptions)->ignore(['id', 'title', 'subtitle', 'included', 'price_original', 'price_with_discount', 'min_qty', 'max_qty', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'rules', 'display_order', 'offer', 'qty_sold', 'qty_pending', 'qty_cancelled', 'used_vouchers', 'transfer', 'deleted_at'])
-	->main_offer(function($offer_option) {
-		if(isset($offer_option['offer'])) {
-			return $offer_option['offer']->title;
+{{ Table::headers('ID da Oferta', 'Oferta', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Vendidos', 'Ações') }}
+{{ Table::body($offers)->ignore(['id', 'partner_id','category_id','genre_id','genre2_id','destiny_id','ngo_id','tell_us_id','title','short_title','subtitle','price_original','price_with_discount','percent_off','rules','features','popup_features','slug','starts_on','ends_on','cover_img','newsletter_img','display_map','display_order','is_product','is_available','is_active','sold','created_at','updated_at','deleted_at', 'destiny', 'offer_option', 'deleted_at'])
+	->idd(function($offer) {
+		if(isset($offer->id)) {
+			return link_to_route('oferta-nova-ou-antiga', $offer->id, ['slug' => $offer->slug], ['target' => 'blank']);
 		}
 		return '--';
 	})
-	->offer_option(function($offer_option) {
-		if(isset($offer_option['title'])) {
-			return $offer_option['title'].(isset($offer_option['subtitle']) && $offer_option['subtitle'] != ''?' ('.$offer_option['subtitle'].')':'');
+	->offer(function($offer) {
+		if(isset($offer->title)) {
+			return $offer->title;
 		}
 		return '--';
 	})
-	->starts_on(function($offer_option) {
-		if(isset($offer_option['offer'])) {
-			return $offer_option['offer']->starts_on;
+	->starts_onn(function($offer) {
+		if(isset($offer->starts_on)) {
+			return $offer->starts_on;
 		}
 		return '--';
 	})
-	->ends_on(function($offer_option) {
-		if(isset($offer_option['offer'])) {
-			return $offer_option['offer']->ends_on;
+	->ends_onn(function($offer) {
+		if(isset($offer->ends_on)) {
+			return $offer->ends_on;
 		}
 		return '--';
 	})
-	->price(function($offer_option) {
-		if(isset($offer_option['price_with_discount'])) {
-			return $offer_option['price_with_discount'];
+	->price(function($offer) {
+		if(isset($offer->price_with_discount)) {
+			return $offer->price_with_discount;
 		}
 		return '--';
 	})
-	->used_vouchers(function($offer_option) {
-		return isset($offer_option['used_vouchers']{0})?$offer_option['used_vouchers']{0}->qty:0;
+	->used_vouchers(function($offer) {
+		return $offer->qty_used;
 	})
-	->pago(function($offer_option) {
-		return isset($offer_option['qty_sold']{0})?$offer_option['qty_sold']{0}->qty:0;
+	->pago(function($offer) {
+		return $offer->qty_sold;
 	})
-	->actions(function($offer_option) {
+	->actions(function($offer) {
 		return DropdownButton::normal('Ações',
 				  	Navigation::links([
-				  		['Ver Oferta', route('oferta-antiga', $offer_option['offer']['slug']).'" target="blank'],
-						['Ver Cupons', route('painel.order.voucher', ['offer_id' => $offer_option['offer_id']])],
-						['Exportar Cupons', route('painel.order.voucher_export', ['offer_id' => $offer_option['offer_id']])],
+						['Ver cupons', route('painel.order.voucher', ['offer_id' => $offer->id])],
 				    ])
 				)->pull_right()->split();
 	})
@@ -88,7 +86,7 @@
 {{ Table::close() }}
 </div>
 
-{{ $offersOptions->links() }}
+{{ $offers->links() }}
 
 <script type="text/javascript">
 

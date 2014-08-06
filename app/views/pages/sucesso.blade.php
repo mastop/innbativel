@@ -30,9 +30,7 @@
 			<br/>
 			<br/>
 			Será um prazer poder ouvir tudo o que tem para nos dizer, isso só fará com que possamos melhorar mais a cada dia e é claro, estaremos sempre na torcida para que seja VOCÊ um dos ganhadores dos super prêmios oferecidos pelo e-Bit.
-			<br/>
-			<br/>
-			<a href="https://www.ebitempresa.com.br/bitrate/pesquisa1.asp?empresa=1407475" target="_blank">Faça agora sua avaliação na pesquisa e-Bit!</a>
+
 		</p>
 		
 		<br/>

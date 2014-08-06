@@ -171,6 +171,68 @@ class AdminUserController extends BaseController {
 		$this->layout->content = View::make('admin.user.view', $data);
 	}
 
+	public function getPopupView($id)
+	{
+		$data['userData'] = $this
+			->user
+			->findOrFail($id)
+			->with([
+				'profile',
+				'roles',
+			])
+			->where('id', $id)
+			->get([
+				'id',
+				'email',
+				'created_at'
+			])
+			->first()
+			->toArray();
+
+		$data['userArray'] = null;
+
+		foreach ($data['userData'] as $key => $value) {
+			if (!is_array($value)) {
+				$data['userArray'][Lang::get('user.'. $key)] = $value;
+			}
+		}
+
+		$blackList = [
+			'user_id',
+			'id',
+			// 'facebook_id',
+			// 'total_purchasses',
+			// 'credit',
+			// 'ip',
+			// 'created_at',
+			// 'updated_at',
+		];
+
+		foreach ($data['userData']['profile'] as $key => $value) {
+			if (!is_array($value) && !in_array($key, $blackList)) {
+				$data['userArray'][Lang::get('user.'. $key)] = $value;
+			}
+		}
+
+		$data['userArray'][Lang::get('user.role')] = '~ ';
+
+		foreach ($data['userData']['roles'] as $roles) {
+			foreach ($roles as $key => $value) {
+				if ($key == 'description') {
+					$data['userArray'][Lang::get('user.role')] .= $value .' ~ ';
+				}
+			}
+		}
+
+		foreach ($data['userArray'] as $key => $value) {
+			if (is_null($value) || empty($value)) {
+				$data['userArray'][$key] = '~ '. Lang::get('messages.undefined'). ' ~';
+			}
+		}
+        
+		return View::make('admin.user.popup_view', $data);
+	}
+
 	public function getCreate()
 	{
 		$roles = [];

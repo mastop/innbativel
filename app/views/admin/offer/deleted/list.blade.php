@@ -55,7 +55,7 @@
             return ($body->partner) ? $body->partner->profile->company_name : 'Não Atribuído';
         })
 		->id(function($body) {
-			return link_to_route('oferta-antiga', $body->id, $body->slug, ['target' => 'blank']);
+			return link_to_route('oferta-nova-ou-antiga', $body->id, $body->slug, ['target' => 'blank']);
 		})
         ->title(function($body) {
             return ($body->can_sell) ? $body->title : '<span style="color: red">'.$body->title.'</span>';
@@ -66,7 +66,7 @@
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 				Navigation::links([
-					['Ver', route('oferta-antiga', $body['slug']).'" target="blank'],
+					['Ver', route('oferta-nova-ou-antiga', $body['slug']).'" target="blank'],
 					['Editar', route('admin.offer.edit', $body['id'])],
 					// ['Excluir', route('admin.offer.delete', $body['id'])],
 				])

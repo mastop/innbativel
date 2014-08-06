@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <a href="{{ route('home') }}">
-                    <img class="logo" alt="INNbatível" src="//innbativel.s3.amazonaws.com/logo.png">
+                    <img class="logo" alt="INNbatível" src="//{{Configuration::get("s3url")}}/logo.png">
                 </a>
             </div>
             <div class="modal-body">

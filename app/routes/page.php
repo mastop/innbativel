@@ -11,7 +11,7 @@ Route::group(array('https', 'after' => 'cache.public'), function()
     Route::any('/', ['as' => 'home', 'uses' => 'PageController@anyHome']);
     Route::post('/oferta/compratilhar', ['as' => 'offershare', 'uses' => 'PageController@postOfferShare']);
     Route::any('/oferta/{slug}', ['as' => 'oferta', 'uses' => 'PageController@anyOferta']);
-    Route::any('/demo/{slug}', ['as' => 'oferta-antiga', 'uses' => 'PageController@anyOfertaAntiga']);
+    Route::any('/demo/{slug}', ['as' => 'oferta-nova-ou-antiga', 'uses' => 'PageController@anyOfertaAntiga']);
     Route::any('/feriados', ['as' => 'feriados', 'uses' => 'PageController@anyFeriados']);
     Route::any('/comprar', ['as' => 'comprar', 'uses' => 'PageController@anyComprar']);
     Route::post('/pagar', ['as' => 'pagar', 'uses' => 'PageController@postPagar']);
@@ -64,7 +64,7 @@ Route::group(array('https', 'prefix' => 'painel', 'before' => 'auth|perm'), func
     Route::get('ofertas/voucher/agendar/{id}/{used}', ['as' => 'painel.order.schedule', 'uses' => 'PainelOrderController@getSchedule']);
 
     Route::any('ofertas/voucher/exportar', function(){ return Redirect::route('painel.order.offers'); });
-    Route::get('ofertas/voucher/exportar/{offer_id?}/{id?}', ['as' => 'painel.order.voucher_export', 'uses' => 'PainelOrderController@getVoucherExport']);
+    Route::get('ofertas/voucher/exportar/{sort}/{order}/{offer_id?}/{id?}', ['as' => 'painel.order.voucher_export', 'uses' => 'PainelOrderController@getVoucherExport']);
 
     Route::any('contract', ['as' => 'painel.contract', 'uses' => 'PainelContractController@anyIndex']);
 

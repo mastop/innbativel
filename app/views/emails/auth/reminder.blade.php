@@ -13,7 +13,7 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
 <center>
     <table width="600" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td align="center"><img src="http://innb.s3.amazonaws.com/1381762472.jpg" width="600" height="354" alt="" style="display:block;"></td>
+        <td align="center"><img src="//{{Configuration::get("s3url")}}/casal-praia.jpg" width="600" height="354" alt="" style="display:block;"></td>
       </tr>
       <tr>
         <td align="center" bgcolor="#4060a6"><table width="510" border="0" cellspacing="0" cellpadding="0">

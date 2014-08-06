@@ -64,7 +64,7 @@
 	})
 	->braspag_order_idd(function($order) {
 		if(isset($order['id'])) {
-			return '<a href=\'javascript: view('.$order['id'].')\'>'.$order['braspag_order_id_string'].'</a>';
+			return '<a href=\'javascript: view_order('.$order['id'].')\'>'.$order['braspag_order_id_string'].'</a>';
 		}
 		return '--';
 	})
@@ -72,7 +72,7 @@
 		if(isset($order->buyer->profile)) {
 			$name = $order->buyer->profile->first_name . ' ' . $order->buyer->profile->last_name;
 			$id = $order->buyer->id;
-			return link_to_route('admin.user.view', $name, ['id'=>$id]);
+			return '<a href=\'javascript: view_user('.$id.')\'>'.$name.'</a>';
 		}
 		return '--';
 	})
@@ -81,7 +81,7 @@
 			$id = '| ';
 			foreach ($order->offer_option_offer as $offer_option) {
 				if(strpos($id, $offer_option->offer_id) == false){
-					$id .= link_to_route('oferta-antiga', $offer_option->offer_id, ['slug' => $offer_option->offer->slug], ['target' => 'blank']).' | ';
+					$id .= link_to_route('oferta-nova-ou-antiga', $offer_option->offer_id, ['slug' => $offer_option->offer->slug], ['target' => 'blank']).' | ';
 				}
 			}
 			return $id;
@@ -111,7 +111,7 @@
 		if($order['status'] == 'revisao'){
 	        return DropdownButton::normal('Ações',
 			  	Navigation::links([
-			  		['Ver detalhes', 'javascript: view('.$order['id'].')'],
+			  		['Ver detalhes', 'javascript: view_order('.$order['id'].')'],
 					['Aprovar', 'javascript: action(\''.route('admin.order.approve', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'aprovar\', \''.$order['braspag_order_id_string'].'\');'],
 					['Rejeitar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'rejeitar\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
@@ -120,7 +120,7 @@
 	    else if($order['status'] == 'pago'){
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
-			  		['Ver detalhes', 'javascript: view('.$order['id'].')'],
+			  		['Ver detalhes', 'javascript: view_order('.$order['id'].')'],
 					['Cancelar', 'javascript: action(\''.route('admin.order.cancel', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'cancelar\', \''.$order['braspag_order_id_string'].'\');'],
 					['Cancelar e converter valor em créditos', 'javascript: action(\''.route('admin.order.convert_value_2_credit', ['id' => $order['id'], 'braspag_order_id' => $order['braspag_order_id_string'], 'comment' => 'motivo: ']).'\', \'converter valor em créditos\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
@@ -129,7 +129,7 @@
 	    else if($order['status'] == 'pendente'){
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
-			  		['Ver detalhes', 'javascript: view('.$order['id'].')'],
+			  		['Ver detalhes', 'javascript: view_order('.$order['id'].')'],
 			  		['Marcar como "pago"', 'javascript: action(\''.route('admin.order.update_status', ['id' => $order['id'], 'status' => "pago", 'comment' => 'motivo: ']).'\', \'marcar como pago\', \''.$order['braspag_order_id_string'].'\');'],
 			    ])
 			)->pull_right()->split();
@@ -137,7 +137,7 @@
 	    else{
 	    	return DropdownButton::normal('Ações',
 			  	Navigation::links([
-			  		['Ver detalhes', 'javascript: view('.$order['id'].')'],
+			  		['Ver detalhes', 'javascript: view_order('.$order['id'].')'],
 			    ])
 			)->pull_right()->split();
 	    }
@@ -203,7 +203,7 @@ function exportar(url){
 	window.location.href = url;
 };
 
-function view(id){
+function view_order(id){
 	if (!$('#viewOrder').length) {
 		var modal = '<div id="viewOrder" class="modal" style="width: 80%; height:80%; margin-left:0px; left:10%; margin-top:0px; top:10%; overflow:scroll;" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">'
 						+'<div class="modal-header" style="text-align: right;">'
@@ -227,6 +227,38 @@ function view(id){
             $('.modal-backdrop').on('click', function (e) {
 				e.preventDefault();
 				$('#viewOrder').modal('hide');
+			});
+        },
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}'
+        }
+    });
+}
+
+function view_user(id){
+	if (!$('#viewUser').length) {
+		var modal = '<div id="viewUser" class="modal" style="width: 80%; height:80%; margin-left:0px; left:10%; margin-top:0px; top:10%; overflow:scroll;" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">'
+						+'<div class="modal-header" style="text-align: right;">'
+							+'<button type="button" class="btn btn-danger" data-dismiss="modal" aria-hidden="true">×</button>'
+						+'</div>'
+						+'<div class="modal-footer" id="viewUserContent" style="text-align: left;">'
+						+'</div>'
+					+'</div>';
+			    $('body').append(modal);
+	}
+
+	var url = "{{ route('admin.user.popup_view', ['id' => '_id_']) }}";
+	url = url.replace('_id_', id);
+	
+    $.ajax({
+        type: "GET",
+        url: url,
+        success: function(data){
+            $('#viewUserContent').html(data);
+            $('#viewUser').modal({show:true});
+            $('.modal-backdrop').on('click', function (e) {
+				e.preventDefault();
+				$('#viewUser').modal('hide');
 			});
         },
         headers: {
