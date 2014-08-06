@@ -381,25 +381,25 @@ class AdminOrderController extends BaseController {
 		// print('</pre>'); die();
 
 		$spreadsheet = array();
-		$spreadsheet[] = array('ID', 'Status', 'Valor pago', 'Itens comprados', 'Forma de pagamento', 'Data e hora', 'Cliente');
+		$spreadsheet[] = array('Data e hora', 'Número do pedido', 'Cliente', 'Ofertas', 'Forma de pagamento', 'Status', 'Valor pago');
 
 		foreach ($orderArray as $order) {
 			$ss = null;
-			$ss[] = $order->id;
-			$ss[] = $order->status;
-			$ss[] = $order->total;
+			$ss[] = date('d/m/Y H:i:s', strtotime($order->created_at));
+			$ss[] = $order->braspag_order_id;
+			$ss[] = $order->buyer->profile->first_name.' '.$order->buyer->profile->last_name.' | '.$order->buyer->email;
 
 			$itens = '';
 
 			foreach ($order->voucher_offer as $voucher) {
-				if(isset($voucher->offer_option_offer)) $itens .= 'R$ '.number_format($voucher->offer_option_offer->price_with_discount, '2', ',', '.').' ('.$voucher->status.') #'.$voucher->offer_option_offer->offer->id.' '.$voucher->offer_option_offer->offer->title.' ('.$voucher->offer_option_offer->title.') | ';
+				if(isset($voucher->offer_option_offer)) $itens .= 'R$ '.number_format($voucher->offer_option_offer->price_with_discount, '2', ',', '.').' ('.$voucher->status.') #'.$voucher->offer_option_offer->offer->id.' '.(isset($voucher->offer_option_offer->offer->destiny)?$voucher->offer_option_offer->offer->destiny->name:$voucher->offer_option_offer->offer->title).' ('.$voucher->offer_option_offer->title.') | ';
 			}
 
 			$ss[] = substr($itens, 0, -3);
 
 			$ss[] = $order->payment_terms;
-			$ss[] = date('d/m/Y H:i:s', strtotime($order->created_at));
-			$ss[] = $order->buyer->profile->first_name.' '.$order->buyer->profile->last_name.' | '.$order->buyer->email;
+			$ss[] = $order->status;
+			$ss[] = $order->total;
 
 			$spreadsheet[] = $ss;
 		}
