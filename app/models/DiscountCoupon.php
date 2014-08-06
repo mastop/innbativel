@@ -23,7 +23,11 @@ class DiscountCoupon extends Eloquent {
   );
 
   public function offer(){
-  	return $this->belongsTo('Offer')->with(['destiny']);
+    return $this->belongsTo('Offer')->with(['destiny']);
+  }
+
+  public function category(){
+  	return $this->belongsTo('Category');
   }
 
   public function user(){
