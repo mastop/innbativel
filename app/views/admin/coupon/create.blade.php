@@ -3,7 +3,7 @@
     <div class="well widget row-fluid">
 
         {{ Former::horizontal_open()->rules([
-        	'display_code' => 'required|unique:discount_coupons',
+        	'display_code' => 'required',
             'value' => 'required',
             'qty' => 'required|integer',
             'starts_on' => 'required',
@@ -15,9 +15,14 @@
         {{ Former::number('qty', 'Quantidade máxima')->class('span12') }}
         {{ Former::date('starts_on', 'Data início (formato: mm/dd/aaaa)')->class('span12') }}
         {{ Former::date('ends_on', 'Data fim (formato: mm/dd/aaaa)')->class('span12') }}
-        {{ Former::text('user_email', 'E-mail do Usuário')->class('span12') }}
+        {{ Former::select('category_id', 'Categoria')
+                 ->addOption('Qualquer', null)
+                ->fromQuery(DB::table('categories')->select(['title', 'id']), 'title', 'id')
+                ->class('span12')
+        }}
+        {{ Former::text('user_email', 'E-mail do Usuário (deixe em branco p/ servir a qualquer usuário)')->class('span12') }}
 		{{ Former::select('offer_id', 'Oferta')
-			 	 ->addOption('-- selecione uma opção --', null)
+			 	 ->addOption('Qualquer', null)
 			 	 ->fromQuery(DB::table('offers')->where('ends_on', '>=', date("Y-m-d H:i:s"))->select(DB::raw('concat (offers.id," | ",destinies.name) as id_destiny, offers.id as id'))->leftJoin('destinies', 'offers.destiny_id', '=', 'destinies.id'), 'id_destiny', 'id')
 				 ->class('span12')
 		}}

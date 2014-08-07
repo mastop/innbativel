@@ -75,7 +75,7 @@ class AdminCouponController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$coupon = $coupon->with(['user', 'offer'])->orderBy($sort, $order)
+		$coupon = $coupon->with(['user', 'offer', 'category'])->orderBy($sort, $order)
 		->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,
@@ -124,7 +124,7 @@ class AdminCouponController extends BaseController {
 		$inputs = Input::except('user_email');
 
 		$rules = [
-        	'display_code' => 'required|unique:discount_coupons',
+        	'display_code' => 'required',
         	'value' => 'required|numeric',
         	'qty' => 'required|integer',
             'starts_on' => 'required',
@@ -137,6 +137,7 @@ class AdminCouponController extends BaseController {
 		{
             $user = User::where('email', '=', Input::get('user_email'))->first();
 			$inputs['offer_id'] = ($inputs['offer_id'] != '')?$inputs['offer_id']:null;
+			$inputs['category_id'] = ($inputs['category_id'] != '')?$inputs['category_id']:null;
 			$inputs['user_id'] = (!is_null($user))?$user->id:null;
 			$this->coupon->create($inputs);
 
@@ -202,8 +203,9 @@ class AdminCouponController extends BaseController {
 			if ($coupon)
 			{
                 $user = User::where('email', '=', Input::get('user_email'))->first();
-                $inputs['user_id'] = (!is_null($user))?$user->id:null;
                 $inputs['offer_id'] = ($inputs['offer_id'] != '')?$inputs['offer_id']:null;
+                $inputs['category_id'] = ($inputs['category_id'] != '')?$inputs['category_id']:null;
+                $inputs['user_id'] = (!is_null($user))?$user->id:null;
 				$coupon->update($inputs);
 			}
 
@@ -313,7 +315,7 @@ class AdminCouponController extends BaseController {
 		/*
 		 * Finally Obj
 		 */
-		$coupon = $coupon->with(['user', 'offer'])->orderBy($sort, $order)
+		$coupon = $coupon->with(['user', 'offer', 'category'])->orderBy($sort, $order)
 		->paginate($pag)->appends([
 			'sort' => $sort,
 			'order' => $order,

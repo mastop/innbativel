@@ -41,10 +41,16 @@
 	</div>
 {{ Table::open() }}
 {{ Table::headers('ID', 'Oferta', 'Data início', 'Data fim', 'Valor', 'Cupons validados', 'Máximo (todas opções)', 'Confirmados', 'Pendentes', 'Cancelados', 'Total', 'Ações') }}
-{{ Table::body($offers)->ignore(['partner_id','category_id','genre_id','genre2_id','destiny_id','ngo_id','tell_us_id','title','short_title','subtitle','price_original','price_with_discount','percent_off','rules','features','popup_features','slug','starts_on','ends_on','cover_img','newsletter_img','display_map','display_order','is_product','is_available','is_active','sold','created_at','updated_at','deleted_at', 'destiny', 'offer_option', 'deleted_at'])
+{{ Table::body($offers)->ignore(['id', 'partner_id','category_id','genre_id','genre2_id','destiny_id','ngo_id','tell_us_id','title','short_title','subtitle','price_original','price_with_discount','percent_off','rules','features','popup_features','slug','starts_on','ends_on','cover_img','newsletter_img','display_map','display_order','is_product','is_available','is_active','sold','created_at','updated_at','deleted_at', 'destiny', 'offer_option', 'deleted_at'])
+	->idd(function($offer) {
+		if(isset($offer->id)) {
+			return link_to_route('oferta-nova-ou-antiga', $offer->id, ['slug' => $offer->slug], ['target' => 'blank']);
+		}
+		return '?';
+	})
 	->offer(function($offer) {
 		if(isset($offer->title)) {
-			return isset($offer->destiny) ? $offer->destiny->name . ' - ' . $offer->title : $offer->title;
+			return isset($offer->destiny) ? $offer->destiny->name . ' | ' . substr($offer->title,0,40) . '...' : substr($offer->title,0,40) . '...';
 		}
 		return '--';
 	})

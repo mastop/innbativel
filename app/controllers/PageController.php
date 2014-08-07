@@ -138,24 +138,25 @@ class PageController extends BaseController {
     }
 
     private function validateDiscountCoupon($display_code, $offers_options_ids){
-        $offers = OfferOption::whereIn('id', $offers_options_ids)->get(['offer_id']);
-        $offer_ids = [];
-        
-        foreach ($offers as $o) {
-            $offer_ids[] = $o->offer_id;
-        }
+        $offer_ids = OfferOption::whereIn('id', $offers_options_ids)->lists('offer_id');
+        $category_ids = Offer::whereIn('id', $offer_ids)->whereNotNull('category_id')->lists('category_id');
 
         $discount_coupon = DiscountCoupon::where('display_code', '=', $display_code)
                                           ->where( function ( $query ) use ( $offer_ids )
-                                                   {
-                                                        $query->whereIn('offer_id', $offer_ids)
-                                                            ->orWhereNull('offer_id');
-                                                   })
+                                           {
+                                                $query->whereIn('offer_id', $offer_ids)
+                                                      ->orWhereNull('offer_id');
+                                           })
+                                          ->where( function ( $query ) use ( $category_ids )
+                                           {
+                                                $query->whereIn('category_id', $category_ids)
+                                                      ->orWhereNull('category_id');
+                                           })
                                           ->where( function ( $query )
-                                                   {
-                                                        $query->where('user_id', '=', Auth::user()->id)
-                                                            ->orWhereNull('user_id');
-                                                   })
+                                           {
+                                                $query->where('user_id', '=', Auth::user()->id)
+                                                      ->orWhereNull('user_id');
+                                           })
                                           ->where('starts_on', '<=', date('Y-m-d H:i:s'))
                                           ->where('ends_on', '>=', date('Y-m-d H:i:s'))
                                           ->get(['id', 'value', 'qty_used', 'qty'])
@@ -388,7 +389,7 @@ class PageController extends BaseController {
 
             $rules = [
                 'paymentCardCPF' => 'required|digitsbetween:11,18',
-                'paymentCardPhone' => 'required|between:10,16',
+                'paymentCardPhone' => 'required|between:14,15',
                 'paymentCardFlag' => 'required',
                 'paymentCardNumber' => 'required',
                 'paymentCardValidityMonth' => 'required|digits:2',
@@ -403,8 +404,8 @@ class PageController extends BaseController {
             if (!$validation->passes()){
                 $this->logPagar($inputs, 'Nenhuma', $validation->messages(), Auth::user()->id, Auth::user()->email);
                 return Redirect::back()
-                                ->withInput()
-                                ->withErrors($validation);
+                               ->withInput()
+                               ->withErrors($validation);
             }
 
             $first_name = $user_profile->first_name;
@@ -723,7 +724,7 @@ class PageController extends BaseController {
             $inputs['paymentBoletoPhone'] = preg_replace('/[^0-9]/', '', $inputs['paymentBoletoPhone']);
 
             $rules = [
-                'paymentBoletoPhone' => 'required|between:10,16',
+                'paymentBoletoPhone' => 'required|between:14,15',
             ];
 
             $validation = Validator::make($inputs, $rules);
@@ -934,29 +935,30 @@ class PageController extends BaseController {
 
         $display_code = Input::get('promoCode');
         $offers_options_ids = Input::get('opt', array());
-        $offers = OfferOption::whereIn('id', $offers_options_ids)->get(['offer_id']);
-        $offer_ids = [];
-
-        foreach ($offers as $o) {
-            $offer_ids[] = $o->offer_id;
-        }
+        $offer_ids = OfferOption::whereIn('id', $offers_options_ids)->lists('offer_id');
+        $category_ids = Offer::whereIn('id', $offer_ids)->whereNotNull('category_id')->lists('category_id');
 
         $discount_coupon = DiscountCoupon::where('display_code', '=', $display_code)
-            ->where( function ( $query ) use ( $offer_ids )
-            {
-                $query->whereIn('offer_id', $offer_ids)
-                    ->orWhereNull('offer_id');
-            })
-            ->where( function ( $query )
-            {
-                $query->where('user_id', '=', Auth::user()->id)
-                    ->orWhereNull('user_id');
-            })
-            ->where('starts_on', '<=', date('Y-m-d H:i:s'))
-            ->where('ends_on', '>=', date('Y-m-d H:i:s'))
-            ->get(['id', 'value', 'qty_used', 'qty'])
-            ->first()
-        ;
+                                         ->where( function ( $query ) use ( $offer_ids )
+                                         {
+                                            $query->whereIn('offer_id', $offer_ids)
+                                                ->orWhereNull('offer_id');
+                                         })
+                                         ->where( function ( $query ) use ( $category_ids )
+                                         {
+                                            $query->whereIn('category_id', $category_ids)
+                                                ->orWhereNull('category_id');
+                                         })
+                                         ->where( function ( $query )
+                                         {
+                                            $query->where('user_id', '=', Auth::user()->id)
+                                                ->orWhereNull('user_id');
+                                         })
+                                         ->where('starts_on', '<=', date('Y-m-d H:i:s'))
+                                         ->where('ends_on', '>=', date('Y-m-d H:i:s'))
+                                         ->get(['id', 'value', 'qty_used', 'qty'])
+                                         ->first()
+                                         ;
         if(isset($discount_coupon) && $discount_coupon->qty_used < $discount_coupon->qty){
             return Response::json($discount_coupon);
         }

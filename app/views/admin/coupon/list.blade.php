@@ -36,9 +36,9 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('Código', 'Valor', 'Oferta', 'Usuário', 'Quantidade máxima', 'Quantidade utilizada', 'Data início', 'Data fim', 'Ações') }}
+	{{ Table::headers('Código', 'Valor', 'Oferta', 'Categoria', 'Usuário', 'Quantidade máxima', 'Quantidade utilizada', 'Data início', 'Data fim', 'Ações') }}
 	{{ Table::body($coupon)
-		->ignore(['id', 'user_id', 'value', 'offer_id', 'qty', 'qty_used', 'starts_on', 'ends_on', 'offer', 'user', 'created_at', 'updated_at', 'deleted_at'])
+		->ignore(['id', 'user_id', 'value', 'offer_id', 'category_id', 'qty', 'qty_used', 'starts_on', 'ends_on', 'offer', 'category', 'user', 'created_at', 'updated_at', 'deleted_at'])
 		->valuee(function($body) {
 			if(isset($body->value)) {
 				return $body->value;
@@ -49,13 +49,19 @@
 			if(isset($body['offer'])) {
 				return $body['offer']->id.' | '.$body['offer']['destiny']->name;
 			}
-			return 'Todas';
+			return 'Qualquer';
+		})
+		->categoryy(function($body) {
+			if(isset($body['category'])) {
+				return $body['category']->title;
+			}
+			return 'Qualquer';
 		})
 		->userr(function($body) {
 			if(isset($body['user'])) {
 				return $body->user->profile->first_name.' '.$body->user->profile->last_name.' | '.$body->user->email;
 			}
-			return 'Todos';
+			return 'Qualquer';
 		})
 		->qtyy(function($body) {
 			if(isset($body->qty)) {

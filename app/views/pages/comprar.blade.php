@@ -1,5 +1,6 @@
 @section('javascript')
 	<script src="{{ asset('assets/themes/floripa/frontend/js/comprar.js') }}"></script>
+	<script src="{{ asset('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
 @stop
 
 @section('content')
@@ -560,6 +561,24 @@
     $('#paymentCardPhone').val("{{ Input::old('paymentCardPhone') }}");
     $('#paymentCardInstallment').val("{{ Input::old('paymentCardInstallment') }}");
     @endif
+</script>
+
+<script>
+var masks = ['(00) 00000-0000', '(00) 0000-00009'],
+    maskBehavior = function(val, e, field, options) {
+    return val.length > 14 ? masks[0] : masks[1];
+};
+
+$('#paymentCardPhone').mask(maskBehavior, {onKeyPress: 
+   function(val, e, field, options) {
+       field.mask(maskBehavior(val, e, field, options), options);
+   }
+});
+$('#paymentBoletoPhone').mask(maskBehavior, {onKeyPress: 
+   function(val, e, field, options) {
+       field.mask(maskBehavior(val, e, field, options), options);
+   }
+});
 </script>
 
 @stop
