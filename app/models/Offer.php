@@ -93,8 +93,9 @@ class Offer extends BaseModel {
     }
 
 	public function offer_option(){
-		return $this->hasMany('OfferOption')->orderBy('display_order', 'asc');
-	}
+        return $this->hasMany('OfferOption')->orderBy('display_order', 'asc');
+    }
+
     public function active_offer_option(){
         return $this->hasMany('OfferOption')
                     ->where('is_active', 1)
@@ -360,7 +361,7 @@ class Offer extends BaseModel {
      * @return string
      */
     public function getSoldTotalAttribute(){
-        return $this->sold + Voucher::whereIn('offer_option_id', isset($this->offer_option) ? $this->offer_option->lists('id') : $this->active_offer_option->lists('id'))->count();
+        return $this->sold + Voucher::whereIn('offer_option_id', OfferOption::where('offer_id', $this->id)->lists('id'))->count();
     }
 
     /**

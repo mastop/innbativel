@@ -14,7 +14,7 @@ class AddCategoryIdToDiscountCoupons extends Migration {
         Schema::table('discount_coupons', function($table)
         {
             $table->integer('category_id')->unsigned()->index()->nullable()->after('offer_id');
-            $table->foreign('category_id')->references('id')->on('category')->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null')->onUpdate('cascade');
         });
 	}
 
