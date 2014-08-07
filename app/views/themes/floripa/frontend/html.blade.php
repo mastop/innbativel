@@ -26,21 +26,21 @@
 	
     <link rel="alternate" hreflang="{{ Config::get('app.locale') }}" href="{{ URL::current() }}" />
 	<link rel="canonical" href="{{ URL::current() }}" />
-	<link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
+	<link rel="icon" type="image/png" href="{{ asset_timed('favicon.png') }}" />
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/themes/floripa/frontend/css/bootstrap.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/fotorama/fotorama.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset_timed('assets/themes/floripa/frontend/css/bootstrap.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset_timed('assets/vendor/fotorama/fotorama.css') }}" />
     @yield('css')
 	
-    <script src="{{ asset('assets/vendor/jquery/jquery.latest.min.js') }}"></script>
-	<script src="{{ asset('assets/vendor/jquery.migrate/jquery.migrate.min.js') }}"></script>
-	<script src="{{ asset('assets/vendor/bootstrap/3/dist/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/jquery.validation/jquery.validate.min.js') }}"></script>
-	<script src="{{ asset('assets/themes/floripa/frontend/js/main.js') }}"></script>
-    <script src="{{ asset('assets/themes/floripa/frontend/js/form-validation.js') }}"></script>
-    <script src="{{ asset('assets/vendor/jquery.bullseye/jquery.bullseye-1.0-min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/contador/contador.js') }}"></script>
-    <script src="{{ asset('assets/vendor/fotorama/fotorama.js') }}"></script>
+    <script src="{{ asset_timed('assets/vendor/jquery/jquery.latest.min.js') }}"></script>
+	<script src="{{ asset_timed('assets/vendor/jquery.migrate/jquery.migrate.min.js') }}"></script>
+	<script src="{{ asset_timed('assets/vendor/bootstrap/3/dist/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset_timed('assets/vendor/jquery.validation/jquery.validate.min.js') }}"></script>
+	<script src="{{ asset_timed('assets/themes/floripa/frontend/js/main.js') }}"></script>
+    <script src="{{ asset_timed('assets/themes/floripa/frontend/js/form-validation.js') }}"></script>
+    <script src="{{ asset_timed('assets/vendor/jquery.bullseye/jquery.bullseye-1.0-min.js') }}"></script>
+    <script src="{{ asset_timed('assets/vendor/contador/contador.js') }}"></script>
+    <script src="{{ asset_timed('assets/vendor/fotorama/fotorama.js') }}"></script>
     @yield('javascript')
     {{ Configuration::get('script_head') }}
 </head>

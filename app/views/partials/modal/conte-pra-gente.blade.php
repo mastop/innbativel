@@ -104,7 +104,7 @@
         </div>
     </div>
 
-<script src="{{ asset('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
+<script src="{{ asset_timed('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         $('#travel_date').mask('00/00/0000');

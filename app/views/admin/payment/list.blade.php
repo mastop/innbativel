@@ -220,6 +220,6 @@ $(function() {
 });
 
 </script>
-<script src="{{ asset('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
+<script src="{{ asset_timed('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
 
 @stop

@@ -80,6 +80,6 @@
 	</div>
 </div>
 
-<script src="{{ asset('assets/themes/floripa/backend/js/auto-complete.js') }}"></script>
+<script src="{{ asset_timed('assets/themes/floripa/backend/js/auto-complete.js') }}"></script>
 
 @stop
