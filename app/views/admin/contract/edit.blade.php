@@ -174,7 +174,7 @@
 
     </div>
 
-    <script src="{{ asset('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
+    <script src="{{ asset_timed('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
     <script>
     $(document).ready(function(){
         $('.money').mask('000.000.000.000.000,00', {reverse: true});

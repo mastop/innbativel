@@ -20,7 +20,7 @@
         {{ Former::text('testimony', 'Depoimento')->class('span12') }}
 
         @if(isset($partner_testimony->img) && !is_null($partner_testimony->img) && !empty($partner_testimony->img))
-			<figure class="span4 form-file-thumb"><img src="{{ asset($partner_testimony->img) }}"></figure>
+			<figure class="span4 form-file-thumb"><img src="{{ asset_timed($partner_testimony->img) }}"></figure>
 			<div class="span4">
 				<a href="{{ route('admin.tellus.clearfield', [$partner_testimony->id, 'img']) }}" class="btn btn-danger tip" title="Alterar Imagem">
 					<i class="icon-trash"></i>

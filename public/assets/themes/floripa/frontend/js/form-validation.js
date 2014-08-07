@@ -9,6 +9,7 @@
 			// $('#press').modal('show'); //excluir em produção
 
 			$('#parceiroForm').validate({
+				onkeyup: false,
 				rules:{ 
 					parceiroFullName:{ 
 						required: true,
@@ -140,6 +141,7 @@
 			});
 
 			$('#conteForm').validate({
+				onkeyup: false,
 				rules:{ 
 					name:{ 
 						required: true,
@@ -202,6 +204,7 @@
 			});
 
 			$('#trabalheForm').validate({
+				onkeyup: false,
 				rules:{ 
 					trabalheFullName:{ 
 						required: true,
@@ -304,6 +307,7 @@
 			});
 
 			$('#sugiraForm').validate({
+				onkeyup: false,
 				rules:{ 
 					name:{ 
 						required: true,
@@ -374,6 +378,7 @@
 			});
 
 			$('#paymentBoletoForm').validate({
+				onkeyup: false,
 				rules:{ 
 					paymentBoletoPhone: {
 						required: true,
@@ -404,6 +409,7 @@
 			});
 
 			$('#paymentCardForm').validate({
+				onkeyup: false,
 				rules:{ 
 					paymentCardFlag:{ 
 						required: true
@@ -485,6 +491,7 @@
 			});
 
 			$('#paymentCreditForm').validate({
+				onkeyup: false,
 				rules:{ 
 					paymentCardEULA: {
 						required: true
@@ -507,6 +514,7 @@
 			});
 
 			$('#emailShareForm').validate({
+				onkeyup: false,
 				rules:{
 					senderName:{
 						required: true,
@@ -571,6 +579,7 @@
 			});
 
 			$('#newsletterForm').validate({
+				onkeyup: false,
 				rules:{
 					newsletterName:{ 
 						required: true,
@@ -709,6 +718,7 @@
             }
 
 			$('#registerForm').validate({
+				onkeyup: false,
 				rules:{ 
 					registerFullName:{ 
 						required: true,
@@ -773,6 +783,7 @@
 			});
 
 			$('#passRecoverForm').validate({
+				onkeyup: false,
 				rules:{ 
 					passRecoverEmail: {
 						required: true,
@@ -836,6 +847,7 @@
 			});
 
 			$('#contactForm').validate({
+				onkeyup: false,
 				rules:{ 
 					contactName:{ 
 						required: true,

@@ -1,6 +1,6 @@
 @section('javascript')
-	<script src="{{ asset('assets/themes/floripa/frontend/js/comprar.js') }}"></script>
-	<script src="{{ asset('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
+	<script src="{{ asset_timed('assets/themes/floripa/frontend/js/comprar.js') }}"></script>
+	<script src="{{ asset_timed('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
 @stop
 
 @section('content')
@@ -351,7 +351,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-3" for="paymentBoletoPhone">Seu telefone</label>
 							<div class="col-md-8">
-								<input type="text" class="form-control" id="paymentBoletoPhone" name="paymentBoletoPhone" placeholder="Digite seu telefone de contato com DDD" value="{{ Auth::check() ? Auth::user()->profile->telephone : '' }}"/>
+								<input type="text" class="form-control" id="paymentBoletoPhone" name="paymentBoletoPhone" placeholder="Digite seu telefone de contato com DDD" value="{{ Auth::check() && strlen(Auth::user()->profile->telephone) >= 10 ? Auth::user()->profile->telephone : '' }}"/>
 							</div>
 						</div>
 						<div class="form-group">

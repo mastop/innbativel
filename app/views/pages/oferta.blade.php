@@ -1,5 +1,5 @@
 @section('javascript')
-	<script src="{{ asset('assets/themes/floripa/frontend/js/oferta.js') }}"></script>
+	<script src="{{ asset_timed('assets/themes/floripa/frontend/js/oferta.js') }}"></script>
 @stop
 
 @section('content')

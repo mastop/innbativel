@@ -1,7 +1,7 @@
 @section('javascript')
-	<script src="{{ asset('assets/vendor/modernizr/modernizr.min.js') }}"></script>
-	<script src="{{ asset('assets/vendor/jquery.shuffle/jquery.shuffle.min.js') }}"></script>
-	<script src="{{ asset('assets/themes/floripa/frontend/js/busca.js') }}"></script>
+	<script src="{{ asset_timed('assets/vendor/modernizr/modernizr.min.js') }}"></script>
+	<script src="{{ asset_timed('assets/vendor/jquery.shuffle/jquery.shuffle.min.js') }}"></script>
+	<script src="{{ asset_timed('assets/themes/floripa/frontend/js/busca.js') }}"></script>
 @stop
 
 @section('content')

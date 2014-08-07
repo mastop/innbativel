@@ -10,7 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="alternate" hreflang="{{ Config::get('app.locale') }}" href="{{ URL::current() }}">
 	<link rel="canonical" href="{{ URL::current() }}">
-	<link rel="icon" type="image/png" href="{{ asset('favicon-32x32.png') }}">
+	<link rel="icon" type="image/png" href="{{ asset_timed('favicon-32x32.png') }}">
 	@stylesheets($type)
 
 	<script>{{ Config::get('app.name') }} = window.{{ Config::get('app.name') }} || {}; {{ Config::get('app.name') }}.basePath = '{{ url() }}';</script>

@@ -122,6 +122,11 @@ Blade::extend(function($value)
     return preg_replace('/(\s*)@(break|continue)(\s*)/', '$1<?php $2; ?>$3', $value);
 });
 
+function asset_timed($path, $secure=null){
+    $file = public_path($path);
+    return asset($path, $secure) . '?' . filemtime($file);
+}
+
 Log::listen(function($level, $message, $context)
 {
     $add = Auth::check()?'Usuário: '.Auth::user()->id.' | '.Auth::user()->email."\r\n":'';

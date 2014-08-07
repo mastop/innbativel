@@ -1,6 +1,6 @@
 @section('content')
 
-    <script src="{{ asset('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
+    <script src="{{ asset_timed('assets/vendor/jquery.mask/jquery.mask.min.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#sales_from').mask('0000-00-00 00:00:00');

@@ -19,6 +19,6 @@
 // 	->add('#', null, null, ['class' => 'fullview'])
 // 	// ->add('#', null, null, ['class' => 'showmenu'])
 // 	// ->add('#', '<i class="new-message"></i>', null, ['class' => 'messages'])
-// 	->add('#', '<img src="'. asset('assets/themes/floripa/backend/img/userpic.png'). '" alt=""><span>'. $username .' <b class="caret"></b></span>',
+// 	->add('#', '<img src="'. asset_timed('assets/themes/floripa/backend/img/userpic.png'). '" alt=""><span>'. $username .' <b class="caret"></b></span>',
 // 		Menu::handler('usermenu'), ['class' => 'user-menu', 'data-toggle' => 'dropdown']);
 // }

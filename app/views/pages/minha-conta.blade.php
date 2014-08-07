@@ -1,9 +1,9 @@
 @section('css')
-	<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/bootstrap-editable/css/bootstrap-editable.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset_timed('assets/vendor/bootstrap-editable/css/bootstrap-editable.css') }}">
 @stop
 
 @section('javascript')
-	<script src="{{ asset('assets/vendor/bootstrap-editable/js/bootstrap-editable.min.js') }}"></script>
+	<script src="{{ asset_timed('assets/vendor/bootstrap-editable/js/bootstrap-editable.min.js') }}"></script>
 @stop
 
 @section('content')
