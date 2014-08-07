@@ -389,7 +389,7 @@ class PageController extends BaseController {
 
             $rules = [
                 'paymentCardCPF' => 'required|digitsbetween:11,18',
-                'paymentCardPhone' => 'required|between:10,16',
+                'paymentCardPhone' => 'required|between:14,15',
                 'paymentCardFlag' => 'required',
                 'paymentCardNumber' => 'required',
                 'paymentCardValidityMonth' => 'required|digits:2',
@@ -404,8 +404,8 @@ class PageController extends BaseController {
             if (!$validation->passes()){
                 $this->logPagar($inputs, 'Nenhuma', $validation->messages(), Auth::user()->id, Auth::user()->email);
                 return Redirect::back()
-                                ->withInput()
-                                ->withErrors($validation);
+                               ->withInput()
+                               ->withErrors($validation);
             }
 
             $first_name = $user_profile->first_name;
@@ -724,7 +724,7 @@ class PageController extends BaseController {
             $inputs['paymentBoletoPhone'] = preg_replace('/[^0-9]/', '', $inputs['paymentBoletoPhone']);
 
             $rules = [
-                'paymentBoletoPhone' => 'required|between:10,16',
+                'paymentBoletoPhone' => 'required|between:14,15',
             ];
 
             $validation = Validator::make($inputs, $rules);

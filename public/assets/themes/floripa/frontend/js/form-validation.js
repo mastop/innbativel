@@ -377,7 +377,7 @@
 				rules:{ 
 					paymentBoletoPhone: {
 						required: true,
-						rangelength: [10, 16]
+						rangelength: [14, 15]
 					},
 					paymentCardEULA: {
 						required: true
@@ -432,7 +432,7 @@
 					},
 					paymentCardPhone: {
 						required: true,
-						rangelength: [10, 16]
+						rangelength: [14, 15]
 					},
 					paymentCardEULA: {
 						required: true
