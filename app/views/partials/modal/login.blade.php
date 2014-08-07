@@ -17,13 +17,13 @@
                         <label class="control-label col-md-2" for="loginEmail">Email</label>
                         <div class="col-md-8 input-group">
                             <!-- <span class="input-group-addon">@</span> -->
-                            <input type="email" class="form-control" id="loginEmail" name="email" placeholder="Seu email">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Seu email">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-2" for="loginPassword">Senha</label>
                         <div class="col-md-8">
-                            <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Sua senha">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Sua senha">
                         </div>
                     </div>
                     <div class="form-group">

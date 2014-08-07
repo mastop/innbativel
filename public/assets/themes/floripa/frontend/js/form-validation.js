@@ -807,22 +807,23 @@
 			});
 
 			$('#loginForm').validate({
+				onkeyup: false,
 				rules:{ 
-					loginEmail: {
+					email: {
 						required: true,
 						email: true
 					},
-					loginPassword: {
+					password: {
 						required: true,
 						minlength: 6
 					}
 				},
 				messages:{
-					loginEmail: {
+					email: {
 						required: "O campo email é obrigatório.",
 						email: "Digite um email válido."
 					},
-					loginPassword: {
+					password: {
 						required: "O campo senha é obrigatório.",
 						minlength: "Deve conter no mínimo 6 caracteres."
 					}
