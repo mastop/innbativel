@@ -57,7 +57,7 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Assim que o pagamento for identificado, seu cupom estará disponível em nosso site, na sua conta INNBatível.</td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Assim que o pagamento for identificado, você receberá um e-mail e seu cupom estará disponível em nosso site, na sua conta INNBatível.</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
