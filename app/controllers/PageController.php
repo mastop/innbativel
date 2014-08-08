@@ -205,8 +205,9 @@ class PageController extends BaseController {
 
         $validation = Validator::make($inputs, $rules);
 
-        if (!$validation->passes()){
-            $this->logPagar($inputs, 'Nenhuma', $validation->messages(), Auth::user()->id, Auth::user()->email);
+        if ($validation->fails()){
+            $error = $validation->messages()->toArray();
+            $this->logPagar($inputs, 'Nenhuma', $error, Auth::user()->id, Auth::user()->email);
             return Redirect::back()
                             ->withInput()
                             ->withErrors($validation);
@@ -286,6 +287,10 @@ class PageController extends BaseController {
                 }
                 $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
 
+                $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagem retornada: '.$error."\r\n";
+                $order->status = 'cancelado';
+                $order->save();
+
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
@@ -299,6 +304,10 @@ class PageController extends BaseController {
             //         $error = 'Desculpe, mas a quantidade da opção "'.$offer_option->title.'" em estoque acabou de cair para '.$max_qty_allowed_boletus.' para compra via boleto. Por favor, selecione outro meio de pagamento ou diminua a quantidade desta opção para compra.';
             //     }
             //     $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
+
+            //     $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagem retornada: '.$error."\r\n";
+            //     $order->status = 'cancelado';
+            //     $order->save();
 
             //     Session::flash('error', $error);
             //     return Redirect::back()
@@ -401,8 +410,14 @@ class PageController extends BaseController {
 
             $validation = Validator::make($inputs, $rules);
 
-            if (!$validation->passes()){
-                $this->logPagar($inputs, 'Nenhuma', $validation->messages(), Auth::user()->id, Auth::user()->email);
+            if ($validation->fails()){
+                $error = $validation->messages()->toArray();
+                $this->logPagar($inputs, 'Nenhuma', $error, Auth::user()->id, Auth::user()->email);
+
+                $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagem retornada: '.$error."\r\n";
+                $order->status = 'cancelado';
+                $order->save();
+
                 return Redirect::back()
                                ->withInput()
                                ->withErrors($validation);
@@ -449,6 +464,11 @@ class PageController extends BaseController {
             else{
                 $error = 'Número de parcelas inválido.';
                 $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
+
+                $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagem retornada: '.$error."\r\n";
+                $order->status = 'cancelado';
+                $order->save();
+
                 Session::flash('error', $error);
                 return Redirect::back()
                                ->withInput();
@@ -729,8 +749,14 @@ class PageController extends BaseController {
 
             $validation = Validator::make($inputs, $rules);
 
-            if (!$validation->passes()){
-                $this->logPagar($inputs, 'Nenhuma', $validation->messages(), Auth::user()->id, Auth::user()->email);
+            if ($validation->fails()){
+                $error = $validation->messages()->toArray();
+                $this->logPagar($inputs, 'Nenhuma', $error, Auth::user()->id, Auth::user()->email);
+                
+                $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagem retornada: '.$error."\r\n";
+                $order->status = 'cancelado';
+                $order->save();
+
                 return Redirect::back()
                                 ->withInput()
                                 ->withErrors($validation);
