@@ -414,7 +414,7 @@ class PageController extends BaseController {
                 $error = $validation->messages()->toArray();
                 $this->logPagar($inputs, 'Nenhuma', $error, Auth::user()->id, Auth::user()->email);
 
-                $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagem retornada: '.$error."\r\n";
+                $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagens retornadas: '.json_encode($error)."\r\n";
                 $order->status = 'cancelado';
                 $order->save();
 
@@ -753,7 +753,7 @@ class PageController extends BaseController {
                 $error = $validation->messages()->toArray();
                 $this->logPagar($inputs, 'Nenhuma', $error, Auth::user()->id, Auth::user()->email);
                 
-                $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagem retornada: '.$error."\r\n";
+                $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagens retornadas: '.json_encode($error)."\r\n";
                 $order->status = 'cancelado';
                 $order->save();
 
