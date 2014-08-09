@@ -10,6 +10,7 @@
 
 			$('#parceiroForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					parceiroFullName:{ 
 						required: true,
@@ -142,6 +143,7 @@
 
 			$('#conteForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					name:{ 
 						required: true,
@@ -205,6 +207,7 @@
 
 			$('#trabalheForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					trabalheFullName:{ 
 						required: true,
@@ -308,6 +311,7 @@
 
 			$('#sugiraForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					name:{ 
 						required: true,
@@ -379,6 +383,7 @@
 
 			$('#paymentBoletoForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					paymentBoletoPhone: {
 						required: true,
@@ -410,6 +415,7 @@
 
 			$('#paymentCardForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					paymentCardFlag:{ 
 						required: true
@@ -492,6 +498,7 @@
 
 			$('#paymentCreditForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					paymentCardEULA: {
 						required: true
@@ -515,6 +522,7 @@
 
 			$('#emailShareForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{
 					senderName:{
 						required: true,
@@ -580,6 +588,7 @@
 
 			$('#newsletterForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{
 					newsletterName:{ 
 						required: true,
@@ -719,6 +728,7 @@
 
 			$('#registerForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					registerFullName:{ 
 						required: true,
@@ -784,6 +794,7 @@
 
 			$('#passRecoverForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					passRecoverEmail: {
 						required: true,
@@ -819,6 +830,7 @@
 
 			$('#loginForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					email: {
 						required: true,
@@ -848,6 +860,7 @@
 
 			$('#contactForm').validate({
 				onkeyup: false,
+				focusCleanup: true,
 				rules:{ 
 					contactName:{ 
 						required: true,

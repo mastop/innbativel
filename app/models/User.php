@@ -40,7 +40,7 @@ class User extends BaseUser {
     public function getFullNameAttribute()
     {
         if(!$this->profile) return null;
-        return ($this->profile->company_name) ? $this->profile->company_name : $this->profile->first_name . ' ' . $this->profile->last_name;
+        return ($this->profile->first_name) ? $this->profile->first_name . ' ' . $this->profile->last_name : $this->profile->company_name;
     }
 
     public function getFullAddressAttribute(){

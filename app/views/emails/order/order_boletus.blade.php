@@ -13,7 +13,7 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
 <center>
     <table width="600" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td align="center"><img src="//{{Configuration::get("s3url")}}/logo.png" width="600" height="300" alt="" style="display:block;"></td>
+        <td align="center"><img src="//{{Configuration::get("s3url")}}/praia-boleto.jpg" width="600" height="300" alt="" style="display:block;"></td>
       </tr>
       <tr>
         <td align="center" bgcolor="#4060a6"><table width="510" border="0" cellspacing="0" cellpadding="0">
@@ -57,7 +57,7 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Assim que o pagamento for identificado, seu cupom estará disponível em nosso site, na sua conta INNBatível.</td>
+            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:17px; color:#FFF;">Assim que o pagamento for identificado, você receberá um e-mail e seu cupom estará disponível em nosso site, na sua conta INNBatível.</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
