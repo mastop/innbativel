@@ -1,8 +1,7 @@
 @section('content')
     <div class="well widget row-fluid">
         {{ Former::horizontal_open()->rules([
-        	'name' => 'required',
-        	'icon_url' => 'required',
+        	'title' => 'required',
         ]) }}
 
         {{ Former::text('title', 'Nome')->class('span12') }}

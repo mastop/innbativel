@@ -9941,9 +9941,7 @@ table.user-data th,
 	outline: none;
 }
 #buy-btn.disabled {
-	background: #ffae80;
-	border-bottom-color: #cc8b66;
-	color: #ffefe5;
+    cursor: pointer;
 }
 #buy-btn.disabled:hover,
 #buy-btn.disabled:focus {
