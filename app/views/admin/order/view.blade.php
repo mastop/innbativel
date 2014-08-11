@@ -62,7 +62,7 @@
             @endif
 
             <b class="control-label">Telefone</b>
-            <div class="controls">{{ isset($order->telephone)?$order->telephone:'--' }}</div>
+            <div class="controls">{{ isset($order->telephone)?$order->telephone:(isset($order->buyer->profile)?$order->buyer->profile->telephone:'--') }}</div>
         </div>
 
         <div class="control-group"><h1>Cupons</h1></div>

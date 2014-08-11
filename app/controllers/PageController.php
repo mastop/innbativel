@@ -201,6 +201,7 @@ class PageController extends BaseController {
         $rules = [
             'donation' => 'required',
             'paymentCardEULA' => 'required',
+            'payment_type' => 'required',
         ];
 
         $validation = Validator::make($inputs, $rules);
@@ -242,6 +243,18 @@ class PageController extends BaseController {
         $order->braspag_order_id = $braspag_order_id;
         $order->donation = $donation;
         $order->history = $history;
+
+        if($inputs['payment_type'] == 'credit_card'){
+            $order->payment_terms = 'Cartão de crédito';
+            $order->installments = $inputs['paymentCardInstallment'];
+            $order->flag = $inputs['paymentCardFlag'];
+        }
+        else if($inputs['payment_type'] == 'boletus'){
+            $order->payment_terms = 'Boleto';
+        }
+        else{
+            $order->payment_terms = 'Créditos e/ou cupom de desconto';
+        }
 
         $order->save();
 
@@ -295,24 +308,24 @@ class PageController extends BaseController {
                 return Redirect::back()
                                ->withInput();
             }
-            // else if($inputs['payment_type'] == 'boletus' && $qty_ordered > $max_qty_allowed_boletus){
-            //     // ERRO: a quantidade comprada é maior que a quantidade em estoque permitida para compra via boleto
-            //     if($max_qty_allowed_boletus <= 0){
-            //         $error = 'Desculpe, mas a opção "'.$offer_option->title.'" não pode ser comprada via boleto. Por favor, selecione outro meio de pagamento.';
-            //     }
-            //     else{
-            //         $error = 'Desculpe, mas a quantidade da opção "'.$offer_option->title.'" em estoque acabou de cair para '.$max_qty_allowed_boletus.' para compra via boleto. Por favor, selecione outro meio de pagamento ou diminua a quantidade desta opção para compra.';
-            //     }
-            //     $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
+            else if($inputs['payment_type'] == 'boletus' && $qty_ordered > $max_qty_allowed_boletus){
+                // ERRO: a quantidade comprada é maior que a quantidade em estoque permitida para compra via boleto
+                if($max_qty_allowed_boletus <= 0){
+                    $error = 'Desculpe, mas a opção "'.$offer_option->title.'" não pode ser comprada via boleto. Por favor, selecione outro meio de pagamento.';
+                }
+                else{
+                    $error = 'Desculpe, mas a quantidade da opção "'.$offer_option->title.'" em estoque acabou de cair para '.$max_qty_allowed_boletus.' para compra via boleto. Por favor, selecione outro meio de pagamento ou diminua a quantidade desta opção para compra.';
+                }
+                $this->logPagar($inputs, $error, 'Nenhuma', Auth::user()->id, Auth::user()->email);
 
-            //     $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagem retornada: '.$error."\r\n";
-            //     $order->status = 'cancelado';
-            //     $order->save();
+                $order->history .= date('d/m/Y h:i:s').' - Pagamento cancelado. Mensagem retornada: '.$error."\r\n";
+                $order->status = 'cancelado';
+                $order->save();
 
-            //     Session::flash('error', $error);
-            //     return Redirect::back()
-            //                    ->withInput();
-            // }
+                Session::flash('error', $error);
+                return Redirect::back()
+                               ->withInput();
+            }
             else{
                 $products[] = '<a href="' . route('oferta', $offer_option->offer->slug) . '">' . $qty_ordered . ' x ' . $offer_option->offer->title . ' | ' . $offer_option->title . '</a>';
 
@@ -383,8 +396,7 @@ class PageController extends BaseController {
             $order->credit_discount = $credit_discount_value;
             $order->coupon_discount = $coupon_discount_value;
             $order->coupon_id = $coupon_discount_id;
-            $order->payment_terms = 'Créditos e/ou cupom de disconto';
-            $order->history .= date('d/m/Y h:i:s').' - Pagamento feito completamente com créditos do usuário e/ou cupom de disconto'."\r\n";
+            $order->history .= date('d/m/Y h:i:s').' - Pagamento feito completamente com créditos do usuário e/ou cupom de desconto'."\r\n";
             $order->save();
         }
 
@@ -485,7 +497,6 @@ class PageController extends BaseController {
             $order->first_digits_card = substr($number, 0, 4);
             $order->cpf = $cpf_cnpj;
             $order->telephone = $telephone;
-            $order->payment_terms = 'Cartão de crédito - ' . $flag . ' - ' . $installment . 'x';
 
             $order->save();
 
@@ -768,7 +779,6 @@ class PageController extends BaseController {
             $order->coupon_discount = $coupon_discount_value;
             $order->coupon_id = $coupon_discount_id;
             $order->telephone = $inputs['paymentBoletoPhone'];
-            $order->payment_terms = "Boleto";
 
             $order->save();
 
