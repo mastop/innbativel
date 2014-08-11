@@ -4,7 +4,6 @@
 
         {{ Former::horizontal_open()->rules([
         	'title' => 'required',
-        	'icon' => 'required',
         ]) }}
 
         {{ Former::populate($genre) }}

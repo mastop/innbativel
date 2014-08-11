@@ -108,7 +108,6 @@ class AdminGenreController extends BaseController {
 
 		$rules = [
         	'title' => 'required',
-        	'icon' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -169,7 +168,6 @@ class AdminGenreController extends BaseController {
 
 		$rules = [
         	'title' => 'required',
-        	'icon' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
