@@ -55,7 +55,7 @@
 	</div>
 {{ Table::open() }}
 {{ Table::headers('Data e hora', 'Número do Pedido', 'Cliente', 'ID das Ofertas', 'Forma de pagamento', 'Status', 'Valor', 'Ações') }}
-{{ Table::body($orderArray)->ignore(['buyer', 'offer_option_offer', 'id', 'user_id', 'braspag_order_id', 'braspag_order_id_string', 'status', 'total', 'payment_terms', 'antifraud_id', 'braspag_id', 'coupon_id', 'first_digits_card', 'holder_card', 'donation', 'card_boletus_rate', 'antecipation_rate', 'interest_rate', 'credit_discount', 'coupon_discount', 'cpf', 'telephone', 'is_gift', 'boleto', 'capture_date', 'history', 'created_at', 'updated_at'])
+{{ Table::body($orderArray)->ignore(['buyer', 'offer_option_offer', 'id', 'user_id', 'braspag_order_id', 'braspag_order_id_string', 'status', 'total', 'payment_terms','installments','flag', 'antifraud_id', 'braspag_id', 'coupon_id', 'first_digits_card', 'holder_card', 'donation', 'card_boletus_rate', 'antecipation_rate', 'interest_rate', 'credit_discount', 'coupon_discount', 'cpf', 'telephone', 'is_gift', 'boleto', 'capture_date', 'history', 'created_at', 'updated_at'])
 	->datetime(function($order) {
 		if(isset($order['created_at'])) {
 			return date('d/m/Y H:i:s', strtotime($order['created_at']));
@@ -89,8 +89,8 @@
 		return '--';
 	})
 	->payment_termss(function($order) {
-		if(isset($order['payment_terms'])) {
-			return $order['payment_terms'];
+		if(isset($order->full_payment_terms)) {
+			return $order->full_payment_terms;
 		}
 		return '--';
 	})

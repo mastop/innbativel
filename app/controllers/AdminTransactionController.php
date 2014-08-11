@@ -104,7 +104,7 @@ class AdminTransactionController extends BaseController {
 
 			$display_codes = substr($display_codes, 0, -5);
 
-			if(strpos($transaction->order->payment_terms, 'cartão') !== false || strpos($transaction->order->payment_terms, 'Cartão') !== false){
+			if($transaction->order->payment_terms == 'Cartão de crédito'){
 				if($transaction->status == 'convercao_creditos' || $transaction->status == 'convercao_creditos_parcial'){
 					$cardBoletusRate = 0;
 					$antecipationRate = 0;
@@ -115,7 +115,7 @@ class AdminTransactionController extends BaseController {
 					$antecipationRate = ($transaction->total - $cardBoletusRate) * $transaction->order->antecipation_rate;
 				}
 			}
-			else if(strpos($transaction->order->payment_terms, 'boleto') !== false || strpos($transaction->order->payment_terms, 'Boleto') !== false){
+			else if($transaction->order->payment_terms == 'Boleto'){
 				$cardBoletusRate = ($transaction->status == 'pagamento') ? $transaction->order->card_boletus_rate : 0;
 				$antecipationRate = 0;
 			}
@@ -245,7 +245,7 @@ class AdminTransactionController extends BaseController {
 
 			$display_codes = substr($display_codes, 0, -5);
 
-			if(strpos($transaction->order->payment_terms, 'cartão') !== false || strpos($transaction->order->payment_terms, 'Cartão') !== false){
+			if($transaction->order->payment_terms == 'Cartão de crédito'){
 				if($transaction->status == 'convercao_creditos' || $transaction->status == 'convercao_creditos_parcial'){
 					$cardBoletusRate = 0;
 					$antecipationRate = 0;
@@ -256,7 +256,7 @@ class AdminTransactionController extends BaseController {
 					$antecipationRate = ($transaction->total - $cardBoletusRate) * $transaction->order->antecipation_rate;
 				}
 			}
-			else if(strpos($transaction->order->payment_terms, 'boleto') !== false || strpos($transaction->order->payment_terms, 'Boleto') !== false){
+			else if($transaction->order->payment_terms == 'Boleto'){
 				$cardBoletusRate = ($transaction->status == 'pagamento') ? $transaction->order->card_boletus_rate : 0;
 				$antecipationRate = 0;
 			}
@@ -288,7 +288,7 @@ class AdminTransactionController extends BaseController {
 			$ss[] = $transaction->order->braspag_order_id;
 			$ss[] = $transaction->order->buyer->profile->first_name.(isset($transaction->order->buyer->profile->last_name)?' '.$transaction->order->buyer->profile->last_name:'');
 			$ss[] = $transaction->status;
-			$ss[] = $transaction->order->payment_terms;
+			$ss[] = $transaction->order->full_payment_terms;
 			$ss[] = number_format($transaction->vouchers * $coefficient, 2, ',', '.');
 			$ss[] = number_format($transaction->credit_discount * $coefficient, 2, ',', '.');
 			$ss[] = number_format($transaction->coupon_discount * $coefficient, 2, ',', '.');

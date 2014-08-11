@@ -89,7 +89,7 @@
 		})
 		->payment_terms(function($transaction) {
 			if(isset($transaction->order)){
-				return $transaction->order->payment_terms;
+				return $transaction->order->full_payment_terms;
 			}
 			return '--';
 		})

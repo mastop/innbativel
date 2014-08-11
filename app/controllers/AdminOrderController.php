@@ -397,7 +397,7 @@ class AdminOrderController extends BaseController {
 
 			$ss[] = substr($itens, 0, -3);
 
-			$ss[] = $order->payment_terms;
+			$ss[] = $order->full_payment_terms;
 			$ss[] = $order->status;
 			$ss[] = $order->total;
 
@@ -487,7 +487,7 @@ class AdminOrderController extends BaseController {
 			$ss[] = count($order->voucher);
 			$ss[] = $order->buyer->profile->first_name.' '.$order->buyer->profile->last_name;
 			$ss[] = $order->buyer->email;
-			$ss[] = $order->payment_terms;
+			$ss[] = $order->full_payment_terms;
 			$ss[] = $order->holder_card;
 			$ss[] = $order->telephone;
 			$ss[] = isset($order['discount_coupon'])?$order['discount_coupon']->value:'--';

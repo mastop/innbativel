@@ -1139,7 +1139,7 @@ class AdminPaymentController extends BaseController {
 
 	// 		$ss[] = substr($itens, 0, -1);
 
-	// 		$ss[] = $payment->payment_terms;
+	// 		$ss[] = $payment->full_payment_terms;
 	// 		$ss[] = $payment->created_at;
 	// 		$ss[] = $payment['user']->first_name.' '.$payment['user']->last_name.' | '.$payment['user']->email;
 
@@ -1196,7 +1196,7 @@ class AdminPaymentController extends BaseController {
 	// 		$ss[] = $payment->total;
 	// 		$ss[] = $payment['user']->first_name.' '.$payment['user']->last_name;
 	// 		$ss[] = $payment['user']->email;
-	// 		$ss[] = $payment->payment_terms;
+	// 		$ss[] = $payment->full_payment_terms;
 	// 		$ss[] = $payment->holder_card;
 	// 		$ss[] = $payment->telephone;
 	// 		$ss[] = isset($payment['discount_coupon'])?$payment['discount_coupon']->value:'--';
