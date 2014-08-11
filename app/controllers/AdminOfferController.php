@@ -176,7 +176,7 @@ class AdminOfferController extends BaseController {
                 foreach($offer_options as $k => $opt){
                     $opt['display_order'] = $k;
                     $opt['offer_id'] = $offer->id;
-                    $opt['is_active'] = isset($opt['is_active']) ? $opt['is_active'] : 0;
+                    $opt['is_active'] = isset($opt['is_active']) ? 1 : 0;
                     // A linha abaixo está comentada porque deste jeito não executa os Mutators
                     //$offer_option = $offer->offer_option()->create($opt);
                     $offer_option = $this->offer_option->create($opt);
@@ -448,7 +448,7 @@ class AdminOfferController extends BaseController {
                 foreach($offer_options as $k => $opt){
                     $opt['display_order'] = $k;
                     $opt['offer_id'] = $offer->id;
-                    $opt['is_active'] = isset($opt['is_active']) ? $opt['is_active'] : 0;
+                    $opt['is_active'] = isset($opt['is_active']) ? 1 : 0;
                     if(isset($opt['id']) && $opt['id'] > 0){
                         $offer_option = $this->offer_option->find($opt['id']);
                         // Atualiza a opção da Oferta
