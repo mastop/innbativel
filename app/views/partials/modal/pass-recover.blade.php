@@ -10,6 +10,9 @@
                     <p>
                         Digite seu email cadastrado para recuperar sua senha.<br>
                     </p>
+
+                    @include('partials.modal.anti-bot-spam')
+
                     <div class="form-group">
                         <label class="control-label col-md-3" for="passRecoverEmail">Seu email</label>
                         <div class="col-md-8 input-group">

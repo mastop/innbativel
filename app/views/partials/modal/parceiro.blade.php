@@ -35,6 +35,9 @@
                     <p>
                         Para ser nosso parceiro, basta preencher o formulário abaixo.
                     </p>
+
+                    @include('partials.modal.anti-bot-spam')
+
                     <div class="form-group">
                         <label class="control-label col-md-5" for="parceiroFullName">Nome do responsável</label>
                         <div class="col-md-7">

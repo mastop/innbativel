@@ -25,6 +25,9 @@ class AuthController extends BaseController {
 
 	public function postLogin()
 	{
+        // Solução anti-bot e spam
+        if(Input::has('username')) return Response::json(['error' => 1, 'message' => 'A operação não pôde ser concluída. Se o problema persistir, entre em contato conosco.']);
+        
 		$user = [
             'username' => Input::get('email'),
             'password' => Input::get('password'),
@@ -204,6 +207,9 @@ class AuthController extends BaseController {
 
 	public function postRequest()
 	{
+        // Solução anti-bot e spam
+        if(Input::has('username')) return Response::json(['error' => 1, 'message' => 'A operação não pôde ser concluída. Se o problema persistir, entre em contato conosco.']);
+
 		$credentials = array('email' => Input::get('email', Input::get('passRecoverEmail')));
         $ret = [];
         try{
@@ -463,8 +469,13 @@ class AuthController extends BaseController {
 
 	public function postCreate()
 	{
+        // Solução anti-bot e spam
+        if(Input::has('username')) return Response::json(['error' => 1, 'message' => 'A operação não pôde ser concluída. Se o problema persistir, entre em contato conosco.']);
+        
         $destination = Input::get('destination', Session::get('destination', '/'));
 		$inputs = Input::all();
+
+        unset($inputs['username']);
 
 		$rules = [
             'registerEmail' => 'required|email',

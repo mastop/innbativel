@@ -1147,6 +1147,9 @@ class PageController extends BaseController {
     }
 
     public function postOfferShare(){
+        // Solução anti-bot e spam
+        if(Input::has('username')) return Response::json(['error' => 1, 'message' => 'A operação não pôde ser concluída. Se o problema persistir, entre em contato conosco.']);
+        
         $this->layout = 'format.ajax';
         $data = [];
         $data['senderName'] = Input::get('senderName');
@@ -1257,7 +1260,12 @@ class PageController extends BaseController {
 
     public function postFaleConosco()
     {
+        // Solução anti-bot e spam
+        if(Input::has('username')) return Response::json(['error' => 1, 'message' => 'A operação não pôde ser concluída. Se o problema persistir, entre em contato conosco.']);
+
         $inputs = Input::all();
+
+        unset($inputs['username']);
 
         $rules = [
             'contactName' => 'Required|Max:255',
@@ -1331,7 +1339,12 @@ class PageController extends BaseController {
     }
 
     public function postSuggestATrip(){
+        // Solução anti-bot e spam
+        if(Input::has('username')) return Response::json(['error' => 1, 'message' => 'A operação não pôde ser concluída. Se o problema persistir, entre em contato conosco.']);
+        
         $inputs = Input::all();
+
+        unset($inputs['username']);
 
         $rules = [
             'name' => 'required|min:3', 
@@ -1384,7 +1397,12 @@ class PageController extends BaseController {
     }
 
     public function postTellUs(){
+        // Solução anti-bot e spam
+        if(Input::has('username')) return Response::json(['error' => 1, 'message' => 'A operação não pôde ser concluída. Se o problema persistir, entre em contato conosco.']);
+
         $inputs = Input::all();
+
+        unset($inputs['username']);
 
         $rules = [
             'name' => 'required|min:5',
@@ -1454,7 +1472,12 @@ class PageController extends BaseController {
     }
 
     public function postBeOurPartner(){
+        // Solução anti-bot e spam
+        if(Input::has('username')) return Response::json(['error' => 1, 'message' => 'A operação não pôde ser concluída. Se o problema persistir, entre em contato conosco.']);
+        
         $inputs = Input::all();
+
+        unset($inputs['username']);
 
         $rules = [
             'parceiroFullName' => 'required|min:5', 
@@ -1508,7 +1531,12 @@ class PageController extends BaseController {
     }
 
     public function postWorkWithUs(){
+        // Solução anti-bot e spam
+        if(Input::has('username')) return Response::json(['error' => 1, 'message' => 'A operação não pôde ser concluída. Se o problema persistir, entre em contato conosco.']);
+        
         $inputs = Input::all();
+
+        unset($inputs['username']);
 
         $rules = [
             'trabalheFullName' => 'required|min:5',
