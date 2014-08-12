@@ -6,7 +6,6 @@
         	'title' => 'required',
         	'short_title' => 'required',
             'url' => 'required',
-        	'icon' => 'required',
         ]) }}
 
         {{ Former::populate($group) }}
@@ -15,7 +14,7 @@
         {{ Former::text('short_title', 'Título Curto')->class('span12') }}
         {{ Former::text('url', 'URL (link do grupo)')->class('span12') }}
         {{ Former::select('icon', 'Ícone')
-        ->addOption(null)
+        ->addOption('Nenhum', null)
         ->options(array(
         'map-icon-map-pin' => 'map-pin',
         'map-icon-expand' => 'expand',
