@@ -184,14 +184,13 @@ class AdminGroupController extends BaseController {
         $rules = [
             'title' => 'required',
             'url' => 'required',
-            'icon' => 'required',
         ];
 
 	    $validation = Validator::make($inputs, $rules);
 
 		if ($validation->passes())
 		{
-            $inputs['icon'] = str_replace('map-icon-', '', $inputs['icon']);
+            $inputs['icon'] = ($inputs['icon'] != NULL) ? str_replace('map-icon-', '', $inputs['icon']) : NULL;
 			$this->group->create($inputs);
 
             Session::flash('success', 'Grupo criado com sucesso.');
@@ -245,7 +244,6 @@ class AdminGroupController extends BaseController {
 		$rules = [
         	'title' => 'required',
         	'url' => 'required',
-        	'icon' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -256,7 +254,7 @@ class AdminGroupController extends BaseController {
 
 			if ($group)
 			{
-                $inputs['icon'] = str_replace('map-icon-', '', $inputs['icon']);
+                $inputs['icon'] = ($inputs['icon'] != NULL) ? str_replace('map-icon-', '', $inputs['icon']) : NULL;
 				$group->update($inputs);
 			}
             Session::flash('success', 'Grupo alterado com sucesso.');
