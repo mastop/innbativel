@@ -288,7 +288,7 @@ class PageController extends BaseController {
             $qty_sold = isset($offer_option->qty_sold{0})?$offer_option->qty_sold{0}->qty:0;
             $qty_sold_boletus = isset($offer_option->qty_sold_boletus{0})?$offer_option->qty_sold_boletus{0}->qty:0;
             $max_qty_allowed = $offer_option->max_qty - $qty_sold;
-            // $max_qty_allowed_boletus = $offer_option->min_qty - $qty_sold;
+            $max_qty_allowed_boletus = $offer_option->min_qty - $qty_sold;
 
             if($qty_ordered > $max_qty_allowed){
                 // ERRO: a quantidade comprada é maior que a quantidade permitida ou maior que a quantidade em estoque
