@@ -29,6 +29,9 @@
                     <p>
                         Em breve sua sugestão poderá aparecer por aqui ;)
                     </p>
+
+                    @include('partials.modal.anti-bot-spam')
+
                     <div class="form-group">
                         <label class="control-label col-md-4" for="contactEmail">Nome</label>
                         <div class="col-md-8 input-group">

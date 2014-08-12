@@ -13,6 +13,9 @@
                         </div>
                     </div>
                     <hr>
+                    
+                    @include('partials.modal.anti-bot-spam')
+
                     <div class="form-group">
                         <label class="control-label col-md-2" for="loginEmail">Email</label>
                         <div class="col-md-8 input-group">

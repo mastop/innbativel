@@ -610,9 +610,14 @@
 					}
 				},
 				submitHandler: function(form) {
-                    $(form).find('button.btn-primary').attr('disabled', true);
-                    $(form).parent().find('h4.modal-title').html('<span class="entypo cycle"></span> Aguarde...');
-                    add_contact($('#newsletterName').val(), $('#newsletterEmail').val(), form);
+					if($('#newsletterForm input[name="username"]').val()){
+						alert('Seu e-mail não pôde ser cadastrado em nossa newsletter. Se o problema persistir, entre em contato conosco.');
+					}
+					else{
+						$(form).find('button.btn-primary').attr('disabled', true);
+	                    $(form).parent().find('h4.modal-title').html('<span class="entypo cycle"></span> Aguarde...');
+	                    add_contact($('#newsletterName').val(), $('#newsletterEmail').val(), form);
+					}
 				}
 			});
 

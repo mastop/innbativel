@@ -62,4 +62,8 @@ class Order extends Eloquent {
     return '<pre>'.$this->history.'</pre>';
   }
 
+  public function getFullPaymentTermsAttribute(){
+    return $this->payment_terms . (isset($this->flag) ? ' - ' . $this->flag . ' - ' . $this->installments . 'x' : '');
+  }
+
 }

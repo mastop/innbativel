@@ -218,6 +218,9 @@
 						<p>
 							Preencha os campos abaixo para compartilhar esta oferta.
 						</p>
+
+						@include('partials.modal.anti-bot-spam')
+						
 						<div class="form-group">
 							<label class="control-label col-md-4" for="senderName">Seu nome</label>
 							<div class="col-md-6">
