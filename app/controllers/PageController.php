@@ -348,6 +348,8 @@ class PageController extends BaseController {
             }
         }
 
+        $total += $donation;
+
         $coupon_discount_value = 0;
         $coupon_discount_id = NULL;
 
