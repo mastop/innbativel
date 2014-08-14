@@ -50,8 +50,8 @@
 
 		<div class="control-group"><h1>Regras do cupom</h1></div>
 
-        {{ Former::date('initial_term', 'Prazo inicial de utilização')->class('span12') }}
-        {{ Former::date('final_term', 'Prazo final de utilização')->class('span12') }}
+        {{ Former::text('initial_term', 'Prazo inicial de utilização')->class('span12 datepicker') }}
+        {{ Former::text('final_term', 'Prazo final de utilização')->class('span12 datepicker') }}
         {{ Former::number('n_people', 'Nº de pessoas por cupom')->class('span12') }}
         {{ Former::text('restriction', 'Restrição')->class('span12') }}
 		{{ Former::select('has_scheduling', 'Agendamento?')
@@ -62,7 +62,7 @@
 		<span id="yes_has_scheaduling">
         	{{ Former::text('sched_contact', 'Telefone, e-mail e/ou site para agendamento')->class('span12') }}
         	{{ Former::text('sched_dates', 'Dias e horários para agendamento')->class('span12') }}
-        	{{ Former::date('sched_max_date', 'Data limite para agendamento, se existir')->class('span12') }}
+        	{{ Former::text('sched_max_date', 'Data limite para agendamento, se existir')->class('span12 datepicker') }}
         	{{ Former::text('sched_min_antecedence', 'Antecedência mínima para agendamento')->class('span12') }}
 		</span>
 

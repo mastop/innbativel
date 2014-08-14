@@ -1,22 +1,4 @@
 (function($){
-    $.datepicker.setDefaults( $.datepicker.regional[ "pt-BR" ]);
-//    $('body').on('click', 'input.datepicker', function(event) {
-//        $(this).datepicker({
-//            showOn: 'focus',
-//            numberOfMonths: 2,
-//            showButtonPanel: false,
-//            minDate: 0
-//        }).focus();
-//    });
-    $('input.datepicker').datepicker({
-        numberOfMonths: 2,
-        showButtonPanel: false,
-        minDate: 0
-    });
-    $('input.currency').maskMoney({
-        thousands: '.',
-        decimal:    ','
-    }).maskMoney('mask');
 
     $(".select2").select2({allowClear: true});
 

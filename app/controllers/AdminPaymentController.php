@@ -427,9 +427,9 @@ class AdminPaymentController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-			'sales_from' => 'required|date_format:Y-m-d H:i:s',
-			'sales_to' => 'required|date_format:Y-m-d H:i:s',
-			'date' => 'required|date_format:Y-m-d|after:'.date('Y-m-d'),
+			'sales_from' => 'required',
+			'sales_to' => 'required',
+			'date' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -438,7 +438,7 @@ class AdminPaymentController extends BaseController {
 		{
 			$id = $this->payment->create($inputs)->id;
 
-			$script_date = date('Y-m-d H:i:s', strtotime($inputs['sales_to'])+1);
+			$script_date = date('Y-m-d H:i:s', strtotime($this->convertDate($inputs['sales_to']))+1);
 			$cron_date = Crontab::date2cron($script_date);
 			$cronjob = $cron_date . $this->cron_command . $id;
 
@@ -478,9 +478,9 @@ class AdminPaymentController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-			'sales_from' => 'required|date_format:Y-m-d H:i:s',
-			'sales_to' => 'required|date_format:Y-m-d H:i:s',
-			'date' => 'required|date_format:Y-m-d|after:'.date('Y-m-d'),
+			'sales_from' => 'required',
+			'sales_to' => 'required',
+			'date' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -491,17 +491,17 @@ class AdminPaymentController extends BaseController {
 
 			if ($payment)
 			{
-				$script_date = date('Y-m-d H:i:s', strtotime($inputs['sales_to'])+1);
+				$script_date = date('Y-m-d H:i:s', strtotime($this->convertDate($inputs['sales_to']))+1);
 				$cron_date = Crontab::date2cron($script_date);
 				$cronjob = $cron_date . $this->cron_command . $id;
 
 				// Crontab::removeJob($payment->cronjob); //remove atual cron job do crontab
 				// Crontab::addJob($cronjob); // insere novo cron job (com data atualizada) no crontab
-				$data = "Você acabou de alterar o período de fechamento quinzenal para pagamento aos carceiros #".$inputs['id'].". Se você mudou alguma data, você precisa entrar em contato com o Fernando da Mastop para ele atualizar tais datas nos CronJobs que estão no servidor dele que estamos utilizando.";
+				$data = "Você acabou de alterar o período de fechamento quinzenal para pagamento aos carceiros #".$id.". Se você mudou alguma data, você precisa entrar em contato com o Fernando da Mastop para ele atualizar tais datas nos CronJobs que estão no servidor dele que estamos utilizando.";
 
-				Mail::send('emails.simple_mail', $data, function($message){
-                    $message->to(Auth::user()->email, 'INNBatível')->cc('programacao@innbativel.com.br', 'Programação INNBatível')->replyTo('programacao@innbativel.com.br', 'Programação INNBatível')->subject('Mudança no periodo de fechamento quinzenal');
-                });
+				// Mail::send('emails.simple_mail', $data, function($message){
+    //                 $message->to(Auth::user()->email, 'INNBatível')->cc('programacao@innbativel.com.br', 'Programação INNBatível')->replyTo('programacao@innbativel.com.br', 'Programação INNBatível')->subject('Mudança no periodo de fechamento quinzenal');
+    //             });
 
 				$inputs['cronjob'] = $cronjob;
 

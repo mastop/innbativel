@@ -130,23 +130,28 @@ class AdminTellusController extends BaseController {
 	{
 		$inputs = Input::all();
 
-		$rules = [
-        	'name' => 'required',
-        	'destiny' => 'required',
-        	'partner_name' => 'required',
-        	'travel_date' => 'required',
-			'depoiment' => 'required',
-			'img' => 'required',
-		];
+        $rules = [
+            'name' => 'required|min:5',
+            'email' => 'required|email',
+            'destiny' => 'required',
+            'img' => 'required|image',
+            'travel_date' => 'required|date_format:d/m/Y',
+            'depoiment' => 'required|min:30',
+        ];
 
-	    $validation = Validator::make($inputs, $rules);
+        $validation = Validator::make($inputs, $rules);
 
-		if ($validation->passes())
-		{
-			$img = ImageUpload::createFrom(Input::file('img'), Config::get('upload.tellus'));
-			$inputs['img'] = $img;
+        if ($validation->passes()) {
+            $img = $inputs['img'];
+            $directory = 'conte_pra_gente';
+            $img_name = $img->getClientOriginalName();
 
-			$this->tellus->create($inputs);
+            $inputs['img'] = $img_name;
+            $inputs['approved'] = false;
+
+            $id = TellUs::create($inputs)->id;
+
+            $img_url = ImageUpload::upload($img, $directory, $id, $img_name);
 
 			return Redirect::route('admin.tellus');
 		}
@@ -195,12 +200,12 @@ class AdminTellusController extends BaseController {
 		$inputs = Input::all();
 
 		$rules = [
-        	'name' => 'required',
-        	'destiny' => 'required',
-        	'partner_name' => 'required',
-        	'travel_date' => 'required',
-			'depoiment' => 'required',
-			'img' => 'required',
+        	'name' => 'required|min:5',
+            'email' => 'required|email',
+            'destiny' => 'required',
+            'img' => 'required|image',
+            'travel_date' => 'required|date_format:d/m/Y',
+            'depoiment' => 'required|min:30',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -211,10 +216,15 @@ class AdminTellusController extends BaseController {
 
 			if ($tellus)
 			{
-				$img = ImageUpload::createFrom(Input::file('img'), Config::get('upload.tellus'));
-				$inputs['img'] = $img;
+				if(!is_null($inputs['img'])){
+					$img = $inputs['img'];
+		            $directory = 'conte_pra_gente';
+		            $img_name = $img->getClientOriginalName();
+		            $img_url = ImageUpload::upload($img, $directory, $id, $img_name);
+		            $inputs['img'] = $img_name;
+				}
 
-				$tellus->update($inputs);
+	            $tellus->update($inputs);
 			}
 
 			return Redirect::route('admin.tellus');
