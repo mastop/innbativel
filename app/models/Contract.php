@@ -55,4 +55,79 @@ class Contract extends Eloquent {
   	return $this->belongsTo('User', 'partner_id')->with('profile');
   }
 
+  /**
+     * Formata a data de término, pegando dd/mm/YYYY
+     * e transformando em YYYY-mm-dd HH:ii:ss
+     *
+     * @param $value
+     * @return void
+     */
+    public function setInitialTermAttribute($value)
+    {
+        $date = implode("-",array_reverse(explode("/",$value)));
+        $this->attributes['initial_term'] = $date;
+    }
+
+    /**
+     * Formata a data de término, pegando dd/mm/YYYY
+     * e transformando em YYYY-mm-dd HH:ii:ss
+     *
+     * @param $value
+     * @return void
+     */
+    public function setFinalTermAttribute($value)
+    {
+        $date = implode("-",array_reverse(explode("/",$value)));
+        $this->attributes['final_term'] = $date;
+    }
+
+    /**
+     * Formata a data de término, pegando dd/mm/YYYY
+     * e transformando em YYYY-mm-dd HH:ii:ss
+     *
+     * @param $value
+     * @return void
+     */
+    public function setSchedMaxDateAttribute($value)
+    {
+        $date = implode("-",array_reverse(explode("/",$value)));
+        $this->attributes['sched_max_date'] = $date;
+    }
+
+    /**
+     * Formata a data de início, pegando YYYY-mm-dd HH:ii:ss
+     * e transformando em dd/mm/YYYY
+     *
+     * @param $value
+     * @return string
+     */
+    public function getInitialTermAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
+
+    /**
+     * Formata a data de início, pegando YYYY-mm-dd HH:ii:ss
+     * e transformando em dd/mm/YYYY
+     *
+     * @param $value
+     * @return string
+     */
+    public function getFinalTermAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
+    
+    /**
+     * Formata a data de início, pegando YYYY-mm-dd HH:ii:ss
+     * e transformando em dd/mm/YYYY
+     *
+     * @param $value
+     * @return string
+     */
+    public function getSchedMaxDateAttribute($value)
+    {
+        return date('d/m/Y', strtotime($value));
+    }
+
 }

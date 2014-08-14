@@ -7,6 +7,7 @@
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.payment') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
 	            <a href="{{ route('admin.payment.voucher') }}" title="Listar cupons" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
+	            <a href="{{ route('admin.payment.period') }}" title="Listar períodos de fechamentos" class="dropdown-toggle navbar-icon"><i class="icon-time"></i></a>
 	        </div>
 		</div>
 	</div>

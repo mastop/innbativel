@@ -28,4 +28,16 @@ class PartnerTestimony extends Eloquent {
   	return $this->belongsTo('User');
   }
 
+  /**
+     * Formata a imagem principal
+     * @param $value
+     * @return string
+     */
+    public function getImgAttribute($value)
+    {
+        if(empty($value) || substr($value, 0, 4) == 'http')
+        return $value;
+        return '//'.Configuration::get('s3url').'/depoimentos_parceiros/'.$this->id.'/'.$value;
+    }
+
 }

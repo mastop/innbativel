@@ -2,14 +2,14 @@
 
     <div class="well widget row-fluid">
 
-        {{ Former::horizontal_open()->rules([
-        	'name' => 'required',
-        	'destiny' => 'required',
-        	'partner_name' => 'required',
-        	'travel_date' => 'required',
-			'depoiment' => 'required',
-			'img' => 'required',
-        ]) }}
+        {{ Former::open_for_files()->rules([
+        	'name' => 'required|min:5',
+            'email' => 'required|email',
+            'destiny' => 'required',
+            'travel_date' => 'required|date_format:d/m/Y',
+            'depoiment' => 'required|min:30',
+        ])
+        ->setAttribute('files', true) }}
 
         {{ Former::populate($tellus) }}
 
@@ -17,20 +17,15 @@
         {{ Former::text('email', 'E-mail')->class('span12') }}
         {{ Former::text('destiny', 'Destino')->class('span12') }}
         {{ Former::text('partner_name', 'Parceiro')->class('span12') }}
-        {{ Former::date('travel_date', 'Data da viagem')->class('span12') }}
+        {{ Former::text('travel_date', 'Data da viagem')->class('span12 datepicker') }}
         {{ Former::text('depoiment', 'Depoimento')->class('span12') }}
 
 
-        @if(isset($tellus->img) && !is_null($tellus->img) && !empty($tellus->img))
-			<figure class="span4 form-file-thumb"><img src="{{ asset_timed($tellus->img) }}"></figure>
-			<div class="span4">
-				<a href="{{ route('admin.tellus.clearfield', [$tellus->id, 'img']) }}" class="btn btn-danger tip" title="Alterar Imagem">
-					<i class="icon-trash"></i>
-				</a>
-			</div>
-		@else
-			{{ Former::file('img', 'Imagem (NN x MM)')->accept('png', 'jpg', 'jpeg')->class('span12') }}
+        @if(isset($tellus->img))
+			<figure class="span4 form-file-thumb"><img src="{{ $tellus->img }}"></figure>
 		@endif
+
+        {{ Former::file('img', 'Imagem (NN x MM)')->accept('png', 'jpg', 'jpeg')->class('span12') }}
 
         {{ Former::actions()
           ->primary_submit('Salvar')

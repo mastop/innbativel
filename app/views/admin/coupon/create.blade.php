@@ -13,8 +13,8 @@
         {{ Former::text('display_code', 'Código')->class('span12') }}
         {{ Former::text('value', 'Valor')->class('span12') }}
         {{ Former::number('qty', 'Quantidade máxima')->class('span12') }}
-        {{ Former::date('starts_on', 'Data início (formato: mm/dd/aaaa)')->class('span12') }}
-        {{ Former::date('ends_on', 'Data fim (formato: mm/dd/aaaa)')->class('span12') }}
+        {{ Former::text('starts_on', 'Início da validade')->class('span12 datepicker') }}
+        {{ Former::text('ends_on', 'Fim da validade')->class('span12 datepicker') }}
         {{ Former::select('category_id', 'Categoria')
                  ->addOption('Qualquer', null)
                 ->fromQuery(DB::table('categories')->select(['title', 'id']), 'title', 'id')

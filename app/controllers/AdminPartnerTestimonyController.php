@@ -138,10 +138,15 @@ class AdminPartnerTestimonyController extends BaseController {
 
 		if ($validation->passes())
 		{
-			$img = ImageUpload::createFrom(Input::file('img'), Config::get('upload.partner_testimony'));
-			$inputs['img'] = $img;
+			$img = $inputs['img'];
+            $directory = 'depoimentos_parceiros';
+            $img_name = $img->getClientOriginalName();
 
-			$this->partner_testimony->create($inputs);
+            $inputs['img'] = $img_name;
+
+            $id = $this->partner_testimony->create($inputs)->id;
+
+            $img_url = ImageUpload::upload($img, $directory, $id, $img_name);
 
 			return Redirect::route('admin.partner_testimony');
 		}
@@ -195,7 +200,6 @@ class AdminPartnerTestimonyController extends BaseController {
         	'sponsor' => 'required',
         	'role' => 'required',
 			'testimony' => 'required',
-			'img' => 'required',
 		];
 
 	    $validation = Validator::make($inputs, $rules);
@@ -206,10 +210,15 @@ class AdminPartnerTestimonyController extends BaseController {
 
 			if ($partner_testimony)
 			{
-				$img = ImageUpload::createFrom(Input::file('img'), Config::get('upload.partner_testimony'));
-				$inputs['img'] = $img;
+				if(!is_null($inputs['img'])){
+					$img = $inputs['img'];
+		            $directory = 'depoimentos_parceiros';
+		            $img_name = $img->getClientOriginalName();
+		            $img_url = ImageUpload::upload($img, $directory, $id, $img_name);
+		            $inputs['img'] = $img_name;
+				}
 
-				$partner_testimony->update($inputs);
+	            $partner_testimony->update($inputs);
 			}
 
 			return Redirect::route('admin.partner_testimony');

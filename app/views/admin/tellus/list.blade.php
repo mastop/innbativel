@@ -39,9 +39,27 @@
 		</div>
 	</div>
 	{{ Table::open() }}
-	{{ Table::headers('ID', 'Nome', 'E-mail', 'Destino', 'Parceiro', 'Data da viagem', 'Depoimento', 'Imagem', 'Aprovado?', 'Ordem', 'Ações') }}
+	{{ Table::headers('Criado em', 'Nome', 'E-mail', 'Destino', 'Parceiro', 'Data da viagem', 'Depoimento', 'Imagem', 'Aprovado?', 'Ordem', 'Ações') }}
 	{{ Table::body($tellus)
-		->ignore(['depoiment', 'img', 'approved', 'display_order', 'created_at', 'updated_at'])
+		->ignore(['id', 'name', 'email', 'travel_date', 'partner_name', 'destiny', 'depoiment', 'img', 'approved', 'display_order', 'created_at', 'updated_at'])
+		->created_att(function($body) {
+			return date('d/m/Y H:i:s', strtotime($body->created_at));
+		})
+		->namee(function($body) {
+			return $body->name;
+		})
+		->emaill(function($body) {
+			return $body->email;
+		})
+		->destinyy(function($body) {
+			return $body->destiny;
+		})
+		->partner_namee(function($body) {
+			return $body->partner_name;
+		})
+		->travel_datee(function($body) {
+			return $body->travel_date;
+		})
 		->depoimentt(function($body) {
 			return '<pre>'.$body->depoiment.'</pre>';
 		})
@@ -55,7 +73,7 @@
 			return $body->display_order;
 		})
 		->acoes(function($body) {
-			if($body['approved'] == true){
+			if($body['approved'] == 'Sim'){
 				return DropdownButton::normal('Ações',
 					Navigation::links([
 						['Desaprovar', route('admin.tellus.approve', ['id' => $body['id'], 'approved' => 0])],

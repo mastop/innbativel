@@ -33,7 +33,7 @@
             <div class="controls">{{ $order->antifraud_id }}</div>
 
             <b class="control-label">Número de itens comprados</b>
-            <div class="controls">{{ count($order->offer) }}</div>
+            <div class="controls">{{ count($order->offer_option_offer) }}</div>
 
             <b class="control-label">Total pago</b>
             <div class="controls">R${{ number_format($order->total, '2', ',', '.') }}</div>

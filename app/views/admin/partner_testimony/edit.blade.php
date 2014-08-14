@@ -2,14 +2,14 @@
 
     <div class="well widget row-fluid">
 
-        {{ Former::horizontal_open()->rules([
+        {{ Former::open_for_files()->rules([
         	'name' => 'required',
         	'destiny' => 'required',
         	'sponsor' => 'required',
         	'role' => 'required',
 			'testimony' => 'required',
-			'img' => 'required',
-        ]) }}
+        ])
+        ->setAttribute('files', true) }}
 
         {{ Former::populate($partner_testimony) }}
 
@@ -19,16 +19,11 @@
         {{ Former::text('role', 'Cargo do responsável')->class('span12') }}
         {{ Former::text('testimony', 'Depoimento')->class('span12') }}
 
-        @if(isset($partner_testimony->img) && !is_null($partner_testimony->img) && !empty($partner_testimony->img))
-			<figure class="span4 form-file-thumb"><img src="{{ asset_timed($partner_testimony->img) }}"></figure>
-			<div class="span4">
-				<a href="{{ route('admin.tellus.clearfield', [$partner_testimony->id, 'img']) }}" class="btn btn-danger tip" title="Alterar Imagem">
-					<i class="icon-trash"></i>
-				</a>
-			</div>
-		@else
-			{{ Former::file('img', 'Imagem (NN x MM)')->accept('png', 'jpg', 'jpeg')->class('span12') }}
-		@endif
+        @if(isset($partner_testimony->img))
+            <figure class="span4 form-file-thumb"><img src="{{ $partner_testimony->img }}"></figure>
+        @endif
+
+        {{ Former::file('img', 'Imagem (NN x MM)')->accept('png', 'jpg', 'jpeg')->class('span12') }}
 
         {{ Former::actions()
           ->primary_submit('Salvar')

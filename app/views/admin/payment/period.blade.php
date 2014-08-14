@@ -3,9 +3,12 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Lista de Pagamentos aos Parceiros</h6>
+			<h6>Lista de Períodos de Fechamentos</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.payment') }}" title="Listar todos os pagamentos aos parceiros" class="dropdown-toggle navbar-icon"><i class="icon-align-justify"></i></a>
+	            <a href="{{ route('admin.payment.voucher') }}" title="Listar cupons" class="dropdown-toggle navbar-icon"><i class="icon-barcode"></i></a>
+	            <a href="{{ route('admin.payment.period') }}" title="Listar períodos de fechamentos" class="dropdown-toggle navbar-icon"><i class="icon-time"></i></a>
+	            <a href="{{ route('admin.payment.create') }}" title="Criar período de fechamento" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
 	        </div>
 		</div>
 	</div>
@@ -38,9 +41,9 @@
 	</div>
 
 	{{ Table::open() }}
-	{{ Table::headers('Vendas de', 'Vendas até', 'Data a pagar', 'Ação') }}
+	{{ Table::headers('Vendas de', 'Vendas até', 'Data a pagar', 'Fechamento realizado?', 'Ação') }}
 	{{ Table::body($paymentData)
-			->ignore(['id', 'sales_from', 'sales_to', 'date', 'cronjob'])
+			->ignore(['id', 'sales_from', 'sales_to', 'date', 'is_sales_close', 'cronjob'])
 			->from(function($data) {
 				if(isset($data['sales_from'])){
 					return date("d/m/Y H:i:s", strtotime($data['sales_from']));
@@ -56,6 +59,12 @@
 			->datee(function($data) {
 				if(isset($data['date'])){
 					return date("d/m/Y", strtotime($data['date']));
+				}
+				return '--';
+			})
+			->is_sales_closee(function($data) {
+				if(isset($data['is_sales_close'])){
+					return $data['is_sales_close'] == true ? 'Sim' : 'Não';
 				}
 				return '--';
 			})

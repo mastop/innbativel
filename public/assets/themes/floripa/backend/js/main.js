@@ -85,4 +85,21 @@ $(function () {
         plugins: ['fontsize'],
         buttons: ['html', 'formatting',  'bold', 'italic', 'unorderedlist', 'orderedlist', 'image', 'video', 'file', 'table', 'link', 'alignment', 'horizontalrule']
     });
+    $.datepicker.setDefaults( $.datepicker.regional[ "pt-BR" ]);
+//    $('body').on('click', 'input.datepicker', function(event) {
+//        $(this).datepicker({
+//            showOn: 'focus',
+//            numberOfMonths: 2,
+//            showButtonPanel: false,
+//            minDate: 0
+//        }).focus();
+//    });
+    $('input.datepicker').datepicker({
+        numberOfMonths: 2,
+        showButtonPanel: false,
+    });
+    $('input.currency').maskMoney({
+        thousands: '.',
+        decimal:    ','
+    }).maskMoney('mask');
 });

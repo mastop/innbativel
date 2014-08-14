@@ -3,7 +3,7 @@
 <div class="widget">
 	<div class="navbar">
 		<div class="navbar-inner">
-			<h6>Lista de depoimentos do Conte pra Gente</h6>
+			<h6>Lista de Depoimentos de Parceiros</h6>
 	        <div class="nav pull-right">
 	            <a href="{{ route('admin.partner_testimony.create') }}" title="Criar Depoimento" class="dropdown-toggle navbar-icon"><i class="icon-plus"></i></a>
 				<a href="{{ route('admin.partner_testimony.sort') }}" title="Ordenar Depoimentos" class="dropdown-toggle navbar-icon"><i class="icon-random"></i></a>
@@ -43,7 +43,7 @@
 		->ignore(['id', 'img', 'created_at', 'updated_at'])
 		->image(function($body) {
 			if(isset($body->img)){
-				return '<a href="'.$body->img.'">Link para a imagem</a>';
+				return '<a href="'.$body->img.'" target="_blank">Link para a imagem</a>';
 			}
 			return '--';
 		})
