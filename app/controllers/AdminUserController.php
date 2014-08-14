@@ -90,7 +90,7 @@ class AdminUserController extends BaseController {
 						$query->select(DB::raw(1))
 							  ->from('profiles')
 							  ->whereRaw('profiles.user_id = users.id')
-							  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE "%'.Input::get('name').'%"');
+							  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE "%'.str_replace("'", "\'", Input::get('name')).'%"');
 					}
 				})
                 ->whereNotIn('id', Role::where('name', '=', 'parceiro')->first()->users()->lists('id')) // Sem Parceiros
@@ -476,7 +476,7 @@ class AdminUserController extends BaseController {
 						$query->select(DB::raw(1))
 							  ->from('profiles')
 							  ->whereRaw('profiles.user_id = users.id')
-							  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE "%'.Input::get('name').'%"');
+							  ->whereRaw('CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")) LIKE "%'.str_replace("'", "\'", Input::get('name')).'%"');
 					}
 				})
 				->orderBy($sort, $order)->paginate($pag)->appends([

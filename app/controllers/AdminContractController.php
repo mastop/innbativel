@@ -104,7 +104,7 @@ class AdminContractController extends BaseController {
 				$query->select(DB::raw(1))
 		              ->from('profiles')
 					  ->whereRaw('contracts.partner_id = profiles.user_id')
-					  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE \'%'.Input::get('partner_name').'%\'');
+					  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE \'%'.str_replace("'", "\'", Input::get('partner_name')).'%\'');
 			}
 		})
 		->orderBy($sort, $order)->paginate($pag)->appends([
@@ -113,7 +113,7 @@ class AdminContractController extends BaseController {
 			'pag' => $pag,
 			'id' => Input::get('id'),
 			'partner_name' => Input::get('partner_name'),
-			'consultant_id' => Input::get('consultant'),
+			'consultant_id' => Input::get('consultant_id'),
 			'is_signed' => Input::get('is_signed'),
 			'is_sent' => Input::get('is_sent'),
 			'created_at_begin' => Input::get('created_at_begin'),
