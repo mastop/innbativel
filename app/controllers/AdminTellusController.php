@@ -149,7 +149,7 @@ class AdminTellusController extends BaseController {
             $inputs['img'] = $img_name;
             $inputs['approved'] = false;
 
-            $id = TellUs::create($inputs)->id;
+            $id = $this->tellus->create($inputs)->id;
 
             $img_url = ImageUpload::upload($img, $directory, $id, $img_name);
 
@@ -203,7 +203,6 @@ class AdminTellusController extends BaseController {
         	'name' => 'required|min:5',
             'email' => 'required|email',
             'destiny' => 'required',
-            'img' => 'required|image',
             'travel_date' => 'required|date_format:d/m/Y',
             'depoiment' => 'required|min:30',
 		];
