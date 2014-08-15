@@ -1297,6 +1297,20 @@ class PageController extends BaseController {
 
             $data = array('name' => $name, 'email' => $email, 'telefone' => $telefone, 'celuar' => $celuar, 'msg' => $msg, 'url' => $url);
 
+            // ENVIO DE EMAIL PARA O USUÁRIO INFORMANDO QUE FOI RECEBIDO SEU CONTATO
+            Mail::send('emails.contact.reply', $data,
+                function($message) use ($name, $email){
+                    $message->to($email, 'INNBatível')
+                            ->replyTo('faleconosco@innbativel.com.br', 'INNBatível')
+                            ->subject('[INNBatível] '.$name. ', recebemos seu contato.');
+                    }
+            );
+
+            // $r = Mail::failures()
+            // $r = print_r($r);
+            // $this->layout = 'format.ajax';
+            // return Response::json(['error' => 2, 'message' => $r.' - Ocorreu um erro. Por favor, mude o seu e-mail de contato ou envie-nos um e-mail diretamente para faleconosco@innbativel.com.br']);
+
             // ENVIO DE EMAIL PARA A EQUIPE DO INNBatível
             Mail::send('emails.contact.send', $data,
                 function($message) use ($name, $email){
@@ -1305,15 +1319,6 @@ class PageController extends BaseController {
                             ->replyTo($email, $name)
                             ->subject('[INNBatível] Contato de '.$name);
                 }
-            );
-
-            // ENVIO DE EMAIL PARA O USUÁRIO INFORMANDO QUE FOI RECEBIDO SEU CONTATO
-            Mail::send('emails.contact.reply', $data,
-                function($message) use ($name, $email){
-                    $message->to($email, 'INNBatível')
-                            ->replyTo('faleconosco@innbativel.com.br', 'INNBatível')
-                            ->subject('[INNBatível] '.$name. ', recebemos seu contato.');
-                    }
             );
             // FIM E-MAIL
 

@@ -8,7 +8,7 @@
 <center>
     <table width="600" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td align="center"><img src="http://innbativel.com.br/img/newsletters/cadastro/innbativel.jpg" width="600" height="354" alt="" style="display:block;"></td>
+        <td align="center"><img src="https://innbativel.com.br/img/newsletters/cadastro/innbativel.jpg" width="600" height="354" alt="" style="display:block;"></td>
       </tr>
       <tr>
         <td align="center" bgcolor="#4060a6"><table width="550" border="0" cellspacing="0" cellpadding="0">
@@ -57,7 +57,7 @@
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td align="right"><a href="http://innbativel.com.br/login.php" title="Convidar amigos"><img src="http://innbativel.com.br/img/newsletters/cadastro/convidar-amigos.jpg" alt="Convidar amigos" width="140" height="31" border="0" style="display:block;"></a></td>
+            <td align="right"><a href="http://innbativel.com.br/login.php" title="Convidar amigos"><img src="https://innbativel.com.br/img/newsletters/cadastro/convidar-amigos.jpg" alt="Convidar amigos" width="140" height="31" border="0" style="display:block;"></a></td>
           </tr>
           <tr>
             <td>&nbsp;</td>

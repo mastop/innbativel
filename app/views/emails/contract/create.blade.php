@@ -8,7 +8,7 @@
 <center>
     <table width="600" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td align="center"><img src="//{{Configuration::get("s3url")}}/casal.jpg" width="600" height="354" alt="" style="display:block;"></td>
+        <td align="center"><img src="https://{{Configuration::get("s3url")}}/casal.jpg" width="600" height="354" alt="" style="display:block;"></td>
       </tr>
       <tr>
         <td align="center" bgcolor="#4060a6"><table width="550" border="0" cellspacing="0" cellpadding="0">
