@@ -52,47 +52,6 @@ class OfferOption extends BaseModel {
 		return $this->belongsToMany('Offer', 'offers_additional', 'offer_additional_id', 'offer_main_id');
 	}
 
-	public function qty_sold(){
-        return $this->hasMany('Voucher', 'offer_option_id')
-                    ->where('vouchers.status', 'pago')
-                    ->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
-                    ->groupBy('vouchers.offer_option_id');
-    }
-
-    public function qty_sold_boletus(){
-        return $this->hasMany('Voucher', 'offer_option_id')
-                    ->where('vouchers.status', 'pago')
-                    ->whereExists(function($query){
-                        $query->select(DB::raw(1))
-                              ->from('orders')
-                              ->whereRaw('orders.id = vouchers.order_id')
-                              ->whereRaw('orders.payment_terms = "Boleto"');
-                    })
-                    ->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
-                    ->groupBy('vouchers.offer_option_id');
-    }
-
-	public function qty_pending(){
-		return $this->hasMany('Voucher', 'offer_option_id')
-					->whereIn('vouchers.status', ['pendente', 'revisao'])
-					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
-					->groupBy('vouchers.offer_option_id');
-	}
-
-	public function qty_cancelled(){
-		return $this->hasMany('Voucher', 'offer_option_id')
-					->whereIn('vouchers.status', ['cancelado', 'cancelado_parcial', 'convercao_creditos', 'convercao_creditos_parcial'])
-					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
-					->groupBy('vouchers.offer_option_id');
-	}
-
-	public function used_vouchers(){
-		return $this->hasMany('Voucher', 'offer_option_id')
-					->where('vouchers.used', true)
-					->select([DB::raw('COUNT(vouchers.id) AS qty'), 'vouchers.offer_option_id'])
-					->groupBy('vouchers.offer_option_id');
-	}
-
 	public function departure_city(){
 		return $this->belongsTo('Destiny', 'departure_city_id');
 	}
@@ -188,5 +147,9 @@ class OfferOption extends BaseModel {
 
     public function getIsExpiredAttribute(){
         return (time() > strtotime($this->getOriginal('voucher_validity_end'))) ? true : false;
+    }
+
+    public function getQtySoldAttribute(){
+        return Voucher::where('offer_option_id', $this->id)->where('status', 'pago')->count();
     }
 }

@@ -110,17 +110,26 @@ class PageController extends BaseController {
         }
 
         if(!$offer->is_active || !$offer->is_available){
-            return Redirect::route('home')->with('warning', 'A oferta '.$offer->title.' está indisponível no momento.');
+            return Redirect::route('home')->with('warning', 'A oferta "'.$offer->title.'" está indisponível no momento.');
         }
 
         $now = date('Y-m-d H:i:s');
         //dd($offer->getOriginal('starts_on'), $now);
 
         if($offer->getOriginal('starts_on') > $now){
-            return Redirect::route('home')->with('warning', 'As vendas da oferta '.$offer->title.' ainda não iniciaram.');
+            return Redirect::route('home')->with('warning', 'As vendas da oferta "'.$offer->title.'" ainda não iniciaram.');
         }
         if($offer->getOriginal('ends_on') < $now){
-            return Redirect::route('home')->with('warning', 'As vendas da oferta '.$offer->title.' foram encerradas');
+            return Redirect::route('home')->with('warning', 'As vendas da oferta "'.$offer->title.'" foram encerradas.');
+        }
+
+        $oo_ids = $opt + $add;
+        $oo = OfferOption::whereIn('id', $oo_ids)->get();
+
+        foreach ($oo as $o) {
+            if($o->qty_sold >= $o->max_qty){
+                return Redirect::route('oferta', $offer->slug)->with('warning', 'A opção "'.$o->title.'" se esgotou.');
+            }
         }
 
         $this->layout->comprar = true;
@@ -280,13 +289,12 @@ class PageController extends BaseController {
             $qties = array_values($inputs['opt-quantity']);
         }
 
-        $offers_options = OfferOption::whereIn('id', $ids)->with(['offer', 'qty_sold', 'qty_sold_boletus'])->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty']);
+        $offers_options = OfferOption::whereIn('id', $ids)->with(['offer'])->get(['id', 'offer_id', 'price_with_discount', 'title', 'subtitle', 'percent_off', 'voucher_validity_start', 'voucher_validity_end', 'price_with_discount', 'min_qty', 'max_qty']);
 
         // save the items the user ordered and calculate total
         foreach ($offers_options as $offer_option) {
             $qty_ordered = array_shift($qties); // pega o primeiro elemento de $qties e joga no final do próprio array $qties, além de obter o valor manipulado em si, claro
-            $qty_sold = isset($offer_option->qty_sold{0})?$offer_option->qty_sold{0}->qty:0;
-            $qty_sold_boletus = isset($offer_option->qty_sold_boletus{0})?$offer_option->qty_sold_boletus{0}->qty:0;
+            $qty_sold = $offer_option->qty_sold;
             $max_qty_allowed = $offer_option->max_qty - $qty_sold;
             $max_qty_allowed_boletus = $offer_option->min_qty - $qty_sold;
 
