@@ -18,7 +18,7 @@
             <td width="600" height="20" align="center">&nbsp;</td>
           </tr>
           <tr>
-            <td width="600" align="center"><a href="http://www.innbativel.com.br" title="InnBatível - Viaje mais por menos" target="_blank"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/logo-innbativel.jpg" alt="InnBatível - Viaje mais por menos - Logotipo para newsletter" width="207" height="56" border="0"></a></td>
+            <td width="600" align="center"><a href="http://www.innbativel.com.br" title="InnBatível - Viaje mais por menos" target="_blank"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/logo-innbativel.jpg" alt="InnBatível - Viaje mais por menos - Logotipo para newsletter" width="207" height="56" border="0"></a></td>
           </tr>
           <tr>
             <td width="600" height="20">&nbsp;</td>
@@ -37,12 +37,12 @@
               <td><a href="{{ $offer->slug }}" title=""><img src="{{ $offer->newsletter_img }}" alt="Oferta no INNBatível - Viaje mais, por menos" width="600" height="220" border="0" style="display:block"></a></td>
             </tr>
             <tr>
-              <td height="12"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/sombra-fotos.jpg" width="600" height="12" alt="" style="display:block;"></td>
+              <td height="12"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/sombra-fotos.jpg" width="600" height="12" alt="" style="display:block;"></td>
             </tr>
             <tr>
               <td align="center"><table width="586" border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td width="10"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/esquerda-texto.jpg" width="10" height="42" alt="" style="display:block;"></td>
+                  <td width="10"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/esquerda-texto.jpg" width="10" height="42" alt="" style="display:block;"></td>
                   <td width="435" align="center" bgcolor="#2860aa"><table border="0" cellspacing="4" cellpadding="0">
                     <tr>
                       <td align="left" valign="middle" style="font-size:14px; font-family:Arial, Helvetica, sans-serif; color:#f0cf31; font-weight:700;text-decoration:line-through;"><s>de</s></td>
@@ -55,9 +55,9 @@
                       <td align="left" valign="middle" style="font-size:23px; font-family:Arial, Helvetica, sans-serif; color:#e5e5e5; font-weight:700;">{{ $offer->installment }}%</td>
                       </tr>
                   </table></td>
-                  <td width="10"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/direita-texto.jpg" width="10" height="42" alt="" style="display:block;"></td>
+                  <td width="10"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/direita-texto.jpg" width="10" height="42" alt="" style="display:block;"></td>
                   <td width="15">&nbsp;</td>
-                  <td width="126"><a href="{{ $offer->slug }}" title="Confira"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/botao-confira.jpg" alt="Botão confira esta oferta INNBatível" width="126" height="42" border="0" style="display:block;"></a></td>
+                  <td width="126"><a href="{{ $offer->slug }}" title="Confira"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/botao-confira.jpg" alt="Botão confira esta oferta INNBatível" width="126" height="42" border="0" style="display:block;"></a></td>
                   </tr>
               </table></td>
             </tr>
@@ -65,23 +65,23 @@
               <td height="30">&nbsp;</td>
             </tr>
             <tr>
-              <td width="600" height="1"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/separador.jpg" width="600" height="1" alt="" style="display:block;"></td>
+              <td width="600" height="1"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/separador.jpg" width="600" height="1" alt="" style="display:block;"></td>
             </tr>
             <tr>
               <td height="30">&nbsp;</td>
             </tr>
           @endforeach
           <tr>
-            <td height="12"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/linha-rodape.jpg" width="600" height="12" alt="" style="display:block;"></td>
+            <td height="12"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/linha-rodape.jpg" width="600" height="12" alt="" style="display:block;"></td>
           </tr>
           <tr>
             <td height="55" align="right" valign="middle" bgcolor="#2860aa"><table width="215" border="0" cellpadding="0" cellspacing="0">
               <tr>
-                <td width="85"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/texto-rodape.jpg" alt="Siga-nos" width="85" height="27" border="0" style="display:block;"></td>
-                <td width="28"><a href="https://www.facebook.com/innbativel" title="Facebook" target="_blank"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/facebook.jpg" alt="Facebook" width="28" height="27" border="0" style="display:block;"></a></td>
-                <td width="29"><a href="https://twitter.com/innbativel" title="Twitter" target="_blank"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/twitter.jpg" alt="Twitter" width="29" height="27" border="0" style="display:block;"></a></td>
-                <td width="29"><a href="http://pinterest.com/innbativel/" title="Pinterest" target="_blank"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/pinterest.jpg" alt="Pinterest" width="29" height="27" border="0" style="display:block;"></a></td>
-                <td width="29"><a href="https://plus.google.com/113905450286255764962" title="Google+" target="_blank"><img src="http://www.innbativel.com.br/img/newsletters/novasofertas/google.jpg" alt="Google+" width="29" height="27" border="0" style="display:block;"></a></td>
+                <td width="85"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/texto-rodape.jpg" alt="Siga-nos" width="85" height="27" border="0" style="display:block;"></td>
+                <td width="28"><a href="https://www.facebook.com/innbativel" title="Facebook" target="_blank"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/facebook.jpg" alt="Facebook" width="28" height="27" border="0" style="display:block;"></a></td>
+                <td width="29"><a href="https://twitter.com/innbativel" title="Twitter" target="_blank"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/twitter.jpg" alt="Twitter" width="29" height="27" border="0" style="display:block;"></a></td>
+                <td width="29"><a href="http://pinterest.com/innbativel/" title="Pinterest" target="_blank"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/pinterest.jpg" alt="Pinterest" width="29" height="27" border="0" style="display:block;"></a></td>
+                <td width="29"><a href="https://plus.google.com/113905450286255764962" title="Google+" target="_blank"><img src="https://www.innbativel.com.br/img/newsletters/novasofertas/google.jpg" alt="Google+" width="29" height="27" border="0" style="display:block;"></a></td>
                 <td width="15">&nbsp;</td>
               </tr>
             </table></td>

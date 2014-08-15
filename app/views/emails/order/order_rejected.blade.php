@@ -16,7 +16,7 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
         <td>&nbsp;</td>
       </tr>
       <tr>
-        <td align="center"><img src="//{{Configuration::get("s3url")}}/logo.png" alt="" style="display:block;"><br/></td>
+        <td align="center"><img src="https://{{Configuration::get("s3url")}}/logo.png" alt="" style="display:block;"><br/></td>
       </tr>
       <tr>
         <td align="center" bgcolor="#4060a6"><table width="510" border="0" cellspacing="0" cellpadding="0">

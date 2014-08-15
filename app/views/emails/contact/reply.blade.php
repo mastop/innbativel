@@ -10,7 +10,7 @@ a, a:link, a:visited, a:hover, a:focus, a:active{
 </style>
 </head>
 <body>
-<p><img src="//{{Configuration::get("s3url")}}/logo.png"/></p>
+<p><img src="https://{{Configuration::get("s3url")}}/logo.png"/></p>
 <p>
   Ol&aacute; {{ $name }},<br /><br />
   Confirmamos o recebimento de seu e-mail. Em breve entraremos em contato.
