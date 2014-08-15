@@ -187,8 +187,8 @@ function update_tracking_code(url, voucher_id){
 			modal += '		</form>'
 			modal += '	</div>'
 			modal += '	<div class="modal-footer">'
-			modal += '		<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Voltar</button>'
-			modal += '		<a class="btn btn-danger" id="dataConfirmOK" onclick="'+submit+'">Enviar</a>'
+			modal += '		<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Voltar</button>'
+			modal += '		<a class="btn btn-success" id="dataConfirmOK" onclick="'+submit+'">Enviar</a>'
 			modal += '	</div>'
 			modal += ' </div>';
 	    $('body').append(modal);
