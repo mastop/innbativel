@@ -86,7 +86,7 @@ class AdminPaymentController extends BaseController {
 														$query->select(DB::raw(1))
 										                      ->from('profiles')
 															  ->whereRaw('payments_partners.partner_id = profiles.user_id')
-															  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE \'%'.Input::get('partner_name').'%\'');
+															  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE \'%'.str_replace("'", "\'", Input::get('partner_name')).'%\'');
 													}
 										      })
 											  ->orderBy($sort, $order)
@@ -163,7 +163,7 @@ class AdminPaymentController extends BaseController {
 																                      ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
 																                      ->join('profiles', 'profiles.user_id', '=', 'offers.partner_id')
 																					  ->whereRaw('offers_options.id = vouchers.offer_option_id')
-																					  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE \'%'.Input::get('partner_name').'%\'');
+																					  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE \'%'.str_replace("'", "\'", Input::get('partner_name')).'%\'');
 																			}
 												 					}); 
 															  }])
@@ -175,7 +175,7 @@ class AdminPaymentController extends BaseController {
 												                      ->join('offers', 'offers.id', '=', 'offers_options.offer_id')
 												                      ->join('profiles', 'profiles.user_id', '=', 'offers.partner_id')
 																	  ->whereRaw('vouchers.id = transactions_vouchers.voucher_id')
-																	  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE \'%'.Input::get('partner_name').'%\'');
+																	  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE \'%'.str_replace("'", "\'", Input::get('partner_name')).'%\'');
 															}
 										              })
 										              ->whereExists(function($query){
@@ -879,7 +879,7 @@ class AdminPaymentController extends BaseController {
 								// 		$query->select(DB::raw(1))
 						  //                     ->from('profiles')
 								// 			  ->whereRaw('profiles.user_id = orders.user_id')
-								// 			  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE "%'.Input::get('name').'%"');
+								// 			  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE "%'.str_replace("'", "\'", Input::get('name')).'%"');
 								// 	}
 
 					   //          })
@@ -1102,7 +1102,7 @@ class AdminPaymentController extends BaseController {
 	// 									$query->select(DB::raw(1))
 	// 					                      ->from('profiles')
 	// 										  ->whereRaw('profiles.user_id = orders.user_id')
-	// 										  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE "%'.$name.'%"');
+	// 										  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE "%'.str_replace("'", "\'", $name).'%"');
 	// 								}
 
 	// 				            })

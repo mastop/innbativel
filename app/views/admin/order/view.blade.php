@@ -300,8 +300,8 @@
 									+'<input type="text" id="comment-on-action" style="width: 100%;" autofocus="autofocus"/>'
 								+'</div>'
 								+'<div class="modal-footer">'
-									+'<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Não, voltar</button>'
-									+'<a class="btn btn-danger" id="dataConfirmOK2">Sim</a>'
+									+'<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Não, voltar</button>'
+									+'<a class="btn btn-success" id="dataConfirmOK2">Sim</a>'
 								+'</div>'
 							+'</div>';
 

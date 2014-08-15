@@ -9269,6 +9269,9 @@ ul.buy-itens {
 	border-right: 1px solid #ddd;
 	background-color: #fff;
 }
+ul.buy-itens li.sold-out {
+	background-color: #ffefe5;
+}
 ul.buy-itens li {
 	position: relative;
 	list-style: none;

@@ -108,7 +108,7 @@ class AdminPartnerController extends BaseController {
 						$query->select(DB::raw(1))
 			                  ->from('profiles')
 			                  ->whereRaw('profiles.user_id = users.id')
-			                  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE "%'.Input::get('nome').'%"');
+			                  ->whereRaw('CONCAT(CONCAT(COALESCE(profiles.first_name, ""), " ", COALESCE(profiles.last_name, "")), " ", profiles.company_name) LIKE "%'.str_replace("'", "\'", Input::get('nome')).'%"');
 		            }
 		         })
                  ->whereIn('id', Role::where('name', '=', 'parceiro')->first()->users()->lists('id')) // Só Parceiros

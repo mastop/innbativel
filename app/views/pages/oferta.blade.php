@@ -75,17 +75,31 @@
 					<ul class="buy-itens buy-options">
 						<h3>Opções da oferta <span class="glyphicon glyphicon-chevron-down"></span></h3>
                         @foreach($offer->active_offer_option()->get() as $k => $option)
-						<li>
-							<label>
-								<input type="checkbox" id="opt{{$k}}" name="opt[]" data-price="{{intval($option->price_with_discount)}}" value="{{$option->id}}">
-								<div>
-									<strong>{{$option->title}}</strong>
-									<div>{{$option->subtitle}}</div>
-									<div>R$<strong>{{intval($option->price_with_discount)}}</strong></div>
-								</div>
-								<div class="percent-off"><span><strong>{{$option->percent_off}}</strong>OFF</span></div>
-							</label>
-						</li>
+	                        @if($option->qty_sold < $option->max_qty)
+							<li>
+								<label>
+									<input type="checkbox" id="opt{{$k}}" name="opt[]" data-price="{{intval($option->price_with_discount)}}" value="{{$option->id}}">
+									<div>
+										<strong>{{$option->title}}</strong>
+										<div>{{$option->subtitle}}</div>
+										<div>R$<strong>{{intval($option->price_with_discount)}}</strong></div>
+									</div>
+									<div class="percent-off"><span><strong>{{$option->percent_off}}</strong>OFF</span></div>
+								</label>
+							</li>
+							@else
+							<li class="sold-out">
+								<label>
+									<input type="checkbox" id="opt{{$k}}" name="opt[]" data-price="{{intval($option->price_with_discount)}}" value="{{$option->id}}" disabled>
+									<div>
+										<strong>[Esgotado] {{$option->title}}</strong>
+										<div>{{$option->subtitle}}</div>
+										<div>R$<strong>{{intval($option->price_with_discount)}}</strong></div>
+									</div>
+									<div class="percent-off"><span><strong>{{$option->percent_off}}</strong>OFF</span></div>
+								</label>
+							</li>
+							@endif
                         @endforeach
 					</ul>
                     @endif
@@ -94,44 +108,85 @@
                     <ul class="buy-itens buy-combo">
                         <h3>Inclua também <span class="glyphicon glyphicon-chevron-down"></span></h3>
                         @foreach($offer->active_offer_additional as $k => $additional)
-                        <li>
-                            <label>
-                                <input type="checkbox" id="combo{{$k}}" name="add[]" data-price="{{intval($additional->price_with_discount)}}" value="{{$additional->id}}">
-                                <figure><img src="{{$additional->offer->thumb}}"></figure>
-                                <div class="offer-combo">
-                                    <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->short_title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
-                                    <p>{{$additional->subtitle}}</p>
-                                    <div class="price">R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
-                                </div>
-                                <div class="more-info"><a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações"  data-toggle="modal">veja<strong>&plus;</strong></a></div>
-                                <div class="percent-off"><span><strong>{{$additional->percent_off}}</strong>OFF</span></div>
-                            </label>
-                            <div id="combo{{$k}}-info" class="modal fade" tabindex="-1">
-                                <div class="modal-dialog modal-sm">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <img src="{{$additional->offer->cover_img}}">
-                                            <h4 class="modal-title">{{$additional->offer->title}} <span class="entypo chevron-right"></span> {{$additional->title}} </h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>
-                                                {{$additional->offer->popup_features}}
-                                            </p>
-                                            <p>Escolha a quantidade na página de pagamento.</p>
-                                            <div class="prices-info">
-                                                <div class="prices clearfix">
-                                                    <div class="price price-discount">Por R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="entypo cross"></span>Não, obrigado</button>
-                                            <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="entypo check"></span>Sim, eu quero</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
+	                        @if($additional->qty_sold < $additional->max_qty)
+	                        <li>
+	                            <label>
+	                                <input type="checkbox" id="combo{{$k}}" name="add[]" data-price="{{intval($additional->price_with_discount)}}" value="{{$additional->id}}">
+	                                <figure><img src="{{$additional->offer->thumb}}"></figure>
+	                                <div class="offer-combo">
+	                                    <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->short_title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
+	                                    <p>{{$additional->subtitle}}</p>
+	                                    <div class="price">R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
+	                                </div>
+	                                <div class="more-info"><a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações"  data-toggle="modal">veja<strong>&plus;</strong></a></div>
+	                                <div class="percent-off"><span><strong>{{$additional->percent_off}}</strong>OFF</span></div>
+	                            </label>
+	                            <div id="combo{{$k}}-info" class="modal fade" tabindex="-1">
+	                                <div class="modal-dialog modal-sm">
+	                                    <div class="modal-content">
+	                                        <div class="modal-header">
+	                                            <img src="{{$additional->offer->cover_img}}">
+	                                            <h4 class="modal-title">{{$additional->offer->title}} <span class="entypo chevron-right"></span> {{$additional->title}} </h4>
+	                                        </div>
+	                                        <div class="modal-body">
+	                                            <p>
+	                                                {{$additional->offer->popup_features}}
+	                                            </p>
+	                                            <p>Escolha a quantidade na página de pagamento.</p>
+	                                            <div class="prices-info">
+	                                                <div class="prices clearfix">
+	                                                    <div class="price price-discount">Por R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
+	                                                </div>
+	                                            </div>
+	                                        </div>
+	                                        <div class="modal-footer">
+	                                            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="entypo cross"></span>Não, obrigado</button>
+	                                            <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="entypo check"></span>Sim, eu quero</button>
+	                                        </div>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </li>
+	                        @else
+	                        <li class="sold-out">
+	                            <label>
+	                                <input type="checkbox" id="combo{{$k}}" name="add[]" data-price="{{intval($additional->price_with_discount)}}" value="{{$additional->id}}">
+	                                <figure><img src="{{$additional->offer->thumb}}"></figure>
+	                                <div class="offer-combo">
+	                                    <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->short_title}} <span class="entypo chevron-right"></span>[Esgotado] {{$additional->title}}</a>
+	                                    <p>{{$additional->subtitle}}</p>
+	                                    <div class="price">R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
+	                                </div>
+	                                <div class="more-info"><a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações"  data-toggle="modal">veja<strong>&plus;</strong></a></div>
+	                                <div class="percent-off"><span><strong>{{$additional->percent_off}}</strong>OFF</span></div>
+	                            </label>
+	                            <div id="combo{{$k}}-info" class="modal fade" tabindex="-1">
+	                                <div class="modal-dialog modal-sm">
+	                                    <div class="modal-content">
+	                                        <div class="modal-header">
+	                                            <img src="{{$additional->offer->cover_img}}">
+	                                            <h4 class="modal-title">[Esgotado] {{$additional->offer->title}} <span class="entypo chevron-right"></span> {{$additional->title}} </h4>
+	                                        </div>
+	                                        <div class="modal-body">
+	                                            <p>
+	                                                {{$additional->offer->popup_features}}
+	                                            </p>
+	                                            <p>Escolha a quantidade na página de pagamento.</p>
+	                                            <div class="prices-info">
+	                                                <div class="prices clearfix">
+	                                                    <div class="price price-discount">Por R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
+	                                                </div>
+	                                            </div>
+	                                        </div>
+	                                        <div class="modal-footer">
+	                                            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="entypo cross"></span>Não, obrigado</button>
+	                                            <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="entypo check"></span>Sim, eu quero</button>
+	                                        </div>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </li>
+	                        @endif
                         @endforeach
                     </ul>
                     @endif
