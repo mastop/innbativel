@@ -8318,6 +8318,27 @@ h1, h2, h3, h4, h5, h6,
 	top: 2px;
 }
 
+.offer-percent-off {
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	display: inline-block;
+	color: #fff;
+	background: #FF7F33;
+	background: rgba(255, 127, 51,.9);
+	z-index: 49;
+	height: 40px;
+	width: 40px;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	font-size: 14px;
+	vertical-align: middle;
+	text-align: center;
+	line-height: 40px;
+	font-family: Cabin, 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
 .offer-grid-item figure {
 	position: relative;
 	display: block;
@@ -9284,6 +9305,11 @@ ul.buy-itens li {
 			-ms-transition: all .2s ease-out;
 			 -o-transition: all .2s ease-out;
 				  transition: all .2s ease-out;
+}
+.buy-itens .price-original{
+	text-decoration: line-through;
+	color: #AAAAAA;
+	font-size: 13px;
 }
 .buy-itens label > div,
 .checkout-itens li > div,

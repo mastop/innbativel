@@ -82,7 +82,7 @@
 									<div>
 										<strong>{{$option->title}}</strong>
 										<div>{{$option->subtitle}}</div>
-										<div>R$<strong>{{intval($option->price_with_discount)}}</strong></div>
+										<div class="price"><span class="price-original">R$ {{intval($option->price_original)}}</span> R$<strong>{{intval($option->price_with_discount)}}</strong></div>
 									</div>
 									<div class="percent-off"><span><strong>{{$option->percent_off}}</strong>OFF</span></div>
 								</label>
@@ -94,7 +94,7 @@
 									<div>
 										<strong>[Esgotado] {{$option->title}}</strong>
 										<div>{{$option->subtitle}}</div>
-										<div>R$<strong>{{intval($option->price_with_discount)}}</strong></div>
+										<div class="price"><span class="price-original">R$ {{intval($option->price_original)}}</span> R$<strong>{{intval($option->price_with_discount)}}</strong></div>
 									</div>
 									<div class="percent-off"><span><strong>{{$option->percent_off}}</strong>OFF</span></div>
 								</label>
@@ -116,7 +116,7 @@
 	                                <div class="offer-combo">
 	                                    <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->short_title}} <span class="entypo chevron-right"></span>{{$additional->title}}</a>
 	                                    <p>{{$additional->subtitle}}</p>
-	                                    <div class="price">R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
+	                                    <div class="price"><span class="price-original">R$ {{intval($additional->price_original)}}</span> R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
 	                                </div>
 	                                <div class="more-info"><a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações"  data-toggle="modal">veja<strong>&plus;</strong></a></div>
 	                                <div class="percent-off"><span><strong>{{$additional->percent_off}}</strong>OFF</span></div>
@@ -155,7 +155,7 @@
 	                                <div class="offer-combo">
 	                                    <a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações" data-toggle="modal">{{$additional->offer->short_title}} <span class="entypo chevron-right"></span>[Esgotado] {{$additional->title}}</a>
 	                                    <p>{{$additional->subtitle}}</p>
-	                                    <div class="price">R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
+	                                    <div class="price"><span class="price-original">R$ {{intval($additional->price_original)}}</span> R$<strong>{{intval($additional->price_with_discount)}}</strong></div>
 	                                </div>
 	                                <div class="more-info"><a href="#combo{{$k}}-info" class="tooltip" data-tip="Veja mais informações"  data-toggle="modal">veja<strong>&plus;</strong></a></div>
 	                                <div class="percent-off"><span><strong>{{$additional->percent_off}}</strong>OFF</span></div>

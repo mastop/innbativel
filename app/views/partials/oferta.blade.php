@@ -1,6 +1,7 @@
 <a href="{{$offer->url}}" class="offer-grid-inner clearfix">
     @if($offer->genre_id > 0)<div class="offer-label"><span class="map-icon map-icon-{{$offer->genre->icon}}"></span> {{$offer->genre->title}}</div>@endif
     @if($offer->genre2_id > 0)<div class="offer-label"><span class="map-icon map-icon-{{$offer->genre2->icon}}"></span> {{$offer->genre2->title}}</div>@endif
+    <div class="offer-percent-off">{{$offer->percent_off}}%</div>
     <figure>
         <img src="{{$offer->thumb}}" alt="{{$offer->title}}">
     </figure>
