@@ -8735,7 +8735,7 @@ h1, h2, h3, h4, h5, h6,
 .offer-grid-item .more {
 	width: 36px;
 	height: 36px;
-	position: absolute;
+	/*position: absolute;*/
 	float: right;
 	right: 0px;
 	margin-top: 7px;
