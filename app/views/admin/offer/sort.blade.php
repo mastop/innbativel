@@ -26,6 +26,8 @@
 			</ul>
 		</div>
 
+        {{ Former::hidden('cat')->value($cat) }}
+
         {{ Former::actions()
         ->primary_submit('Ordenar')
         ->inverse_link('Resetar', route('admin.offer.sort')) }}
