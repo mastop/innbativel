@@ -783,23 +783,39 @@ class AdminOfferController extends BaseController {
 	// 	return Redirect::route('admin.offer.edit', $id);
 	// }
 
-	public function getSort(){
+	public function getSort($cat = null){
 		/*
 		 * Obj
 		 */
 		$offerObj = $this->offer;
 
+        if($cat){
+            $cat_object = Category::find($cat);
+            if($cat_object){
+                $cat_title = $cat_object->title;
+            }else{
+                Session::flash('error', 'Categoria não encontrada');
+                return Redirect::route('admin.category');
+            }
+        }
+
 		/*
 		 * Finally Obj
 		 */
-		$offers = $offerObj->query()->with(['destiny', 'category'])->orderBy('display_order', 'asc')
-						   ->get();
+        if($cat){
+            $offers = $offerObj->query()->with(['destiny', 'category'])->where('category_id', $cat)->orderBy('display_order', 'asc')
+                ->get();
+        }else{
+            $offers = $offerObj->query()->with(['destiny', 'category'])->orderBy('display_order', 'asc')
+                ->get();
+        }
+
 
 		/*
 		 * Layout / View
 		 */
-        $this->layout->page_title = 'Ordenar Ofertas';
-		$this->layout->content = View::make('admin.offer.sort', compact('offers'));
+        $this->layout->page_title = ($cat) ? 'Ordenar Ofertas de '.$cat_title : 'Ordenar Ofertas';
+		$this->layout->content = View::make('admin.offer.sort', compact('offers', 'cat'));
 	}
 
 	public function postSort(){
@@ -813,6 +829,9 @@ class AdminOfferController extends BaseController {
             }
 		}
         Session::flash('success', 'Ofertas Ordenadas');
+        if(Input::get('cat', 0) > 0){
+            return Redirect::route('admin.category');
+        }
 		return Redirect::route('admin.offer');
 	}
 
