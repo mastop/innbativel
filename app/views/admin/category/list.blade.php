@@ -40,6 +40,7 @@
 		->acoes(function($body) {
 			return DropdownButton::normal('Ações',
 				Navigation::links([
+					['Ordenar Ofertas', route('admin.offer.sort', $body['id'])],
 					['Editar', route('admin.category.edit', $body['id'])],
 					['Excluir', route('admin.category.delete', $body['id'])],
 				])

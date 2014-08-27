@@ -137,7 +137,7 @@ Route::group(array('https', 'prefix' => 'admin', 'before' => 'auth|perm'), funct
 
 	Route::get('offer/clearfield/{id}/{field}', ['as' => 'admin.offer.clearfield', 'uses' => 'AdminOfferController@getClearfield']);
 
-	Route::get('offer/sort', ['as' => 'admin.offer.sort', 'uses' => 'AdminOfferController@getSort']);
+	Route::get('offer/sort/{cat?}', ['as' => 'admin.offer.sort', 'uses' => 'AdminOfferController@getSort']);
 	Route::post('offer/sort', ['as' => 'admin.offer.save_sort', 'uses' => 'AdminOfferController@postSort']);
 
 	Route::get('offer/sort_comment/{id}', ['as' => 'admin.offer.sort_comment', 'uses' => 'AdminOfferController@getSortComment']);
