@@ -161,16 +161,7 @@ class AjaxController extends BaseController {
         //print_r($data);
         return Response::json($data)->setCallback(Input::get('callback'));
     }
-    public function postMyaccount(){
-        $inputs = Input::all();
-        $rules = [
-            'email' => 'required|email|unique:users,email,'. Auth::user()->id,
-        ];
-        $validation = Validator::make($inputs, $rules);
-        if (!$validation->passes()){
-            return Response::json(['ERRO']);
-        }
-
+    public function postMyAccount(){
         $fields = [
             'email',
             'first_name',
@@ -195,16 +186,29 @@ class AjaxController extends BaseController {
         $value = Input::get('value');
         if(in_array($name, $fields)){
             if($name == 'email'){
+                $inputs = [$name => $value];
+                $rules = ['email' => 'required|email|unique:users,email,'. Auth::user()->id];
+                $validation = Validator::make($inputs, $rules);
+                if (!$validation->passes()){
+                    $error = $validation->messages()->toArray();
+                    header('HTTP 400 Bad Request', true, 400);
+                    echo $error['email'][0];
+                    return;
+                }
                 Auth::user()->email = $value;
                 Auth::user()->update();
-                return Response::json(['OK']);
+                print_r(Input::all());
+                return;
             }
             $profile = Auth::user()->profile;
             $profile->$name = $value;
             $profile->update();
-            return Response::json(['OK']);
+            print_r(Input::all());
+            return;
         }
-        return Response::json(['ERRO']);
+        header('HTTP 400 Bad Request', true, 400);
+        echo 'Não foi possível atualizar a informação que você preencheu, verifique-a e tente novamente.';
+        return;
     }
 
 }

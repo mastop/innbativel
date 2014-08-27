@@ -178,7 +178,7 @@ alink="#FF0000" link="#FF0000" bgcolor="#000000" text="#FFFFFF" yahoo="fix">
 @endforeach
 
 			<div style="text-align:center; color: #666666; padding:15px 0">
-				Caso não deseje mais receber nossas ofertas por email, você pode <a href="#">cancelar seu recebimento</a>.
+				Caso não deseje mais receber nossas ofertas por e-mail, você pode <a href="#">cancelar seu recebimento</a>.
 			</div>
 				 
 		</div> 

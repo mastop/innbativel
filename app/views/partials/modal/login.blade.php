@@ -17,10 +17,10 @@
                     @include('partials.modal.anti-bot-spam')
 
                     <div class="form-group">
-                        <label class="control-label col-md-2" for="loginEmail">Email</label>
+                        <label class="control-label col-md-2" for="loginEmail">E-mail</label>
                         <div class="col-md-8 input-group">
                             <!-- <span class="input-group-addon">@</span> -->
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Seu email">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Seu e-mail">
                         </div>
                     </div>
                     <div class="form-group">

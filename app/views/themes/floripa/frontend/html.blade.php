@@ -86,7 +86,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <div class="btn-newsletter">
-                    <a href="#newsletter" data-toggle="modal">Receba ofertas por <strong>Email</strong> <span class="entypo mail"></span></a>
+                    <a href="#newsletter" data-toggle="modal">Receba ofertas por <strong>E-mail</strong> <span class="entypo mail"></span></a>
                 </div>
                 <div class="clearfix super-search">
                     <form accept-charset="utf-8" class="form-inline" method="GET" action="{{ route('busca') }}">

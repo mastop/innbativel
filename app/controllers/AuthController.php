@@ -489,11 +489,11 @@ class AuthController extends BaseController {
 
 		if ($validation->passes())
 		{
-            // Checa se o email existe
+            // Checa se o e-mail existe
             $emailExists = User::where('email', '=', Input::get('registerEmail'))->first();
             if (!is_null($emailExists))
             {
-                return Redirect::to($destination.'?open=pass-recover')->with('warning', 'Não foi possível criar seu cadastro.<br /> Em nosso sistema já existe um cliente cadastrado com o email <strong>'.Input::get('registerEmail').'</strong>.');
+                return Redirect::to($destination.'?open=pass-recover')->with('warning', 'Não foi possível criar seu cadastro.<br /> Em nosso sistema já existe um cliente cadastrado com o e-mail <strong>'.Input::get('registerEmail').'</strong>.');
             }
             $userData = [];
             $userData['username'] = Str::lower(Str::slug(Input::get('registerEmail')));
