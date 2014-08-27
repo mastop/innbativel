@@ -21,7 +21,7 @@
 
 					<a target="_blank" href="http://twitter.com/home?status={{$offer->short_title}} à partir de R${{intval($offer->price_with_discount)}}! -> {{$offer->url}}" title="Compartilhe no Twitter"><span class="entypo c-twitter"></span></a>
 					
-					<a href="#emailShare" title="Compartilhe por Email" data-toggle="modal"><div class="circle"><span class="entypo mail"></span></div></a>
+					<a href="#emailShare" title="Compartilhe por E-mail" data-toggle="modal"><div class="circle"><span class="entypo mail"></span></div></a>
 				</div>
 
 			</div>
@@ -283,9 +283,9 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-4" for="senderEmail">Seu email</label>
+							<label class="control-label col-md-4" for="senderEmail">Seu e-mail</label>
 							<div class="col-md-6 input-group">
-								<input type="email" class="form-control" id="senderEmail" name="senderEmail" placeholder="Seu email" @if(Auth::check())value="{{Auth::user()->email}}"@endif/>
+								<input type="email" class="form-control" id="senderEmail" name="senderEmail" placeholder="Seu e-mail" @if(Auth::check())value="{{Auth::user()->email}}"@endif/>
 							</div>
 						</div>
 						<div class="form-group">
@@ -295,9 +295,9 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-4" for="receiverEmail">Email d@ amig@</label>
+							<label class="control-label col-md-4" for="receiverEmail">E-mail d@ amig@</label>
 							<div class="col-md-6 input-group">
-								<input type="email" class="form-control" id="receiverEmail" name="receiverEmail" placeholder="Email do(a) amigo(a)"/>
+								<input type="email" class="form-control" id="receiverEmail" name="receiverEmail" placeholder="E-mail do(a) amigo(a)"/>
 							</div>
 						</div>
 					</div>

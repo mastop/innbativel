@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title"><span class="entypo mail"></span>Receba ofertas por Email</h4>
+                <h4 class="modal-title"><span class="entypo mail"></span>Receba ofertas por E-mail</h4>
             </div>
             {{ Former::horizontal_open()
                 ->rules([
@@ -28,9 +28,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="email">Seu email</label>
+                        <label class="control-label col-md-3" for="email">Seu e-mail</label>
                         <div class="col-md-8 input-group">
-                            {{ Former::email('newsletterEmail')->label('')->class('form-control')->placeholder('Seu email'); }}
+                            {{ Former::email('newsletterEmail')->label('')->class('form-control')->placeholder('Seu e-mail'); }}
                         </div>
                     </div>
                     <div class="form-group">
@@ -49,14 +49,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title"><span class="entypo check"></span>Email cadastrado</h4>
+                <h4 class="modal-title"><span class="entypo check"></span>E-mail cadastrado</h4>
             </div>
             <div class="modal-body">
                 <p>
                     <strong>Obrigado por cadastrar-se!</strong>
                 </p>
                 <p>
-                    Agora você poderá acompanhar nossas ofertas diariamente por email.
+                    Agora você poderá acompanhar nossas ofertas diariamente por e-mail.
                 </p>
             </div>
         </div>

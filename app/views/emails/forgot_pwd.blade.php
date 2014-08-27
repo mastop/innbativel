@@ -12,6 +12,6 @@
 <p>
   Equipe InnBat&iacute;vel</p>
 <p>
-  <span style="font-size: 9px">n&atilde;o responder esse email, ele foi enviado de forma autom&aacute;tica pelo sistema.</span></p>
+  <span style="font-size: 9px">n&atilde;o responder esse e-mail, ele foi enviado de forma autom&aacute;tica pelo sistema.</span></p>
 </body>
 </html>

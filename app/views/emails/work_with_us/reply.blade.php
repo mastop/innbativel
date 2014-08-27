@@ -13,7 +13,7 @@
 <hr>
 <p>
     <b>Nome completo: </b>{{ $trabalheFullName }}<br />
-    <b>Email: </b>{{ $trabalheEmail }}<br />
+    <b>E-mail: </b>{{ $trabalheEmail }}<br />
     <b>Sexo: </b>{{ $trabalheSexo }}<br />
     <b>Telefone: </b>{{ $trabalhePhone }}<br />
     <b>Celular: </b>{{ $trabalheCelular }}<br />

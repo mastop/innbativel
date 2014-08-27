@@ -30,9 +30,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4" for="registerEmail">Email</label>
+                <label class="control-label col-md-4" for="registerEmail">E-mail</label>
                 <div class="col-md-8 input-group">
-                    {{ Former::email('registerEmail')->class('form-control')->placeholder('Seu email') }}
+                    {{ Former::email('registerEmail')->class('form-control')->placeholder('Seu e-mail') }}
                 </div>
             </div>
             <div class="form-group">
@@ -95,7 +95,7 @@
                     <label class="newsletter">
                         {{ Former::checkbox('registerNewsletter')
                         ->check() }}
-                        Desejo receber ofertas por email
+                        Desejo receber ofertas por e-mail
                     </label>
                 </div>
             </div>

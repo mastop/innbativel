@@ -18,7 +18,7 @@
 		@else {{-- revisao --}}
 			<h1>Pagamento em análise</h1>
 			<p>
-				Obrigado por comprar no INNbatível! Seu pagamento está em análise. Em até 48h você receberá um email com a liberação de seu cupom, assim que seu pagamento for aprovado.
+				Obrigado por comprar no INNbatível! Seu pagamento está em análise. Em até 48h você receberá um e-mail com a liberação de seu cupom, assim que seu pagamento for aprovado.
 		@endif
 
 			<br/>

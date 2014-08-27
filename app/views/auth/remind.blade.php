@@ -10,7 +10,7 @@
 
 	{{ Form::open(array('route' => 'password.request')) }}
 
-	  <p>{{ Form::label('email', 'Email') }}
+	  <p>{{ Form::label('email', 'E-mail') }}
 	  {{ Form::text('email') }}</p>
 
 	  <p>{{ Form::submit('Submit') }}</p>

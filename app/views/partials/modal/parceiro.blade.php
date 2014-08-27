@@ -53,7 +53,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-4" for="parceiroEmail">E-mail</label>
                         <div class="col-md-8 input-group">
-                            <input type="email" class="form-control" id="parceiroEmail" name="parceiroEmail" placeholder="Seu email">
+                            <input type="email" class="form-control" id="parceiroEmail" name="parceiroEmail" placeholder="Seu e-mail">
                         </div>
                     </div>
                     <div class="form-group">

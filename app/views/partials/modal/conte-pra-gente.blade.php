@@ -100,7 +100,7 @@
                         <strong>Obrigado por enviar seu depoimento!</strong>
                     </p>
                     <p>
-                        Se o seu depoimento for selecionado, vamos publicá-lo e você receberá um aviso por email.
+                        Se o seu depoimento for selecionado, vamos publicá-lo e você receberá um aviso por e-mail.
                     </p>
                 </div>
             </div>

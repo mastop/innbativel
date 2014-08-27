@@ -6,7 +6,7 @@ return array(
 	'last_name'  => 'Último Nome',
 	'user_id'    => 'Id do Usuário',
 	'username'   => 'Nome de Usuário',
-	'email'      => 'Email',
+	'email'      => 'E-mail',
 	'groups'     => 'Grupos',
 	'roles'      => 'Papeis',
 	'activated'  => 'Ativado',

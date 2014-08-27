@@ -8,15 +8,15 @@
             <form id="passRecoverForm" class="form-horizontal" name="passRecoverForm" method="post" action="{{route('password.request')}}" novalidate="novalidate">
                 <div class="modal-body">
                     <p>
-                        Digite seu email cadastrado para recuperar sua senha.<br>
+                        Digite seu e-mail cadastrado para recuperar sua senha.<br>
                     </p>
 
                     @include('partials.modal.anti-bot-spam')
 
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="passRecoverEmail">Seu email</label>
+                        <label class="control-label col-md-3" for="passRecoverEmail">Seu e-mail</label>
                         <div class="col-md-8 input-group">
-                            <input type="email" class="form-control" id="passRecoverEmail" name="passRecoverEmail" placeholder="Seu email cadastrado">
+                            <input type="email" class="form-control" id="passRecoverEmail" name="passRecoverEmail" placeholder="Seu e-mail cadastrado">
                         </div>
                     </div>
                     <div class="form-group">
@@ -41,10 +41,10 @@
             </div>
             <div class="modal-body">
                 <p>
-                    Enviamos um link para mudança de sua senha por email.
+                    Enviamos um link para mudança de sua senha por e-mail.
                 </p>
                 <p>
-                    Por favor, acesse sua conta de email e siga as instruções enviadas.
+                    Por favor, acesse sua conta de e-mail e siga as instruções enviadas.
                 </p>
             </div>
         </div>

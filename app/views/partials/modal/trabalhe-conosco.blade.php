@@ -40,7 +40,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-4" for="trabalheEmail">E-mail</label>
                         <div class="col-md-8 input-group">
-                            <input type="email" class="form-control" id="trabalheEmail" name="trabalheEmail" placeholder="Seu email">
+                            <input type="email" class="form-control" id="trabalheEmail" name="trabalheEmail" placeholder="Seu e-mail">
                         </div>
                     </div>
                     <div class="form-group">
